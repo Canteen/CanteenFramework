@@ -115,7 +115,7 @@ namespace Canteen\Services
 		*/
 		public function getAll()
 		{
-			$this->internal('Canteen');
+			$this->internal('Canteen\Site');
 			
 			$result = $this->db()->select($this->properties)
 				->from($this->table)
@@ -223,7 +223,7 @@ namespace Canteen\Services
 		*/
 		public function updateValue($name, $value)
 		{
-			$this->internal('Canteen');
+			$this->internal('Canteen\Site');
 			$this->verify($name, Validate::URI);
 			$this->verify($value, Validate::FULL_TEXT);
 			
