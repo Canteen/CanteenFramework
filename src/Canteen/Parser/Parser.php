@@ -33,25 +33,28 @@ namespace Canteen\Parser
 			// Don't proceed if the string is empty
 			if (empty($content)) return $content;
 			
+			// If the constant is defined
+			$profiler = ifconstor('PROFILER', false);
+			
 			// If we contain subs, lets do it
 			if (preg_match('/\{\{[^\}]*\}\}/', $content))
 			{
-				if (PROFILER) Profiler::start('Parse Templates');
+				if ($profiler) Profiler::start('Parse Templates');
 				self::parseTemplates($content, $substitutions);
 				StringUtils::checkBacktrackLimit($content);
-				if (PROFILER) Profiler::end('Parse Templates');
+				if ($profiler) Profiler::end('Parse Templates');
 
-				if (PROFILER) Profiler::start('Parse If Blocks');
+				if ($profiler) Profiler::start('Parse If Blocks');
 				self::parseIfBlocks($content, $substitutions);
 				StringUtils::checkBacktrackLimit($content);
-				if (PROFILER) Profiler::end('Parse If Blocks');
+				if ($profiler) Profiler::end('Parse If Blocks');
 				
-				if (PROFILER) Profiler::start('Parse Loops');
+				if ($profiler) Profiler::start('Parse Loops');
 				self::parseLoops($content, $substitutions);
 				StringUtils::checkBacktrackLimit($content);
-				if (PROFILER) Profiler::end('Parse Loops');
+				if ($profiler) Profiler::end('Parse Loops');
 
-				if (PROFILER) Profiler::start('Parse Substitutions');
+				if ($profiler) Profiler::start('Parse Substitutions');
 				// Do the template replacements
 			   	foreach($substitutions as $id=>$val)
 				{
@@ -62,13 +65,13 @@ namespace Canteen\Parser
 					}
 					StringUtils::checkBacktrackLimit($content);
 				}
-				if (PROFILER) Profiler::end('Parse Substitutions');
+				if ($profiler) Profiler::end('Parse Substitutions');
 			}
 			
 			// Fix the links
-			if (PROFILER) Profiler::start('Parse Fix Path');
+			if ($profiler) Profiler::start('Parse Fix Path');
 			self::fixPath($content, ifconstor('BASE_PATH', ''));
-			if (PROFILER) Profiler::end('Parse Fix Path');
+			if ($profiler) Profiler::end('Parse Fix Path');
 			
 			return $content;
 		}
