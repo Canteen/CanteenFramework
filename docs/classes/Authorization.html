@@ -149,6 +149,8 @@
             
                 <li><a href="../modules/Canteen.html">Canteen</a></li>
             
+                <li><a href="../modules/Canteen_Authorization.html">Canteen\Authorization</a></li>
+            
                 <li><a href="../modules/Canteen_Controllers.html">Canteen\Controllers</a></li>
             
                 <li><a href="../modules/Canteen_Errors.html">Canteen\Errors</a></li>
@@ -168,8 +170,6 @@
                 <li><a href="../modules/Canteen_Utilities.html">Canteen\Utilities</a></li>
             
                 <li><a href="../modules/global.html">global</a></li>
-            
-                <li><a href="../modules/Termite_Authorization.html">Termite\Authorization</a></li>
             
             </ul>
         </div>
@@ -210,7 +210,7 @@
 
     
         <div class="extends">
-            Extends TermiteBase
+            Extends <a href="../classes/CanteenBase.html" class="crosslink">CanteenBase</a>
         </div>
     
 
@@ -218,7 +218,7 @@
 
     
         
-            Namespace: <a href="../modules/Termite\Authorization.html">Termite\Authorization</a>
+            Namespace: <a href="../modules/Canteen\Authorization.html">Canteen\Authorization</a>
         
     
 
@@ -229,7 +229,7 @@
 
 <div class="box intro">
     <p>Responsible for handing the authorization of a user
-either through login, cookie or session. Located in the namespace <strong>Termite\Authorization</strong>.</p>
+either through login, cookie or session. Located in the namespace <strong>Canteen\Authorization</strong>.</p>
 
 </div>
 
@@ -259,6 +259,13 @@ either through login, cookie or session. Located in the namespace <strong>Termit
 
                     <ul class="index-list methods extends">
                         
+                            <li class="index-item method protected inherited">
+                                <a href="#method_cache">cache</a>
+
+                                
+                                
+                            </li>
+                        
                             <li class="index-item method private">
                                 <a href="#method_checkRemembered">checkRemembered</a>
 
@@ -275,6 +282,13 @@ either through login, cookie or session. Located in the namespace <strong>Termit
                         
                             <li class="index-item method private">
                                 <a href="#method_clear">clear</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method protected inherited">
+                                <a href="#method_data">data</a>
 
                                 
                                 
@@ -301,8 +315,22 @@ either through login, cookie or session. Located in the namespace <strong>Termit
                                 
                             </li>
                         
+                            <li class="index-item method protected inherited">
+                                <a href="#method_service">service</a>
+
+                                
+                                
+                            </li>
+                        
                             <li class="index-item method private">
                                 <a href="#method_setSession">setSession</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method protected inherited">
+                                <a href="#method_site">site</a>
 
                                 
                                 
@@ -317,6 +345,13 @@ either through login, cookie or session. Located in the namespace <strong>Termit
                         
                             <li class="index-item method">
                                 <a href="#method_updatePassword">updatePassword</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method protected inherited">
+                                <a href="#method_user">user</a>
 
                                 
                                 
@@ -459,6 +494,76 @@ either through login, cookie or session. Located in the namespace <strong>Termit
         
             <div id="methods" class="api-class-tabpanel">
                 <h2 class="off-left">Methods</h2>
+
+                
+                    <div id="method_cache" class="method item protected inherited">
+    <h3 class="name"><code>cache</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="../classes/ServerCache.html" class="crosslink">ServerCache</a></span>
+        </span>
+    
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/CanteenBase.html#method_cache">CanteenBase</a>:
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Get the instance of the site cache</p>
+
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="../classes/ServerCache.html" class="crosslink">ServerCache</a></span>:
+                    
+                    <p>The ServerCache instance</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
 
                 
                     <div id="method_checkRemembered" class="method item private">
@@ -650,6 +755,111 @@ if no user exists, kill session and logout.</p>
 
     
 
+    
+
+    
+</div>
+
+                
+                    <div id="method_data" class="method item protected inherited">
+    <h3 class="name"><code>data</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code class="optional">[data=null]</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a> | Dictionary</span>
+        </span>
+    
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/CanteenBase.html#method_data">CanteenBase</a>:
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Get the config</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[data=null]</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The name of the config property</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a> | Dictionary</span>:
+                    
+                    <p>Either value of the data or all items if param name is null</p>
+
+                
+            </div>
+        </div>
     
 
     
@@ -951,6 +1161,110 @@ cookie is also cleared</p>
 </div>
 
                 
+                    <div id="method_service" class="method item protected inherited">
+    <h3 class="name"><code>service</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>aliasOrClassName</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="../classes/Service.html" class="crosslink">Service</a></span>
+        </span>
+    
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/CanteenBase.html#method_service">CanteenBase</a>:
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Get a service by alias or classname</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">aliasOrClassName</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The alias or classname</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="../classes/Service.html" class="crosslink">Service</a></span>:
+                    
+                    <p>The service matching the alias</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
                     <div id="method_setSession" class="method item private">
     <h3 class="name"><code>setSession</code></h3>
 
@@ -1077,6 +1391,76 @@ cookie is also cleared</p>
         </div>
     
 
+    
+
+    
+</div>
+
+                
+                    <div id="method_site" class="method item protected inherited">
+    <h3 class="name"><code>site</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Canteen</span>
+        </span>
+    
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/CanteenBase.html#method_site">CanteenBase</a>:
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Convenience getter for the site</p>
+
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Canteen</span>:
+                    
+                    <p>Singleton instance of Canteen</p>
+
+                
+            </div>
+        </div>
     
 
     
@@ -1262,6 +1646,76 @@ make sure you update the cookie</p>
                         <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>:
                     
                     <p>If password was set successfully</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_user" class="method item protected inherited">
+    <h3 class="name"><code>user</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="../classes/Authorization.html" class="crosslink">Authorization</a></span>
+        </span>
+    
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/CanteenBase.html#method_user">CanteenBase</a>:
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Get the Authorization class to handle things like login, password change</p>
+
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="../classes/Authorization.html" class="crosslink">Authorization</a></span>:
+                    
+                    <p>Authorization instance</p>
 
                 
             </div>

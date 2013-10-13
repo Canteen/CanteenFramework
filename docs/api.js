@@ -56,6 +56,7 @@ YUI.add("yuidoc-meta", function(Y) {
     ],
     "modules": [
         "Canteen",
+        "Canteen_Authorization",
         "Canteen_Controllers",
         "Canteen_Errors",
         "Canteen_Forms",
@@ -65,13 +66,16 @@ YUI.add("yuidoc-meta", function(Y) {
         "Canteen_Services",
         "Canteen_Services_Objects",
         "Canteen_Utilities",
-        "Termite_Authorization",
         "global"
     ],
     "allModules": [
         {
             "displayName": "Canteen",
             "name": "Canteen"
+        },
+        {
+            "displayName": "Canteen\\Authorization",
+            "name": "Canteen_Authorization"
         },
         {
             "displayName": "Canteen\\Controllers",
@@ -112,10 +116,6 @@ YUI.add("yuidoc-meta", function(Y) {
         {
             "displayName": "global",
             "name": "global"
-        },
-        {
-            "displayName": "Termite\\Authorization",
-            "name": "Termite_Authorization"
         }
     ]
 } };

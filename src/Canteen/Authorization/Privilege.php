@@ -1,13 +1,13 @@
 <?php
 
 /**
-*  @module Termite\Authorization
+*  @module Canteen\Authorization
 */
-namespace Termite\Authorization
+namespace Canteen\Authorization
 {
 	/**
 	*  Reference for the different user privileges. 
-	*  Located in the namespace __Termite\Authorization__.
+	*  Located in the namespace __Canteen\Authorization__.
 	*  
 	*  @class Privilege
 	*/

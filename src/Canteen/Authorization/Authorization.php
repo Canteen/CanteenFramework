@@ -1,22 +1,22 @@
 <?php
 
 /**
-*  @module Termite\Authorization
+*  @module Canteen\Authorization
 */
-namespace Termite\Authorization
+namespace Canteen\Authorization
 {
-	use Termite\Utilities\PasswordUtils;
-	use Termite\Utilities\TermiteBase;
-	use Termite\Services\Objects\User;
+	use Canteen\Utilities\PasswordUtils;
+	use Canteen\Utilities\CanteenBase;
+	use Canteen\Services\Objects\User;
 	
 	/**
 	*  Responsible for handing the authorization of a user
-	*  either through login, cookie or session. Located in the namespace __Termite\Authorization__.
+	*  either through login, cookie or session. Located in the namespace __Canteen\Authorization__.
 	*  
 	*  @class Authorization
-	*  @extends TermiteBase
+	*  @extends CanteenBase
 	*/
-	class Authorization extends TermiteBase
+	class Authorization extends CanteenBase
 	{		
 		/** 
 		*  How long, in seconds, to save the login cookie 
