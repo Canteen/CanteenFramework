@@ -1,0 +1,88 @@
+{{if:!hasPage}}
+<div class="formContainer pageUpdateSelect">
+	<form action="{{fullPath}}{{queryString}}" method="post" id="pageUpdateSelect" autocomplete="off">
+		<fieldset>
+			<div class="clearfix formRow">
+				<label for="pageId">Edit Page</label>
+				<select name="pageId" id="pageId" require>
+					<option value="0">Select a page</option>
+					{{pages}}
+				</select>
+			</div>
+			<div class="formButtons">
+				<input type="submit" value="Edit" id="editButton">
+			</div>
+		</fieldset>
+	</form>
+</div>
+{{fi:!hasPage}}
+
+<div class="formContainer pageUpdate">
+	<form action="{{fullPath}}{{queryString}}" method="post" id="pageUpdate" autocomplete="off">
+		<fieldset>
+			<legend>{{formLabel}}</legend>
+			{{formFeedback}}
+			<div class="clearfix formRow">
+				<label for="uri">URI</label>
+				<input name="uri" type="text" id="uri" class="required {{readOnly}}" {{readOnly}} tabindex="1" value="{{uri}}">
+			</div>
+			<div class="clearfix formRow">
+				<label for="title">Title</label>
+				<input name="title" type="text" id="title" class="required" tabindex="2" value="{{title}}">
+			</div>		
+			<div class="clearfix formRow">
+				<label for="keywords">Keywords</label>
+				<textarea name="keywords" id="keywords" tabindex="3">{{keywords}}</textarea>
+			</div>
+			<div class="clearfix formRow">
+				<label for="description">Description</label>
+				<textarea name="description" id="description" tabindex="4">{{description}}</textarea>
+			</div>
+			<div class="clearfix formRow">
+				<label for="privilege">Privilege</label>
+				<select id="privilege" name="privilege" class="required" tabindex="5">
+					{{privileges}}
+				</select>
+			</div>
+			<div class="clearfix formRow">
+				<label for="isDynamic">Is Dynamic</label>
+				<input name="isDynamic" type="checkbox" id="isDynamic" {{isDynamic}} tabindex="6">
+				Page can have additional URI components
+			</div>
+			<div class="clearfix formRow">
+				<label for="cache">Cache</label>
+				<input name="cache" type="checkbox" id="cache" {{cache}} tabindex="7">
+				If available, cache the page
+			</div>
+			{{if:!readOnly}}
+			<div class="clearfix formRow">
+				<label for="parentId">Parent (optional)</label>
+				<select name="parentId" id="parentId" tabindex="9">
+					<option value="0">Select parent page</option>
+					{{parentId}}
+				</select>
+			</div>
+			<div class="clearfix formRow">
+				<label for="redirectId">Redirect (optional)</label>
+				<select name="redirectId" id="redirectId" tabindex="8">
+					<option value="0">Select redirect page</option>
+					{{redirectId}}
+				</select>
+			</div>
+			{{fi:!readOnly}}
+			<div class="formButtons">
+				<input type="button" value="{{buttonLabel}}" name="updateButton" id="updateButton" tabindex="10">
+				{{if:hasPage}}
+					<a class="button" data-refresh="soft">Cancel</a>
+				{{fi:hasPage}}
+				{{if:!readOnly}}
+					<input type="button" value="Delete" class="confirm" name="deleteButton" id="deleteButton" tabindex="11">
+				{{fi:!readOnly}}
+				<input type="hidden" name="refresh" value="true">
+				<input type="hidden" name="pageId" value="{{id}}">
+				<input type="hidden" name="form" value="Canteen\Forms\PageUpdate">
+				<input type="hidden" name="formSession" value="{{formSession}}">
+			</div>
+		</fieldset>
+	</form>
+</div>

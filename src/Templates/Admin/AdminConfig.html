@@ -1,0 +1,39 @@
+<div class="formContainer configUpdate">
+	{{for:configs}}
+	<form action="{{fullPath}}{{queryString}}" method="post" autocomplete="off">
+		<fieldset class="clearfix formRow">
+			{{formFeedback}}
+			<label for="configValue{{id}}">{{name}}</label>
+			<input id="configValue{{id}}" name="configValue" type="text" value="{{value}}" class="required">
+			<input type="submit" value="Save" name="saveButton">
+			<input type="button" value="Delete" name="deleteButton" class="confirm {{disabled}}" {{disabled}}>
+			<input type="hidden" name="form" value="Canteen\Forms\ConfigUpdate">
+			<input type="hidden" name="configId" value="{{id}}">
+			<input type="hidden" name="formSession" value="{{formSession}}">
+		</fieldset>
+	</form>
+	{{endfor:configs}}
+</div>
+
+<div class="formContainer configUpdateAdd">
+	<form action="{{fullPath}}{{queryString}}" method="post" autocomplete="off">
+		<fieldset>
+			<legend>Add A New Config Property</legend>
+			{{formFeedback}}
+			<div class="clearfix formRow">
+				<label for="configName">Name</label>
+				<input id="configName" name="configName" type="text" class="required" tabindex="1">
+			</div>
+			<div class="clearfix formRow">
+				<label for="configValue">Value</label>
+				<input id="configValue" name="configValue" type="text" class="required" tabindex="2">
+			</div>
+			<div class="formButtons">
+				<input type="submit" value="Add" name="addButton" tabindex="3">
+				<input type="hidden" name="form" value="Canteen\Forms\ConfigUpdate">
+				<input type="hidden" name="refresh" value="true">
+				<input type="hidden" name="formSession" value="{{formSession}}">
+			</div>
+		</fieldset>
+	</form>
+</div>

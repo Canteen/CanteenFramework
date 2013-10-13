@@ -1,0 +1,35 @@
+{
+    "name": "canteen/framework",
+	"description" : "Small PHP framework for building JSON-driven, stateless websites.",
+	"version" : "1.0.0",
+    "type": "library",
+	"keywords": ["framework", "html5", "json", "cms"],
+    "license": "MIT",
+	"homepage" : "http://github.com/Canteen/CanteenFramework",
+	"time": "2013-10-12",
+	"authors": [
+        {
+            "name": "Matt Karl",
+            "email": "matt@mattkarl.com",
+            "homepage": "http://github.com/bigtimebuddy",
+            "role": "Developer"
+        }
+	],
+    "autoload": {
+        "psr-0": {
+			"Canteen\\" : "src/"
+		}
+    },
+	"require": {
+		"canteen/logger": "*",
+		"canteen/database": "*",
+		"canteen/html5": "*"
+	},
+	"minimum-stability": "stable",
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/Canteen/CanteenFramework"
+		}
+	]
+}

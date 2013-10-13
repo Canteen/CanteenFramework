@@ -1,0 +1,72 @@
+{{if:!hasUser}}
+<div class="formContainer userUpdateSelect">
+	<form action="{{fullPath}}{{queryString}}" method="post" id="userUpdateSelect" autocomplete="off">
+		<fieldset>
+			<div class="clearfix formRow">
+				<label for="userId">Edit User</label>
+				<select name="userId" id="userId" require>
+					<option value="0">Select a user</option>
+					{{users}}
+				</select>
+			</div>
+			<div class="formButtons">
+				<input type="submit" value="Edit" id="editButton">
+			</div>
+		</fieldset>
+	</form>
+</div>
+{{fi:!hasUser}}
+
+<div class="formContainer userUpdate">
+	<form action="{{fullPath}}{{queryString}}" method="post" id="userUpdate" autocomplete="off">
+		<fieldset>
+			<legend>{{formLabel}}</legend>
+			{{formFeedback}}
+			<div class="clearfix formRow">
+				<label for="firstName">First Name</label>
+				<input name="firstName" type="text" id="firstName" class="required" tabindex="1" value="{{firstName}}">
+			</div>
+			<div class="clearfix formRow">
+				<label for="lastName">Last Name</label>
+				<input name="lastName" type="text" id="lastName" class="required" tabindex="2" value="{{lastName}}">
+			</div>
+			<div class="clearfix formRow">
+				<label for="username">Username</label>
+				<input name="username" type="text" id="username" class="required" tabindex="3" value="{{username}}">
+			</div>
+			<div class="clearfix formRow">
+				<label for="email">Email</label>
+				<input name="email" type="text" id="email" class="required" tabindex="4" value="{{email}}">
+			</div>
+			<div class="clearfix formRow">
+				<label for="password">Password</label>
+				<input name="password" type="password" id="password" tabindex="5">
+			</div>
+			<div class="clearfix formRow">
+				<label for="repeatPassword">Repeat Password</label>
+				<input name="repeatPassword" type="password" id="repeatPassword" tabindex="6">
+			</div>
+			<div class="clearfix formRow">
+				<label for="isActive">Active</label>
+				<input name="isActive" type="checkbox" id="isActive" {{isActive}} tabindex="7">
+			</div>
+			<div class="clearfix formRow">
+				<label for="privilege">Privilege</label>
+				<select id="privilege" name="privilege" class="required" tabindex="8">
+					{{privileges}}
+				</select>
+			</div>
+			<div class="formButtons">
+				<input type="submit" value="{{buttonLabel}}" name="updateButton" id="updateButton" tabindex="9">
+				{{if:hasUser}}
+					<a class="button" data-refresh="soft">Cancel</a>
+					<input type="button" value="Delete" class="confirm" name="deleteButton" id="deleteButton" tabindex="10">
+				{{fi:hasUser}}
+				<input type="hidden" name="refresh" value="true">
+				<input type="hidden" name="userId" value="{{id}}">
+				<input type="hidden" name="form" value="Canteen\Forms\UserUpdate">
+				<input type="hidden" name="formSession" value="{{formSession}}">
+			</div>
+		</fieldset>
+	</form>
+</div>

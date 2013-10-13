@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Canteen Installer</title>
+		<link rel="stylesheet" src="http://normalize-css.googlecode.com/svn/trunk/normalize.css" />
+		{{template:CanteenStyles}}
+		<style type="text/css">
+			legend{
+				font-weight:bold;
+				margin-bottom:15px;
+				font-size:120%;
+			}
+			fieldset {
+				border:0;
+				padding:0;
+				margin:0;
+			}
+			form {
+				margin:0 auto;
+				padding:0;
+				width:60%;
+				min-width:300px;
+			}
+			.row {
+				height:2.5em;
+			}
+			.row label {
+				float:left;
+				width:40%;
+				padding-top: 5px;
+				color: #999;
+			}
+			.row .text {
+				float:left;
+				width:60%;
+				-webkit-box-sizing: border-box;
+				-moz-box-sizing: border-box;
+				box-sizing: border-box;
+				-webkit-appearance: none;
+				-moz-appearance:none;
+				appearance:none;
+				outline:none;
+				border:1px solid #ccc;
+				padding:8px;
+				font-size:16px;
+				border-radius:4px;
+			}
+			
+			.buttons {
+				text-align:center;
+				padding:20px 0;
+			}
+			.buttons input {
+				font-size:110%;
+				padding:8px 50px;
+				cursor:pointer;
+				background-color:#888;
+				color:#fff !important;
+				border:1px solid #555;
+				border-bottom-width:2px;
+				text-decoration:none;
+				margin:0 2px;
+				border-radius:25px;
+			}
+			.buttons input:hover {
+				border-color:#751700;
+				background: #a02500;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="frame">
+			<h1>First-Time Installation</h1>
+			<form method="post" autocomplete="off">
+				<fieldset>
+					<h2>Create Administrator</h2>
+					<p>You need to create an administrator account which
+						can get you started managing the pages and configuration
+						of your site.</p>
+					{{formFeedback}}
+					<div class="row">
+						<label for="firstName">First Name</label>
+						<input type="text" id="firstName" name="firstName" class="text">
+					</div>
+					<div class="row">
+						<label for="lastName">Last Name</label>
+						<input type="text" id="lastName" name="lastName" class="text">
+					</div>
+					<div class="row">
+						<label for="email">Email</label>
+						<input type="text" id="email" name="email" class="text">
+					</div>
+					<div class="row">
+						<label for="username">Username</label>
+						<input type="text" id="username" name="username" class="text">
+					</div>
+					<div class="row">
+						<label for="password">Password</label>
+						<input type="password" id="password" name="password" class="text">
+					</div>
+					<div class="row">
+						<label for="repeatpass">Repeat Pass</label>
+						<input type="password" id="repeatpass" name="repeatpass" class="text">
+					</div>
+					
+					<h2>Additional Setup</h2>
+					<p>Setup some initial site configuration.</p>
+					
+					<div class="row">
+						<label for="siteTitle">Site Title</label>
+						<input type="text" id="siteTitle" name="siteTitle" class="text">
+					</div>
+					<div class="row">
+						<label for="contentPath">Content Path</label>
+						<input type="text" id="contentPath" name="contentPath" class="text" value="assets/html/content/">
+					</div>
+					<div class="row">
+						<label for="templatePath">Template Path</label>
+						<input type="text" id="templatePath" name="templatePath" class="text" value="assets/html/index.html">
+					</div>
+					
+					<div class="buttons">
+						<input type="hidden" name="form" value="Canteen\Forms\Installer">
+						<input type="submit" name="install" value="Install">						
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</body>
+</html>

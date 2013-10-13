@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Canteen Updates</title>
+		<link rel="stylesheet" src="http://normalize-css.googlecode.com/svn/trunk/normalize.css" />
+		{{template:CanteenStyles}}
+		<style type="text/css">
+			legend{
+				font-weight:bold;
+				margin-bottom:15px;
+				font-size:120%;
+			}
+			fieldset {
+				border:0;
+				padding:0;
+				margin:0;
+			}
+			form {
+				margin:0 auto;
+				padding:0;
+				width:50%;
+				min-width:300px;
+			}
+			.buttons {
+				text-align:center;
+				padding:20px 0;
+			}
+			.buttons input {
+				font-size:110%;
+				padding:8px 50px;
+				cursor:pointer;
+				background-color:#888;
+				color:#fff !important;
+				border:1px solid #555;
+				border-bottom-width:2px;
+				text-decoration:none;
+				margin:0 2px;
+				border-radius:25px;
+			}
+
+			.buttons input:hover {
+				border-color:#751700;
+				background: #a02500;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="frame">
+			<h1>Canteen Updates</h1>
+			<form method="post">
+				<fieldset>
+					<legend>Database Update Required</legend>
+					{{formFeedback}}
+					<p>We have to update your database to the newest version. The update
+						may take a little while, so please be patient.</p>
+					<div class="buttons">
+						<input type="hidden" name="form" value="Canteen\Forms\DatabaseUpdate">
+						<input type="submit" name="update" value="Update">
+						<input type="hidden" name="targetVersion" value="{{targetVersion}}">
+						<input type="hidden" name="version" value="{{version}}">
+						<input type="hidden" name="updatesFolder" value="{{updatesFolder}}">
+						<input type="hidden" name="variableName" value="{{variableName}}">						
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</body>
+</html>
