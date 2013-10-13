@@ -16,14 +16,13 @@
         }
 	],
     "autoload": {
-        "psr-0": {
-			"Canteen\\" : "src/"
-		}
+        "psr-0": {"Canteen": "src/"}
     },
 	"require": {
-		"canteen/logger": "*",
-		"canteen/database": "*",
-		"canteen/html5": "*"
+		"php": ">=5.3.0",
+		"canteen/logger": "dev-master",
+		"canteen/database": "dev-master",
+		"canteen/html5": "dev-master"
 	},
 	"minimum-stability": "stable",
 	"repositories": [
