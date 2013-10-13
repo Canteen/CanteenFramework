@@ -1,10 +1,4 @@
 {
-	"includes" : [
-		"Utilities/Functions/ifsetor.php",
-		"Utilities/Functions/ifconstor.php",
-		"Utilities/Functions/redirect.php",
-		"Utilities/Functions/fnmatch.php"
-	],
 	"templates" : [
 		"Templates/Settings.html",
 		"Templates/Admin/Admin.html",

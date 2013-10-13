@@ -265,6 +265,10 @@ namespace Canteen
 				throw new CanteenError(CanteenError::INSUFFICIENT_PHP, 'Minimum PHP version: '.self::MIN_PHP_VERSION);
 			}
 			
+			// Check the domain for the current deployment level 
+			$status = new DeploymentStatus($settings);
+			$this->_data = $status->data;
+			
 			// Debug mode most be on in order to profile
 			$profiler = false;
 			if (DEBUG)
@@ -277,10 +281,6 @@ namespace Canteen
 			{
 				define('PROFILER', $profiler);
 			}
-			
-			// Check the domain for the current deployment level 
-			$status = new DeploymentStatus($settings);
-			$this->_data = $status->data;
 			
 			if (PROFILER) 
 			{				

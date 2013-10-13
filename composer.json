@@ -16,7 +16,13 @@
         }
 	],
     "autoload": {
-        "psr-0": {"Canteen": "src/"}
+        "psr-0": {"Canteen": "src/"},
+		"files": [
+			"src/fnmatch.php",
+			"src/ifconstor.php",
+			"src/ifsetor.php",
+			"src/redirect.php"
+		]
     },
 	"require": {
 		"php": ">=5.3.0",
@@ -24,6 +30,7 @@
 		"canteen/database": "dev-master",
 		"canteen/html5": "dev-master"
 	},
+	
 	"minimum-stability": "stable",
 	"repositories": [
 		{
