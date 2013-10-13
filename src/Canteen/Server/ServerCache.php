@@ -5,7 +5,7 @@
 */
 namespace Canteen\Server
 {
-	use Database\IDatabaseCache;
+	use Canteen\Database\IDatabaseCache;
 	use Canteen\Utilities\StringUtils;
 	use \Memcache;
 		
