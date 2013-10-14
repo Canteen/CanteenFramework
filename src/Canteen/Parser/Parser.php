@@ -5,9 +5,9 @@
 */
 namespace Canteen\Parser
 {
+	use Canteen\Site;
 	use Canteen\Profiler\Profiler;
 	use Canteen\Errors\CanteenError;
-	use Canteen\Utilities\Autoloader;
 	use Canteen\Utilities\StringUtils;
 	
 	/**
@@ -85,10 +85,8 @@ namespace Canteen\Parser
 		*/
 		public static function getTemplate($name, $substitutions=array())
 		{
-			return self::parseFile(
-				Autoloader::instance()->template($name),
-				$substitutions
-			);
+			$contents = Site::instance()->getLoader()->getContents($name);
+			return self::parse($contents, $substitutions);
 		}
 		
 		/**

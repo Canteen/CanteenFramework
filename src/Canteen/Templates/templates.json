@@ -1,0 +1,22 @@
+[
+	"Settings.html",
+	"Admin/Admin.html",
+	"Admin/AdminPassword.html",
+	"Admin/AdminUsers.html",
+	"Admin/AdminPages.html",
+	"Admin/AdminConfig.html",
+	"Forms/Login.html",
+	"Forms/Installer.html",
+	"Forms/ForgotPassword.html",
+	"Layouts/ServiceBrowser.html",
+	"Layouts/FatalError.html",
+	"Layouts/PasswordRecovery.html",
+	"Layouts/UpgradeDatabase.html",
+	"Layouts/CanteenStyles.html",
+	"Profiler/Profiler.html",
+	"Profiler/ProfilerNode.html",
+	"Profiler/ProfilerSQLHeader.html",
+	"Profiler/ProfilerSQLNode.html",
+	"Profiler/ProfilerScript.html",
+	"Profiler/ProfilerStyles.html"
+]

@@ -6,7 +6,6 @@
 namespace Canteen\Server
 {
 	use Canteen\Utilities\ArrayUtils;
-	use Canteen\Utilities\JSONUtils;
 	use Canteen\Utilities\StringUtils;
 	use Canteen\Errors\CanteenError;
 	
@@ -124,7 +123,7 @@ namespace Canteen\Server
 		*  
 		*  @class DeploymentStatus
 		*  @constructor
-		*  @param {String|Array} settingsPath The path to the settings JSON file or an Array
+		*  @param {String|Array} settingsPath The path to the settings PHP file or an Array
 		*  @param {String} [domain=null] The domain to specific where we're coming from (optional)
 		*         checks the server constants if domain is not supplied
 		*/
@@ -132,9 +131,9 @@ namespace Canteen\Server
 		{
 			error_reporting(E_ALL);
 			
-			// Settings is either an external JSON file or an array 
-			$settings = (is_string($settingsPath) && fnmatch('*.json', $settingsPath)) ? 
-				JSONUtils::load($settingsPath):
+			// Settings is either an external PHP file or an array 
+			$settings = (is_string($settingsPath) && fnmatch('*.php', $settingsPath)) ? 
+				require $settingsPath:
 				$settingsPath;
 			
 			// Check for null settings here

@@ -181,6 +181,14 @@ namespace Canteen\Errors
 		*/
 		const TAKEN_SERVICE_ALIAS = 120;
 		
+		/** 
+		*  The template alias is wrong
+		*  @property {int} TEMPLATE_UNKNOWN
+		*  @static
+		*  @final
+		*/
+		const TEMPLATE_UNKNOWN = 121;
+		
 		/**
 		*  The collection of messages
 		*  @property {Array} messages
@@ -201,6 +209,7 @@ namespace Canteen\Errors
 			self::SETTINGS_REQUIRED => 'Setup file must contain an array of dictionary objects.',
 			self::WRONG_DOMAIN => 'Form submitted from the wrong domain',
 			self::TEMPLATE_NOT_FOUND => 'Cannot load template file',
+			self::TEMPLATE_UNKNOWN => 'Template not registered',
 			self::INSUFFICIENT_VERSION => 'The current version of Canteen Site is insufficient to run site',
 			self::INSUFFICIENT_PHP => 'The current version of PHP is insufficient to run site',
 			self::INVALID_INDEX => 'The index page for the site does not exist',
@@ -251,7 +260,7 @@ namespace Canteen\Errors
 		{
 			return array(
 				'message' => $e->getMessage(),
-				'file' => str_replace(TERMITE_PATH, '', $e->getFile())." (line:{$e->getLine()})",
+				'file' => str_replace(CANTEEN_PATH, '', $e->getFile())." (line:{$e->getLine()})",
 				'code' => $e->getCode(),
 				'stackTrace' => self::getFormattedTrace($e)
 			);
@@ -273,7 +282,7 @@ namespace Canteen\Errors
 			{
 				$t = trim($t);
 				if (!$t) continue;
-				$stack[] = str_replace(TERMITE_PATH, '', $t);
+				$stack[] = str_replace(CANTEEN_PATH, '', $t);
 			}
 			return $stack;
 		}

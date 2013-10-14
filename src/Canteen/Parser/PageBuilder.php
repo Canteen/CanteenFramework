@@ -391,11 +391,8 @@ namespace Canteen\Parser
 				
 				if (PROFILER) Profiler::start('Template Render');
 				
-				// Get the template from the path
-				$data = Parser::parseFile(
-					CALLER_PATH . $this->_data['templatePath'], 
-					$this->_data
-				);
+				// Get the main template from the path
+				$data = Parser::getTemplate(MAIN_TEMPLATE, $this->_data);
 				
 				// Clean up
 				Parser::removeEmpties($data);

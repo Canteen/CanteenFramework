@@ -8,7 +8,7 @@ namespace Canteen
 	use Canteen\Authorization\Authorization;
 	use Canteen\Errors\CanteenError;
 	use Canteen\Logger\Logger;
-	use Canteen\Utilities\Autoloader;
+	use Canteen\Parser\TemplateLoader;
 	use Canteen\Server\DeploymentStatus;
 	use Canteen\Profiler\Profiler;
 	use Canteen\Server\ServerCache;
@@ -22,17 +22,10 @@ namespace Canteen
 	use Canteen\Parser\Parser;
 	use Canteen\Utilities\CanteenBase;
 	use Canteen\Utilities\StringUtils;
+	use Canteen\Utilities\Templates;
 	use Canteen\Database\Database;
 	use Canteen\HTML5\SimpleList;
 	use \Exception;
-	
-	/** Get the path of the location of Canteen */
-	define('TERMITE_PATH', __DIR__.'/');
-	
-	/** Initialize the autoloading of classes */
-	require_once TERMITE_PATH.'Utilities/Autoloader.php';
-	Autoloader::init('Canteen', TERMITE_PATH);
-	Autoloader::instance()->manifest(TERMITE_PATH.'autoload.json');
 	
 	class Site extends CanteenBase
 	{	
@@ -122,6 +115,13 @@ namespace Canteen
 		*/
 		private static $_fatalError = null;
 		
+		/**
+		*  The template loader
+		*  @private {TemplateLoader} _loader 
+		*  @private
+		*/
+		private $_loader;
+		
 		/** 
 		*  The singleton instance 
 		*  @property {Canteen} _instance
@@ -153,9 +153,6 @@ namespace Canteen
 		*  This is the main class of the framework that needs to be implemented in order to use. Canteen
 		*  is a backend which provides a JSON server, Database connect, template engine, User authentication
 		*  and many other features for building very dynamic data-driven websites. 
-		*  
-		*	// Require the termite base to get started
-		*	require_once 'lib/vendor/Canteen/Site.php';
 		*	
 		*	// These are the minimum settings
 		*  	// you need to setup Canteen, just the database stuff
@@ -200,8 +197,8 @@ namespace Canteen
 		* 	));
 		*  
 		*	// OR, externally load the deployment settings 
-		*	// from a JSON file
-		*	$site = new Canteen\Site('settings.json');
+		*	// from a PHP file
+		*	$site = new Canteen\Site('settings.php');
 		*		
 		*	// Echo out the page result
 		*	$site->render();
@@ -209,7 +206,7 @@ namespace Canteen
 		*  @class Site 
 		*  @extends CanteenBase
 		*  @constructor
-		*  @param {String|Array|Dictionary} settings The path to the settings JSON, the collection of
+		*  @param {String|Array|Dictionary} [settings='config.php'] The path to the settings PHP, the collection of
 		*            deployment settings, or the single deployment dictionary.
 		*  @param {String} settings.dbUsername The username for the database
 		*  @param {String} settings.dbPassword The password for the database
@@ -225,11 +222,15 @@ namespace Canteen
 		*  @param {String} [manifestPath=null] The manifest path for autoloading
 		*  @param {String} [cacheDirectory=null] The directory for storing file cache if Memcache isn't available
 		*/
-		public function __construct($settings='', $manifestPath=null, $cacheDirectory=null)
+		public function __construct($settings='config.php', $manifestPath=null, $cacheDirectory=null)
 		{		
 			$bt = debug_backtrace();
 			define('CALLER_PATH', dirname($bt[0]['file']).'/');
 			unset($bt);
+			
+			// Define the system path 
+			define('CANTEEN_PATH', __DIR__.'/');
+			define('MAIN_TEMPLATE', 'MainTemplate');
 			
 			self::$_instance = $this;
 			
@@ -282,17 +283,23 @@ namespace Canteen
 				define('PROFILER', $profiler);
 			}
 			
-			if (PROFILER) 
+			if ($profiler) 
 			{				
 				Profiler::enable();
 				Profiler::start('Canteen Setup');
 			}
 			
-			// Turn on or off the logger
-			Logger::instance()->enabled = DEBUG;
-			
 			// Set the error reporting if we're set to debug
 			error_reporting(DEBUG ? E_ALL : 0);
+			
+			// Turn on or off the logger
+			Logger::instance()->enabled = DEBUG;			
+			
+			// Setup the templates loader
+			$this->_loader = new TemplateLoader();
+			
+			// Load the canteen templates
+			$this->_loader->addManifest(CANTEEN_PATH . 'Templates/templates.json');			
 			
 			// Setup the cache
 			$this->_cache = new ServerCache($cacheDirectory);
@@ -303,7 +310,7 @@ namespace Canteen
 			// Create the non-database services
 			new TimeService;
 			
-			if (PROFILER) Profiler::start('Database Connect');
+			if ($profiler) Profiler::start('Database Connect');
 			
 			if ($this->checkData('dbHost', 'dbUsername', 'dbPassword', 'dbName'))
 			{
@@ -317,7 +324,7 @@ namespace Canteen
 				$this->_db->setCache($this->_cache);
 				
 				// Setup the database profiler calls
-				if (PROFILER)
+				if ($profiler)
 				{
 					$profiler = 'Canteen\Profiler\Profiler';
 					$this->_db->profilerStart = array($profiler, 'sqlStart');
@@ -361,17 +368,20 @@ namespace Canteen
 				// Check for default index page, site title, content path, template
 				$this->checkData($service->getProtectedNames());
 				
+				// Add the main site template
+				$this->_loader->addTemplate(MAIN_TEMPLATE, CALLER_PATH . $this->_data['templatePath']);
+				
 				// Check for database updates
-				$this->isDatabaseUpdated('dbVersion', self::DB_VERSION, TERMITE_PATH.'Upgrades/');
+				$this->isDatabaseUpdated('dbVersion', self::DB_VERSION, CANTEEN_PATH.'Upgrades/');
 				
 				// Create the services that require the database
 				new PageService;
 				new UserService;
 			}
 			
-			if (PROFILER) Profiler::end('Database Connect');
+			if ($profiler) Profiler::end('Database Connect');
 			
-			if (PROFILER) Profiler::start('Authorization');
+			if ($profiler) Profiler::start('Authorization');
 			
 			// Create a new user
 			$this->_authorization = new Authorization();
@@ -380,14 +390,14 @@ namespace Canteen
 				$this->_data
 			);
 			
-			if (PROFILER) Profiler::end('Authorization');
+			if ($profiler) Profiler::end('Authorization');
 			
 			// Setup an additional manifest file
 			if ($manifestPath !== null) 
 			{
-				if (PROFILER) Profiler::start('Autoloader Register');
-				Autoloader::instance()->manifest($manifestPath);
-				if (PROFILER) Profiler::end('Autoloader Register');	
+				if ($profiler) Profiler::start('Register Template Manifest');
+				$this->_loader->addManifest($manifestPath);
+				if ($profiler) Profiler::end('Register Template Manifest');	
 			}
 			
 			// Set the globals
@@ -412,9 +422,9 @@ namespace Canteen
 				}
 			}
 			
-			if (PROFILER) Profiler::end('Canteen Setup');
+			if ($profiler) Profiler::end('Canteen Setup');
 		}
-				
+			
 		/**
 		*  Store a page user function call for dynamic pages
 		*  @method addController
@@ -672,6 +682,23 @@ namespace Canteen
 		public function getFormFactory()
 		{
 			return $this->_formFactory;
+		}
+		
+		/**
+		*  Get the instance of the template loader
+		*  
+		*	// Add a template to the site
+		*	$site->getLoader()->addTemplate('Footer', 'Templates/Footer.html');
+		*	
+		*	// Or add a JSON manifest with an array of template files
+		* 	$site->getLoader()->addManifest('templates.json');
+		*  
+		*  @method getLoader
+		*  @return {TemplateLoader} The TemplateLoader instance
+		*/
+		public function getLoader()
+		{
+			return $this->_loader;
 		}
 		
 		/**

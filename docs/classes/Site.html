@@ -53,8 +53,6 @@
             
                 <li><a href="../classes/Authorization.html">Authorization</a></li>
             
-                <li><a href="../classes/Autoloader.html">Autoloader</a></li>
-            
                 <li><a href="../classes/CanteenBase.html">CanteenBase</a></li>
             
                 <li><a href="../classes/CanteenError.html">CanteenError</a></li>
@@ -130,6 +128,8 @@
                 <li><a href="../classes/Site.html">Site</a></li>
             
                 <li><a href="../classes/StringUtils.html">StringUtils</a></li>
+            
+                <li><a href="../classes/TemplateLoader.html">TemplateLoader</a></li>
             
                 <li><a href="../classes/TimeService.html">TimeService</a></li>
             
@@ -231,10 +231,7 @@
     <p>This is the main class of the framework that needs to be implemented in order to use. Canteen
 is a backend which provides a JSON server, Database connect, template engine, User authentication
 and many other features for building very dynamic data-driven websites. </p>
-<pre class="code prettyprint"><code>// Require the termite base to get started
-require_once &#39;lib/vendor/Canteen/Site.php&#39;;
-
-// These are the minimum settings
+<pre class="code prettyprint"><code>// These are the minimum settings
 // you need to setup Canteen, just the database stuff
 $site = new Canteen\Site(array(
     &#39;dbUsername&#39; =&gt; &#39;user&#39;,
@@ -277,8 +274,8 @@ $site = new Canteen\Site(array(
  ));
 
 // OR, externally load the deployment settings 
-// from a JSON file
-$site = new Canteen\Site(&#39;settings.json&#39;);
+// from a PHP file
+$site = new Canteen\Site(&#39;settings.php&#39;);
 
 // Echo out the page result
 $site-&gt;render();</code></pre>
@@ -297,7 +294,7 @@ $site-&gt;render();</code></pre>
             
                 <li class="arg">
                     
-                        <code>settings</code>
+                        <code class="optional">[settings=&#x27;config.php&#x27;]</code>
                     
                 </li>
             
@@ -360,14 +357,15 @@ $site-&gt;render();</code></pre>
             
                 <li class="param">
                     
-                        <code class="param-name">settings</code>
+                        <code class="param-name optional">[settings=&#x27;config.php&#x27;]</code>
                         <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a> | <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a> | Dictionary</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>The path to the settings JSON, the collection of
+                        <p>The path to the settings PHP, the collection of
           deployment settings, or the single deployment dictionary.</p>
 
                     </div>
@@ -683,6 +681,13 @@ $site-&gt;render();</code></pre>
                         
                             <li class="index-item method">
                                 <a href="#method_getFormFactory">getFormFactory</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_getLoader">getLoader</a>
 
                                 
                                 
@@ -1866,6 +1871,80 @@ $site-&gt;render();</code></pre>
                         <span class="type"><a href="../classes/FormFactory.html" class="crosslink">FormFactory</a></span>:
                     
                     <p>The FormFactory instance</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_getLoader" class="method item">
+    <h3 class="name"><code>getLoader</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="../classes/TemplateLoader.html" class="crosslink">TemplateLoader</a></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Get the instance of the template loader</p>
+<pre class="code prettyprint"><code>// Add a template to the site
+$site-&gt;getLoader()-&gt;addTemplate(&#39;Footer&#39;, &#39;Templates/Footer.html&#39;);
+
+// Or add a JSON manifest with an array of template files
+ $site-&gt;getLoader()-&gt;addManifest(&#39;templates.json&#39;);</code></pre>
+
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="../classes/TemplateLoader.html" class="crosslink">TemplateLoader</a></span>:
+                    
+                    <p>The TemplateLoader instance</p>
 
                 
             </div>
