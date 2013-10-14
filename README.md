@@ -13,19 +13,32 @@ Install is available using [Composer](http://getcomposer.org).
 ```bash
 composer require canteen/framework dev-master
 ```
+Your site should contain the following files at the root directory:
 
-Including using the Composer autoloader in your index.
++ index.php
++ config.php
++ .htaccess
+
+###Contents of index.php
+
+Include the Composer autoloader in your index and render the new site.
 
 ```php
 require 'vendor/autoload.php';
+$site = new Canteen\Site();
+$site->render();
+```
 
-$site = new Canteen\Site(array(
+###Contents of config.php
+
+Setup your deployment of the site. The minimum required settings are specified below.
+
+```php
+return array(
 	'dbUsername' => 'user',
 	'dbPassword' => 'pass1234',
 	'dbName' => 'my_database',
-));
-
-$site->render();
+);
 ```
 
 ###Contents of .htaccess
@@ -54,4 +67,12 @@ ErrorDocument 404 /404
 
 #Internal
 ErrorDocument 500 /500
+```
+
+###Rebuild Documentation
+
+This library is auto-documented using [YUIDoc](http://yui.github.io/yuidoc/). To install YUIDoc, run `sudo npm install yuidocjs`. To rebuild the docs for this lbirary, run the ant task from the command-line. 
+
+```bash
+ant docs
 ```
