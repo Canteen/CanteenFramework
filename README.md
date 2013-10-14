@@ -1,6 +1,6 @@
 #Canteen Framework
 
-Small PHP framework for building JSON-driven, stateless websites.
+Small PHP framework for building JSON-driven, stateless websites. For documentation of the codebase, please see [Canteen Framework docs](http://canteen.github.io/CanteenFramework/);
 
 ##Usage
 
