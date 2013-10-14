@@ -1,6 +1,6 @@
 #Canteen Framework
 
-Small PHP framework for building JSON-driven, stateless websites. For documentation of the codebase, please see [Canteen Framework docs](http://canteen.github.io/CanteenFramework/);
+Small PHP framework for building JSON-driven, stateless websites. For documentation of the codebase, please see [Canteen Framework docs](http://canteen.github.io/CanteenFramework/).
 
 ##Usage
 
@@ -71,8 +71,14 @@ ErrorDocument 500 /500
 
 ###Rebuild Documentation
 
-This library is auto-documented using [YUIDoc](http://yui.github.io/yuidoc/). To install YUIDoc, run `sudo npm install yuidocjs`. To rebuild the docs for this lbirary, run the ant task from the command-line. 
+This library is auto-documented using [YUIDoc](http://yui.github.io/yuidoc/). To install YUIDoc, run `sudo npm install yuidocjs`. Also, this requires the project [CanteenTheme](http://github.com/Canteen/CanteenTheme) be checked-out along-side this repository. To rebuild the docs, run the ant task from the command-line. 
 
 ```bash
 ant docs
 ```
+
+##License##
+
+Copyright (c) 2013 [Matt Karl](http://github.com/bigtimebuddy)
+
+Released under the MIT License.
