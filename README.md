@@ -1,4 +1,4 @@
-#CanteenFramework
+#Canteen Framework
 
 Small PHP framework for building JSON-driven, stateless websites.
 
@@ -17,7 +17,7 @@ composer require canteen/framework dev-master
 Including using the Composer autoloader in your index.
 
 ```php
-require vendor/autoload.php
+require 'vendor/autoload.php';
 
 $site = new Canteen\Site(array(
 	'dbUsername' => 'user',
