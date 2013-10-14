@@ -6,12 +6,20 @@ Small PHP framework for building JSON-driven, stateless websites.
 
 For an example of usage please see the [Canteen Boilerplate](https://github.com/Canteen/CanteenBoilerplate) project. 
 
-### Contents of index.php
+##Installation
+
+Install is available using [Composer](http://getcomposer.org).
+
+```bash
+composer require canteen/framework dev-master
+```
+
+Including using the Composer autoloader in your index.
 
 ```php
-use Canteen\Site;
+require vendor/autoload.php
 
-$site = new Site(array(
+$site = new Canteen\Site(array(
 	'dbUsername' => 'user',
 	'dbPassword' => 'pass1234',
 	'dbName' => 'my_database',
