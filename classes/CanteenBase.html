@@ -49,8 +49,6 @@
             
                 <li><a href="../classes/AdminUsersController.html">AdminUsersController</a></li>
             
-                <li><a href="../classes/ArrayUtils.html">ArrayUtils</a></li>
-            
                 <li><a href="../classes/Authorization.html">Authorization</a></li>
             
                 <li><a href="../classes/CanteenBase.html">CanteenBase</a></li>
@@ -86,8 +84,6 @@
                 <li><a href="../classes/JSONServer.html">JSONServer</a></li>
             
                 <li><a href="../classes/JSONServerError.html">JSONServerError</a></li>
-            
-                <li><a href="../classes/JSONUtils.html">JSONUtils</a></li>
             
                 <li><a href="../classes/Login.html">Login</a></li>
             
@@ -128,8 +124,6 @@
                 <li><a href="../classes/Site.html">Site</a></li>
             
                 <li><a href="../classes/StringUtils.html">StringUtils</a></li>
-            
-                <li><a href="../classes/TemplateLoader.html">TemplateLoader</a></li>
             
                 <li><a href="../classes/TimeService.html">TimeService</a></li>
             
@@ -238,6 +232,8 @@
             <li class="api-class-tab methods"><a href="#methods">Methods</a></li>
         
         
+            <li class="api-class-tab properties"><a href="#properties">Properties</a></li>
+        
         
         
     </ul>
@@ -253,14 +249,14 @@
                     <ul class="index-list methods">
                         
                             <li class="index-item method protected">
-                                <a href="#method_cache">cache</a>
+                                <a href="#method_parse">parse</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method protected">
-                                <a href="#method_data">data</a>
+                                <a href="#method_parse">parse</a>
 
                                 
                                 
@@ -274,14 +270,59 @@
                             </li>
                         
                             <li class="index-item method protected">
-                                <a href="#method_site">site</a>
+                                <a href="#method_settings">settings</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method protected">
-                                <a href="#method_user">user</a>
+                                <a href="#method_template">template</a>
+
+                                
+                                
+                            </li>
+                        
+                    </ul>
+                </div>
+            
+
+            
+                <div class="index-section properties">
+                    <h3>Properties</h3>
+
+                    <ul class="index-list properties">
+                        
+                            <li class="index-item property">
+                                <a href="#property_cache">cache</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_parser">parser</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_profiler">profiler</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_site">site</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_user">user</a>
 
                                 
                                 
@@ -294,8 +335,6 @@
             
 
             
-
-            
         </div>
 
         
@@ -303,79 +342,8 @@
                 <h2 class="off-left">Methods</h2>
 
                 
-                    <div id="method_cache" class="method item protected">
-    <h3 class="name"><code>cache</code></h3>
-
-    
-        <span class="paren">()</span>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="../classes/ServerCache.html" class="crosslink">ServerCache</a></span>
-        </span>
-    
-
-    
-
-    
-        <span class="flag protected">protected</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Get the instance of the site cache</p>
-
-    </div>
-
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="../classes/ServerCache.html" class="crosslink">ServerCache</a></span>:
-                    
-                    <p>The ServerCache instance</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_data" class="method item protected">
-    <h3 class="name"><code>data</code></h3>
+                    <div id="method_parse" class="method item protected">
+    <h3 class="name"><code>parse</code></h3>
 
     
         <div class="args">
@@ -383,7 +351,13 @@
             
                 <li class="arg">
                     
-                        <code class="optional">[data=null]</code>
+                        <code>content</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>substitutions</code>
                     
                 </li>
             
@@ -393,7 +367,7 @@
 
     
         <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a> | Dictionary</span>
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
         </span>
     
 
@@ -429,7 +403,7 @@
     </div>
 
     <div class="description">
-        <p>Get the config</p>
+        <p>Convenience method for parsing content</p>
 
     </div>
 
@@ -441,15 +415,30 @@
             
                 <li class="param">
                     
-                        <code class="param-name optional">[data=null]</code>
+                        <code class="param-name">content</code>
                         <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>The name of the config property</p>
+                        <p>The string to parse</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">substitutions</code>
+                        <span class="type">Dictionary</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The dictionary of tags to replace</p>
 
                     </div>
 
@@ -467,9 +456,114 @@
             <div class="returns-description">
                 
                     
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a> | Dictionary</span>:
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>:
                     
-                    <p>Either value of the data or all items if param name is null</p>
+                    <p>The parsed string</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_parse" class="method item protected">
+    <h3 class="name"><code>parse</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>content</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+        </span>
+    
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Convenience method for parsing content</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">content</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The string to parse</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>:
+                    
+                    <p>The parsed string</p>
 
                 
             </div>
@@ -585,16 +679,26 @@
 </div>
 
                 
-                    <div id="method_site" class="method item protected">
-    <h3 class="name"><code>site</code></h3>
+                    <div id="method_settings" class="method item protected">
+    <h3 class="name"><code>settings</code></h3>
 
     
-        <span class="paren">()</span>
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code class="optional">[name=null]</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
     
 
     
         <span class="returns-inline">
-            <span class="type">Canteen</span>
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a> | Dictionary</span>
         </span>
     
 
@@ -623,6 +727,345 @@
         
         </p>
 
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Get the site setting or settings</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[name=null]</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The name of the config property</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a> | Dictionary</span>:
+                    
+                    <p>Either value of the data or all items if param name is null</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_template" class="method item protected">
+    <h3 class="name"><code>template</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>name</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[substitutions=array()]</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+        </span>
+    
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Convenience method for parsing content</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">name</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The name of the template to parse</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[substitutions=array()]</code>
+                        <span class="type">Dictionary</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The dictionary of tags to replace</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>:
+                    
+                    <p>The parsed string</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+            </div>
+        
+
+        
+            <div id="properties" class="api-class-tabpanel">
+                <h2 class="off-left">Properties</h2>
+
+                
+                    <div id="property_cache" class="property item">
+    <h3 class="name"><code>cache</code></h3>
+    <span class="type"><a href="../classes/ServerCache.html" class="crosslink">ServerCache</a></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Get the instance of the site cache</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_parser" class="property item">
+    <h3 class="name"><code>parser</code></h3>
+    <span class="type"><a href="../classes/Parser.html" class="crosslink">Parser</a></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The parser is responsible for rendering templates</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_profiler" class="property item">
+    <h3 class="name"><code>profiler</code></h3>
+    <span class="type"><a href="../classes/Profiler.html" class="crosslink">Profiler</a></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The instance of the profiler for debugging performance</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_site" class="property item">
+    <h3 class="name"><code>site</code></h3>
+    <span class="type"><a href="../classes/Site.html" class="crosslink">Site</a></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
 
         
 
@@ -637,43 +1080,14 @@
     
 
     
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type">Canteen</span>:
-                    
-                    <p>Singleton instance of Canteen</p>
-
-                
-            </div>
-        </div>
-    
 
     
 </div>
 
                 
-                    <div id="method_user" class="method item protected">
+                    <div id="property_user" class="property item">
     <h3 class="name"><code>user</code></h3>
-
-    
-        <span class="paren">()</span>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="../classes/Authorization.html" class="crosslink">Authorization</a></span>
-        </span>
-    
-
-    
-
-    
-        <span class="flag protected">protected</span>
-    
+    <span class="type"><a href="../classes/Authorization.html" class="crosslink">Authorization</a></span>
 
     
 
@@ -694,7 +1108,6 @@
         
         </p>
 
-
         
 
         
@@ -708,28 +1121,12 @@
     
 
     
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="../classes/Authorization.html" class="crosslink">Authorization</a></span>:
-                    
-                    <p>Authorization instance</p>
-
-                
-            </div>
-        </div>
-    
 
     
 </div>
 
                 
             </div>
-        
-
         
 
         

@@ -49,8 +49,6 @@
             
                 <li><a href="../classes/AdminUsersController.html">AdminUsersController</a></li>
             
-                <li><a href="../classes/ArrayUtils.html">ArrayUtils</a></li>
-            
                 <li><a href="../classes/Authorization.html">Authorization</a></li>
             
                 <li><a href="../classes/CanteenBase.html">CanteenBase</a></li>
@@ -86,8 +84,6 @@
                 <li><a href="../classes/JSONServer.html">JSONServer</a></li>
             
                 <li><a href="../classes/JSONServerError.html">JSONServerError</a></li>
-            
-                <li><a href="../classes/JSONUtils.html">JSONUtils</a></li>
             
                 <li><a href="../classes/Login.html">Login</a></li>
             
@@ -128,8 +124,6 @@
                 <li><a href="../classes/Site.html">Site</a></li>
             
                 <li><a href="../classes/StringUtils.html">StringUtils</a></li>
-            
-                <li><a href="../classes/TemplateLoader.html">TemplateLoader</a></li>
             
                 <li><a href="../classes/TimeService.html">TimeService</a></li>
             
@@ -367,6 +361,13 @@ settings we should be using. Located in the namespace <strong>Canteen\Server</st
                     <ul class="index-list methods">
                         
                             <li class="index-item method private">
+                                <a href="#method_isAssoc">isAssoc</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method private">
                                 <a href="#method_processURI">processURI</a>
 
                                 
@@ -383,15 +384,15 @@ settings we should be using. Located in the namespace <strong>Canteen\Server</st
 
                     <ul class="index-list properties">
                         
-                            <li class="index-item property public">
-                                <a href="#property_data">data</a>
+                            <li class="index-item property private">
+                                <a href="#property_defaultSettings">defaultSettings</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item property private">
-                                <a href="#property_defaultSettings">defaultSettings</a>
+                                <a href="#property_defaultSettings.cacheDirectory">defaultSettings.cacheDirectory</a>
 
                                 
                                 
@@ -473,6 +474,13 @@ settings we should be using. Located in the namespace <strong>Canteen\Server</st
                                 
                             </li>
                         
+                            <li class="index-item property public">
+                                <a href="#property_properties">properties</a>
+
+                                
+                                
+                            </li>
+                        
                             <li class="index-item property">
                                 <a href="#property_STAGING">STAGING</a>
 
@@ -494,6 +502,111 @@ settings we should be using. Located in the namespace <strong>Canteen\Server</st
         
             <div id="methods" class="api-class-tabpanel">
                 <h2 class="off-left">Methods</h2>
+
+                
+                    <div id="method_isAssoc" class="method item private">
+    <h3 class="name"><code>isAssoc</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>arr</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
+        </span>
+    
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Check to see if an array is associative</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">arr</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The array to check</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>:
+                    
+                    <p>if the array is associative</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
 
                 
                     <div id="method_processURI" class="method item private">
@@ -591,49 +704,6 @@ settings we should be using. Located in the namespace <strong>Canteen\Server</st
                 <h2 class="off-left">Properties</h2>
 
                 
-                    <div id="property_data" class="property item public">
-    <h3 class="name"><code>data</code></h3>
-    <span class="type">Dictionary</span>
-
-    
-
-    
-        <span class="flag public">public</span>
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Save the collection of deployable configuration variables</p>
-
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
                     <div id="property_defaultSettings" class="property item private">
     <h3 class="name"><code>defaultSettings</code></h3>
     <span class="type">Dictionary</span>
@@ -669,6 +739,52 @@ settings we should be using. Located in the namespace <strong>Canteen\Server</st
 
     </div>
 
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_defaultSettings.cacheDirectory" class="property item private">
+    <h3 class="name"><code>defaultSettings.cacheDirectory</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The location of the write-able cache directory if using cache
+and memcache isn&#39;t enabled.</p>
+
+    </div>
+
+    
+        <p><strong>Default:</strong> null</p>
     
 
     
@@ -1118,6 +1234,49 @@ sites change nightly or very frequently.</p>
     <div class="description">
         <p>The deployment level for a local site which us usually only for local
 development and is not typically viewable anyone but the developer.</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_properties" class="property item public">
+    <h3 class="name"><code>properties</code></h3>
+    <span class="type">Dictionary</span>
+
+    
+
+    
+        <span class="flag public">public</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Save the collection of deployable configuration variables</p>
 
     </div>
 
