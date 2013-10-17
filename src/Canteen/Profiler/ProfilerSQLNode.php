@@ -5,7 +5,9 @@
 */
 namespace Canteen\Profiler
 {
-	class Canteen\ProfilerSQLNode
+	use Canteen\Utilities\CanteenBase;
+	
+	class ProfilerSQLNode extends CanteenBase
 	{
 		/**
 		*  The query that this object tracks
@@ -52,6 +54,7 @@ namespace Canteen\Profiler
 		/**
 		*  Class representing each SQL query run
 		*  @class ProfilerSQLNode
+		*  @extends CanteenBase
 		*  @constructor
 		*  @param {String} query the sql query for this node
 		*  @param {Boolean|ProfilerNode} [profileNode=null] reference to the step 
@@ -81,9 +84,8 @@ namespace Canteen\Profiler
 				$this->ended = microtime(true);
 				$this->duration = $this->ended - $this->started;
 				$this->profileNode->addQueryDuration($this->duration);
-				profiler::addQueryDuration($this->duration);
+				$this->profiler->addQueryDuration($this->duration);
 			}
-
 			return $this;
 		}
 

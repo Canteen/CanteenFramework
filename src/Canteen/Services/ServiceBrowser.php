@@ -73,7 +73,7 @@ namespace Canteen\Services
 		*/
 		public function handle()
 		{
-			$this->browserUri = $this->site()->browserUri;
+			$this->browserUri = $this->site->browserUri;
 			$this->aliases = Service::getAliases();
 			$this->uri = StringUtils::processURI(count(explode('/', $this->browserUri)));
 								
@@ -166,10 +166,10 @@ namespace Canteen\Services
 			$dir = __DIR__.'/';
 			
 			$link = html('a','View Gateway');
-			$link->href = BASE_PATH . str_replace($this->browserUri, $this->site()->gatewayUri, URI_REQUEST);
+			$link->href = BASE_PATH . str_replace($this->browserUri, $this->site->gatewayUri, URI_REQUEST);
 			$link->class = 'gateway';
 			
-			return Parser::getTemplate(
+			return $this->template(
 				'ServiceBrowser',
 				array(
 					'output' => $output,
@@ -242,7 +242,8 @@ namespace Canteen\Services
 				if ($method->isConstructor() 
 					|| $method->isStatic() 
 					|| $method->isProtected()
-					|| $method->isPrivate()) continue;
+					|| $method->isPrivate()
+					|| substr($method->name, 0, 2) == '__') continue;
 				
 				$link = html('a', $method->name);
 				$link->href = $this->browserUri.'/'.$serviceAlias.'/'.StringUtils::methodCallToUri($method->name);				

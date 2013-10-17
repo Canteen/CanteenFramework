@@ -48,10 +48,10 @@ namespace Canteen\Server
 		
 		/** 
 		*  Save the collection of deployable configuration variables 
-		*  @property {Dictionary} data
+		*  @property {Dictionary} properties
 		*  @public
 		*/
-		public $data = array();
+		public $settings;
 		
 		/** 
 		*  The default settings
@@ -114,7 +114,17 @@ namespace Canteen\Server
 			*  @private
 			*  @default false
 			*/
-			'minify' => false
+			'minify' => false,
+			
+			
+			/** 
+			*  The location of the write-able cache directory if using cache
+			*  and memcache isn't enabled.
+			*  @property {String} defaultSettings.cacheDirectory
+			*  @private
+			*  @default null
+			*/
+			'cacheDirectory' => null
 		);
 		
 		/**
@@ -144,7 +154,7 @@ namespace Canteen\Server
 			
 			// If the settings is a single deployment
 			// then we'll add it a collection of deployments
-			if (ArrayUtils::isAssoc($settings))
+			if ($this->isAssoc($settings))
 			{
 				$settings = array($settings);
 			}
@@ -162,16 +172,13 @@ namespace Canteen\Server
 			$uriRequest = $this->processURI($basePath);
 			
 			// Setup the data
-			$this->data = array_merge(
-				array(
-					'domain' => $domain,
-					'host' => 'http://'.$domain,
-					'uriRequest' => $uriRequest,
-					'basePath' => $basePath,
-					'baseUrl' => 'http://'.$domain.$basePath,
-					'fullPath' => $basePath . $uriRequest
-				), 
-				$this->data
+			$this->settings = array(
+				'domain' => $domain,
+				'host' => 'http://'.$domain,
+				'uriRequest' => $uriRequest,
+				'basePath' => $basePath,
+				'baseUrl' => 'http://'.$domain.$basePath,
+				'fullPath' => $basePath . $uriRequest
 			);
 			
 			// Loop through each of the settings levels
@@ -195,13 +202,13 @@ namespace Canteen\Server
 					
 					// If we're local
 					$deploy['local'] = DEPLOYMENT_LEVEL == self::LOCAL;
-					$this->data = array_merge($this->data, $deploy);
+					$this->settings = array_merge($this->settings, $deploy);
 					break;
 				}
 			}
 			
 			// Save each data as a constant
-			foreach($this->data as $property=>$value)
+			foreach($this->settings as $property=>$value)
 			{
 				$c = StringUtils::convertPropertyToConst($property);
 				if (!defined($c)) define($c, $value);
@@ -209,6 +216,18 @@ namespace Canteen\Server
 			
 			// There was a problem with detecting the domain regex
 			if (!defined('DEPLOYMENT_LEVEL')) error("Error: No deployment level was specified");
+		}
+		
+		/**
+		*  Check to see if an array is associative
+		*  @method isAssoc
+		*  @private
+		*  @param {Array} arr The array to check
+		*  @return {Boolean} if the array is associative
+		*/
+		private function isAssoc($arr)
+		{
+		    return array_keys($arr) !== range(0, count($arr) - 1);
 		}
 		
 		/**
@@ -239,7 +258,7 @@ namespace Canteen\Server
 					$request = substr($request, 0, $query_pos);
 				}
 				
-				$this->data['queryString'] = $query;
+				$this->settings['queryString'] = $query;
 	     		$uri = explode('/', $request);
 	            return implode('/', array_filter($uri, function($var)
 				{

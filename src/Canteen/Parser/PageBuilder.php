@@ -14,7 +14,6 @@ namespace Canteen\Parser
 	use Canteen\Services\Objects\Page;
 	use Canteen\Utilities\CanteenBase;
 	use Canteen\Utilities\StringUtils;
-	use Canteen\Parser\Parser;
 	use Canteen\Server\JSONServer;
 	
 	/**
@@ -82,28 +81,28 @@ namespace Canteen\Parser
 		*  Build a page builder
 		*/
 		public function __construct($customSettings=null)
-		{
-			if (PROFILER) Profiler::start('Build Page');
+		{			
+			if ($this->profiler) $this->profiler->start('Build Page');
 			
 			// Check to see if this is a gateway request
-			$this->_isGateway = strpos(URI_REQUEST, $this->site()->gatewayUri) === 0;
+			$this->_isGateway = strpos(URI_REQUEST, $this->site->gatewayUri) === 0;
 			
 			// Save for when we generate the settings
 			$this->_customSettings = $customSettings;
 			
 			// Check to see if this is an ajax request
 			define('ASYNC_REQUEST', ifsetor($_POST['async']) == 'true' || $this->_isGateway);
-			
+						
 			// Add page building specific properties
 			$this->_data = array_merge(
 				array(
 					'year' => date('Y'),
 					'version' => Site::VERSION,
 					'formSession' => StringUtils::generateRandomString(16),
-					'logoutUri' => $this->site()->logoutUri,
-					'gatewayPath' => $this->data('basePath').$this->site()->gatewayUri
+					'logoutUri' => $this->site->logoutUri,
+					'gatewayPath' => $this->settings('basePath').$this->site->gatewayUri
 				),
-				$this->data()
+				$this->settings()
 			);
 			
 			// Check for the compression setting
@@ -132,7 +131,9 @@ namespace Canteen\Parser
 		*  @return {String} Output stream
 		*/
 		public function handle()
-		{			
+		{
+			$profiler = $this->profiler;
+			
 			// Grab the default index page
 			$this->_indexPage = $this->getPageByUri($this->_data['siteIndex']);
 			
@@ -145,12 +146,12 @@ namespace Canteen\Parser
 			// If we're processing a form
 			if (isset($_POST['form'])) 
 	        {
-				if (PROFILER) Profiler::start('Form Process');
+				if ($profiler) $profiler->start('Form Process');
 				
 				// We save the result incase this is an ajax request
-				$result = $this->site()->getFormFactory()->process($_POST['form'], ASYNC_REQUEST);
+				$result = $this->site->formFactory->process($_POST['form'], ASYNC_REQUEST);
 				
-				if (PROFILER) Profiler::end('Form Process');
+				if ($profiler) $profiler->end('Form Process');
 				
 				// To be save clear both render and data contexts after
 				// a form is processed
@@ -158,21 +159,21 @@ namespace Canteen\Parser
 				
 				if (ASYNC_REQUEST)
 				{
-					if (PROFILER) Profiler::end('Build Page');
+					if ($profiler) $profiler->end('Build Page');
 					return $result;
 				}
 				else
 				{
-					$this->_data['formFeedback'] = $this->site()->getFormFactory()->getFeedback();
+					$this->_data['formFeedback'] = $this->site->formFactory->getFeedback();
 				}
 			}
 			
 			// Log out the current user if request
 			// redirects home
-			if (URI_REQUEST === $this->site()->logoutUri)
+			if (URI_REQUEST === $this->site->logoutUri)
 			{
 				$this->flush();
-				$this->user()->logout();
+				$this->user->logout();
 				return redirect();
 			}	
 							
@@ -181,11 +182,11 @@ namespace Canteen\Parser
 			// Only local deployments or administrators can use the 
 			// service browser
 			if ((LOCAL || USER_PRIVILEGE == Privilege::ADMINISTRATOR) 
-				&& DEBUG && strpos(URI_REQUEST, $this->site()->browserUri) === 0)
+				&& DEBUG && strpos(URI_REQUEST, $this->site->browserUri) === 0)
 			{
 				$browser = new ServiceBrowser();
 				$result = $browser->handle();
-				if (PROFILER) Profiler::end('Build Page');
+				if ($profiler) $profiler->end('Build Page');
 				return $result;
 			}
 			// Setup the gateway
@@ -193,7 +194,7 @@ namespace Canteen\Parser
 			{				
 				$server = new JSONServer();
 				$result = $server->handle();
-				if (PROFILER) Profiler::end('Build Page');
+				if ($profiler) $profiler->end('Build Page');
 				return $result;
 			}
 			// Handle the current page request based on the current URI
@@ -230,8 +231,8 @@ namespace Canteen\Parser
 		*/
 		private function flush()
 		{
-			$this->cache()->flushContext(self::RENDER_CONTEXT);
-			$this->cache()->flushContext(self::DATA_CONTEXT);
+			$this->cache->flushContext(self::RENDER_CONTEXT);
+			$this->cache->flushContext(self::DATA_CONTEXT);
 		}
 		
 		/**
@@ -289,23 +290,25 @@ namespace Canteen\Parser
 		*/
 		private function addPageContent(&$page)	
 		{
-			if (PROFILER) Profiler::start('Add Page Content');
+			$profiler = $this->profiler;
+			
+			if ($profiler) $profiler->start('Add Page Content');
 			$page->content = @file_get_contents($page->contentUrl);
-			if ($controllerName = $this->site()->getController($page->uri))
+			if ($controllerName = $this->site->getController($page->uri))
 			{
-				if (PROFILER) Profiler::start('Page Controller');
+				if ($profiler) $profiler->start('Page Controller');
 				$controller = new $controllerName($page, $page->dynamicUri);
 				$page = $controller->getPage();
 				$this->_data = array_merge(
 					$controller->getData(),
 					$this->_data
 				);
-				if (PROFILER) Profiler::end('Page Controller');
+				if ($profiler) $profiler->end('Page Controller');
 			}
 			$this->_data['pageTitle'] = $page->title;
 			$this->_data['fullTitle'] = $page->fullTitle = $this->getSiteTitle($page);
-			Parser::parse($page->content, $this->_data);
-			if (PROFILER) Profiler::end('Add Page Content');
+			$this->parse($page->content, $this->_data);
+			if ($profiler) $profiler->end('Add Page Content');			
 			return $page;
 		}
 		
@@ -319,6 +322,8 @@ namespace Canteen\Parser
 		*/
 		private function handlePage($uri, $isAsync)
 		{			
+			$profiler = $this->profiler;
+			
 			// Use index page if the uri is null
 			$page = $this->getPageByUri($uri ? $uri : $this->_indexPage->uri);
 			
@@ -329,7 +334,7 @@ namespace Canteen\Parser
 			if (!$page)
 			{
 				$page = $this->getPageByUri('404');
-			} 
+			}
 			else if ($page->privilege > USER_PRIVILEGE)
 			{
 				// Don't change the header for asyncronous requests
@@ -357,7 +362,7 @@ namespace Canteen\Parser
 			{
 				// Check for the cache to see if we have a page
 				$key = md5($context . '::' . $uri);
-				$cache = $this->cache()->read($key);
+				$cache = $this->cache->read($key);
 				if ($cache !== false) 
 				{
 					return $cache;
@@ -370,7 +375,13 @@ namespace Canteen\Parser
 			// Do a simplier for asyncronous requests
 			if ($isAsync)
 			{
-				Parser::removeEmpties($page->content);
+				$this->removeEmpties($page->content);
+				
+				// Fix the links
+				if ($profiler) $profiler->start('Parse Fix Path');
+				$this->parser->fixPath($page->content, ifconstor('BASE_PATH', ''));
+				if ($profiler) $profiler->end('Parse Fix Path');
+				
 				$data = json_encode($page);
 			}
 			// Normal page render using the template
@@ -389,24 +400,35 @@ namespace Canteen\Parser
 					$this->_data
 				);
 				
-				if (PROFILER) Profiler::start('Template Render');
+				$profiler = $this->profiler;
+				
+				if ($profiler) $profiler->start('Template Render');
 				
 				// Get the main template from the path
-				$data = Parser::getTemplate(MAIN_TEMPLATE, $this->_data);
+				$data = $this->template(MAIN_TEMPLATE, $this->_data);
 				
 				// Clean up
-				Parser::removeEmpties($data);
+				$this->removeEmpties($data);
 				
-				if (PROFILER) Profiler::end('Template Render');
+				// Fix the links
+				if ($profiler) $profiler->start('Parse Fix Path');
+				
+				$this->parser->fixPath($data, ifconstor('BASE_PATH', ''));
+				
+				if ($profiler) $profiler->end('Parse Fix Path');
+				
+				if ($profiler) $profiler->end('Template Render');
+				
+				
 			}
 			
 			// Cache, if available
 			if ($page->cache)
 			{
-				$this->cache()->save($key, $data, $context);
+				$this->cache->save($key, $data, $context);
 			}
 			
-			if (PROFILER) Profiler::end('Build Page');
+			if ($profiler) $profiler->end('Build Page');
 			
 			if (!$isAsync)
 			{
@@ -427,9 +449,9 @@ namespace Canteen\Parser
 			$result = '';
 			
 			// The profiler
-			if (PROFILER)
+			if ($this->profiler)
 			{
-				$result .= Profiler::render();
+				$result .= $this->profiler->render();
 			}
 			if (DEBUG)
 			{
@@ -474,23 +496,13 @@ namespace Canteen\Parser
 			{
 				// Make sure the data is set
 				if (!isset($this->_data[$key])) continue;
-				
-				$value = $this->_data[$key];
-				if (is_bool($value))
-				{
-					$value = $value ? 'true' : 'false';
-				}
-				else if (is_string($value))
-				{
-					$value = "'$value'";
-				}
-				$settings[] = "$key:$value";
+				$settings[$key] = $this->_data[$key];
 			}
 			
-			return Parser::getTemplate(
+			return $this->template(
 				'Settings', 
 				array(
-					'settings' => implode(", ", $settings)
+					'settings' => json_encode($settings, JSON_UNESCAPED_SLASHES)
 				)
 			);
 		}

@@ -20,9 +20,8 @@ namespace Canteen\Forms
 	{	
 		/**
 		*  Process the form and handle the $_POST data.
-		*  @method process 
 		*/
-		public function process()
+		public function __construct()
 		{			
 			$email = ifsetor($_POST['email']);
 			$username = ifsetor($_POST['username']);
@@ -63,7 +62,7 @@ namespace Canteen\Forms
 				$this->error('Site Title is required');
 			}
 			
-			if (!$this->ifError())
+			if (!$this->ifError)
 			{
 				new ConfigService;
 				try

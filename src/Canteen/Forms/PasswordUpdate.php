@@ -17,9 +17,8 @@ namespace Canteen\Forms
 	{
 		/**
 		*  Process the form and handle the $_POST data.
-		*  @method process 
 		*/
-		public function process()
+		public function __construct()
 		{
 			$this->privilege();
 			
@@ -48,9 +47,9 @@ namespace Canteen\Forms
 				$this->error("Password can only contain alpha numeric characters");
 			}
 			
-			if (!$this->ifError())
+			if (!$this->ifError)
 			{
-				if ( !$this->user()->updatePassword($newPassword))
+				if ( !$this->user->updatePassword($newPassword))
 	            {
 	                $this->error("There was a problem updating your password. Try again.");
 	            }

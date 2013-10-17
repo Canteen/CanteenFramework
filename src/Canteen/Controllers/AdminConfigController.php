@@ -22,9 +22,15 @@ namespace Canteen\Controllers
 		{
 			$configs = $this->service('config')->getConfigs();
 			$protected = $this->service('config')->getProtectedNames();
+			$private = $this->service('config')->getPrivateNames();
 			
 			foreach($configs as $i=>$config)
 			{
+				if (in_array($config->name, $private))
+				{
+					unset($configs[$i]);
+					continue;
+				}
 				$configs[$i]->disabled = in_array($config->name, $protected) ? 'disabled' : '';
 			}
 			

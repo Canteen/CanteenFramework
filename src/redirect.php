@@ -16,8 +16,9 @@
 	*  @return {String} If the request is made asynchronously, returns the json redirect object as a string
 	*/
 	function redirect($uri='')
-    {
-		$uri = $uri . (QUERY_STRING ? '/' . QUERY_STRING : '');
+    {	
+		$query = ifconstor('QUERY_STRING');
+		$uri = $uri . ($query ? '/' . $query : '');
 		if (ifconstor('ASYNC_REQUEST', false))
 		{
 			echo json_encode(array('redirect' => $uri));

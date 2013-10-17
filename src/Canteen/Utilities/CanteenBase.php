@@ -17,20 +17,24 @@ namespace Canteen\Utilities
 	abstract class CanteenBase
 	{		
 		/**
-		*  Get the config
-		*  @method data
+		*  Get the site setting or settings
+		*  @method settings
 		*  @protected
-		*  @param {String} [data=null] The name of the config property
+		*  @param {String} [name=null] The name of the config property
 		*  @return {String|Dictionary} Either value of the data or all items if param name is null
 		*/
-		protected function data($name=null)
+		protected function settings($name=null)
 		{
-			$data = Site::instance()->getData($name);
-			if ($data === null)
+			$settings = Site::instance()->settings;
+			
+			// If there's a name
+			if ($name !== null) $settings = ifsetor($settings[$name], null);
+
+			if ($settings === null)
 			{
 				throw new CanteenError(CanteenError::INVALID_DATA, $name);
 			}
-			return $data;
+			return $settings;
 		}
 		
 		/**
@@ -46,36 +50,88 @@ namespace Canteen\Utilities
 		}
 		
 		/**
-		*  Get the Authorization class to handle things like login, password change
-		*  @method user
+		*  Convenience method for parsing content
+		*  @method parse
 		*  @protected
-		*  @return {Authorization} Authorization instance
+		*  @param {String} content The string to parse
+		*  @param {Dictionary} substitutions The dictionary of tags to replace
+		*  @return {String} The parsed string
 		*/
-		protected function user()
+		protected function parse(&$content, $substitutions)
 		{
-			return Site::instance()->getUser();
+			$content = $this->parser->parse($content, $substitutions);
+			return $content;
 		}
 		
 		/**
-		*  Get the instance of the site cache
-		*  @method cache
+		*  Convenience method for parsing content
+		*  @method template
 		*  @protected
-		*  @return {ServerCache} The ServerCache instance
+		*  @param {String} name The name of the template to parse
+		*  @param {Dictionary} [substitutions=array()] The dictionary of tags to replace
+		*  @return {String} The parsed string
 		*/
-		protected function cache()
+		protected function template($name, $substitutions=array())
 		{
-			return Site::instance()->getCache();
+			return $this->parser->template($name, $substitutions);
 		}
 		
 		/**
-		*  Convenience getter for the site
-		*  @method site
+		*  Convenience method for parsing content
+		*  @method parse
 		*  @protected
-		*  @return {Canteen} Singleton instance of Canteen
+		*  @param {String} content The string to parse
+		*  @return {String} The parsed string
 		*/
-		protected function site()
+		protected function removeEmpties(&$content)
 		{
-			return Site::instance();
+			$content = $this->parser->removeEmpties($content);
+			return $content;
+		}
+		
+		/**
+		*   The getter
+		*/ 
+		public function __get($name)
+		{			
+			switch($name)
+			{
+				/**
+				*  Convenience getter for the site
+				*  @property {Site} site
+				*  @readOnly
+				*/
+				case 'site' : return Site::instance();
+
+				/**
+				*  Get the instance of the site cache
+				*  @property {ServerCache} cache
+				*  @readOnly
+				*/
+				case 'cache' :
+				
+				/**
+				*  Get the Authorization class to handle things like login, password change
+				*  @property {Authorization} user
+				*  @readOnly
+				*/
+				case 'user':
+				
+				/**
+				*  The instance of the profiler for debugging performance
+				*  @property {Profiler} profiler
+				*  @readOnly
+				*/
+				case 'profiler':
+								
+				/**
+				*  The parser is responsible for rendering templates
+				*  @property {Parser} parser
+				*  @readOnly
+				*/
+				case 'parser': return Site::instance()->$name;
+			}
+			return null;
 		}
 	}
 }

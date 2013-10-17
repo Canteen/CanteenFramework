@@ -65,7 +65,7 @@ namespace Canteen\Services
 			parent::__construct('pages');
 						
 			$this->mappings = array(
-				'contentUrl' => $this->data('contentPath')
+				'contentUrl' => $this->settings('contentPath')
 			);
 		}
 		
@@ -77,7 +77,7 @@ namespace Canteen\Services
 		{		
 			$this->internal('Canteen\Forms\Installer');
 			
-			if (!$this->db()->tableExists('pages'))
+			if (!$this->db->tableExists('pages'))
 			{
 				$sql = "CREATE TABLE IF NOT EXISTS `pages` (
 				  `page_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -94,11 +94,11 @@ namespace Canteen\Services
 				  UNIQUE KEY `uri` (`uri`)
 				) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
 				
-				$result = (bool)$this->db()->execute($sql);
+				$result = (bool)$this->db->execute($sql);
 				
 				if ($result)
 				{
-					return $this->db()->insert('pages')
+					return $this->db->insert('pages')
 						->fields('page_id', 'uri', 'title', 'redirect_id', 
 							'parent_id', 'is_dynamic', 'keywords', 'description', 'privilege', 'cache')
 						->values(1, '403', 'Forbidden', NULL, NULL, 0, '', '', 0, 1)
@@ -153,7 +153,7 @@ namespace Canteen\Services
 				'Canteen\Controllers\AdminPagesController'
 			);
 						
-			$results = $this->db()->select($this->properties)
+			$results = $this->db->select($this->properties)
 				->from($this->table)
 				->where('page_id in '.$this->valueSet($id))
 				->results();
@@ -174,7 +174,7 @@ namespace Canteen\Services
 			$this->internal('Canteen\Controllers\AdminController');
 			
 			$this->verify($parentId);
-			$results = $this->db()->select($this->properties)
+			$results = $this->db->select($this->properties)
 				->from($this->table)
 				->where('parent_id='.$parentId)
 				->results();
@@ -194,7 +194,7 @@ namespace Canteen\Services
 				'Canteen\Controllers\AdminPagesController'
 			);
 			
-			$results = $this->db()->select($this->properties)
+			$results = $this->db->select($this->properties)
 				->from($this->table)
 				->results(true);
 			
@@ -212,7 +212,7 @@ namespace Canteen\Services
 			$this->internal('Canteen\Forms\PageUpdate');
 			$this->privilege(Privilege::ADMINISTRATOR);
 			
-			return $this->db()->delete($this->table)
+			return $this->db->delete($this->table)
 				->where('page_id in '.$this->valueSet($id))
 				->result();
 		}
@@ -235,11 +235,11 @@ namespace Canteen\Services
 			$this->internal('Canteen\Forms\PageUpdate');
 			$this->privilege(Privilege::ADMINISTRATOR);
 			
-			$id = $this->db()->nextId($this->table, 'page_id');
+			$id = $this->db->nextId($this->table, 'page_id');
 			
 			if ($parentId === null) $parentId = $id;
 			
-			return $this->db()->insert($this->table)
+			return $this->db->insert($this->table)
 				->values(array(
 					'page_id' => $id,
 					'uri' => $this->verify($uri, Validate::URI),
@@ -284,7 +284,7 @@ namespace Canteen\Services
 				$properties[$k] = $this->verify($p, Validate::FULL_TEXT);
 			}
 			
-			return $this->db()->update($this->table)
+			return $this->db->update($this->table)
 				->set($properties)
 				->where('`page_id`='.$id)
 				->result();

@@ -10,9 +10,9 @@ namespace Canteen\Upgrades
 	*/
 	class DatabaseUpdate extends CanteenBase
 	{
-		public function process()
+		public function __construct()
 		{
-			$db = Site::instance()->getDB();
+			$db = Site::instance()->db;
 			
 			// Clear all data
 			$db->truncate('users_sessions');
@@ -32,10 +32,8 @@ namespace Canteen\Upgrades
 			$db->execute("ALTER TABLE `users_sessions` ADD PRIMARY KEY(`session_id`)");
 			
 			// Return the new version of the database
-			return 102;
+			echo 102;
 		}
 	}
-	
-	$update = new DatabaseUpdate();
-	echo $update->process();
+	new DatabaseUpdate();
 }

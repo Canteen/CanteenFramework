@@ -5,7 +5,6 @@
 */
 namespace Canteen\Controllers
 {
-	use Canteen\Parser\Parser;
 	use Canteen\HTML5\SimpleList;
 	
 	/**
@@ -44,7 +43,7 @@ namespace Canteen\Controllers
 		*/
 		protected function addTemplate($template, $data=array())
 		{
-			$this->page->content .= Parser::getTemplate($template, $data);
+			$this->page->content .= $this->template($template, $data);
 		}
 		
 		/**
@@ -102,10 +101,10 @@ namespace Canteen\Controllers
 			$data = array(
 				'adminNavCustom' => count($custom) ? (string)new SimpleList($custom, 'class=custom') : false,
 				'adminNav' => (string)new SimpleList($builtIn, 'class=builtIn'),
-				'adminContent' => Parser::parse($this->page->content, $this->getData())
+				'adminContent' => $this->parse($this->page->content, $this->data)
 			);
 			
-			$this->page->content = Parser::getTemplate('Admin', $data); 
+			$this->page->content = $this->template('Admin', $data); 
 		}
 	}
 }

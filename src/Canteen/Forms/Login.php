@@ -16,9 +16,8 @@ namespace Canteen\Forms
 	{	
 		/**
 		*  Process the form and handle the $_POST data.
-		*  @method process 
 		*/
-		public function process()
+		public function __construct()
 		{
 			// Check the user login form
 	        $username = ifsetor($_POST['username']);
@@ -28,9 +27,9 @@ namespace Canteen\Forms
 			$this->verify($username, Validate::EMAIL);
 			
 	        // Create a user to check login
-	        if (!$this->user()->login($username, $password, $remember))
+	        if (!$this->user->login($username, $password, $remember))
 	        {
-				$this->error($this->user()->error);
+				$this->error($this->user->error);
 	        }
 	        else
 	        {

@@ -46,14 +46,6 @@ namespace Canteen\Errors
 		const INVALID_SERVICE_ALIAS = 102;
 		
 		/** 
-		*  Bad form implementation 
-		*  @property {int} OVERRIDE_FORM_PROCESS
-		*  @static
-		*  @final
-		*/
-		const OVERRIDE_FORM_PROCESS = 103;
-		
-		/** 
 		*  Bad controller implementation 
 		*  @property {int} OVERRIDE_CONTROLLER_PROCESS
 		*  @static
@@ -200,7 +192,6 @@ namespace Canteen\Errors
 			self::INTERNAL_ONLY => 'Method is only accessible internally',
 			self::INVALID_DATA => 'The data property does not exist',
 			self::INVALID_SERVICE_ALIAS => 'The alias or class of the service does not exist',
-			self::OVERRIDE_FORM_PROCESS => "Form must override the 'process' method",
 			self::OVERRIDE_CONTROLLER_PROCESS => "Controller must override 'process' method",
 			self::FORM_INHERITANCE => 'Form is not an instance of the Form class',
 			self::INVALID_FORM => 'Form does not exist',

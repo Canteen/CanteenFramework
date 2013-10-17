@@ -170,21 +170,28 @@ namespace Canteen\Authorization
 		}
 		
 		/**
-		*  Get the user data properties
-		*  @method getData
-		*  @return {Dictionary} The data properties for user
+		*  Override getter 
 		*/
-		public function getData()
+		public function __get($name)
 		{
-			return array(
-				'loggedIn' => $this->_loggedin,
-				'userFullname' => $this->_user->fullname,
-				'userEmail' => $this->_user->email,
-				'userId' => $this->_user->id,
-				'userUsername' => $this->_user->username,
-				'userPrivilege' => $this->_user->privilege,
-				'userLogin' => $this->_user->login
-			);
+			/**
+			*  Get the user data properties
+			*  @property {Dictionary} settings
+			*  @readOnly
+			*/
+			if ($name == 'settings')
+			{
+				return array(
+					'loggedIn' => $this->_loggedin,
+					'userFullname' => $this->_user->fullname,
+					'userEmail' => $this->_user->email,
+					'userId' => $this->_user->id,
+					'userUsername' => $this->_user->username,
+					'userPrivilege' => $this->_user->privilege,
+					'userLogin' => $this->_user->login
+				);
+			}
+			return parent::__get($name);
 		}
 	
 		/**

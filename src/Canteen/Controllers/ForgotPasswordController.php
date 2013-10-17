@@ -5,7 +5,6 @@
 */
 namespace Canteen\Controllers
 {
-	use Canteen\Parser\Parser;
 	use Canteen\Utilities\StringUtils;
 	use Canteen\Utilities\PasswordUtils;
 	
@@ -75,7 +74,7 @@ namespace Canteen\Controllers
 					}
 				}
 			}
-			$this->page->content = Parser::getTemplate('ForgotPassword', $data);
+			$this->page->content = $this->template('ForgotPassword', $data);
 		}
 	}
 }

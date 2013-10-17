@@ -13,10 +13,10 @@
 	*  @class ifconstor
 	*  @constructor
 	*  @param {String} constName The constant name to check
-	*  @param {mixed} default The default value if the constant isn't defined
+	*  @param {mixed} [default=''] The default value if the constant isn't defined
 	*  @return {mixed} The value of the constant or the default value
 	*/
-	function ifconstor($constName, $default)
+	function ifconstor($constName, $default=null)
 	{
 	    return defined($constName) ? constant($constName) : $default;
 	}

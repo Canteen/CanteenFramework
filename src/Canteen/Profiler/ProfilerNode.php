@@ -5,7 +5,9 @@
 */
 namespace Canteen\Profiler
 {
-	class ProfilerNode
+	use Canteen\Utilities\CanteenBase;
+	
+	class ProfilerNode extends CanteenBase
 	{
 		/**
 		*  Name of the step
@@ -102,6 +104,7 @@ namespace Canteen\Profiler
 		*  Class which represents the profiler steps
 		*  
 		*  @class ProfilerNode
+		*  @extends CanteenBase
 		*  @constructor
 		*  @param {string} name Name of this step
 		*  @param {int} depth Tree depth of this step
@@ -128,7 +131,7 @@ namespace Canteen\Profiler
 		{
 			if (!$profilerKey || $profilerKey != $this->profilerKey)
 			{
-				profiler::end($this->name);
+				$this->profiler->end($this->name);
 
 				return $this->parentNode;
 			}
@@ -142,7 +145,7 @@ namespace Canteen\Profiler
 				if ($this->parentNode)
 				{
 					$this->parentNode->increaseChildDuration($this->totalDuration);
-					profiler::addDuration( $this->selfDuration );
+					$this->profiler->addDuration( $this->selfDuration );
 				}
 			}
 
@@ -250,7 +253,7 @@ namespace Canteen\Profiler
 			{
 				foreach ($this->getChildren() as $child)
 				{
-					if (!profiler::isTrivial($child))
+					if (!$this->profiler->isTrivial($child))
 					{
 						return true;
 					}

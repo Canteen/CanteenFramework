@@ -8,7 +8,6 @@ namespace Canteen
 	use Canteen\Authorization\Authorization;
 	use Canteen\Errors\CanteenError;
 	use Canteen\Logger\Logger;
-	use Canteen\Parser\TemplateLoader;
 	use Canteen\Server\DeploymentStatus;
 	use Canteen\Profiler\Profiler;
 	use Canteen\Server\ServerCache;
@@ -68,10 +67,10 @@ namespace Canteen
 		
 		/** 
 		*  The site configuration an associative array in key => value pairs 
-		*  @property {Dictionary} _data
-		*  @private
+		*  @property {Dictionary} settings
+		*  @readOnly
 		*/
-		private $_data;
+		private $_settings;
 		
 		/** 
 		*  The dynamic page controllers with keys 'uri' and 'controller'
@@ -82,29 +81,50 @@ namespace Canteen
 		
 		/** 
 		*  The user authorization object, deals with login and session
-		*  @property {Authorization} _authorization
-		*  @private
+		*  @property {Authorization} user
+		*  @readOnly
 		*/
-		private $_authorization;
+		private $_user;
 		
-		/** 
+		/**
 		*  The form factory handles the processing of form POST requests 
-		*  @property {FormFactory} _formFactory
-		*  @private
+		*  @property {FormFactory} formFactory
+		*  @readOnly
 		*/
 		private $_formFactory;
 		
 		/** 
+		*  The Profiler is use for debugging performance issues, SQL speed
+		*  @property {Profiler} profiler
+		*  @readOnly
+		*/
+		private $_profiler;
+		
+		/**
+		*  The template parser
+		*  
+		*	// Add a template to the site
+		*	$site->parser->addTemplate('Footer', 'Templates/Footer.html');
+		*	
+		*	// Or add a JSON manifest with an array of template files
+		* 	$site->parser->addManifest('templates.json');
+		*  
+		*  @property {Parser} parser
+		*  @readOnly
+		*/
+		private $_parser;
+		
+		/** 
 		*  The instance of the server cache 
-		*  @property {ServerCache} _cache
-		*  @private
+		*  @property {ServerCache} cache
+		*  @readOnly
 		*/
 		private $_cache;
 		
-		/** 
-		*  The instance of the database
-		*  @property {Database} _db
-		*  @private
+		/**
+		*  The instance of the database for fetching data using SQL
+		*  @property {Database} db
+		*  @readOnly
 		*/
 		private $_db;
 		
@@ -114,13 +134,6 @@ namespace Canteen
 		*  @private
 		*/
 		private static $_fatalError = null;
-		
-		/**
-		*  The template loader
-		*  @private {TemplateLoader} _loader 
-		*  @private
-		*/
-		private $_loader;
 		
 		/** 
 		*  The singleton instance 
@@ -154,12 +167,14 @@ namespace Canteen
 		*  is a backend which provides a JSON server, Database connect, template engine, User authentication
 		*  and many other features for building very dynamic data-driven websites. 
 		*	
-		*	// These are the minimum settings
-		*  	// you need to setup Canteen, just the database stuff
+		*	// Externally load the deployment settings from a PHP file (default)
+		*	$site = new Canteen\Site('config.php');
+		*  
+		*	// Or set the single deployment settings directly
 		*	$site = new Canteen\Site(array(
 		*		'dbUsername' => 'user',
 		*		'dbPassword' => 'pass1234',
-		*		'dbName' => 'my_database',
+		*		'dbName' => 'my_settingsbase',
 		*  	));
 		*	
 		* 	// Or create different deployments of the site
@@ -171,7 +186,7 @@ namespace Canteen
 		*  			'domain' => 'localhost',
 		*			'dbUsername' => 'root',
 		*			'dbPassword' => '',
-		*			'dbName' => 'my_database',
+		*			'dbName' => 'my_settingsbase',
 		*  			'debug' => true
 		*  		),
 		*  		// Our dev site accessible from http://dev.example.com
@@ -180,7 +195,7 @@ namespace Canteen
 		*  			'domain' => 'dev.example.com',
 		*  			'dbUsername' => 'user',
 		*			'dbPassword' => 'pass1234',
-		*			'dbName' => 'my_dev_database',
+		*			'dbName' => 'my_dev_settingsbase',
 		*  			'debug' => true
 		*  		),
 		*  		// Our live site accessible from http://example.com
@@ -189,16 +204,12 @@ namespace Canteen
 		*  			'domain' => 'example.com',
 		*  			'dbUsername' => 'user',
 		*			'dbPassword' => 'pass1234',
-		*			'dbName' => 'my_database',
+		*			'dbName' => 'my_settingsbase',
 		*  			'minify' => true,
 		*  			'compress' => true,
 		*  			'cacheEnabled' => true
 		*  		)
 		* 	));
-		*  
-		*	// OR, externally load the deployment settings 
-		*	// from a PHP file
-		*	$site = new Canteen\Site('settings.php');
 		*		
 		*	// Echo out the page result
 		*	$site->render();
@@ -219,10 +230,9 @@ namespace Canteen
 		*  @param {Boolean} [settings.cacheEnabled=false] If the cache is enabled
 		*  @param {Boolean} [settings.compress=false] If the site should be compressed with gzip
 		*  @param {Boolean} [settings.minify=false] If the output page should be minified
-		*  @param {String} [manifestPath=null] The manifest path for autoloading
-		*  @param {String} [cacheDirectory=null] The directory for storing file cache if Memcache isn't available
+		*  @param {String} [settings.cacheDirectory=null] The directory for storing file cache if Memcache isn't available
 		*/
-		public function __construct($settings='config.php', $manifestPath=null, $cacheDirectory=null)
+		public function __construct($settings='config.php')
 		{		
 			$bt = debug_backtrace();
 			define('CALLER_PATH', dirname($bt[0]['file']).'/');
@@ -236,7 +246,7 @@ namespace Canteen
 			
 			try
 			{
-				$this->setup($settings, $manifestPath, $cacheDirectory);
+				$this->setup($settings);
 			}
 			catch(CanteenError $e)
 			{
@@ -253,12 +263,12 @@ namespace Canteen
 		*  @method setup
 		*  @private
 		*  @param {String|Array|Dictionary} settings The deployment json settings path
-		*  @param {String} [manifestPath=null] The manifest path for autoloading
-		*  @param {String} [cacheDirectory=null] The directory for storing file cache if Memcache isn't available
 		*/
-		private function setup($settings, $manifestPath=null, $cacheDirectory=null)
+		private function setup($settings)
 		{
 			Logger::init();
+			
+			$this->_parser = new Parser();
 			
 			// Check for the version of PHP required to do the autoloading/namespacing
 			if (version_compare(self::MIN_PHP_VERSION, PHP_VERSION) >= 0) 
@@ -268,41 +278,28 @@ namespace Canteen
 			
 			// Check the domain for the current deployment level 
 			$status = new DeploymentStatus($settings);
-			$this->_data = $status->data;
+			$this->_settings = $status->settings;
 			
 			// Debug mode most be on in order to profile
 			$profiler = false;
-			if (DEBUG)
+			if (DEBUG && ifsetor($_GET['profiler']) == 'true')
 			{
-				$profiler = (ifsetor($_GET['profiler']) == 'true');
-			}
-			
-			// Make sure it's not already defined, possibly in the settings
-			if (!defined('PROFILER'))
-			{
-				define('PROFILER', $profiler);
-			}
-			
-			if ($profiler) 
-			{				
-				Profiler::enable();
-				Profiler::start('Canteen Setup');
+				$this->_profiler = new Profiler();	
+				$profiler = $this->_profiler;
+				$profiler->start('Canteen Setup');
 			}
 			
 			// Set the error reporting if we're set to debug
 			error_reporting(DEBUG ? E_ALL : 0);
 			
 			// Turn on or off the logger
-			Logger::instance()->enabled = DEBUG;			
-			
-			// Setup the templates loader
-			$this->_loader = new TemplateLoader();
+			Logger::instance()->enabled = DEBUG;
 			
 			// Load the canteen templates
-			$this->_loader->addManifest(CANTEEN_PATH . 'Templates/templates.json');			
+			$this->_parser->addManifest(CANTEEN_PATH . 'Templates/templates.json');			
 			
 			// Setup the cache
-			$this->_cache = new ServerCache($cacheDirectory);
+			$this->_cache = new ServerCache($this->_settings['cacheDirectory']);
 			
 			// Create a new factory to intercept form requests
 			$this->_formFactory = new FormFactory();
@@ -310,15 +307,15 @@ namespace Canteen
 			// Create the non-database services
 			new TimeService;
 			
-			if ($profiler) Profiler::start('Database Connect');
+			if ($profiler) $profiler->start('Database Connect');
 			
-			if ($this->checkData('dbHost', 'dbUsername', 'dbPassword', 'dbName'))
+			if ($this->checkSettings('dbHost', 'dbUsername', 'dbPassword', 'dbName'))
 			{
 				$this->_db = new Database(
-					$this->_data['dbHost'],
-					$this->_data['dbUsername'],
-					$this->_data['dbPassword'],
-					$this->_data['dbName']);
+					$this->_settings['dbHost'],
+					$this->_settings['dbUsername'],
+					$this->_settings['dbPassword'],
+					$this->_settings['dbName']);
 					
 				// Assign the server cache to the database
 				$this->_db->setCache($this->_cache);
@@ -326,7 +323,6 @@ namespace Canteen
 				// Setup the database profiler calls
 				if ($profiler)
 				{
-					$profiler = 'Canteen\Profiler\Profiler';
 					$this->_db->profilerStart = array($profiler, 'sqlStart');
 					$this->_db->profilerStop = array($profiler, 'sqlEnd');
 				}
@@ -349,7 +345,7 @@ namespace Canteen
 				{
 					if (!$this->_db->tableExists('config'))
 					{
-						die(Parser::getTemplate('Installer', array(
+						die($this->template('Installer', array(
 							'formFeedback' => $this->_formFactory->getFeedback()
 						)));
 					}
@@ -363,13 +359,13 @@ namespace Canteen
 				$service = new ConfigService;
 				
 				// Add the configuration db assets
-				$this->_data = array_merge($service->getAll(), $this->_data);
+				$this->_settings = array_merge($service->getAll(), $this->_settings);
 				
 				// Check for default index page, site title, content path, template
-				$this->checkData($service->getProtectedNames());
+				$this->checkSettings($service->getProtectedNames());
 				
 				// Add the main site template
-				$this->_loader->addTemplate(MAIN_TEMPLATE, CALLER_PATH . $this->_data['templatePath']);
+				$this->_parser->addTemplate(MAIN_TEMPLATE, CALLER_PATH . $this->_settings['templatePath']);
 				
 				// Check for database updates
 				$this->isDatabaseUpdated('dbVersion', self::DB_VERSION, CANTEEN_PATH.'Upgrades/');
@@ -379,26 +375,18 @@ namespace Canteen
 				new UserService;
 			}
 			
-			if ($profiler) Profiler::end('Database Connect');
+			if ($profiler) $profiler->end('Database Connect');
 			
-			if ($profiler) Profiler::start('Authorization');
+			if ($profiler) $profiler->start('Authorization');
 			
 			// Create a new user
-			$this->_authorization = new Authorization();
-			$this->_data = array_merge(
-				$this->_authorization->getData(),
-				$this->_data
+			$this->_user = new Authorization();
+			$this->_settings = array_merge(
+				$this->_user->settings,
+				$this->_settings
 			);
 			
-			if ($profiler) Profiler::end('Authorization');
-			
-			// Setup an additional manifest file
-			if ($manifestPath !== null) 
-			{
-				if ($profiler) Profiler::start('Register Template Manifest');
-				$this->_loader->addManifest($manifestPath);
-				if ($profiler) Profiler::end('Register Template Manifest');	
-			}
+			if ($profiler) $profiler->end('Authorization');
 			
 			// Set the globals
 			$this->_controllers = array();
@@ -422,7 +410,7 @@ namespace Canteen
 				}
 			}
 			
-			if ($profiler) Profiler::end('Canteen Setup');
+			if ($profiler) $profiler->end('Canteen Setup');
 		}
 			
 		/**
@@ -465,7 +453,7 @@ namespace Canteen
 		*/
 		public function isDatabaseUpdated($variableName, $targetVersion, $updatesFolder)
 		{		
-			$version = ifsetor($this->_data[$variableName], 1);
+			$version = ifsetor($this->_settings[$variableName], 1);
 
 			// The database is up-to-date
 			if ($version == $targetVersion) return;
@@ -475,7 +463,7 @@ namespace Canteen
 			if ($version < $targetVersion && file_exists($updatesFolder.$version.'.php'))
 			{
 				// Specifically ask for an database update
-				die(Parser::getTemplate('UpgradeDatabase', array(
+				die($this->template('UpgradeDatabase', array(
 					'targetVersion' => $targetVersion,
 					'version' => $version,
 	 				'updatesFolder' => $updatesFolder,
@@ -614,92 +602,42 @@ namespace Canteen
 						$data['stackTrace'] = new SimpleList(
 							$data['stackTrace'], null, 'ol');
 					}
-					$result = Parser::getTemplate('FatalError', $data);
-					Parser::removeEmpties($result);
+					$result = $this->template('FatalError', $data);
+					$this->removeEmpties($result);
 				}
 			}
 			return $result;
 		}
 		
 		/**
-		*  Set the configuration or data
-		*  @method setData
+		*  Set the configuration setting
+		*  @method addSetting
 		*  @param {String} name The name of the item to set
 		*  @param {String} value The value to set
 		*/
-		public function setData($name, $value)
+		public function addSetting($name, $value)
 		{
-			$this->_data[$name] = $value;
-		}
+			$this->_settings[$name] = $value;
+		}		
 		
 		/**
-		*  Get the data for name 
-		*  @method getData
-		*  @param {String} [name=null] The name of of the data property, no value returns all data properties
-		*  @return {Array|String} Either a specific data item by name or all the data properties
+		*  Private getters
 		*/
-		public function getData($name=null)
+		public function __get($name)
 		{
-			if ($name !== null)  return ifsetor($this->_data[$name], null);
-			return $this->_data;
-		}
-		
-		/**
-		*  Get the user authorization
-		*  @method getUser
-		*  @return {Authorization} The Authorization instance
-		*/
-		public function getUser()
-		{
-			return $this->_authorization;
-		}
-		
-		/**
-		*  Get the server cache instance
-		*  @method getCache
-		*  @return {ServerCache} The ServerCache instance
-		*/
-		public function getCache()
-		{
-			return $this->_cache;
-		}
-		
-		/**
-		*  Get the instance of the database
-		*  @method getDB
-		*  @return {Database} The Database instance
-		*/
-		public function getDB()
-		{
-			return $this->_db;
-		}
-		
-		/**
-		*  Get the instance of the form factory
-		*  @method getFormFactory
-		*  @return {FormFactory} The FormFactory instance
-		*/
-		public function getFormFactory()
-		{
-			return $this->_formFactory;
-		}
-		
-		/**
-		*  Get the instance of the template loader
-		*  
-		*	// Add a template to the site
-		*	$site->getLoader()->addTemplate('Footer', 'Templates/Footer.html');
-		*	
-		*	// Or add a JSON manifest with an array of template files
-		* 	$site->getLoader()->addManifest('templates.json');
-		*  
-		*  @method getLoader
-		*  @return {TemplateLoader} The TemplateLoader instance
-		*/
-		public function getLoader()
-		{
-			return $this->_loader;
-		}
+			$default = '_'.$name;
+			switch($name)
+			{
+				case 'parser' :
+				case 'formFactory' :				
+				case 'db' :
+				case 'cache' :
+				case 'user' :
+				case 'settings' :
+				case 'profiler' : 
+					return $this->$default;
+			}
+	    }
 		
 		/**
 		*  Check that a version of Canteen is required to run
@@ -721,17 +659,17 @@ namespace Canteen
 		
 		/**
 		*  If multiple keys exists in an array
-		*  @method checkData
+		*  @method checkSettings
 		*  @private
 		*  @param {String} args* The data names that are required
 		*/
-		private function checkData($args)
+		private function checkSettings($args)
 		{
 			$keys = is_array($args) ? $args : func_get_args();
 			$missing = array();
 			foreach($keys as $key)
 			{
-				if (!isset($this->_data[$key]))
+				if (!isset($this->_settings[$key]))
 				{
 					$missing[] = $key;
 				}

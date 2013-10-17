@@ -63,7 +63,7 @@ namespace Canteen\Services
 		{
 			$this->internal('Canteen\Forms\Installer');
 			
-			if (!$this->db()->tableExists($this->table))
+			if (!$this->db->tableExists($this->table))
 			{
 				$sql = "CREATE TABLE IF NOT EXISTS `config` (
 				  `config_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -74,11 +74,11 @@ namespace Canteen\Services
 				  UNIQUE KEY `name` (`name`)
 				) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
 				
-				$result = (bool)$this->db()->execute($sql);
+				$result = (bool)$this->db->execute($sql);
 				
 				if ($result)
 				{
-					return $this->db()->insert($this->table)
+					return $this->db->insert($this->table)
 						->fields('config_id', 'name', 'value', 'value_type')
 						->values(1, 'siteIndex', 'home', 'string')
 						->values(2, 'siteTitle', $siteTitle, 'string')
@@ -92,10 +92,10 @@ namespace Canteen\Services
 		}
 		
 		/**
-		*  Get the collection of protected pages that are required
+		*  Get the collection of protected settings that are required
 		*  by Canteen
 		*  @method getProtectedNames
-		*  @return {Array} A collection of protected config names
+		*  @return {Array} A collection of protected config keys
 		*/
 		public function getProtectedNames()
 		{
@@ -103,7 +103,19 @@ namespace Canteen\Services
 				'siteIndex', 
 				'siteTitle',
 				'contentPath',
-				'templatePath',
+				'templatePath'
+			);
+		}
+		
+		/**
+		*  Get the collection of private settings that are required
+		*  by Canteen
+		*  @method getPrivateNames
+		*  @return {Array} A collection of private config keys
+		*/
+		public function getPrivateNames()
+		{
+			return array(
 				'dbVersion'
 			);
 		}
@@ -117,7 +129,7 @@ namespace Canteen\Services
 		{
 			$this->internal('Canteen\Site');
 			
-			$result = $this->db()->select($this->properties)
+			$result = $this->db->select($this->properties)
 				->from($this->table)
 				->results(true); // cache
 			
@@ -143,7 +155,7 @@ namespace Canteen\Services
 		*/
 		public function getConfigs()
 		{
-			$result = $this->db()->select($this->properties)
+			$result = $this->db->select($this->properties)
 				->from($this->table)
 				->results();
 				
@@ -160,7 +172,7 @@ namespace Canteen\Services
 		{
 			$this->verify($name, Validate::URI);
 			
-			$result = $this->db()->select('`value`', '`value_type` as `type`')
+			$result = $this->db->select('`value`', '`value_type` as `type`')
 				->from($this->table)
 				->where("`name`='$name'")
 				->result();
@@ -180,7 +192,7 @@ namespace Canteen\Services
 		*/
 		public function getConfigById($id)
 		{
-			$results = $this->db()->select($this->properties)
+			$results = $this->db->select($this->properties)
 				->from($this->table)
 				->where("`config_id` in ".$this->valueSet($id))
 				->results();
@@ -203,8 +215,8 @@ namespace Canteen\Services
 			$this->verify($value, Validate::FULL_TEXT);
 			$this->verify($name, Validate::URI);
 			
-			$id = $this->db()->nextId($this->table, 'config_id');
-			return $this->db()->insert($this->table)
+			$id = $this->db->nextId($this->table, 'config_id');
+			return $this->db->insert($this->table)
 				->values(array(
 					'config_id' => $id,
 					'name' => $name,
@@ -227,7 +239,7 @@ namespace Canteen\Services
 			$this->verify($name, Validate::URI);
 			$this->verify($value, Validate::FULL_TEXT);
 			
-			return $this->db()->update($this->table)
+			return $this->db->update($this->table)
 				->set('value', $value)
 				->where("`name`='$name'")
 				->result();
@@ -259,7 +271,7 @@ namespace Canteen\Services
 				$properties[$k] = $this->verify($p, Validate::FULL_TEXT);
 			}
 			
-			return $this->db()->update($this->table)
+			return $this->db->update($this->table)
 				->set($properties)
 				->where('`config_id`='.$id)
 				->result();
@@ -292,7 +304,7 @@ namespace Canteen\Services
 		{
 			$this->privilege(Privilege::ADMINISTRATOR);
 			
-			return $this->db()->delete($this->table)
+			return $this->db->delete($this->table)
 				->where("`config_id` in ".$this->valueSet($id))
 				->result();
 		}

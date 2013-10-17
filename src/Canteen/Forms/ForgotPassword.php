@@ -31,9 +31,8 @@ namespace Canteen\Forms
 		
 		/**
 		*  Process the form and handle the $_POST data.
-		*  @method process 
 		*/
-		public function process()
+		public function __construct()
 		{
 			$usernameOrEmail = ifsetor($_POST['usernameOrEmail']);
 			$user = $this->service('users')->getUser($usernameOrEmail);
@@ -53,16 +52,13 @@ namespace Canteen\Forms
 					."If you didn't receive an email please wait a few minutes before resubmitting.");
 			}
 			
-			if (!$this->ifError())
+			if (!$this->ifError)
 			{
 				// populate with new forgot string
 				$forgotString = uniqid();
 				
 				$result = $this->service('users')->updateUser(
-					$user->id,
-					'forgotString',
-					$forgotString
-				);
+					$user->id, 'forgotString', $forgotString);
 				
 				if (!$result)
 				{
@@ -80,11 +76,11 @@ namespace Canteen\Forms
 					{
 						// We should replace this with a more abstract method 
 						// of mailing notifications
-						$siteTitle = $this->data('siteTitle');
+						$siteTitle = $this->settings('siteTitle');
 						
 						$to = $user->email;
 						$subject = 'Password Reset - ' . $siteTitle;
-						$message = Parser::getTemplate('PasswordRecovery', array(
+						$message = $this->template('PasswordRecovery', array(
 							'url' => $url,
 							'siteTitle' => $siteTitle
 						));

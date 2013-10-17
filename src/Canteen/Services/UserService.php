@@ -102,7 +102,7 @@ namespace Canteen\Services
 		{
 			$this->internal('Canteen\Forms\Installer');
 			
-			if (!$this->db()->tableExists($this->table))
+			if (!$this->db->tableExists($this->table))
 			{
 				$sql = array();
 				
@@ -135,7 +135,7 @@ namespace Canteen\Services
 				  KEY `user_id` (`user_id`)
 				) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
 				
-				$success = (bool)$this->db()->execute($sql);
+				$success = (bool)$this->db->execute($sql);
 				
 				return $this->internalAddUser(
 					$username, 
@@ -159,7 +159,7 @@ namespace Canteen\Services
 		{
 			$now = date(DATE_FORMAT_MYSQL);
 
-			return $this->db()->delete($this->sessionsTable)
+			return $this->db->delete($this->sessionsTable)
 				->where(
 					"`user_id`='$id'",
 					"UNIX_TIMESTAMP('$now')-UNIX_TIMESTAMP(`created`) > $idledSec")
@@ -180,7 +180,7 @@ namespace Canteen\Services
 			$this->verify($frozenMins);
 			$this->verify($username, Validate::ALPHA);
 			
-			return $this->db()->update($this->table)
+			return $this->db->update($this->table)
 				->set('frozen', date(DATE_FORMAT_MYSQL, strtotime("+ $frozenMins minutes")))
 				->set('attempts', 0)
 				->where("`username`='$username'")
@@ -197,7 +197,7 @@ namespace Canteen\Services
 		{
 			$this->internal('Canteen\Authorization\Authorization');
 			
-			return $this->db()->update($this->table)
+			return $this->db->update($this->table)
 				->set('attempts', '`attempts`+1')
 				->where("`username`='$username'")
 				->result();
@@ -218,7 +218,7 @@ namespace Canteen\Services
 			$now = date(DATE_FORMAT_MYSQL);
 
 			// set all attempts to zero, updated frozen time
-			$update = $this->db()->update($this->table)
+			$update = $this->db->update($this->table)
 				->set('attempts', 0)
 				->set('frozen', $now)
 				->set('forgot_string', NULL)
@@ -226,12 +226,12 @@ namespace Canteen\Services
 				->result();
 
 			// clear any entries matching the same session id
-			$delete = $this->db()->delete($this->sessionsTable)
+			$delete = $this->db->delete($this->sessionsTable)
 				->where("`session_id`='$sessionId'")
 				->result();
 
 			// create a new entry with new ip, timestamp and session data
-			$insert = $this->db()->insert($this->sessionsTable)
+			$insert = $this->db->insert($this->sessionsTable)
 				->values(array(
 					'ip_address' => $ipAddress,
 					'user_id' => $id,
@@ -253,7 +253,7 @@ namespace Canteen\Services
 		{
 			$this->internal('Canteen\Authorization\Authorization');
 
-			return $this->db()->update($this->table)
+			return $this->db->update($this->table)
 				->set('login', date(DATE_FORMAT_MYSQL))
 				->where("`user_id`='$id'")
 				->result();
@@ -272,7 +272,7 @@ namespace Canteen\Services
 		{
 			$this->internal('Canteen\Authorization\Authorization');
 			
-			$results = $this->db()->select($this->propertiesJoined)
+			$results = $this->db->select($this->propertiesJoined)
 				->from(
 					$this->sessionsTable.' s', 
 					$this->table.' u' 
@@ -301,7 +301,7 @@ namespace Canteen\Services
 		{
 			$this->internal('Canteen\Authorization\Authorization');
 			
-			$result = $this->db()->select($this->propertiesJoined)
+			$result = $this->db->select($this->propertiesJoined)
 				->from(
 					$this->sessionsTable.' s', 
 					$this->table.' u'
@@ -330,7 +330,7 @@ namespace Canteen\Services
 			$this->internal('Canteen\Authorization\Authorization');
 			$this->verify($usernameOrEmail, Validate::EMAIL);
 			
-			$result = $this->db()->select($this->properties)
+			$result = $this->db->select($this->properties)
 				->from($this->table)
 				->where("(`username`='".$usernameOrEmail."' || 
 					`email`='".$usernameOrEmail."')",
@@ -364,7 +364,7 @@ namespace Canteen\Services
 			$this->verify($username, Validate::EMAIL);
 			$this->verify($forgotString, Validate::URI);
 			
-			return (bool)$this->db()->select('user_id')
+			return (bool)$this->db->select('user_id')
 				->from($this->table)
 				->where(
 					"`username`='$username'",
@@ -384,7 +384,7 @@ namespace Canteen\Services
 		{
 			$this->privilege();
 			
-			$result = $this->db()->select($this->properties)
+			$result = $this->db->select($this->properties)
 				->from($this->table)
 				->where('`user_id` in '.$this->valueSet($id))
 				->results();
@@ -406,7 +406,7 @@ namespace Canteen\Services
 			$this->internal('Canteen\Authorization\Authorization');
 			$usernameOrEmail = $this->valueSet($usernameOrEmail, Validate::EMAIL);
 			
-			$result = $this->db()->select($this->properties)
+			$result = $this->db->select($this->properties)
 				->from($this->table)
 				->where("`username` in $usernameOrEmail || `email` in $usernameOrEmail")
 				->results();
@@ -426,7 +426,7 @@ namespace Canteen\Services
 		{
 			$this->privilege();
 			
-			$result = $this->db()->select($this->properties)
+			$result = $this->db->select($this->properties)
 				->from($this->table)
 				->results();
 			
@@ -443,7 +443,7 @@ namespace Canteen\Services
 		{
 			$this->privilege(Privilege::ADMINISTRATOR);
 			
-			return $this->db()->delete($this->table)
+			return $this->db->delete($this->table)
 				->where('`user_id` in '.$this->valueSet($id))
 				->result();	
 		}
@@ -480,9 +480,9 @@ namespace Canteen\Services
 		*/
 		private function internalAddUser($username, $email, $password, $firstName, $lastName, $privilege)
 		{
-			$id = $this->db()->nextId($this->table, 'user_id');
+			$id = $this->db->nextId($this->table, 'user_id');
 			
-			return $this->db()->insert($this->table)
+			return $this->db->insert($this->table)
 				->values(array(
 					'user_id' => $id,
 					'username' => $this->verify($username, Validate::ALPHA),
@@ -542,7 +542,7 @@ namespace Canteen\Services
 				$properties[$k] = $this->verify($p, $type);
 			}
 			
-			return $this->db()->update($this->table)
+			return $this->db->update($this->table)
 				->set($properties)
 				->where('`user_id`='.$id)
 				->result();

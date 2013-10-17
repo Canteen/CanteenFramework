@@ -9,24 +9,172 @@ namespace Canteen\Parser
 	use Canteen\Profiler\Profiler;
 	use Canteen\Errors\CanteenError;
 	use Canteen\Utilities\StringUtils;
+	use Canteen\Utilities\CanteenBase;
 	
 	/**
 	*  Simple string parser to use for doing html subs. Located in the namespace __Canteen\Utilities__.
 	*  
 	*  @class Parser
+	*  @extends CanteenBase
 	*/
-	class Parser
+	class Parser extends CanteenBase
 	{
+		/** 
+		*  The list of valid templates 
+		*  @property {Array} _templates
+		*  @private
+		*/
+		private $_templates;
+	
+		/**
+		*  Create the loader
+		*/
+		public function __construct()
+		{
+			$this->_templates = array();
+		}
+		
+		/**
+		*  Add a single template
+		*  @method addTemplate
+		*  @param {String} The alias name of the template
+		*  @param {String} The full path to the template file
+		*/
+		public function addTemplate($name, $path)
+		{
+			if (isset($this->_templates[$name]))
+			{
+				throw new CanteenError(CanteenError::AUTOLOAD_TEMPLATE, $name);
+			}
+			$this->_templates[$name] = $path;
+		}
+		
+		/**
+		*  Register a directory that matches the Canteen structure
+		*  @method addManifest
+		*  @param {String} manifestPath The path of the manifest JSON to autoload
+		*/
+		public function addManifest($manifestPath)
+		{			
+			// Load the manifest json
+			$templates = $this->load($manifestPath, false);
+			
+			// Get the directory of the manifest file
+			$dir = dirname($manifestPath).'/';	
+			
+			// Include any templates
+			if (isset($templates))
+			{
+				foreach($templates as $t)
+				{
+					$this->addTemplate(basename($t, '.html'), $dir . $t);
+				}
+			}
+		}
+		
+		/**
+		*  Load a JSON file from a path, does the error checking
+		*  @method load
+		*  @private
+		*  @param {String} path The path to the .json file
+		*  @param {Boolean} [asAssociate=true] Return as associative array
+		*  @return {Array} The native object or array
+		*/
+		private function load($path, $asAssociative=true)
+		{
+			if (!fnmatch('*.json', $path) || !file_exists($path))
+			{
+				throw new CanteenError(CanteenError::JSON_INVALID, $path);
+			}
+			
+			$json = json_decode(file_get_contents($path), $asAssociative);
+			
+			if (empty($json))
+			{
+				throw new CanteenError(CanteenError::JSON_DECODE, $this->lastJsonError());
+			}
+			return $json;
+		}
+		
+		/**
+		*  Get the last JSON error message
+		*  @method lastJsonError
+		*  @private
+		*  @return {String} The json error message
+		*/
+		private function lastJsonError()
+		{
+			// For PHP 5.5.0+
+			if (function_exists('json_last_error_msg'))
+			{
+				return json_last_error_msg();
+			}
+			
+			// If we can get the specific error, we should
+			// Introduced in PHP 5.3.0
+			if (function_exists('json_last_error'))
+			{
+				$errors = array(
+					JSON_ERROR_DEPTH => 'Maximum stack depth exceeded',
+					JSON_ERROR_STATE_MISMATCH => 'Underflow or the modes mismatch',
+					JSON_ERROR_CTRL_CHAR => 'Unexpected control character found',
+					JSON_ERROR_SYNTAX => 'Syntax error, malformed JSON'
+				);
+				// Introduced in PHP 5.3.3
+				if (defined('JSON_ERROR_UTF8'))
+				{
+					$errors[JSON_ERROR_UTF8] = 'Malformed UTF-8 characters, possibly incorrectly encoded';
+				}
+				return ifsetor($errors[json_last_error()], '');
+			}
+			return '';
+		}
+		
+		/**
+		*  Get a template by name
+		*  @method getPath
+		*  @param {String} name The template name
+		*  @return {String} The path to the template
+		*/
+		public function getPath($template)
+		{
+			if (isset($this->_templates[$template]))
+			{
+				return $this->_templates[$template];
+			}
+			throw new CanteenError(CanteenError::TEMPLATE_UNKNOWN, $template);
+		}
+		
+		/**
+		*  Get a template content 
+		*  @method getContents
+		*  @param {String} The name of the template
+		*  @return {String} The string contents of the template
+		*/
+		public function getContents($template)
+		{
+			$path = $this->getPath($template);
+			
+			$contents = @file_get_contents($path);
+			
+			// If there's no file, don't do the rest of the regexps
+			if ($contents === false)
+			{
+				throw new CanteenError(CanteenError::TEMPLATE_NOT_FOUND, $path);
+			}
+			
+			return $contents;
+		}
+		
 		/**
 		*  Prepare the site content to be displayed
 		*  This does all of the data substitutions and url fixes
 		*  @method parse
-		*  @static
 		*  @param {String} content The content data
 		*  @param {Dictionary} substitutions The substitutions key => value replaces {{key}} in template
 		*  @return {String} The parsed template
 		*/
-		public static function parse(&$content, $substitutions)
+		public function parse(&$content, $substitutions)
 		{
 			StringUtils::checkBacktrackLimit($content);
 			
@@ -34,82 +182,74 @@ namespace Canteen\Parser
 			if (empty($content)) return $content;
 			
 			// If the constant is defined
-			$profiler = ifconstor('PROFILER', false);
+			$profiler = $this->profiler;
 			
 			// If we contain subs, lets do it
 			if (preg_match('/\{\{[^\}]*\}\}/', $content))
 			{
-				if ($profiler) Profiler::start('Parse Templates');
-				self::parseTemplates($content, $substitutions);
+				if ($profiler) $profiler->start('Parse Templates');
+				$this->parseTemplates($content, $substitutions);
 				StringUtils::checkBacktrackLimit($content);
-				if ($profiler) Profiler::end('Parse Templates');
+				if ($profiler) $profiler->end('Parse Templates');
 
-				if ($profiler) Profiler::start('Parse If Blocks');
-				self::parseIfBlocks($content, $substitutions);
+				if ($profiler) $profiler->start('Parse If Blocks');
+				$this->parseIfBlocks($content, $substitutions);
 				StringUtils::checkBacktrackLimit($content);
-				if ($profiler) Profiler::end('Parse If Blocks');
+				if ($profiler) $profiler->end('Parse If Blocks');
 				
-				if ($profiler) Profiler::start('Parse Loops');
-				self::parseLoops($content, $substitutions);
+				if ($profiler) $profiler->start('Parse Loops');
+				$this->parseLoops($content, $substitutions);
 				StringUtils::checkBacktrackLimit($content);
-				if ($profiler) Profiler::end('Parse Loops');
+				if ($profiler) $profiler->end('Parse Loops');
 
-				if ($profiler) Profiler::start('Parse Substitutions');
+				if ($profiler) $profiler->start('Parse Substitutions');
 				// Do the template replacements
 			   	foreach($substitutions as $id=>$val)
 				{
 					// Define the replace pattern
-					if (self::contains($id, $content) && !is_array($val))
+					if ($this->contains($id, $content) && !is_array($val))
 					{
-						$content = preg_replace("/\{\{$id\}\}/", $val, $content);
+						//$content = preg_replace("/\{\{$id\}\}/", $val, $content);
+						$content = str_replace('{{'.$id.'}}', $val, $content);
 					}
 					StringUtils::checkBacktrackLimit($content);
 				}
-				if ($profiler) Profiler::end('Parse Substitutions');
-			}
-			
-			// Fix the links
-			if ($profiler) Profiler::start('Parse Fix Path');
-			self::fixPath($content, ifconstor('BASE_PATH', ''));
-			if ($profiler) Profiler::end('Parse Fix Path');
-			
+				if ($profiler) $profiler->end('Parse Substitutions');
+			}	
 			return $content;
 		}
 		
 		/**
 		*  Get the template by form name
-		*  @method getTemplate
-		*  @static
+		*  @method template
 		*  @param {String} name The name of the template as defined in Autoloader
 		*  @param {Dictionary} [substitutions=array()] The collection of data to substitute
 		*/
-		public static function getTemplate($name, $substitutions=array())
+		public function template($name, $substitutions=array())
 		{
-			$contents = Site::instance()->getLoader()->getContents($name);
-			return self::parse($contents, $substitutions);
+			$contents = $this->getContents($name);
+			return $this->parse($contents, $substitutions);
 		}
 		
 		/**
 		*  Check to see if a string contains a sub tag
 		*  @method contains
-		*  @static
 		*  @param {String} needle The tag name to look for with out the {{}}
 		*  @param {String} haystack The string to search in
 		*  @return {Boolean} If the tag is in the string
 		*/
-		public static function contains($needle, $haystack)
+		public function contains($needle, $haystack)
 		{
-			return preg_match("/\{\{$needle\}\}/", $haystack);
+			return strpos($haystack, '{{'.$needle.'}}') !== false;
 		}
 		
 		/**
 		*  Remove the empty substitution tags
-		*  @method removeEmpties
-		*  @static 
+		*  @method removeEmpties 
 		*  @param {String} content The content string
 		*  @return {String} The content string
 		*/
-		public static function removeEmpties(&$content)
+		public function removeEmpties(&$content)
 		{
 			StringUtils::checkBacktrackLimit($content);
 			$content = preg_replace('/\{\{[^\}]+\}\}/', '', $content);
@@ -119,12 +259,11 @@ namespace Canteen\Parser
 		/**
 		*  Parse a url with substitutions
 		*  @method parseFile
-		*  @static
 		*  @param {String} url The path to the template
 		*  @param {Dictionary} substitutions The substitutions key => value replaces {{key}} in template
 		*  @return {String} The parsed template
 		*/
-		public static function parseFile($url, $substitutions)
+		public function parseFile($url, $substitutions)
 		{			
 			$content = @file_get_contents($url);
 			
@@ -135,18 +274,17 @@ namespace Canteen\Parser
 			}
 			
 			// Do a regular parse with the string
-			return self::parse($content, $substitutions);
+			return $this->parse($content, $substitutions);
 		}
 		
 		/**
 		*  Parse a content string if blocks based on configs
 		*  @method parseIfBlocks
-		*  @static
 		*  @param {String} content The content string
 		*  @param {Dictionary} substitutions The substitutions array
 		*  @return {String} The updated content string
 		*/
-		private static function parseIfBlocks(&$content, $substitutions)
+		private function parseIfBlocks(&$content, $substitutions)
 		{
 			$ifPattern = '/\{\{(if\:(\!?[a-zA-Z]+))\}\}(.*?)\{\{fi\:\2\}\}/s';
 			
@@ -170,7 +308,7 @@ namespace Canteen\Parser
 					$content = preg_replace($pattern, '', $content);
 					
 					// Check for nested blocks
-					$content = self::parseIfBlocks($content, $substitutions);
+					$content = $this->parseIfBlocks($content, $substitutions);
 				}
 			}
 			return $content;
@@ -179,12 +317,11 @@ namespace Canteen\Parser
 		/**
 		*  Parse a content string into loops
 		*  @method parseLoops
-		*  @static
 		*  @param {String} content The content string
 		*  @param {Dictionary} substitutions The substitutions array
 		*  @return {String} The updated content string
 		*/
-		private static function parseLoops(&$content, $substitutions)
+		private function parseLoops(&$content, $substitutions)
 		{
 			// Check for template matches
 			preg_match_all('/\{\{(for\:([a-zA-Z]+))\}\}(.*?)\{\{endfor\:\2\}\}/s', $content, $matches);
@@ -203,7 +340,7 @@ namespace Canteen\Parser
 							if (is_array($sub))
 							{
 								$template = $matches[3][$i];
-								$result .= self::parse($template, $sub);
+								$result .= $this->parse($template, $sub);
 							}
 							else
 							{
@@ -226,12 +363,11 @@ namespace Canteen\Parser
 		/**
 		*  Search for and parse templates {{template:SomeTemplate}}
 		*  @method parseTemplates
-		*  @static
 		*  @param {String} content The content string
 		*  @param {Dictionary} substitutions The substitutions array
 		*  @return {String} The updated content string
 		*/
-		private static function parseTemplates(&$content, &$substitutions)
+		private function parseTemplates(&$content, &$substitutions)
 		{
 			// Check for template matches
 			preg_match_all("/\{\{(template\:([a-zA-Z]+))\}\}/", $content, $matches);
@@ -240,7 +376,7 @@ namespace Canteen\Parser
 			{
 				foreach($matches[1] as $i=>$template)
 				{
-					$substitutions[$template] = self::getTemplate(
+					$substitutions[$template] = $this->template(
 						$matches[2][$i], 
 						$substitutions
 					);
@@ -252,16 +388,15 @@ namespace Canteen\Parser
 		/**
 		*  Replaces any path (href/src) with the base
 		*  @method fixPath
-		*  @static
 		*  @param {String} content The content string
 		*  @param {Dictionary} basePath The string to prepend all src and href with
 		*  @return {String} The content with paths fixed
 		*/
-		public static function fixPath(&$content, $basePath)
+		public function fixPath(&$content, $basePath)
 		{
 			// Replace the path to the stuff
 		    $content = preg_replace(
-				'#(href|src)=["\']([^/][^:"\']*)["\']#', 
+				'/(href|src)=["\']([^\/][^:"\']*)["\']/', 
 				'$1="'.$basePath.'$2"', 
 				$content
 			);

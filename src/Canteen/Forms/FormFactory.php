@@ -53,13 +53,6 @@ namespace Canteen\Forms
 		*  @private
 		*/
 	    private $_formData = array();
-	
-		/** 
-		*  The current form 
-		*  @property {String} _formId
-		*  @private
-		*/
-		private $_formId = null;
     
 		/**
 		*  Allow only certain forms to be run before site loads
@@ -80,14 +73,12 @@ namespace Canteen\Forms
 	    /**
 		*  Process any forms
 		*  @method process
-		*  @param {String} formId The form id (e.g. LoginForm = login-form)
+		*  @param {String} formClass The form id (e.g. LoginForm = login-form)
 		*  @param {Boolean} [async=false] If the request to process is an ajax-style request
 		*  @return {Object} If the request is async, the result object
 		*/
-	    public function process($formId, $async=false)
-	    {
-			$this->_formId = $formId;
-            
+	    public function process($formClass, $async=false)
+	    {            
             //Before process any form request, we check that only
             //posts are sent from the current domain
             //because its possible to spoof HTTP_REFERER 
@@ -98,16 +89,14 @@ namespace Canteen\Forms
                 throw new CanteenError(CanteenError::WRONG_DOMAIN, $_SERVER['HTTP_REFERER']);
            	}
            			
-			if (!class_exists($formId)) 
+			if (!class_exists($formClass)) 
 			{
-				throw new CanteenError(CanteenError::INVALID_FORM, $formId);
+				throw new CanteenError(CanteenError::INVALID_FORM, $formClass);
 			}
 			
-			$form = new $formId;
-			
-			if (!($form instanceof FormBase))
+			if (!in_array('Canteen\Forms\FormBase', class_parents($formClass)))
 			{
-				throw new CanteenError(CanteenError::FORM_INHERITANCE, $formId);
+				throw new CanteenError(CanteenError::FORM_INHERITANCE, $formClass);
 			}
 			
 			// if we are providing a random session id, register form session
@@ -126,12 +115,10 @@ namespace Canteen\Forms
 					$_SESSION['formSession'][] = (string)$_POST['formSession'];
 				}
 			}
-
-			$form->id = $this->_formId;
 			
 			try
 			{
-				$form->process();
+				$form = new $formClass;
 			}
 			catch(UserError $e)
 			{
@@ -148,9 +135,9 @@ namespace Canteen\Forms
 			// If there's no form error then flush the whole cache
 			// this might be a little over-doing it
 			// but is sufficient for now
-			if (!$this->ifError())
+			if (!$this->ifError)
 			{
-				$this->cache()->flush();
+				$this->cache->flush();
 			}
 
 			if (!$async) return;
@@ -159,8 +146,8 @@ namespace Canteen\Forms
 				array(
 					'type' => 'formFeedback',
 					'data' => ifsetor($this->_formData),
-					'ifError' => $this->ifError(),
-					'messages' => $this->ifError() ? 
+					'ifError' => $this->ifError,
+					'messages' => $this->ifError ? 
 						ifsetor($this->_errorMessages):
 						ifsetor($this->_successMessages)
 				)
@@ -186,17 +173,25 @@ namespace Canteen\Forms
 	    {
 	        $this->_successMessages[] = $message;
 	    }
-    
-	    /**
-		*  If the form has an error
-		*  @method ifError
-		*  @return {Boolean} if there's an error
+	
+		/**
+		*  The getter 
 		*/
-	    public function ifError()
-	    {
-	        return count($this->_errorMessages);
-	    }
-    
+		public function __get($name)
+		{
+			/**
+			*  If the form has an error
+			*  @property {Boolean} ifError
+			*  @readOnly
+			*/
+			if ($name == 'ifError')
+			{
+				return count($this->_errorMessages) > 0;
+			}
+			return parent::__get($name);
+		}
+		
+		    
 		/**
 		*  Return the feedback (errors and successes) as a list 
 		*  @method getFeedback

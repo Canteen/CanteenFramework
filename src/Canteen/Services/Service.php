@@ -175,14 +175,20 @@ namespace Canteen\Services
 		}
 		
 		/**
-		*  Convenience getter for the database connection 
-		*  @method db
-		*  @protected
-		*  @return {Database} Instance of the DB class
-		*/
-		protected function db()
+		*   The public getter 
+		*/		
+		public function __get($name)
 		{
-			return Site::instance()->getDB();
+			/**
+			*  Convenience getter for the database connection 
+			*  @property {Database} db
+			*  @readOnly
+			*/
+			if ($name == 'db')
+			{
+				return $this->site->$name;
+			}
+			return parent::__get($name);
 		}
 		
 		/**

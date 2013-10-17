@@ -42,7 +42,7 @@ namespace Canteen\Forms
 				$this->error("There was a problem with the target version of the database");
 			}
 			
-			if (!$this->ifError())
+			if (!$this->ifError)
 			{
 				while ($version < $targetVersion && file_exists($updatesFolder.$version.'.php'))
 				{
@@ -55,7 +55,7 @@ namespace Canteen\Forms
 
 					// Update the config and the site version number
 					$this->service('config')->updateValue($variableName, $version);
-					$this->site()->setData($variableName, $version);
+					$this->site->addSetting($variableName, $version);
 				}
 			}
 		}

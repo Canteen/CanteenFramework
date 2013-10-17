@@ -18,9 +18,8 @@ namespace Canteen\Forms
 	{
 		/**
 		*  Process the form and handle the $_POST data.
-		*  @method process 
 		*/
-		public function process()
+		public function __construct()
 		{			
 			$userId = $this->verify(ifsetor($_POST['userId']));
 			$user = $this->service('users')->getUserById($userId);
@@ -67,7 +66,7 @@ namespace Canteen\Forms
 			}
 			
 			// Don't process if we have errors
-			if ($this->ifError()) return;
+			if ($this->ifError) return;
 			
 			// Update user
 			if ($user)
@@ -90,7 +89,7 @@ namespace Canteen\Forms
 					else
 					{
 						// The user is trying to update their own password
-						if ($isSelf && $this->user()->updatePassword($password))
+						if ($isSelf && $this->user->updatePassword($password))
 						{
 							$this->success('Updated your password');
 						}

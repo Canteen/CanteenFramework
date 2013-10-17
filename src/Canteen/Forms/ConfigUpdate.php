@@ -16,9 +16,8 @@ namespace Canteen\Forms
 	{
 		/**
 		*  Process the form and handle the $_POST data.
-		*  @method process 
 		*/
-		public function process()
+		public function __construct()
 		{
 			if (isset($_POST['saveButton']))
 			{
@@ -36,7 +35,7 @@ namespace Canteen\Forms
 				if (!$config)
 					$this->error("No valid config matching id");
 					
-				if (!$this->ifError())
+				if (!$this->ifError)
 				{
 					$properties = array();
 
@@ -95,7 +94,7 @@ namespace Canteen\Forms
 				if (!$value) 
 					$this->error("Value is required");
 					
-				if (!$this->ifError())
+				if (!$this->ifError)
 				{
 					if (!$this->service('config')->addConfig($name, $value, $type))
 					{
