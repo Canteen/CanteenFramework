@@ -222,8 +222,7 @@ namespace Canteen
 		*  @param {String|Dictionary} settings.dbName The name of the database or collection of aliases and databases ('default' is required)
 		*  @param {String} [settings.dbHost='localhost'] The name of the database host
 		*  @param {int} [settings.level=DeploymentStatus::LIVE] The deployment level of the site, see DeploymentStatus class for more info
-		*  @param {Array} [settings.domains=null] Collection of domains acceptable for this deployment to run
-		*  @param {String} [settings.domain='*'] The domain that's acceptable for this deployment to run, default is anywhere
+		*  @param {Array|String} [settings.domain='*'] Single domain or collection of domains acceptable for this deployment to run
 		*  @param {Boolean} [settings.debug=false] The debug mode
 		*  @param {Boolean} [settings.cacheEnabled=false] If the cache is enabled
 		*  @param {Boolean} [settings.compress=false] If the site should be compressed with gzip
@@ -241,6 +240,18 @@ namespace Canteen
 			define('MAIN_TEMPLATE', 'MainTemplate');
 			
 			self::$_instance = $this;
+			
+			// Create the object to handle forms
+			$this->_formFactory = new FormFactory();
+			
+			// Setup the parser to render markup templates
+			$this->_parser = new Parser();
+			
+			// Load the canteen templates
+			$this->_parser->addManifest(CANTEEN_PATH . 'Templates/templates.json');
+			
+			// Initialize the logger
+			Logger::init();
 			
 			try
 			{
@@ -263,15 +274,23 @@ namespace Canteen
 		*  @param {String|Array|Dictionary} settings The deployment json settings path
 		*/
 		private function setup($settings)
-		{
-			Logger::init();
-			
-			$this->_parser = new Parser();
-			
+		{			
 			// Check for the version of PHP required to do the autoloading/namespacing
 			if (version_compare(self::MIN_PHP_VERSION, PHP_VERSION) >= 0) 
 			{
 				throw new CanteenError(CanteenError::INSUFFICIENT_PHP, 'Minimum PHP version: '.self::MIN_PHP_VERSION);
+			}
+			
+			// Check that the settings exists
+			if (is_string($settings) && !file_exists($settings))
+			{
+				$this->_formFactory->startup('Canteen\Forms\Setup');
+				die($this->_parser->template('Setup',
+					array(
+						'formFeedback' => $this->_formFactory->getFeedback(),
+						'configFile' => $settings
+					)
+				));
 			}
 			
 			// Check the domain for the current deployment level 
@@ -291,16 +310,10 @@ namespace Canteen
 			error_reporting(DEBUG ? E_ALL : 0);
 			
 			// Turn on or off the logger
-			Logger::instance()->enabled = DEBUG;
-			
-			// Load the canteen templates
-			$this->_parser->addManifest(CANTEEN_PATH . 'Templates/templates.json');			
+			Logger::instance()->enabled = DEBUG;	
 			
 			// Setup the cache
 			$this->_cache = new ServerCache($this->_settings['cacheDirectory']);
-			
-			// Create a new factory to intercept form requests
-			$this->_formFactory = new FormFactory();
 			
 			// Create the non-database services
 			new TimeService;

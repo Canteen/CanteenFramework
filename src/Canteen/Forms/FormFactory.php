@@ -39,21 +39,31 @@ namespace Canteen\Forms
 		*  @property {Array} _successMessages
 		*  @private
 		*/
-	    private $_successMessages = array();
+	    private $_successMessages;
     
 	    /** 
 		*  Contain the form errors 
 		*  @property {Array} _errorMessages
 		*/
-	    private $_errorMessages = array();
+	    private $_errorMessages;
     
 	    /** 
 		*  Contain the form data to return 
 		*  @property {Array} _formData
 		*  @private
 		*/
-	    private $_formData = array();
+	    private $_formData;
     
+		/**
+		*  Setup the collections
+		*/
+		public function __construct()
+		{
+			$this->_formData = array();
+			$this->_errorMessages = array();
+			$this->_successMessages = array();
+		}
+		
 		/**
 		*  Allow only certain forms to be run before site loads
 		*  @method startup
@@ -84,9 +94,13 @@ namespace Canteen\Forms
             //because its possible to spoof HTTP_REFERER 
             //this shouldn't be relied on from people spoofing forms
 
-            if (strpos($_SERVER['HTTP_REFERER'], HOST) !== 0) 
+			$host = ifconstor('HOST', '//'.ifsetor($_SERVER['HTTP_HOST']));
+			$refer = ifsetor($_SERVER['HTTP_REFERER']);
+			$refer = substr($refer, strpos($refer, ':')+1);
+			
+            if (strpos($refer, $host) !== 0) 
             {
-                throw new CanteenError(CanteenError::WRONG_DOMAIN, $_SERVER['HTTP_REFERER']);
+                throw new CanteenError(CanteenError::WRONG_DOMAIN, $refer);
            	}
            			
 			if (!class_exists($formClass)) 
@@ -135,7 +149,7 @@ namespace Canteen\Forms
 			// If there's no form error then flush the whole cache
 			// this might be a little over-doing it
 			// but is sufficient for now
-			if (!$this->ifError)
+			if (!$this->ifError && $this->cache)
 			{
 				$this->cache->flush();
 			}

@@ -25,7 +25,9 @@
 		}
 		else
 		{
-			header('Location: '. HOST . BASE_PATH . $uri);
+			$host = ifconstor('HOST', '//'.ifsetor($_SERVER['HTTP_HOST']));
+			$basePath = ifconstor('BASE_PATH', dirname($_SERVER['PHP_SELF'].'/'));
+			header('Location: '.  $host . $basePath . $uri);
 		}
 		die();
     }

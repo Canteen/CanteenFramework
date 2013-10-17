@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+	<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Canteen Setup</title>
+		<link rel="stylesheet" src="http://normalize-css.googlecode.com/svn/trunk/normalize.css" />
+		{{template:CanteenStyles}}
+		<style type="text/css">
+			.output {
+				font-family: monospace;
+				white-space: pre;
+				border:1px solid #bbb;
+				background-color:#eee;
+				padding:20px;
+				border-radius:4px;
+				color:#666;
+				font-size:14px;
+				line-height:1.4;
+				width:100%;
+				display:block;
+				height:425px;
+				overflow:hidden;
+				-webkit-box-sizing: border-box;
+				-moz-box-sizing: border-box;
+				box-sizing: border-box;
+				outline:0;
+				word-wrap: normal;
+				overflow:hidden;
+				margin-bottom:20px;
+			}
+			.short {
+				height:310px;
+			}
+		</style>
+		<script type="text/javascript">
+		    function selectAll(obj)
+			{
+		        var text=eval(obj);
+		        text.focus();
+		        text.select();
+		        if (!document.all) return; // IE only
+		        r = text.createTextRange();
+		        r.execCommand('Copy');
+		    }
+			function refresh()
+			{
+				document.location.reload(true);
+			}
+		</script>
+	</head>
+	<body>
+		<div id="frame">
+			<h1>Setup</h1>
+			<div class="content">
+				<h2>Manual Save Config</h2>
+				<p>Unable to save the configuration files because the source directory isn't writeable. 
+					Please save these files manually with the information below.</p>
+				<p><strong>{{configFile}}</strong></p>
+				<textarea onclick="selectAll(this);" class="output">{{config}}</textarea>
+				<p><strong>.htaccess</strong></p>
+				<textarea onclick="selectAll(this);" class="output short">{{htaccess}}</textarea>
+			</div>
+			<div class="buttons">
+				<input type="button" class="button" onclick="refresh();" value="Refresh">
+			</div>
+		</div>
+	</body>
+</html>

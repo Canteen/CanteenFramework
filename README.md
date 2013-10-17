@@ -13,60 +13,18 @@ Install is available using [Composer](http://getcomposer.org).
 ```bash
 composer require canteen/framework dev-master
 ```
-Your site should contain the following files at the root directory:
-
-+ index.php
-+ config.php
-+ .htaccess
 
 ###Contents of index.php
 
-Include the Composer autoloader in your index and render the new site.
-
 ```php
+// Include the Composer autoloader
 require 'vendor/autoload.php';
+
+// Create a new Canteen Site
 $site = new Canteen\Site();
+
+// Render the page
 $site->render();
-```
-
-###Contents of config.php
-
-Setup your deployment of the site. The minimum required settings are specified below.
-
-```php
-return array(
-	'dbUsername' => 'user',
-	'dbPassword' => 'pass1234',
-	'dbName' => 'my_database',
-);
-```
-
-###Contents of .htaccess
-
-Canteen requires that an .htaccess file be installed alongside your index.php. This manages all of the URL requests and passes them to the site. The example below is assuming the index.php is at the root-domain of your site.
-
-```apache
-DirectoryIndex index.php
-
-<IfModule mod_rewrite.c>
-	RewriteEngine On
-	RewriteBase /
-	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteCond %{REQUEST_FILENAME} !-f
-	RewriteRule . /index.php [L]
-</IfModule>
-
-#Unauthorized
-ErrorDocument 401 /401
-
-#Forbidden
-ErrorDocument 403 /403
-
-#Not Found
-ErrorDocument 404 /404
-
-#Internal
-ErrorDocument 500 /500
 ```
 
 ###Rebuild Documentation

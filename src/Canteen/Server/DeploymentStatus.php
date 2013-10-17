@@ -174,10 +174,10 @@ namespace Canteen\Server
 			// Setup the data
 			$this->settings = array(
 				'domain' => $domain,
-				'host' => 'http://'.$domain,
+				'host' => '//'.$domain,
 				'uriRequest' => $uriRequest,
 				'basePath' => $basePath,
-				'baseUrl' => 'http://'.$domain.$basePath,
+				'baseUrl' => '//'.$domain.$basePath,
 				'fullPath' => $basePath . $uriRequest
 			);
 			
@@ -186,19 +186,18 @@ namespace Canteen\Server
 			{
 				$deploy = array_merge($this->defaultSettings, $deploy);
 				
-				$ds = ifsetor($deploy['domains'], array());
-				$d = ifsetor($deploy['domain']);
+				$domains = ifsetor($deploy['domain']);
 				$l = ifsetor($deploy['level']);
 				
-				if ($d) $ds[] = $d;
+				if (is_string($domains)) $domains = array($domains);				
 				
 				// Make sure the array matches
-				if (StringUtils::fnmatchInArray($domain, $ds))
+				if (StringUtils::fnmatchInArray($domain, $domains))
 				{
 					// Set the level to be the level property or the index
 					define('DEPLOYMENT_LEVEL', $l);
 					
-					unset($deploy['domain'], $deploy['domains']);
+					unset($deploy['domains'], $domains);
 					
 					// If we're local
 					$deploy['local'] = DEPLOYMENT_LEVEL == self::LOCAL;

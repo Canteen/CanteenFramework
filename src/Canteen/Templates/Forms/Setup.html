@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Canteen Setup</title>
+		<link rel="stylesheet" src="http://normalize-css.googlecode.com/svn/trunk/normalize.css" />
+		{{template:CanteenStyles}}
+	</head>
+	<body>
+		<div id="frame">
+			<h1>Setup</h1>
+			<form method="post" autocomplete="off">
+				<fieldset>
+					<h2>Database Setup</h2>
+					<p>Let's establish a database connection with a
+						MySQL database.</p>
+					{{formFeedback}}
+					<div class="row">
+						<label for="dbHost">Host</label>
+						<input type="text" id="dbHost" name="dbHost" class="text" value="localhost">
+					</div>
+					<div class="row">
+						<label for="dbUsername">User</label>
+						<input type="text" id="dbUsername" name="dbUsername" class="text">
+					</div>
+					<div class="row">
+						<label for="dbPassword">Password</label>
+						<input type="password" id="dbPassword" name="dbPassword" class="text">
+					</div>
+					<div class="row">
+						<label for="dbName">Database</label>
+						<input type="text" id="dbName" name="dbName" class="text">
+						<div class="note">
+							If defining multiple databases, they should be separated with commas.
+							The first database is the default location where Canteen will be installed.
+						</div>
+					</div>
+					<br class="clear">
+				</fieldset>
+				<fieldset>
+					<h2>Advanced Options</h2>
+					<div class="row">
+						<label for="domain">Domain</label>
+						<input type="text" id="domain" name="domain" class="text" value="*">
+						<div class="note">
+							Specify which domains that the site can run on. The default is 
+							all domains. This is helpful if you're setting up different deployment
+							and you want your development site to be accessible from 
+							dev.example.com. You can separately set any of these options for 
+							an individual deployment level. Multiple domains should be comma-separated
+							and can use the catch-all (e.g., <em>10.1.*.*, 192.168.*.*, mysite.local</em>).
+						</div>
+					</div>
+					<div class="row">
+						<label for="level">Deployment Level</label>
+						<select id="level" name="level">
+							<option value="1">Local</option>
+							<option value="2">Development</option>
+							<option value="3">Staging</option>
+							<option value="4" selected>Live</option>
+						</select>
+						<div class="note">
+							This is implementation specific by your site and is a way to organize
+							different database credentials, for instance, on different servers.
+							Please note: setting a "Local" level will disable any of the 
+							privilege restrictions on database calls. This should not be used
+							on a live, public-accessible site.
+						</div>
+					</div>
+					<div class="row">
+						<label for="debug">Debug Mode</label>
+						<input type="checkbox" id="debug" name="debug" class="checkbox">
+						<div class="note">
+							Useful for testing purposes, this allows users to see verbose 
+							error messages for crashes or thrown errors. It's <strong>strongly 
+							recommended</strong> that debug mode is not enabled on a live 
+							deployment level. 
+						</div>
+					</div>
+					<div class="row">
+						<label for="cacheEnabled">Enable Cache</label>
+						<input type="checkbox" id="cacheEnabled" name="cacheEnabled" class="checkbox">
+						<div class="note">
+							Enabling cache turns-on the use of memcached to cache the page
+							rendering and database queries. If memcached is not available,
+							the fallback is directory-based caching (see Cache Directory option).
+						</div>
+					</div>
+					<div class="row">
+						<label for="cacheDirectory">Cache Directory</label>
+						<input type="text" id="cacheDirectory" name="cacheDirectory" class="text">
+						<div class="note">
+							The path to the cache directory. This directory must be writable
+							by Apache.
+						</div>
+					</div>
+					<div class="row">
+						<label for="minify">Minify</label>
+						<input type="checkbox" id="minify" name="minify" class="checkbox">
+						<div class="note">
+							All site markup is minified by removing extraneous whitespace
+							tables and newlines. Useful for reducing markup file-size.
+						</div>
+					</div>
+					<div class="row">
+						<label for="compress">Compression</label>
+						<input type="checkbox" id="compress" name="compress" class="checkbox">
+						<div class="note">
+							The zlib extension must be installed on Apache to use this 
+							feature. The buffer output is compressed using zlib and is
+							the best method for minimizing output file-size.
+						</div>
+					</div>
+					<div class="clear buttons">
+						<input type="hidden" name="configFile" value="{{configFile}}">
+						<input type="hidden" name="form" value="Canteen\Forms\Setup">
+						<input type="submit" name="setup" value="Setup">						
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</body>
+</html>

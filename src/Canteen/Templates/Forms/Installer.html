@@ -5,69 +5,6 @@
 		<title>Canteen Installer</title>
 		<link rel="stylesheet" src="http://normalize-css.googlecode.com/svn/trunk/normalize.css" />
 		{{template:CanteenStyles}}
-		<style type="text/css">
-			legend{
-				font-weight:bold;
-				margin-bottom:15px;
-				font-size:120%;
-			}
-			fieldset {
-				border:0;
-				padding:0;
-				margin:0;
-			}
-			form {
-				margin:0 auto;
-				padding:0;
-				width:60%;
-				min-width:300px;
-			}
-			.row {
-				height:2.5em;
-			}
-			.row label {
-				float:left;
-				width:40%;
-				padding-top: 5px;
-				color: #999;
-			}
-			.row .text {
-				float:left;
-				width:60%;
-				-webkit-box-sizing: border-box;
-				-moz-box-sizing: border-box;
-				box-sizing: border-box;
-				-webkit-appearance: none;
-				-moz-appearance:none;
-				appearance:none;
-				outline:none;
-				border:1px solid #ccc;
-				padding:8px;
-				font-size:16px;
-				border-radius:4px;
-			}
-			
-			.buttons {
-				text-align:center;
-				padding:20px 0;
-			}
-			.buttons input {
-				font-size:110%;
-				padding:8px 50px;
-				cursor:pointer;
-				background-color:#888;
-				color:#fff !important;
-				border:1px solid #555;
-				border-bottom-width:2px;
-				text-decoration:none;
-				margin:0 2px;
-				border-radius:25px;
-			}
-			.buttons input:hover {
-				border-color:#751700;
-				background: #a02500;
-			}
-		</style>
 	</head>
 	<body>
 		<div id="frame">
@@ -114,10 +51,19 @@
 					<div class="row">
 						<label for="contentPath">Content Path</label>
 						<input type="text" id="contentPath" name="contentPath" class="text" value="assets/html/content/">
+						<div class="note">
+							This is the relative path to where the HTML page files are store. Each page
+							on your site has a corresponding page in this directory. For
+							instance, if your page stub was <em>/about</em> there would be an
+							<em>about.html</em> in this directory.
+						</div>
 					</div>
 					<div class="row">
 						<label for="templatePath">Template Path</label>
 						<input type="text" id="templatePath" name="templatePath" class="text" value="assets/html/index.html">
+						<div class="note">
+							This is the relative location to the template for your site.
+						</div>
 					</div>
 					
 					<div class="buttons">

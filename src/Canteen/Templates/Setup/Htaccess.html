@@ -1,0 +1,14 @@
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteBase {{basePath}}
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule . {{basePath}}index.php [L]
+</IfModule>
+
+ErrorDocument 401 {{basePath}}401
+ErrorDocument 403 {{basePath}}403
+ErrorDocument 404 {{basePath}}404
+ErrorDocument 500 {{basePath}}500

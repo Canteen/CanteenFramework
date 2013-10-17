@@ -68,7 +68,7 @@ namespace Canteen\Utilities
 		*  @final
 		*  @static
 		*/
-		const FULL_TEXT = '/^[a-zA-Z0-9\%\?\'\"\/\\\.\,\:\;\-\_\=\+\#\!\&\@\{\}\(\)\|\[\] ]*$/';
+		const FULL_TEXT = '/^[a-zA-Z0-9\%\?\'\"\/\\\.\,\:\;\-\_\=\+\#\!\&\@\{\}\(\)\|\[\]\* ]*$/';
 				
 		/** 
 		*  Validation Type: remove all non standard uri characters, includes a-z, A-Z, 0-9, -, _, ., /
