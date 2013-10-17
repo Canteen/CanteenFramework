@@ -19,14 +19,13 @@ namespace Canteen
 	use Canteen\Services\Service;
 	use Canteen\Parser\PageBuilder;
 	use Canteen\Parser\Parser;
-	use Canteen\Utilities\CanteenBase;
 	use Canteen\Utilities\StringUtils;
 	use Canteen\Utilities\Templates;
 	use Canteen\Database\Database;
 	use Canteen\HTML5\SimpleList;
 	use \Exception;
 	
-	class Site extends CanteenBase
+	class Site
 	{	
 		/** 
 		*  The current version of the Canteen site 
@@ -214,8 +213,7 @@ namespace Canteen
 		*	// Echo out the page result
 		*	$site->render();
 		*  
-		*  @class Site 
-		*  @extends CanteenBase
+		*  @class Site
 		*  @constructor
 		*  @param {String|Array|Dictionary} [settings='config.php'] The path to the settings PHP, the collection of
 		*            deployment settings, or the single deployment dictionary.
@@ -345,7 +343,7 @@ namespace Canteen
 				{
 					if (!$this->_db->tableExists('config'))
 					{
-						die($this->template('Installer', array(
+						die($this->_parser->template('Installer', array(
 							'formFeedback' => $this->_formFactory->getFeedback()
 						)));
 					}
@@ -463,7 +461,7 @@ namespace Canteen
 			if ($version < $targetVersion && file_exists($updatesFolder.$version.'.php'))
 			{
 				// Specifically ask for an database update
-				die($this->template('UpgradeDatabase', array(
+				die($this->_parser->template('UpgradeDatabase', array(
 					'targetVersion' => $targetVersion,
 					'version' => $version,
 	 				'updatesFolder' => $updatesFolder,
@@ -602,8 +600,8 @@ namespace Canteen
 						$data['stackTrace'] = new SimpleList(
 							$data['stackTrace'], null, 'ol');
 					}
-					$result = $this->template('FatalError', $data);
-					$this->removeEmpties($result);
+					$result = $this->_parser->template('FatalError', $data);
+					$this->_parser->removeEmpties($result);
 				}
 			}
 			return $result;
