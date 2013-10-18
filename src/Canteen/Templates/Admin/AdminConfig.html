@@ -1,6 +1,6 @@
 <div class="formContainer configUpdate">
 	{{for:configs}}
-	<form action="{{fullPath}}{{queryString}}" method="post" autocomplete="off">
+	<form action="{{fullPath}}{{queryString}}" method="post">
 		<fieldset class="clearfix formRow">
 			{{formFeedback}}
 			<label for="configValue{{id}}">{{name}}</label>
@@ -16,7 +16,7 @@
 </div>
 
 <div class="formContainer configUpdateAdd">
-	<form action="{{fullPath}}{{queryString}}" method="post" autocomplete="off">
+	<form action="{{fullPath}}{{queryString}}" method="post">
 		<fieldset>
 			<legend>Add A New Config Property</legend>
 			{{formFeedback}}

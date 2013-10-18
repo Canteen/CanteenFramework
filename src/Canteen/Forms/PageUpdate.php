@@ -30,24 +30,35 @@ namespace Canteen\Forms
 				// Make sure there's a valid page
 				if (!$page)
 				{
-					$this->error("No page to delete");
+					$this->error('No page to delete');
 				}
 				else if (in_array($page->uri, $this->service('pages')->getProtectedUris()))
 				{
-					$this->error("Page is protected an cannot be deleted");
+					$this->error('Page is protected an cannot be deleted');
 				}
 				else
 				{
 					// Remove the page
 					if (!$this->service('pages')->removePage($pageId))
 					{
-						$this->error("Unable to delete page");
+						$this->error('Unable to delete page');
 					}
-					else
+					
+					// If we can write to the 
+					if (file_exists($page->contentUrl) && is_writable($page->contentUrl))
 					{
-						// Goto the main pages admin
-						redirect('admin/pages');
-					}
+						$removed = @unlink($page->contentUrl);
+						if ($removed === false)
+						{
+							$this->error('Unable to delete page contents');
+						}
+					}			
+				}
+				
+				if (!$this->ifError)
+				{
+					// Goto the main pages admin
+					redirect('admin/pages');
 				}
 				return;
 			}
@@ -59,45 +70,96 @@ namespace Canteen\Forms
 			$description = $this->verify(ifsetor($_POST['description']), Validate::FULL_TEXT);
 			$isDynamic = isset($_POST['isDynamic']);
 			$cache = isset($_POST['cache']);
-			$parentId = $this->verify(ifsetor($_POST['parentId']));
-			$redirectId = $this->verify(ifsetor($_POST['redirectId']));
+			$parentId = $this->verify(ifsetor($_POST['parentId'], 0));
+			$redirectId = $this->verify(ifsetor($_POST['redirectId'], 0));
+			
+			// Default both the new and old content to be empty
+			if ($page) $page->content = '';
+			$content = '';
+			
+			// The write directory where to save HTML files
+			$dir =  $this->settings('contentPath');
+			$isWritable = is_writable(CALLER_PATH . $dir) !== false;
+			$contentUrl = $dir . $uri . '.html';
+			
+			// Make sure the content path is writeable
+			if ($isWritable)
+			{
+				$content = ifsetor($_POST['pageContent']);
+				if ($page) $page->content = @file_get_contents($page->contentUrl);
+			}
 			
 			if ($privilege < Privilege::ANONYMOUS || $privilege > Privilege::ADMINISTRATOR)
-				$this->error("Not a valid privilege");
+				$this->error('Not a valid privilege');
 			
-			if (!$uri) $this->error("URI is a required field");
+			if (!$uri) $this->error('URI is a required field');
 				
-			if (!$title) $this->error("Title is a required field");
+			if (!$title) $this->error('Title is a required field');
 			
 			// Don't process if we have errors
 			if ($this->ifError) return;
 			
-			// Update user
+			// Update if there's a current page
 			if ($page)
 			{
+				// if the parent id is the current id the parentid should be 0
+				// well pull the parent id as current
+				if ($page->parentId == $pageId) $page->parentId = 0;
+				
+				// Change for changes in properties
 				$properties = array();
 				
 				foreach(array('title', 'uri', 'keywords', 'description', 'isDynamic', 'privilege', 'parentId', 'redirectId', 'cache') as $p)
 				{
-					if ($$p != $page->$p) $properties[$p] = $$p;
+					if ($$p != $page->$p) 
+					{
+						$properties[$p] = $$p;
+					}
 				}
 				
-				if (!count($properties))
+				// Boolean if the content changed from the original
+				$contentChanged = ($content != $page->content);
+								
+				if (!$contentChanged && !count($properties))
 				{
-					$this->error("Nothing to update");
+					$this->error('Nothing to update');
 					return;
 				}
-				
-				$result = $this->service('pages')->updatePage($pageId, $properties);
-				
-				if (!$result)
+								
+				if ($isWritable)
 				{
-					$this->error("Unable to update page");
+					if ($uri != $page->uri && file_exists($page->contentUrl))
+					{
+						// If the content change, we an just delete the old file
+						if ($contentChanged)
+						{
+							@unlink($page->contentUrl);
+						}
+						// If the content didn't change, just move the file
+						else
+						{
+							@rename($page->contentUrl, $contentUrl);
+						}	
+					}
+					
+					if ($contentChanged)
+					{
+						$success = @file_put_contents($contentUrl, $content);
+						if ($success === false)
+						{
+							$this->error('Unable to update the page content ' . $contentUrl);
+						}
+					}
 				}
-				else
+				
+				if (count($properties))
 				{
-					$this->success("Updated page");
-					redirect('admin/pages');
+					$result = $this->service('pages')->updatePage($pageId, $properties);
+
+					if (!$result)
+					{
+						$this->error('Unable to update page');	
+					}
 				}
 			}
 			// Add new page
@@ -115,16 +177,22 @@ namespace Canteen\Forms
 					$cache
 				);
 				
+				if ($isWritable && $content)
+				{
+					$success = @file_put_contents($contentUrl, $content);
+					if ($success === false)
+					{
+						$this->error('Unable to update the page content');
+					}
+				}
+				
 				if (!$result)
 				{
-					$this->error("Unable to add the page");
-				}
-				else
-				{
-					$this->success("Added new page");
-					redirect('admin/pages');
+					$this->error('Unable to add the page');
 				}
 			}
+			
+			if (!$this->ifError) redirect('admin/pages');
 		}
 	}
 }

@@ -107,10 +107,10 @@ namespace Canteen\Services
 						->values(4, '500', 'Internal Server Error', NULL, NULL, 0, '', '', 0, 1)
 						->values(5, 'home', 'Home', NULL, NULL, 0, '', '', 0, 1)
 						->values(6, 'admin', 'Admin', NULL, NULL, 0, '', '', 1, 0)
-						->values(7, 'admin/users', 'Manage Users', NULL, 6, 0, '', '', 4, 0)
-						->values(8, 'admin/password', 'Change Password', NULL, 6, 0, '', '', 1, 0)
-						->values(9, 'admin/pages', 'Manage Pages', NULL, 6, 0, '', '', 4, 0)
-						->values(10, 'admin/config', 'Manage Config', NULL, 6, 0, '', '', 4, 0)
+						->values(7, 'admin/users', 'Users', NULL, 6, 0, '', '', 4, 0)
+						->values(8, 'admin/password', 'Password', NULL, 6, 0, '', '', 1, 0)
+						->values(9, 'admin/pages', 'Pages', NULL, 6, 0, '', '', 4, 0)
+						->values(10, 'admin/config', 'Configuration', NULL, 6, 0, '', '', 4, 0)
 						->values(11, 'forgot-password', 'Recover Password', NULL, NULL, 1, '', '', 0, 0)
 						->result();
 				}

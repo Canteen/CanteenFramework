@@ -38,13 +38,17 @@ namespace Canteen\Controllers
 				$page = $this->service('pages')->getPageById($pageId);
 			}		
 			
+			// The directory path
+			$dir = CALLER_PATH.$this->settings('contentPath');
+			
 			$data = array(
 				'formLabel' => $page ? 'Update an Existing Page' : 'Add a New Page',
 				'buttonLabel' => $page ? 'Update' : 'Add',
 				'isDynamic' => '',
 				'pages' => '',
 				'hasPage' => false,
-				'readOnly' => false
+				'readOnly' => false,
+				'isUpdatable' => is_writeable($dir)
 			);
 			
 			if ($page)
@@ -62,6 +66,8 @@ namespace Canteen\Controllers
 				$data['hasPage'] = true;
 				$data['readOnly'] = $protected ? 'disabled' : '';
 				$data['cache'] = $page->cache ? 'checked' : '';
+				$data['isUpdatable'] = is_writeable($page->contentUrl);
+				$data['pageContent'] = $data['isUpdatable'] ? @file_get_contents($dir.$page->uri.'.html') : '';
 			}
 			else
 			{

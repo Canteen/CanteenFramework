@@ -610,8 +610,7 @@ namespace Canteen
 				{
 					if ($debug)
 					{
-						$data['stackTrace'] = new SimpleList(
-							$data['stackTrace'], null, 'ol');
+						$data['stackTrace'] = new SimpleList($data['stackTrace'], null, 'ol');
 					}
 					$result = $this->_parser->template('FatalError', $data);
 					$this->_parser->removeEmpties($result);
