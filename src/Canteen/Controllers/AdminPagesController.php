@@ -48,7 +48,8 @@ namespace Canteen\Controllers
 				'pages' => '',
 				'hasPage' => false,
 				'readOnly' => false,
-				'isUpdatable' => is_writeable($dir)
+				'isWriteable' => is_writeable($dir),
+				'showDelete' => false
 			);
 			
 			if ($page)
@@ -66,8 +67,9 @@ namespace Canteen\Controllers
 				$data['hasPage'] = true;
 				$data['readOnly'] = $protected ? 'disabled' : '';
 				$data['cache'] = $page->cache ? 'checked' : '';
-				$data['isUpdatable'] = is_writeable($page->contentUrl);
-				$data['pageContent'] = $data['isUpdatable'] ? @file_get_contents($dir.$page->uri.'.html') : '';
+				$data['isWriteable'] = is_writeable($page->contentUrl);
+				$data['pageContent'] = $data['isWriteable'] ? @file_get_contents($dir.$page->uri.'.html') : '';
+				$data['showDelete'] = !$protected;
 			}
 			else
 			{
@@ -115,7 +117,11 @@ namespace Canteen\Controllers
 			{
 				if ($ignoreId == $page->id) continue;
 				
-				$option = html('option value='.$page->id, $page->title);
+				$option = html(
+					'option value='.$page->id, 
+					$page->title . ' ('.$page->uri.')'
+				);
+				
 				if ($selectId == $page->id)
 				{
 					$option->selected = 'true';

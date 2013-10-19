@@ -1,12 +1,22 @@
 <div class="formContainer configUpdate">
+	<form>{{formFeedback}}</form>
 	{{for:configs}}
 	<form action="{{fullPath}}{{queryString}}" method="post">
 		<fieldset class="clearfix formRow">
-			{{formFeedback}}
 			<label for="configValue{{id}}">{{name}}</label>
-			<input id="configValue{{id}}" name="configValue" type="text" value="{{value}}" class="required">
-			<input type="submit" value="Save" name="saveButton">
-			<input type="button" value="Delete" name="deleteButton" class="confirm {{disabled}}" {{disabled}}>
+			{{if:isPage}}
+				<select id="configValue{{id}}" name="configValue" class="required">
+					{{value}}
+				</select>
+			{{fi:isPage}}
+			{{if:isBool}}
+				<input id="configValue{{id}}" name="configValue" type="checkbox" value="1" {{value}} class="checkbox required">
+			{{fi:isBool}}
+			{{if:isNormal}}
+				<input id="configValue{{id}}" name="configValue" type="text" value="{{value}}" class="text required">
+			{{fi:isNormal}}
+			<input type="submit" value="Save" name="saveButton" class="submit">
+			<input type="submit" value="Delete" name="deleteButton" class="submit confirm {{disabled}}" {{disabled}}>
 			<input type="hidden" name="form" value="Canteen\Forms\ConfigUpdate">
 			<input type="hidden" name="configId" value="{{id}}">
 			<input type="hidden" name="formSession" value="{{formSession}}">
@@ -22,14 +32,20 @@
 			{{formFeedback}}
 			<div class="clearfix formRow">
 				<label for="configName">Name</label>
-				<input id="configName" name="configName" type="text" class="required" tabindex="1">
+				<input id="configName" name="configName" type="text" class="text required" tabindex="1">
 			</div>
 			<div class="clearfix formRow">
 				<label for="configValue">Value</label>
-				<input id="configValue" name="configValue" type="text" class="required" tabindex="2">
+				<input id="configValue" name="configValue" type="text" class="text required" tabindex="2">
+			</div>
+			<div class="clearfix formRow">
+				<label for="configType">Type</label>
+				<select id="configType" name="configType" class="required" tabindex="3">
+					{{types}}
+				</select>
 			</div>
 			<div class="formButtons">
-				<input type="submit" value="Add" name="addButton" tabindex="3">
+				<input type="submit" value="Add" name="addButton" tabindex="4" class="submit">
 				<input type="hidden" name="form" value="Canteen\Forms\ConfigUpdate">
 				<input type="hidden" name="refresh" value="true">
 				<input type="hidden" name="formSession" value="{{formSession}}">

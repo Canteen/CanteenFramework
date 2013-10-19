@@ -2,17 +2,16 @@
 	
 namespace Canteen\Upgrades
 {
-	use Canteen\Site;
 	use Canteen\Utilities\CanteenBase;
 	
 	/**
 	*  Add page-specific caching
 	*/
-	class DatabaseUpdate extends CanteenBase
+	class DatabaseUpdate101 extends CanteenBase
 	{
 		public function __construct()
 		{
-			$db = Site::instance()->db;
+			$db = $this->site->db;
 			
 			// Clear all data
 			$db->truncate('users_sessions');
@@ -35,5 +34,5 @@ namespace Canteen\Upgrades
 			echo 102;
 		}
 	}
-	new DatabaseUpdate();
+	new DatabaseUpdate101();
 }

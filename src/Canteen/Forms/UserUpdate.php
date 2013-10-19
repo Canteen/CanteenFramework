@@ -20,7 +20,7 @@ namespace Canteen\Forms
 		*  Process the form and handle the $_POST data.
 		*/
 		public function __construct()
-		{			
+		{
 			$userId = $this->verify(ifsetor($_POST['userId']));
 			$user = $this->service('users')->getUserById($userId);
 			$privilege = $this->verify(ifsetor($_POST['privilege']));

@@ -41,7 +41,7 @@ namespace Canteen
 		*  @static
 		*  @final
 		*/
-		const DB_VERSION = 102;
+		const DB_VERSION = 103;
 		
 		/** 
 		*  The name of the gateway page 
@@ -342,10 +342,7 @@ namespace Canteen
 			// If the database is connected
 			if ($this->_db && $this->_db->isConnected())
 			{
-				$this->_formFactory->startup(
-					'Canteen\Forms\DatabaseUpdate',
-					'Canteen\Forms\Installer'
-				);
+				$this->_formFactory->startup('Canteen\Forms\Installer');
 				
 				// Check for the installation process make it 
 				// easier to start Canteen for the  first time
@@ -377,6 +374,9 @@ namespace Canteen
 				
 				// Add the main site template
 				$this->_parser->addTemplate(MAIN_TEMPLATE, CALLER_PATH . $this->_settings['templatePath']);
+				
+				// Process database changes here
+				$this->_formFactory->startup('Canteen\Forms\DatabaseUpdate');
 				
 				// Check for database updates
 				$this->isDatabaseUpdated('dbVersion', self::DB_VERSION, CANTEEN_PATH.'Upgrades/');

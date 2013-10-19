@@ -1,11 +1,13 @@
 <?php
 
 namespace Canteen\Upgrades
-{	
+{
+	use Canteen\Utilities\CanteenBase;
+	
 	/**
 	*  Add a dbVersion config to the database
 	*/
-	class DatabaseUpdate extends CanteenBase
+	class DatabaseUpdate1 extends CanteenBase
 	{
 		public function __construct()
 		{
@@ -17,5 +19,5 @@ namespace Canteen\Upgrades
 			echo 100;
 		}
 	}
-	new DatabaseUpdate();
+	new DatabaseUpdate1();
 }

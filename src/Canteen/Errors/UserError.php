@@ -13,7 +13,7 @@ namespace Canteen\Errors
 	*  @extends CanteenError
 	*  @constructor
 	*  @param {int} code The error code
-	*  @param {String} [data=''] The optional data associated with this error
+	*  @param {String|Array} [data=''] The optional data associated with this error
 	*/
 	class UserError extends CanteenError
 	{
@@ -50,12 +50,12 @@ namespace Canteen\Errors
 		const INVALID_DATA = 203;
 		
 		/** 
-		*  The verify function check to see if data matches a specific regexp format 
-		*  @property {int} INVALID_DATA_FORMAT
+		*  The supplied data is invalidly formatted for MySQL
+		*  @property {int} INVALID_MYSQL_DATE
 		*  @static
 		*  @final
 		*/
-		const INVALID_DATA_FORMAT = 204;
+		const INVALID_MYSQL_DATE = 205;
 		
 		/**
 		*  The collection of error messages
@@ -67,9 +67,9 @@ namespace Canteen\Errors
 		private static $messages = array(
 			self::LOGGIN_REQUIRED => 'Login required',
 			self::INSUFFICIENT_PRIVILEGE => 'Insufficient privilege required',
-			self::INVALID_DATA_SET => 'Property is not a valid option',
-			self::INVALID_DATA => 'The data did not validate',
-			self::INVALID_DATA_FORMAT => 'The data does not match the intended format'
+			self::INVALID_DATA_SET => '\'%s\' is not in the set [%s]',
+			self::INVALID_DATA => '\'%s\' cannot contain [%s], only [%s]',
+			self::INVALID_MYSQL_DATE => '\'%s\' is not a valid MySQL format (YYYY-MM-DD or YYYY-MM-DD HH:mm:ss)'
 		);
 		
 		/**

@@ -34,6 +34,7 @@ namespace Canteen\Forms
 	        else
 	        {
 	            $this->success("Logged in");
+				redirect(URI_REQUEST);
 	        }
 		}
 	}

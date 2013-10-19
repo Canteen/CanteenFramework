@@ -20,7 +20,7 @@ namespace Canteen\Utilities
 		*  @final
 		*  @static
 		*/
-		const ALPHA_NUMERIC = '/^[a-zA-Z0-9]*$/';
+		const ALPHA_NUMERIC = '/[a-zA-Z0-9]/';
 		
 		/** 
 		*  Validation Type: remove all non numeric characters, includes 0-9
@@ -28,7 +28,15 @@ namespace Canteen\Utilities
 		*  @final
 		*  @static
 		*/
-		const NUMERIC = '/^[0-9]*$/';
+		const NUMERIC = '/[0-9]/';
+		
+		/** 
+		*  Validation Type: booleans, includes 0-1
+		*  @property {RegExp} BOOLEAN
+		*  @final
+		*  @static
+		*/
+		const BOOLEAN = '/[0-1]/';
 		
 		/** 
 		*  Validation Type: remove all non decimal characters, includes 0-9, .
@@ -36,7 +44,7 @@ namespace Canteen\Utilities
 		*  @final
 		*  @static
 		*/
-		const DECIMAL = '/^[0-9\.]*$/';
+		const DECIMAL = '/[0-9\.]/';
 		
 		/** 
 		*  Validation Type: remove all non alpha characters, includes a-z, A-Z
@@ -44,7 +52,7 @@ namespace Canteen\Utilities
 		*  @final
 		*  @static
 		*/
-		const ALPHA = '/^[a-zA-Z]*$/';
+		const ALPHA = '/[a-zA-Z]/';
 		
 		/** 
 		*  Validation Type: for people's names, includes a-z, A-Z, -, .
@@ -52,7 +60,7 @@ namespace Canteen\Utilities
 		*  @final
 		*  @static
 		*/
-		const NAMES = '/^[a-zA-Z\-\'\.]*$/';
+		const NAMES = '/[a-zA-Z\-\'\.]/';
 		
 		/** 
 		*  Validation type: for file names, includes a-z, A-Z, 0-9, -, _, .
@@ -60,7 +68,7 @@ namespace Canteen\Utilities
 		*  @final
 		*  @static
 		*/
-		const FILE_NAME = '/^[a-zA-Z0-9\-\_\.]*$/';
+		const FILE_NAME = '/[a-zA-Z0-9\-\_\.]/';
 		
 		/** 
 		*  Validation Type: remove all non alpha numeric punctuation characters
@@ -68,7 +76,7 @@ namespace Canteen\Utilities
 		*  @final
 		*  @static
 		*/
-		const FULL_TEXT = '/^[a-zA-Z0-9\%\?\'\"\/\\\.\,\:\;\-\_\=\+\#\!\&\@\{\}\(\)\|\[\]\* ]*$/';
+		const FULL_TEXT = '/[a-zA-Z0-9\%\?\'\"\/\\\.\,\:\;\-\_\=\+\#\!\&\@\{\}\(\)\|\[\]\* ]/';
 				
 		/** 
 		*  Validation Type: remove all non standard uri characters, includes a-z, A-Z, 0-9, -, _, ., /
@@ -76,7 +84,7 @@ namespace Canteen\Utilities
 		*  @final
 		*  @static
 		*/
-		const URI = '/^[a-zA-Z0-9\-\_\/\.]*$/';
+		const URI = '/[a-zA-Z0-9\-\_\/\.]/';
 		
 		/** 
 		*  Validation Type: remove all non search characters, includes a-z, A-Z, 0-9, space
@@ -84,7 +92,7 @@ namespace Canteen\Utilities
 		*  @final
 		*  @static
 		*/
-		const SEARCH = '/^[a-zA-Z0-9 ]*$/';
+		const SEARCH = '/[a-zA-Z0-9 ]/';
 		
 		/** 
 		*  Validation Type: remove all non email characters, includes a-z, A-Z, 0-9, ., -, _, @
@@ -92,7 +100,7 @@ namespace Canteen\Utilities
 		*  @final
 		*  @static
 		*/
-		const EMAIL = '/^[a-zA-Z0-9\.\-\_\@]*$/';
+		const EMAIL = '/[a-zA-Z0-9\.\-\_\@]/';
 		
 		/** 
 		*  The valid mysql date format 
@@ -133,23 +141,52 @@ namespace Canteen\Utilities
 				if ($type && is_array($type))
 				{
 					if (!in_array($data, $type))
-					{
+					{						
 						if (!$suppressErrors)
-							throw new UserError(UserError::INVALID_DATA_SET, $data);
+							throw new UserError(UserError::INVALID_DATA_SET, array($data, implode(', ', $type)));
 							
 						return false;
 					}
 					return $data;
 				}
 				
-				// Filter out any non-valid characters
-				$result = preg_match(($type === null ? self::NUMERIC : $type), $data);
+				// Check for string types
+				if ($type == self::MYSQL_DATE)
+				{
+					if (!preg_match($type, $data))
+					{
+						if (!$suppressErrors)
+							throw new UserError(UserError::INVALID_MYSQL_DATE, $data);
+							
+						return false;
+					}
+					return $data;
+				}
+								
+				// Filter out valid characters and remain with the bad characters
+				$badCharacters = preg_replace(($type === null ? self::NUMERIC : $type), '', $data);
 				
-				if (!empty($data) && !$result && $data != 'null')
+				if (!empty($data) && strlen($badCharacters) && $data != 'null')
 				{
 					if (!$suppressErrors)
-						throw new UserError(UserError::INVALID_DATA, $data);
+					{
+						$restricted = '';
 						
+						// Get the list of unique bad characters
+						if ($badCharacters)
+						{
+							$chars = '';
+							foreach (count_chars($badCharacters, 1) as $i => $val)
+							{
+								$chars .= chr($i);
+							}
+						}
+						throw new UserError(UserError::INVALID_DATA, array(
+							$data, 
+							$chars, 
+							stripcslashes(substr($type, 2, -2)))
+						);
+					}						
 					return false;
 				}
 				return $data;

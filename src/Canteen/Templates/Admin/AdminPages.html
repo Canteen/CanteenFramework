@@ -10,7 +10,7 @@
 				</select>
 			</div>
 			<div class="formButtons">
-				<input type="submit" value="Edit" id="editButton">
+				<input type="submit" value="Edit" id="editButton" class="submit">
 			</div>
 		</fieldset>
 	</form>
@@ -22,23 +22,29 @@
 		<fieldset>
 			<legend>{{formLabel}}</legend>
 			{{formFeedback}}
+			{{if:!isWriteable}}
+			<div class="formNotice">
+				<strong>Notice:</strong> Unable to save or edit page contents in
+				<strong>{{contentPath}}</strong>, please make this directory writeable. 
+			</div>
+			{{fi:!isWriteable}}
 			<div class="clearfix formRow">
 				<label for="title">Title</label>
-				<input name="title" type="text" id="title" class="required" tabindex="1" value="{{title}}">
+				<input name="title" type="text" id="title" class="text required" tabindex="1" value="{{title}}">
 			</div>
 			<div class="clearfix formRow">
 				<label for="uri">URI</label>
-				<input name="uri" type="text" id="uri" class="required {{readOnly}}" {{readOnly}} tabindex="2" value="{{uri}}">
+				<input name="uri" type="text" id="uri" class="text required {{readOnly}}" {{readOnly}} tabindex="2" value="{{uri}}">
 				{{if:readOnly}}
 					<input name="uri" type="hidden" value="{{uri}}">
 				{{fi:readOnly}}
 			</div>
-			{{if:isUpdatable}}
+			{{if:isWriteable}}
 			<div class="clearfix formRow">
 				<label for="pageContent">Content</label>
 				<textarea name="pageContent" id="pageContent" tabindex="3" class="large">{{pageContent}}</textarea>
 			</div>
-			{{fi:isUpdatable}}
+			{{fi:isWriteable}}
 			<div class="clearfix formRow">
 				<label for="keywords">Keywords</label>
 				<textarea name="keywords" id="keywords" tabindex="4">{{keywords}}</textarea>
@@ -49,18 +55,18 @@
 			</div>
 			<div class="clearfix formRow">
 				<label for="privilege">Privilege</label>
-				<select id="privilege" name="privilege" class="required" tabindex="6">
+				<select id="privilege" name="privilege" class="required {{readOnly}}" {{readOnly}} tabindex="6">
 					{{privileges}}
 				</select>
 			</div>
 			<div class="clearfix formRow">
 				<label for="isDynamic">Is Dynamic</label>
-				<input name="isDynamic" type="checkbox" id="isDynamic" {{isDynamic}} tabindex="7">
+				<input name="isDynamic" type="checkbox" class="checkbox" id="isDynamic" {{isDynamic}} tabindex="7">
 				Page location can have appending URI elements
 			</div>
 			<div class="clearfix formRow">
 				<label for="cache">Cache</label>
-				<input name="cache" type="checkbox" id="cache" {{cache}} tabindex="8">
+				<input name="cache" type="checkbox" class="checkbox" id="cache" {{cache}} tabindex="8">
 				Always cache the page
 			</div>
 			{{if:!readOnly}}
@@ -80,14 +86,13 @@
 			</div>
 			{{fi:!readOnly}}
 			<div class="formButtons">
-				<input type="submit" value="{{buttonLabel}}" name="updateButton" id="updateButton" tabindex="11">
+				<input type="submit" value="{{buttonLabel}}" class="submit" name="updateButton" id="updateButton" tabindex="11">
 				{{if:hasPage}}
-					<a class="button" data-refresh="soft">Cancel</a>
+					<a href="admin/pages" class="button" data-refresh="soft">Cancel</a>
 				{{fi:hasPage}}
-				{{if:!readOnly}}
-					<input type="submit" value="Delete" class="confirm" name="deleteButton" id="deleteButton" tabindex="12">
-				{{fi:!readOnly}}
-				
+				{{if:showDelete}}
+					<input type="submit" value="Delete" class="submit confirm" name="deleteButton" id="deleteButton" tabindex="12">
+				{{fi:showDelete}}
 				<input type="hidden" name="pageId" value="{{id}}">
 				<input type="hidden" name="form" value="Canteen\Forms\PageUpdate">
 				<input type="hidden" name="formSession" value="{{formSession}}">

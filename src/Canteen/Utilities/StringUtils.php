@@ -47,6 +47,18 @@ namespace Canteen\Utilities
 		}
 		
 		/**
+		*  Convert a property name (myProperty) to a readable name (My Property)
+		*  @method propertyToReadable
+		*  @static
+		*  @param {String} property The name of the property (lower camel-case)
+		*  @return {String} The readable name, title-case
+		*/
+		public static function propertyToReadable($property)
+		{
+			return ucfirst(preg_replace('/([a-z])([A-Z])/', '$1 $2', $property));
+		}
+		
+		/**
 		*  Convert a property name (someProperty to const SOME_PROPERTY)
 		*  @method convertPropertyToConst
 		*  @static

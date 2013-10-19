@@ -168,7 +168,8 @@ namespace Canteen\Parser
 		
 		/**
 		*  Prepare the site content to be displayed
-		*  This does all of the data substitutions and url fixes
+		*  This does all of the data substitutions and url fixes. The order of operations
+		*  is to do the templates, loops, if blocks, then individual substitutions. 
 		*  @method parse
 		*  @param {String} content The content data
 		*  @param {Dictionary} substitutions The substitutions key => value replaces {{key}} in template
@@ -191,16 +192,16 @@ namespace Canteen\Parser
 				$this->parseTemplates($content, $substitutions);
 				StringUtils::checkBacktrackLimit($content);
 				if ($profiler) $profiler->end('Parse Templates');
-
-				if ($profiler) $profiler->start('Parse If Blocks');
-				$this->parseIfBlocks($content, $substitutions);
-				StringUtils::checkBacktrackLimit($content);
-				if ($profiler) $profiler->end('Parse If Blocks');
 				
 				if ($profiler) $profiler->start('Parse Loops');
 				$this->parseLoops($content, $substitutions);
 				StringUtils::checkBacktrackLimit($content);
 				if ($profiler) $profiler->end('Parse Loops');
+				
+				if ($profiler) $profiler->start('Parse If Blocks');
+				$this->parseIfBlocks($content, $substitutions);
+				StringUtils::checkBacktrackLimit($content);
+				if ($profiler) $profiler->end('Parse If Blocks');
 
 				if ($profiler) $profiler->start('Parse Substitutions');
 				// Do the template replacements
@@ -209,7 +210,6 @@ namespace Canteen\Parser
 					// Define the replace pattern
 					if ($this->contains($id, $content) && !is_array($val))
 					{
-						//$content = preg_replace("/\{\{$id\}\}/", $val, $content);
 						$content = str_replace('{{'.$id.'}}', $val, $content);
 					}
 					StringUtils::checkBacktrackLimit($content);
@@ -344,7 +344,7 @@ namespace Canteen\Parser
 							}
 							else
 							{
-								error("Parsing for-loop substitution needs to be an array");
+								error('Parsing for-loop substitution needs to be an array');
 							}
 						}
 						

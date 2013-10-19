@@ -31,7 +31,7 @@ namespace Canteen\Services\Objects
 		public $value;
 		
 		/** 
-		*  Either "string" or "integer"
+		*  Either string, integer, boolean, page, or path
 		*  @property {Sring} type
 		*/
 		public $type;

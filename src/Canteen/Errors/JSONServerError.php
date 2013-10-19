@@ -13,7 +13,7 @@ namespace Canteen\Errors
 	*  @extends CanteenError
 	*  @constructor
 	*  @param {int} code The error code
-	*  @param {String} [data=''] The optional data associated with this error
+	*  @param {String|Array} [data=''] The optional data associated with this error
 	*/
 	class JSONServerError extends CanteenError
 	{

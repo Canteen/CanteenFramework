@@ -16,7 +16,7 @@ namespace Canteen\Errors
 	*  @extends Exception
 	*  @constructor
 	*  @param {int} code The code number
-	*  @param {String} [data=''] Any extra data associated with error
+	*  @param {String|Array} [data=''] Any extra data associated with error
 	*  @param {Dictionary} [messages=null] The collection of messages to lookup
 	*/
 	class CanteenError extends Exception
@@ -225,8 +225,20 @@ namespace Canteen\Errors
 		public function __construct($code, $data='', $messages=null)
 		{
 			$messages = ifsetor($messages, self::$messages);
-			$message =  ifsetor($messages[$code], self::UNKNOWN) 
-				. ($data ? ' : ' . $data : $data);	
+			$message =  ifsetor($messages[$code], self::UNKNOWN);
+			
+			// If the string contains substitution strings
+			// we should apply the subs
+			if (preg_match('/\%s/', $message))
+			{
+				$args = array_merge(array($message), is_array($data) ? $data : array($data));
+				$message = call_user_func_array('sprintf', $args);
+			}
+			// Just add the extra data at the end of the message
+			else if (!empty($data))
+			{
+				$message .= ' : ' . $data;	
+			}	
 			parent::__construct($message, $code);
 		}
 	

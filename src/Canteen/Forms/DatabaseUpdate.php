@@ -18,7 +18,7 @@ namespace Canteen\Forms
 		*  Process the form and handle the $_POST data.
 		*  @method process 
 		*/
-		public function process()
+		public function __construct()
 		{
 			$updatesFolder = $this->verify(ifsetor($_POST['updatesFolder']), Validate::URI, true);
 			$version = $this->verify(ifsetor($_POST['version']), null, true);
@@ -57,6 +57,7 @@ namespace Canteen\Forms
 					$this->service('config')->updateValue($variableName, $version);
 					$this->site->addSetting($variableName, $version);
 				}
+				redirect(URI_REQUEST);
 			}
 		}
 	}

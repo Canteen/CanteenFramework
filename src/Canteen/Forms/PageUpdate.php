@@ -106,11 +106,18 @@ namespace Canteen\Forms
 				// well pull the parent id as current
 				if ($page->parentId == $pageId) $page->parentId = 0;
 				
+				// The protected pages, you cannot change the uri
+				$protected = in_array($page->uri, $this->service('pages')->getProtectedUris());
+				$protectedProperties = array('uri', 'parentId', 'redirectId', 'privilege');
+				
 				// Change for changes in properties
 				$properties = array();
 				
 				foreach(array('title', 'uri', 'keywords', 'description', 'isDynamic', 'privilege', 'parentId', 'redirectId', 'cache') as $p)
 				{
+					// Ignore protected properties on protected pages
+					if ($protected && in_array($p, $protectedProperties)) continue;
+					
 					if ($$p != $page->$p) 
 					{
 						$properties[$p] = $$p;

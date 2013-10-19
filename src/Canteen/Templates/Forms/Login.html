@@ -5,18 +5,18 @@
 			{{formFeedback}}
 			<div class="clearfix formRow">
 				<label for="username">Username</label>
-				<input name="username" type="text" id="username" class="required" tabindex="1">
+				<input name="username" type="text" id="username" class="text required" tabindex="1">
 			</div>
 			<div class="clearfix formRow">
 				<label for="password">Password</label>
-				<input name="password" type="password" id="password" class="required" tabindex="2">
+				<input name="password" type="password" id="password" class="text required" tabindex="2">
 			</div>
 			<div class="remember">
-				<input type="checkbox" name="remember" value="1" id="remember" tabindex="3">
+				<input type="checkbox" class="checkbox" name="remember" value="1" id="remember" tabindex="3">
 				<label form="remember">Remember Me?</label>
 			</div>
 			<div class="formButtons">
-				<input type="submit" value="Login" id="loginButton" tabindex="4">
+				<input type="submit" value="Login" class="submit" id="loginButton" tabindex="4">
 				<input type="hidden" name="form" value="Canteen\Forms\Login">
 				<input type="hidden" name="refresh" value="true">
 				<input type="hidden" name="formSession" value="{{formSession}}">

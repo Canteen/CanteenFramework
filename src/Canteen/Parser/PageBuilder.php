@@ -483,7 +483,8 @@ namespace Canteen\Parser
 				'siteIndex',
 				'queryString',
 				'uriRequest',
-				'gatewayPath'
+				'gatewayPath',
+				'clientEnabled'
 			);
 			
 			$settings = array();

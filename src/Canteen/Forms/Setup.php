@@ -133,7 +133,8 @@ namespace Canteen\Forms
 		{
 			$result = $this->verify(ifsetor($_POST[$str], $default), Validate::FULL_TEXT);
 			$result = explode(',', $result);
-			return array_filter($result);
+			$result = array_filter($result);
+			return array_map('trim', $result);
 		}
 	}
 }

@@ -164,6 +164,26 @@ namespace Canteen\Services
 		}
 		
 		/**
+		*  Get a current page by the URI stub
+		*  @method getPageById
+		*  @param {String} uri Page's URI stub or collection of URIs
+		*  @return {Page|Array} The collection of Page objects or a single Page
+		*/
+		public function getPageByUri($uri)
+		{
+			$this->internal('Canteen\Forms\ConfigUpdate');
+						
+			$results = $this->db->select($this->properties)
+				->from($this->table)
+				->where('`uri` in '.$this->valueSet($uri, Validate::URI))
+				->results();
+			
+			return is_array($uri) ?
+				$this->bindObjects($results, $this->className, $this->mappings):
+				$this->bindObject($results, $this->className, $this->mappings);
+		}
+		
+		/**
 		*  Get all of the children pages nested within a page
 		*  @method getPagesByParentId
 		*  @param {int} parentId A page's parent ID

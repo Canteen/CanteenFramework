@@ -69,7 +69,7 @@ namespace Canteen\Services
 				  `config_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 				  `name` varchar(64) NOT NULL,
 				  `value` varchar(255) NOT NULL,
-				  `value_type` varchar(32) NOT NULL DEFAULT 'string',
+				  `value_type` set('string','boolean','integer','path','page') NOT NULL DEFAULT 'string',
 				  PRIMARY KEY (`config_id`),
 				  UNIQUE KEY `name` (`name`)
 				) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
@@ -80,11 +80,12 @@ namespace Canteen\Services
 				{
 					return $this->db->insert($this->table)
 						->fields('config_id', 'name', 'value', 'value_type')
-						->values(1, 'siteIndex', 'home', 'string')
+						->values(1, 'siteIndex', 'home', 'page')
 						->values(2, 'siteTitle', $siteTitle, 'string')
-						->values(3, 'contentPath', $contentPath, 'string')
-						->values(4, 'templatePath', $templatePath, 'string')
+						->values(3, 'contentPath', $contentPath, 'path')
+						->values(4, 'templatePath', $templatePath, 'path')
 						->values(5, 'dbVersion', Site::DB_VERSION, 'integer')
+						->values(6, 'clientEnabled', 1, 'boolean')
 						->result();
 				}
 			}
@@ -93,30 +94,48 @@ namespace Canteen\Services
 		
 		/**
 		*  Get the collection of protected settings that are required
-		*  by Canteen
+		*  by Canteen. These values can be changed the name can't be deleted.
 		*  @method getProtectedNames
 		*  @return {Array} A collection of protected config keys
 		*/
 		public function getProtectedNames()
 		{
 			return array(
-				'siteIndex', 
 				'siteTitle',
 				'contentPath',
-				'templatePath'
+				'templatePath',
+				'clientEnabled'
 			);
 		}
 		
 		/**
 		*  Get the collection of private settings that are required
-		*  by Canteen
+		*  by Canteen. The value and name can't be changed of these properties.
 		*  @method getPrivateNames
 		*  @return {Array} A collection of private config keys
 		*/
 		public function getPrivateNames()
 		{
 			return array(
-				'dbVersion'
+				'dbVersion',
+				'siteIndex'
+			);
+		}
+		
+		
+		/**
+		*  Get the collection of values types
+		*  @method getValueTypes
+		*  @return {Array} A collection of value type strings
+		*/
+		public function getValueTypes()
+		{
+			return array(
+				'integer', 
+				'string', 
+				'path', 
+				'boolean', 
+				'page'
 			);
 		}
 		
@@ -143,7 +162,13 @@ namespace Canteen\Services
 				$type = (string)$property['type'];
 				$value = (string)$property['value'];
 				
-				$config[$name] = $type == 'integer' ? (int)$value : $value;
+				switch($type)
+				{
+					case 'integer': $value = (int)$value; break;
+					case 'boolean': $value = (bool)((int)$value); break;
+				}
+				
+				$config[$name] = $value;
 			}
 			return $config;
 		}
@@ -205,14 +230,14 @@ namespace Canteen\Services
 		*  @method addConfig
 		*  @param {String} name The key name to set
 		*  @param {mixed} value The value of the key to set
-		*  @param {String} valueType The value type (string or integer)
+		*  @param {String} [valueType='string'] The value type (string or integer)
 		*  @return {int|Boolean} The new ID if successful, false if not
 		*/
 		public function addConfig($name, $value, $valueType='string')
 		{
 			$this->privilege(Privilege::ADMINISTRATOR);
-			$this->verify($valueType, array('integer', 'string'));
-			$this->verify($value, Validate::FULL_TEXT);
+			$this->verify($valueType, $this->getValueTypes());
+			$this->verify($value, $this->getValidationByType($valueType));
 			$this->verify($name, Validate::URI);
 			
 			$id = $this->db->nextId($this->table, 'config_id');
@@ -224,6 +249,24 @@ namespace Canteen\Services
 					'value_type' => $valueType
 				))
 				->result() ? $id : false;
+		}
+		
+		/**
+		*  Get the validator by the current type 
+		*  @method getValidationByType
+		*  @param {String} type The type of config (path, page, boolean, integer, string)
+		*  @return {RegExp} The regular expression for validating
+		*/
+		public function getValidationByType($type)
+		{
+			switch($type)
+			{
+				case 'path' :
+				case 'page' : return Validate::URI;
+				case 'boolean' : return Validate::BOOLEAN;
+				case 'integer' : return Validate::NUMERIC;
+				default : return Validate::FULL_TEXT;
+			}
 		}
 		
 		/**
