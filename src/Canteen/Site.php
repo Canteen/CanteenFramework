@@ -313,7 +313,7 @@ namespace Canteen
 			Logger::instance()->enabled = DEBUG;	
 			
 			// Setup the cache
-			$this->_cache = new ServerCache($this->_settings['cacheDirectory']);
+			$this->_cache = new ServerCache($this->settingOnce('cacheDirectory'));
 			
 			// Create the non-database services
 			new TimeService;
@@ -323,10 +323,11 @@ namespace Canteen
 			if ($this->checkSettings('dbHost', 'dbUsername', 'dbPassword', 'dbName'))
 			{
 				$this->_db = new Database(
-					$this->_settings['dbHost'],
-					$this->_settings['dbUsername'],
-					$this->_settings['dbPassword'],
-					$this->_settings['dbName']);
+					$this->settingOnce('dbHost'),
+					$this->settingOnce('dbUsername'),
+					$this->settingOnce('dbPassword'),
+					$this->settingOnce('dbName')
+				);
 					
 				// Assign the server cache to the database
 				$this->_db->setCache($this->_cache);
@@ -665,6 +666,21 @@ namespace Canteen
 				);
 				self::$_fatalError = $e->getResult();
 			}
+		}
+		
+		/**
+		*  Get the value of a setting only once, then discard
+		*  this is useful for things we want to protect, like credentials.
+		*  @method settingOnce
+		*  @private
+		*  @param {String} name The name of the setting
+		*  @return {mixed} The value of the setting  
+		*/
+		private function settingOnce($name)
+		{
+			$value = ifsetor($this->_settings[$name]);
+			unset($this->_settings[$name]);
+			return $value;
 		}
 		
 		/**
