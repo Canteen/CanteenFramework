@@ -35,5 +35,11 @@ namespace Canteen\Services\Objects
 		*  @property {Sring} type
 		*/
 		public $type;
+		
+		/** 
+		*  The settings manager access option
+		*  @property {int} access
+		*/
+		public $access;
 	}
 }

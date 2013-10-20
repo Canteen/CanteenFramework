@@ -47,8 +47,8 @@ namespace Canteen\Forms
 			
 			if (!$this->ifError)
 			{
-				$configPath = CALLER_PATH . $configFile;
-				$htaccessPath = CALLER_PATH . '.htaccess';
+				$configPath = $this->settings->callerPath . $configFile;
+				$htaccessPath = $this->settings->callerPath . '.htaccess';
 				
 				$config = $this->template('Config', array(
 					'properties' => var_export(array(
@@ -73,7 +73,7 @@ namespace Canteen\Forms
 					'basePath' => $basePath
 				));
 				
-				if (!is_writable(CALLER_PATH))
+				if (!is_writable($this->settings->callerPath))
 				{
 					$this->error("Please manually save the file.");
 					

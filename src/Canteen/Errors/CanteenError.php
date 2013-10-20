@@ -21,6 +21,14 @@ namespace Canteen\Errors
 	*/
 	class CanteenError extends Exception
 	{
+		/**
+		*  The source directory path to Canteen folder, this is used
+		*  to remove the verbose path to Canteen 
+		*  @property {String} rootPath 
+		*  @static
+		*/
+		public static $rootPath = '';
+		
 		/** 
 		*  The method being called is for internal use only 
 		*  @property {int} INTERNAL_ONLY
@@ -191,11 +199,11 @@ namespace Canteen\Errors
 		
 		/** 
 		*  Unable to delete the setting
-		*  @property {int} SETTING_DELETABLE
+		*  @property {int} SETTING_DELETE
 		*  @static
 		*  @final
 		*/
-		const SETTING_DELETABLE = 123;
+		const SETTING_DELETE = 123;
 		
 		/** 
 		*  The setting name is already taken
@@ -213,7 +221,7 @@ namespace Canteen\Errors
 		*  @final
 		*/
 		private static $messages = array(
-			self::SETTING_DELETABLE => 'The setting \'%s\' cannot be deleted',
+			self::SETTING_DELETE => 'The setting \'%s\' cannot be deleted',
 			self::SETTING_WRITEABLE => 'The setting \'%s\' cannot be changed',
 			self::SETTING_NAME_TAKEN => 'The setting name \'%s\' is taken, please rename',
 			self::INTERNAL_ONLY => 'Method is only accessible internally',
@@ -228,7 +236,7 @@ namespace Canteen\Errors
 			self::WRONG_DOMAIN => 'Form submitted from the wrong domain',
 			self::TEMPLATE_NOT_FOUND => 'Cannot load template file',
 			self::TEMPLATE_UNKNOWN => 'Template not registered',
-			self::INSUFFICIENT_VERSION => 'The current version of Canteen Site is insufficient to run site',
+			self::INSUFFICIENT_VERSION => 'The installed version of Canteen Site (%s) is insufficient to run site (%s)',
 			self::INSUFFICIENT_PHP => 'The current version of PHP is insufficient to run site',
 			self::INVALID_INDEX => 'The index page for the site does not exist',
 			self::CACHE_FOLDER => 'Could not create the cache folder',
@@ -290,7 +298,7 @@ namespace Canteen\Errors
 		{
 			return array(
 				'message' => $e->getMessage(),
-				'file' => str_replace(CANTEEN_PATH, '', $e->getFile())." (line:{$e->getLine()})",
+				'file' => str_replace(self::$rootPath, '', $e->getFile())." (line:{$e->getLine()})",
 				'code' => $e->getCode(),
 				'stackTrace' => self::getFormattedTrace($e)
 			);
@@ -302,6 +310,7 @@ namespace Canteen\Errors
 		*  @protected
 		*  @static
 		*  @param {Exception} e The exception to convert to trace
+		*  @return {Array} The collection of arrays
 		*/
 		protected static function getFormattedTrace(Exception $e)
 		{
@@ -312,9 +321,11 @@ namespace Canteen\Errors
 			{
 				$t = trim($t);
 				if (!$t) continue;
-				$stack[] = str_replace(CANTEEN_PATH, '', $t);
+				$stack[] = str_replace(self::$rootPath, '', $t);
 			}
 			return $stack;
 		}
 	}
+	
+	CanteenError::$rootPath = dirname(__DIR__).'/';
 }

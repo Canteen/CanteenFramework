@@ -44,6 +44,14 @@ namespace Canteen
 		*/
 		const DB_VERSION = 103;
 		
+		/**
+		*  The name of the main site template alias
+		*  @property {String} MAIN_TEMPLATE
+		*  @static
+		*  @final
+		*/
+		const MAIN_TEMPLATE = 'CanteenTemplate';
+		
 		/** 
 		*  The name of the gateway page 
 		*  @property {String} gatewayUri
@@ -233,13 +241,10 @@ namespace Canteen
 		public function __construct($settings='config.php')
 		{		
 			$bt = debug_backtrace();
-			define('CALLER_PATH', dirname($bt[0]['file']).'/');
+			$callerPath = dirname($bt[0]['file']).'/';
 			unset($bt);
 			
-			// Define the system path 
-			define('CANTEEN_PATH', __DIR__.'/');
-			define('MAIN_TEMPLATE', 'MainTemplate');
-			
+			// Save singleton
 			self::$_instance = $this;
 			
 			// Create the object to handle forms
@@ -251,8 +256,11 @@ namespace Canteen
 			// Setup the settings manager
 			$this->_settings = new SettingsManager();
 			
+			// Register is the caller path, internal path 
+			$this->_settings->addSetting('callerPath', $callerPath);
+			
 			// Load the canteen templates
-			$this->_parser->addManifest(CANTEEN_PATH . 'Templates/templates.json');
+			$this->_parser->addManifest(__DIR__.'/Templates/templates.json');
 			
 			// Initialize the logger
 			Logger::init();
@@ -302,14 +310,14 @@ namespace Canteen
 			
 			// client, renderable, deletable, writeable
 			$this->_settings->addSettings($status->settings)
-				->access('fullPath', 0, 1)
-				->access('local', 1, 1)
-				->access('host', 1, 1)
-				->access('basePath', 1, 1)
-				->access('baseUrl', 1)
-				->access('uriRequest', 1)
-				->access('queryString', 1, 1)
-				->access('debug', 1, 1);
+				->access('fullPath', SETTING_RENDER)
+				->access('local', SETTING_CLIENT | SETTING_RENDER)
+				->access('host', SETTING_CLIENT | SETTING_RENDER)
+				->access('basePath', SETTING_CLIENT | SETTING_RENDER)
+				->access('baseUrl', SETTING_CLIENT)
+				->access('uriRequest', SETTING_CLIENT)
+				->access('queryString', SETTING_CLIENT | SETTING_RENDER)
+				->access('debug', SETTING_CLIENT | SETTING_RENDER);
 			
 			// Debug mode most be on in order to profile
 			$profiler = false;
@@ -337,7 +345,7 @@ namespace Canteen
 			
 			if ($profiler) $profiler->start('Database Connect');
 			
-			if ($this->_settings->exists('dbHost', 'dbUsername', 'dbPassword', 'dbName'))
+			if ($this->_settings->existsThrow('dbHost', 'dbUsername', 'dbPassword', 'dbName'))
 			{
 				$this->_db = new Database(
 					$this->_settings->dbHost,
@@ -386,23 +394,17 @@ namespace Canteen
 				
 				// Add the configuration db assets
 				// Give all settings global render access and changability
-				$this->_settings->addSettings($service->getAll());
-				
-				$this->_settings
-					->access('siteIndex', 1)
-					->access('siteTitle', 0, 1, 1)
-					->access('contentPath', 0, 0, 1)
-					->access('templatePath', 0, 0, 1)
-					->access('clientEnabled', 1, 0, 1); 
-				
+				$service->registerSettings();
+
 				// Add the main site template
-				$this->_parser->addTemplate(MAIN_TEMPLATE, CALLER_PATH . $this->_settings->templatePath);
+				$this->_parser->addTemplate(self::MAIN_TEMPLATE, 
+					$this->settings->callerPath . $this->_settings->templatePath);
 				
 				// Process database changes here
 				$this->_formFactory->startup('Canteen\Forms\DatabaseUpdate');
 				
 				// Check for database updates
-				$this->isDatabaseUpdated('dbVersion', self::DB_VERSION, CANTEEN_PATH.'Upgrades/');
+				$this->isDatabaseUpdated('dbVersion', self::DB_VERSION, __DIR__.'/Upgrades/');
 				
 				// Create the services that require the database
 				new PageService;
@@ -418,8 +420,8 @@ namespace Canteen
 			
 			// Add to the manager and allow render access for loggedIn and user name
 			$this->_settings->addSettings($this->_user->settings)
-				->access('loggedIn', 0, 1)
-				->access('userFullname', 0, 1);
+				->access('loggedIn', SETTING_RENDER)
+				->access('userFullname', SETTING_RENDER);
 			
 			if ($profiler) $profiler->end('Authorization');
 			
@@ -688,7 +690,7 @@ namespace Canteen
 			{
 				$e =  new CanteenError(
 					CanteenError::INSUFFICIENT_VERSION, 
-					'Required version: '.$required.', current version: '.self::VERSION
+					array(self::VERSION, $required)
 				);
 				self::$_fatalError = $e->getResult();
 			}

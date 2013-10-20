@@ -80,10 +80,10 @@ namespace Canteen\Parser
 					'year' => date('Y'),
 					'formSession' => StringUtils::generateRandomString(16),
 					'logoutUri' => $this->site->logoutUri
-				), 0, 1
+				), SETTING_RENDER
 			)
-			->addSetting('version', Site::VERSION, 1)
-			->addSetting('gatewayPath', $this->settings->basePath . $this->site->gatewayUri, 1);
+			->addSetting('version', Site::VERSION, SETTING_CLIENT)
+			->addSetting('gatewayPath', $this->settings->basePath . $this->site->gatewayUri, SETTING_CLIENT);
 			
 			// Check for the compression setting
 			if ($this->settings->compress && extension_loaded('zlib')) 
@@ -282,18 +282,18 @@ namespace Canteen\Parser
 				$page = $controller->getPage();
 				
 				// Add the controller tags to settings
-				$this->settings->addSettings($controller->getData(), 0, 1);
+				$this->settings->addSettings($controller->getData(), SETTING_RENDER);
 				
 				if ($profiler) $profiler->end('Page Controller');
 			}
 			// Add the page title
-			$this->settings->addSetting('pageTitle', $page->title, 0, 1);
+			$this->settings->addSetting('pageTitle', $page->title, SETTING_RENDER);
 			
 			// Add the full title
 			$fullTitle = $page->fullTitle = $this->getSiteTitle($page);
-			$this->settings->addSetting('fullTitle', $fullTitle, 0, 1);
+			$this->settings->addSetting('fullTitle', $fullTitle, SETTING_RENDER);
 			
-			$this->parse($page->content, $this->settings->getRenderables());
+			$this->parse($page->content, $this->settings->getRender());
 			if ($profiler) $profiler->end('Add Page Content');	
 					
 			return $page;
@@ -384,7 +384,7 @@ namespace Canteen\Parser
 						'pageId' => $page->pageId,
 						'settings' => $this->getSettings()
 					),
-					0, 1
+					SETTING_RENDER
 				);
 				
 				$profiler = $this->profiler;
@@ -392,7 +392,7 @@ namespace Canteen\Parser
 				if ($profiler) $profiler->start('Template Render');
 				
 				// Get the main template from the path
-				$data = $this->template(MAIN_TEMPLATE, $this->settings->getRenderables());
+				$data = $this->template(Site::MAIN_TEMPLATE, $this->settings->getRender());
 				
 				// Clean up
 				$this->removeEmpties($data);
@@ -405,8 +405,6 @@ namespace Canteen\Parser
 				if ($profiler) $profiler->end('Parse Fix Path');
 				
 				if ($profiler) $profiler->end('Template Render');
-				
-				
 			}
 			
 			// Cache, if available
@@ -464,7 +462,7 @@ namespace Canteen\Parser
 				'Settings', 
 				array(
 					'settings' => json_encode(
-						$this->settings->getClientGlobals(), 
+						$this->settings->getClient(), 
 						JSON_UNESCAPED_SLASHES
 					)
 				)

@@ -63,9 +63,12 @@ namespace Canteen\Services
 		public function __construct()
 		{
 			parent::__construct('pages');
-						
+			
+			$contentPath = $this->settings->exists('contentPath') ? 
+				$this->settings->contentPath : '';
+				
 			$this->mappings = array(
-				'contentUrl' => $this->settings->contentPath
+				'contentUrl' => $contentPath
 			);
 		}
 		

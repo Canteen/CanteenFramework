@@ -10,6 +10,46 @@ namespace Canteen\Utilities
 	class SettingsManager
 	{
 		/**
+		*  Option if the setting should be available to the client, JavaScript
+		*  @property {int} CLIENT
+		*  @static
+		*  @final 
+		*/
+		const CLIENT = 1;
+		
+		/**
+		*  Option if the setting can be rendered on the page
+		*  @property {int} RENDER
+		*  @static
+		*  @final 
+		*/
+		const RENDER = 2;
+		
+		/**
+		*  Option if the option can be changed from the config panel
+		*  @property {int} WRITE
+		*  @static
+		*  @final 
+		*/
+		const WRITE = 4;
+		
+		/**
+		*  Option if the option can be deleted from the config panel
+		*  @property {int} DELETE
+		*  @static
+		*  @final 
+		*/
+		const DELETE = 8;
+		
+		/**
+		*  Enable all access
+		*  @property {int} ALL
+		*  @static
+		*  @final 
+		*/
+		const ALL = 15;
+		
+		/**
 		*  The collection of all settings
 		*  @property {Array} settings
 		*  @private
@@ -34,23 +74,26 @@ namespace Canteen\Utilities
 		{
 			$this->settings = array();
 			$this->settingsMap = array();
+			
+			define('SETTING_CLIENT', self::CLIENT);
+			define('SETTING_RENDER', self::RENDER);
+			define('SETTING_DELETE', self::DELETE);
+			define('SETTING_WRITE', self::WRITE);
+			define('SETTING_ALL', self::ALL);
 		}
 	
 		/**
 		*  Add a collection of settings to the settings manager
 		*  @method addSettings
 		*  @param {Dictionary} settings The associative-array of properties
-		*  @param {Boolean} [client=false] If the settings are client-facing
-		*  @param {Boolean} [renderable=false] If the setting can rendered as part of a template
-		*  @param {Boolean} [writeable=false] If the settings value can be changed
-		*  @param {Boolean} [deletable=false] If the settings are deletable
+		*  @param {int} [access=0] The access to enable for access, default to none
 		*  @return {StateManager} Make it easier to chain
 		*/
-		public function addSettings(array $settings, $clientGlobal=false, $renderable=false, $writeable=false, $deletable=false)
+		public function addSettings(array $settings, $access=0)
 		{
 			foreach($settings as $name=>$value)
 			{
-				$this->addSetting($name, $value, $clientGlobal, $renderable, $writeable, $deletable);
+				$this->addSetting($name, $value, $access);
 			}
 			return $this;
 		}
@@ -60,49 +103,34 @@ namespace Canteen\Utilities
 		*  @method addSetting
 		*  @param {String} name The name of the property add
 		*  @param {mixed} value The value of the setting
-		*  @param {Boolean} [client=false] If the settings are client-facing
-		*  @param {Boolean} [renderable=false] If the setting can rendered as part of a template
-		*  @param {Boolean} [writeable=false] If the settings value can be changed
-		*  @param {Boolean} [deletable=false] If the settings are deletable
+		*  @param {int} [access=0] The access to enable for access, default to none
 		*  @return {StateManager} Make it easier to chain
 		*/
-		public function addSetting($name, $value, $clientGlobal=false, $renderable=false, $writeable=false, $deletable=false)
+		public function addSetting($name, $value, $access=0)
 		{
 			if (isset($this->settingsMap[$name]))
 			{
 				throw new CanteenError(CanteenError::SETTING_NAME_TAKEN, $name);
 			}
-			$setting = new Setting($name, $value);
-			$setting->clientGlobal = $clientGlobal;
-			$setting->renderable = $renderable;
-			$setting->deletable = $deletable;
-			$setting->writeable = $writeable;
-		
+			$setting = new Setting($name, $value, $access);		
 			$this->settings[] = $setting;
-			$this->settingsMap[$name] = $setting;
-			
+			$this->settingsMap[$name] = $setting;			
 			return $this;
 		}
 		
 		/**
 		*  Change the access by name
 		*  @param {String} name The name of the setting 
-		*  @param {Boolean} [client=false] If the settings are client-facing
-		*  @param {Boolean} [renderable=false] If the setting can rendered as part of a template
-		*  @param {Boolean} [writeable=false] If the settings value can be changed
-		*  @param {Boolean} [deletable=false] If the settings are deletable
+		*  @param {int} access The access to enable for access, default to none
 		*  @return {StateManager} Make it easier to chain
 		*/
-		public function access($name, $clientGlobal=false, $renderable=false, $writeable=false, $deletable=false)
+		public function access($name, $access)
 		{
 			$setting = ifsetor($this->settingsMap[$name]);
 			
 			if ($setting)
 			{
-				$setting->clientGlobal = $clientGlobal;
-				$setting->renderable = $renderable;
-				$setting->deleteable = $deletable;
-				$setting->writeable = $writeable;
+				$setting->access = $access;
 				return $this;
 			}
 			else
@@ -129,6 +157,27 @@ namespace Canteen\Utilities
 					$missing[] = $key;
 				}
 			}
+			return !count($missing);
+		}
+		
+		/**
+		*  If multiple settings exist, throw exception if not
+		*  @method exists
+		*  @public
+		*  @param {String} args* The data names that are required
+		*  @return {Boolean} If the access check out
+		*/
+		public function existsThrow($args)
+		{
+			$keys = is_array($args) ? $args : func_get_args();
+			$missing = array();
+			foreach($keys as $key)
+			{
+				if (!isset($this->settingsMap[$key]))
+				{
+					$missing[] = $key;
+				}
+			}
 			
 			if (count($missing))
 			{
@@ -139,15 +188,15 @@ namespace Canteen\Utilities
 		
 		/**
 		*  Get the collection of settings that are okay to render through templates
-		*  @method getRenderables
+		*  @method getRender
 		*  @return {Dictionary} The collection of settings
 		*/
-		public function getRenderables()
+		public function getRender()
 		{
 			$result = array();
 			foreach($this->settings as $s)
 			{
-				if ($s->renderable)
+				if ($s->access & self::RENDER)
 				{
 					$result[$s->name] = $s->value;
 				}
@@ -156,52 +205,16 @@ namespace Canteen\Utilities
 		}
 		
 		/**
-		*  Get the collection of settings that write-only
-		*  @method getProtectedNames
-		*  @return {Array} The collection of setting names
-		*/
-		public function getProtectedNames()
-		{
-			$result = array();
-			foreach($this->settings as $s)
-			{
-				if ($s->writeable)
-				{
-					$result[] = $s->name;
-				}
-			}
-			return $result;
-		}
-		
-		/**
-		*  Get the collection of settings that are readOnly
-		*  @method getReadOnly
-		*  @return {Array} The collection of setting names
-		*/
-		public function getPrivateNames()
-		{
-			$result = array();
-			foreach($this->settings as $s)
-			{
-				if (!$s->writeable && !$s->deletable)
-				{
-					$result[] = $s->name;
-				}
-			}
-			return $result;
-		}
-	
-		/**
 		*  Get the collection of settings that are okay-ed for use by the client
-		*  @method getClientGlobals
+		*  @method getClient
 		*  @return {Dictionary} The collection of settings
 		*/
-		public function getClientGlobals()
+		public function getClient()
 		{
 			$result = array();
 			foreach($this->settings as $s)
 			{
-				if ($s->clientGlobal)
+				if ($s->access & self::CLIENT)
 				{
 					$result[$s->name] = $s->value;
 				}
@@ -224,7 +237,7 @@ namespace Canteen\Utilities
 				throw new CanteenError(CanteenError::INVALID_SETTING, $name);
 			}
 		}
-	
+		
 		/**
 		*  Global setter access
 		*  @param {String} name The name of the setting
@@ -235,7 +248,7 @@ namespace Canteen\Utilities
 			$setting = ifsetor($this->settingsMap[$name]);
 			if ($setting)
 			{
-				if ($setting->writeable)
+				if ($setting->access & self::WRITE)
 				{
 					return $setting->value;
 				}
@@ -249,7 +262,7 @@ namespace Canteen\Utilities
 				throw new CanteenError(CanteenError::INVALID_SETTING, $name);
 			}
 		}
-	
+		
 		/**
 		*  Remove a setting
 		*  @param {String} name The name of the setting to remove
@@ -259,7 +272,7 @@ namespace Canteen\Utilities
 			$setting = ifsetor($this->settingsMap[$name]);
 			if ($setting)
 			{
-				if ($setting->deletable)
+				if ($setting->access & self::DELETE)
 				{
 					// Remove from the map
 					unset($this->settingsMap[$name]);
@@ -276,7 +289,7 @@ namespace Canteen\Utilities
 				}
 				else
 				{
-					throw new CanteenError(CanteenError::SETTING_DELETABLE, $name);
+					throw new CanteenError(CanteenError::SETTING_DELETE, $name);
 				}
 			}
 			else
@@ -298,24 +311,16 @@ namespace Canteen\Utilities
 		public $value;
 		
 		/** If the setting is client-facing */
-		public $clientGlobal = false;
-		
-		/** If the setting is deletable */
-		public $deletable = false;
-		
-		/** If the setting is editable */
-		public $writable = false;
-		
-		/** If the setting can be rendered in a template */
-		public $renderable = false;
+		public $access = 0;
 		
 		/**
 		*  Constructor
 		*/
-		public function __construct($name, $value)
+		public function __construct($name, $value, $access)
 		{
 			$this->name = $name;
 			$this->value = $value;
+			$this->access = $access;
 		}
 	}
 }

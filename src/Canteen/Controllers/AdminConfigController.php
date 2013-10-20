@@ -28,8 +28,6 @@ namespace Canteen\Controllers
 			$this->allPages = $this->service('pages')->getPages();
 			
 			$configs = $this->service('config')->getConfigs();
-			$protected = $this->settings->getProtectedNames();
-			$private = $this->settings->getPrivateNames();
 
 			// Great the selection options for the value type
 			$types = html('option', 'auto', 'selected=selected');
@@ -39,9 +37,9 @@ namespace Canteen\Controllers
 			}
 			
 			foreach($configs as $i=>$config)
-			{
+			{				
 				// Ignore private properties
-				if (in_array($config->name, $private))
+				if (!(SETTING_WRITE & $config->access))
 				{
 					unset($configs[$i]);
 					continue;
@@ -59,12 +57,14 @@ namespace Canteen\Controllers
 				{
 					$config->value = $config->value ? 'checked' : '';
 				}
-				$config->disabled = in_array($config->name, $protected) ? 'disabled' : '';
+				$config->disabled = (SETTING_DELETE & $config->access) ? '' : 'disabled';
 			}
 			
 			$this->addTemplate('AdminConfig', array(
 				'configs' => $configs,
-				'types' => $types
+				'types' => $types,
+				'client' => SETTING_CLIENT,
+				'render' => SETTING_RENDER
 			));
 		}
 		

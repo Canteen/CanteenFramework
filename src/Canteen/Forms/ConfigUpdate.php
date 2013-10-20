@@ -98,10 +98,7 @@ namespace Canteen\Forms
 				return;
 			}
 			
-			$protected = $this->settings->getProtectedNames();
-			$private = $this->settings->getPrivateNames();
-			
-			if (in_array($config->name, $protected) || in_array($config->name, $private))
+			if (!(SETTING_DELETE & $config->access) || !(SETTING_WRITE & $config->access))
 			{
 				$this->error('This property cannot be deleted');
 				return;
@@ -127,6 +124,11 @@ namespace Canteen\Forms
 		{
 			$name = $this->verify(ifsetor($_POST['configName']), Validate::URI);
 			$value = ifsetor($_POST['configValue']);
+			
+			$client = (int)ifsetor($_POST['client'], 0);
+			$render = (int)ifsetor($_POST['render'], 0);
+			
+			$access = $client | $render | SETTING_WRITE | SETTING_DELETE;
 			
 			// Get the config type
 			$type = ifsetor($_POST['configType'], 'auto');				
@@ -160,7 +162,7 @@ namespace Canteen\Forms
 				
 			if (!$this->ifError)
 			{
-				if (!$this->service('config')->addConfig($name, $value, $type))
+				if (!$this->service('config')->addConfig($name, $value, $type, $access))
 				{
 					$this->error('Unable to add new config');
 				}

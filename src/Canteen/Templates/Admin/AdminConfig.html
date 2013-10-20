@@ -28,7 +28,7 @@
 <div class="formContainer configUpdateAdd">
 	<form action="{{fullPath}}{{queryString}}" method="post">
 		<fieldset>
-			<legend>Add A New Config Property</legend>
+			<legend>Add A Custom Setting</legend>
 			{{formFeedback}}
 			<div class="clearfix formRow">
 				<label for="configName">Name</label>
@@ -44,8 +44,18 @@
 					{{types}}
 				</select>
 			</div>
+			<div class="clearfix formRow">
+				<label for="client">Client Global</label>
+				<input id="client" name="client" type="checkbox" class="checkbox" value="{{client}}" tabindex="4">
+				Add to the client-side <code>Canteen.settings</code>
+			</div>
+			<div class="clearfix formRow">
+				<label for="render">Renderable</label>
+				<input id="render" name="render" type="checkbox" class="checkbox" value="{{render}}" tabindex="5">
+				Add value to templates <code>&#123;&#123;myProperty&#125;&#125;</code>
+			</div>
 			<div class="formButtons">
-				<input type="submit" value="Add" name="addButton" tabindex="4" class="submit">
+				<input type="submit" value="Add" name="addButton" tabindex="6" class="submit">
 				<input type="hidden" name="form" value="Canteen\Forms\ConfigUpdate">
 				<input type="hidden" name="refresh" value="true">
 				<input type="hidden" name="formSession" value="{{formSession}}">

@@ -136,15 +136,17 @@ namespace Canteen\Services
 				) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
 				
 				$success = (bool)$this->db->execute($sql);
-				
-				return $this->internalAddUser(
+								
+				$added = $this->internalAddUser(
 					$username, 
 					$email, 
 					$password, 
 					$firstName, 
 					$lastName, 
 					Privilege::ADMINISTRATOR
-				) && $success;
+				);
+				
+				return $success && $added;
 			}
 		}
 		
@@ -481,11 +483,11 @@ namespace Canteen\Services
 		private function internalAddUser($username, $email, $password, $firstName, $lastName, $privilege)
 		{
 			$id = $this->db->nextId($this->table, 'user_id');
-			
+						
 			return $this->db->insert($this->table)
 				->values(array(
 					'user_id' => $id,
-					'username' => $this->verify($username, Validate::ALPHA),
+					'username' => $this->verify($username, Validate::FILE_NAME),
 					'email' => $this->verify($email, Validate::EMAIL),
 					'password' => PasswordUtils::hash($password),
 					'first_name' => $this->verify($firstName, Validate::NAMES),

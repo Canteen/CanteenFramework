@@ -26,7 +26,8 @@ namespace Canteen\Services
 			'`config_id` as `id`',
 			'`name`',
 			'`value`',
-			'`value_type` as `type`'
+			'`value_type` as `type`',
+			'`access`'
 		);
 		
 		/** 
@@ -70,6 +71,7 @@ namespace Canteen\Services
 				  `name` varchar(64) NOT NULL,
 				  `value` varchar(255) NOT NULL,
 				  `value_type` set('string','boolean','integer','path','page') NOT NULL DEFAULT 'string',
+				  `access` tinyint(1) UNSIGNED NOT NULL DEFAULT  '0',
 				  PRIMARY KEY (`config_id`),
 				  UNIQUE KEY `name` (`name`)
 				) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
@@ -79,13 +81,13 @@ namespace Canteen\Services
 				if ($result)
 				{
 					return $this->db->insert($this->table)
-						->fields('config_id', 'name', 'value', 'value_type')
-						->values(1, 'siteIndex', 'home', 'page')
-						->values(2, 'siteTitle', $siteTitle, 'string')
-						->values(3, 'contentPath', $contentPath, 'path')
-						->values(4, 'templatePath', $templatePath, 'path')
-						->values(5, 'dbVersion', Site::DB_VERSION, 'integer')
-						->values(6, 'clientEnabled', 1, 'boolean')
+						->fields('config_id', 'name', 'value', 'value_type', 'access')
+						->values(1, 'siteIndex', 'home', 'page', SETTING_CLIENT)
+						->values(2, 'siteTitle', $siteTitle, 'string', SETTING_RENDER | SETTING_WRITE)
+						->values(3, 'contentPath', $contentPath, 'path', SETTING_WRITE)
+						->values(4, 'templatePath', $templatePath, 'path', SETTING_WRITE)
+						->values(5, 'dbVersion', Site::DB_VERSION, 'integer', 0)
+						->values(6, 'clientEnabled', 1, 'boolean', SETTING_CLIENT | SETTING_WRITE)
 						->result();
 				}
 			}
@@ -109,27 +111,26 @@ namespace Canteen\Services
 		}
 		
 		/**
-		*  Get all the the config for the site
-		*  @method getAll
+		*  Get all the the config for the site and add them to the settings
+		*  @method registerSettings
 		*  @return {Dictionary} The collection of all config items 
 		*/
-		public function getAll()
+		public function registerSettings()
 		{
 			$this->internal('Canteen\Site');
 			
 			$result = $this->db->select($this->properties)
 				->from($this->table)
 				->results(true); // cache
-			
-			$config = array();
-				
-			if (!$result) return $config;
+							
+			if (!$result) return;
 					
 			foreach($result as $property)
 			{
 				$name = (string)$property['name'];
 				$type = (string)$property['type'];
 				$value = (string)$property['value'];
+				$access = (int)$property['access'];
 				
 				switch($type)
 				{
@@ -137,9 +138,8 @@ namespace Canteen\Services
 					case 'boolean': $value = (bool)((int)$value); break;
 				}
 				
-				$config[$name] = $value;
+				$this->settings->addSetting($name, $value, $access);
 			}
-			return $config;
 		}
 		
 		/**
@@ -200,9 +200,11 @@ namespace Canteen\Services
 		*  @param {String} name The key name to set
 		*  @param {mixed} value The value of the key to set
 		*  @param {String} [valueType='string'] The value type (string or integer)
+		*  @param {int} [access=0] The access to the property, see SettingsManager for more
+		*         information on controlling access to settings.
 		*  @return {int|Boolean} The new ID if successful, false if not
 		*/
-		public function addConfig($name, $value, $valueType='string')
+		public function addConfig($name, $value, $valueType='string', $access=0)
 		{
 			$this->privilege(Privilege::ADMINISTRATOR);
 			$this->verify($valueType, $this->getValueTypes());
@@ -215,7 +217,8 @@ namespace Canteen\Services
 					'config_id' => $id,
 					'name' => $name,
 					'value' => $value,
-					'value_type' => $valueType
+					'value_type' => $valueType,
+					'access' => $access
 				))
 				->result() ? $id : false;
 		}
