@@ -39,7 +39,7 @@ namespace Canteen\Controllers
 			}		
 			
 			// The directory path
-			$dir = CALLER_PATH.$this->settings('contentPath');
+			$dir = CALLER_PATH . $this->settings->contentPath;
 			
 			$data = array(
 				'formLabel' => $page ? 'Update an Existing Page' : 'Add a New Page',

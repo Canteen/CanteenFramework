@@ -33,8 +33,7 @@ namespace Canteen\Forms
 	        }
 	        else
 	        {
-	            $this->success("Logged in");
-				redirect(URI_REQUEST);
+				redirect($this->settings->uriRequest);
 	        }
 		}
 	}

@@ -17,27 +17,6 @@ namespace Canteen\Utilities
 	abstract class CanteenBase
 	{		
 		/**
-		*  Get the site setting or settings
-		*  @method settings
-		*  @protected
-		*  @param {String} [name=null] The name of the config property
-		*  @return {String|Dictionary} Either value of the data or all items if param name is null
-		*/
-		protected function settings($name=null)
-		{
-			$settings = Site::instance()->settings;
-			
-			// If there's a name
-			if ($name !== null) $settings = ifsetor($settings[$name], null);
-
-			if ($settings === null)
-			{
-				throw new CanteenError(CanteenError::INVALID_DATA, $name);
-			}
-			return $settings;
-		}
-		
-		/**
 		*  Get a service by alias or classname
 		*  @method service
 		*  @protected
@@ -109,6 +88,13 @@ namespace Canteen\Utilities
 				*  @readOnly
 				*/
 				case 'cache' :
+				
+				/**
+				*  Get the instance of the settings manager
+				*  @property {SettingsManager} settings
+				*  @readOnly
+				*/
+				case 'settings' :
 				
 				/**
 				*  Get the Authorization class to handle things like login, password change

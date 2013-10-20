@@ -173,6 +173,7 @@ namespace Canteen\Server
 			
 			// Setup the data
 			$this->settings = array(
+				'queryString' => $this->settings['queryString'],
 				'domain' => $domain,
 				'host' => '//'.$domain,
 				'uriRequest' => $uriRequest,
@@ -206,15 +207,23 @@ namespace Canteen\Server
 				}
 			}
 			
-			// Save each data as a constant
-			foreach($this->settings as $property=>$value)
+			// Define some global constants that we can use anywhere
+			$globals = array(
+				'basePath', 
+				'debug', 
+				'queryString', 
+				'local', 
+				'host', 
+				'domain'
+			);
+						
+			foreach($globals as $property)
 			{
-				$c = StringUtils::convertPropertyToConst($property);
-				if (!defined($c)) define($c, $value);
+				define(
+					StringUtils::convertPropertyToConst($property),
+					$this->settings[$property]
+				);
 			}
-			
-			// There was a problem with detecting the domain regex
-			if (!defined('DEPLOYMENT_LEVEL')) error("Error: No deployment level was specified");
 		}
 		
 		/**
@@ -239,7 +248,6 @@ namespace Canteen\Server
 	    {			
 	        if (isset($_SERVER['REQUEST_URI']))
 	        {
-				
 				if (isset($_SERVER['HTTP_X_ORIGINAL_URL']))
 				{
 					$request = substr($_SERVER['HTTP_X_ORIGINAL_URL'], 
@@ -256,7 +264,7 @@ namespace Canteen\Server
 					$query = substr($request, $query_pos);
 					$request = substr($request, 0, $query_pos);
 				}
-				
+
 				$this->settings['queryString'] = $query;
 	     		$uri = explode('/', $request);
 	            return implode('/', array_filter($uri, function($var)

@@ -28,8 +28,8 @@ namespace Canteen\Controllers
 			$this->allPages = $this->service('pages')->getPages();
 			
 			$configs = $this->service('config')->getConfigs();
-			$protected = $this->service('config')->getProtectedNames();
-			$private = $this->service('config')->getPrivateNames();
+			$protected = $this->settings->getProtectedNames();
+			$private = $this->settings->getPrivateNames();
 
 			// Great the selection options for the value type
 			$types = html('option', 'auto', 'selected=selected');

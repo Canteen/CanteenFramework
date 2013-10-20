@@ -75,7 +75,7 @@ namespace Canteen\Server
 		/**
 		*  If we should use memcache to create the server
 		*/		
-		public function __construct($cacheDirectory=null, $server='127.0.0.1', $port='11211', $expiresDefault=604800)
+		public function __construct($enabled, $cacheDirectory=null, $server='127.0.0.1', $port='11211', $expiresDefault=604800)
 		{
 			$this->_enabled = true;
 			
@@ -107,7 +107,7 @@ namespace Canteen\Server
 			
 			// If there's no memcache, then fallback to using the file system
 			// the cache directory needs to be available
-			if (CACHE_ENABLED && $this->_memcache == null && $this->_cacheDirectory != null)
+			if ($enabled && $this->_memcache == null && $this->_cacheDirectory != null)
 			{
 				// Make sure the folder exists
 				if (!file_exists($this->_cacheDirectory))
@@ -133,7 +133,7 @@ namespace Canteen\Server
 			}
 						
 			// constant is set by the deployment settings
-			$this->setEnabled(CACHE_ENABLED);
+			$this->setEnabled($enabled);
 		}
 		
 		/**

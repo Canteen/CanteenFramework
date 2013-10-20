@@ -23,6 +23,7 @@ namespace Canteen
 	use Canteen\Utilities\Templates;
 	use Canteen\Database\Database;
 	use Canteen\HTML5\SimpleList;
+	use Canteen\Utilities\SettingsManager;
 	use \Exception;
 	
 	class Site
@@ -66,7 +67,7 @@ namespace Canteen
 		
 		/** 
 		*  The site configuration an associative array in key => value pairs 
-		*  @property {Dictionary} settings
+		*  @property {SettingsManager} settings
 		*  @readOnly
 		*/
 		private $_settings;
@@ -247,6 +248,9 @@ namespace Canteen
 			// Setup the parser to render markup templates
 			$this->_parser = new Parser();
 			
+			// Setup the settings manager
+			$this->_settings = new SettingsManager();
+			
 			// Load the canteen templates
 			$this->_parser->addManifest(CANTEEN_PATH . 'Templates/templates.json');
 			
@@ -295,11 +299,21 @@ namespace Canteen
 			
 			// Check the domain for the current deployment level 
 			$status = new DeploymentStatus($settings);
-			$this->_settings = $status->settings;
+			
+			// client, renderable, deletable, writeable
+			$this->_settings->addSettings($status->settings)
+				->access('fullPath', 0, 1)
+				->access('local', 1, 1)
+				->access('host', 1, 1)
+				->access('basePath', 1, 1)
+				->access('baseUrl', 1)
+				->access('uriRequest', 1)
+				->access('queryString', 1, 1)
+				->access('debug', 1, 1);
 			
 			// Debug mode most be on in order to profile
 			$profiler = false;
-			if (DEBUG && ifsetor($_GET['profiler']) == 'true')
+			if ($this->_settings->debug && ifsetor($_GET['profiler']) == 'true')
 			{
 				$this->_profiler = new Profiler();	
 				$profiler = $this->_profiler;
@@ -307,26 +321,29 @@ namespace Canteen
 			}
 			
 			// Set the error reporting if we're set to debug
-			error_reporting(DEBUG ? E_ALL : 0);
+			error_reporting($this->_settings->debug ? E_ALL : 0);
 			
 			// Turn on or off the logger
-			Logger::instance()->enabled = DEBUG;	
+			Logger::instance()->enabled = $this->_settings->debug;	
 			
 			// Setup the cache
-			$this->_cache = new ServerCache($this->settingOnce('cacheDirectory'));
+			$this->_cache = new ServerCache(
+				$this->_settings->cacheEnabled, 
+				$this->_settings->cacheDirectory
+			);
 			
 			// Create the non-database services
 			new TimeService;
 			
 			if ($profiler) $profiler->start('Database Connect');
 			
-			if ($this->checkSettings('dbHost', 'dbUsername', 'dbPassword', 'dbName'))
+			if ($this->_settings->exists('dbHost', 'dbUsername', 'dbPassword', 'dbName'))
 			{
 				$this->_db = new Database(
-					$this->settingOnce('dbHost'),
-					$this->settingOnce('dbUsername'),
-					$this->settingOnce('dbPassword'),
-					$this->settingOnce('dbName')
+					$this->_settings->dbHost,
+					$this->_settings->dbUsername,
+					$this->_settings->dbPassword,
+					$this->_settings->dbName
 				);
 					
 				// Assign the server cache to the database
@@ -368,13 +385,18 @@ namespace Canteen
 				$service = new ConfigService;
 				
 				// Add the configuration db assets
-				$this->_settings = array_merge($service->getAll(), $this->_settings);
+				// Give all settings global render access and changability
+				$this->_settings->addSettings($service->getAll());
 				
-				// Check for default index page, site title, content path, template
-				$this->checkSettings($service->getProtectedNames());
+				$this->_settings
+					->access('siteIndex', 1)
+					->access('siteTitle', 0, 1, 1)
+					->access('contentPath', 0, 0, 1)
+					->access('templatePath', 0, 0, 1)
+					->access('clientEnabled', 1, 0, 1); 
 				
 				// Add the main site template
-				$this->_parser->addTemplate(MAIN_TEMPLATE, CALLER_PATH . $this->_settings['templatePath']);
+				$this->_parser->addTemplate(MAIN_TEMPLATE, CALLER_PATH . $this->_settings->templatePath);
 				
 				// Process database changes here
 				$this->_formFactory->startup('Canteen\Forms\DatabaseUpdate');
@@ -393,10 +415,11 @@ namespace Canteen
 			
 			// Create a new user
 			$this->_user = new Authorization();
-			$this->_settings = array_merge(
-				$this->_user->settings,
-				$this->_settings
-			);
+			
+			// Add to the manager and allow render access for loggedIn and user name
+			$this->_settings->addSettings($this->_user->settings)
+				->access('loggedIn', 0, 1)
+				->access('userFullname', 0, 1);
 			
 			if ($profiler) $profiler->end('Authorization');
 			
@@ -409,7 +432,7 @@ namespace Canteen
 			$this->addController('admin/config', 'Canteen\Controllers\AdminConfigController');
 			$this->addController('forgot-password', 'Canteen\Controllers\ForgotPasswordController');
 			
-			if (DEBUG)
+			if ($this->_settings->debug)
 			{
 				// URL clear for the cache
 				if (ifsetor($_GET['flush']) == 'all')
@@ -465,7 +488,14 @@ namespace Canteen
 		*/
 		public function isDatabaseUpdated($variableName, $targetVersion, $updatesFolder)
 		{		
-			$version = ifsetor($this->_settings[$variableName], 1);
+			try
+			{
+				$version = $this->_settings->$variableName;
+			}
+			catch(Exception $e)
+			{
+				$version = 1;
+			}
 
 			// The database is up-to-date
 			if ($version == $targetVersion) return;
@@ -544,20 +574,14 @@ namespace Canteen
 		/**
 		*  Get the current page markup, echoes on the page
 		*  @method render
-		*  @param {Array} globalSettings Additional keys of global Canteen settings 
-		*         to add to make accessible via the JavaScript Canteen.settings object.
 		*/
-		public function render($globalSettings=null)
+		public function render()
 		{
 			if (!($result = $this->readyToProceed()))
 			{
 				try
 				{
-					if ($globalSettings && !is_array($globalSettings))
-					{
-						$globalSettings = func_get_args();
-					}
-					$builder = new PageBuilder($globalSettings);
+					$builder = new PageBuilder();
 					$result = $builder->handle();
 				}
 				catch(CanteenError $e)
@@ -625,10 +649,12 @@ namespace Canteen
 		*  @method addSetting
 		*  @param {String} name The name of the item to set
 		*  @param {String} value The value to set
+		*  @param {Boolean} [client=true] If the setting should be added to the global client JS settings
+		*  @param {Boolean} [renderable=true] If the setting can be rendered 
 		*/
-		public function addSetting($name, $value)
+		public function addSetting($name, $value, $clientGlobal=true, $renderable=true)
 		{
-			$this->_settings[$name] = $value;
+			$this->_settings->addSetting($name, $value, $clientGlobal, $renderable);
 		}		
 		
 		/**
@@ -666,46 +692,6 @@ namespace Canteen
 				);
 				self::$_fatalError = $e->getResult();
 			}
-		}
-		
-		/**
-		*  Get the value of a setting only once, then discard
-		*  this is useful for things we want to protect, like credentials.
-		*  @method settingOnce
-		*  @private
-		*  @param {String} name The name of the setting
-		*  @return {mixed} The value of the setting  
-		*/
-		private function settingOnce($name)
-		{
-			$value = ifsetor($this->_settings[$name]);
-			unset($this->_settings[$name]);
-			return $value;
-		}
-		
-		/**
-		*  If multiple keys exists in an array
-		*  @method checkSettings
-		*  @private
-		*  @param {String} args* The data names that are required
-		*/
-		private function checkSettings($args)
-		{
-			$keys = is_array($args) ? $args : func_get_args();
-			$missing = array();
-			foreach($keys as $key)
-			{
-				if (!isset($this->_settings[$key]))
-				{
-					$missing[] = $key;
-				}
-			}
-			
-			if (count($missing))
-			{
-				throw new CanteenError(CanteenError::INVALID_DATA, implode(", ", $missing));
-			}
-			return true;
 		}
 	}
 }

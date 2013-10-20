@@ -35,7 +35,7 @@ namespace Canteen\Errors
 		*  @static
 		*  @final
 		*/
-		const INVALID_DATA = 101;
+		const INVALID_SETTING = 101;
 		
 		/** 
 		*  Trying to access service($alias) and nothing can be created 
@@ -181,6 +181,30 @@ namespace Canteen\Errors
 		*/
 		const TEMPLATE_UNKNOWN = 121;
 		
+		/** 
+		*  Unable to change the setting
+		*  @property {int} SETTING_WRITEABLE
+		*  @static
+		*  @final
+		*/
+		const SETTING_WRITEABLE = 122;
+		
+		/** 
+		*  Unable to delete the setting
+		*  @property {int} SETTING_DELETABLE
+		*  @static
+		*  @final
+		*/
+		const SETTING_DELETABLE = 123;
+		
+		/** 
+		*  The setting name is already taken
+		*  @property {int} SETTING_NAME_TAKEN
+		*  @static
+		*  @final
+		*/
+		const SETTING_NAME_TAKEN = 124;
+		
 		/**
 		*  The collection of messages
 		*  @property {Array} messages
@@ -189,8 +213,11 @@ namespace Canteen\Errors
 		*  @final
 		*/
 		private static $messages = array(
+			self::SETTING_DELETABLE => 'The setting \'%s\' cannot be deleted',
+			self::SETTING_WRITEABLE => 'The setting \'%s\' cannot be changed',
+			self::SETTING_NAME_TAKEN => 'The setting name \'%s\' is taken, please rename',
 			self::INTERNAL_ONLY => 'Method is only accessible internally',
-			self::INVALID_DATA => 'The data property does not exist',
+			self::INVALID_SETTING => 'The setting \'%s\' property does not exist',
 			self::INVALID_SERVICE_ALIAS => 'The alias or class of the service does not exist',
 			self::OVERRIDE_CONTROLLER_PROCESS => "Controller must override 'process' method",
 			self::FORM_INHERITANCE => 'Form is not an instance of the Form class',

@@ -78,7 +78,7 @@ namespace Canteen\Forms
 			$content = '';
 			
 			// The write directory where to save HTML files
-			$dir =  $this->settings('contentPath');
+			$dir =  $this->settings->contentPath;
 			$isWritable = is_writable(CALLER_PATH . $dir) !== false;
 			$contentUrl = $dir . $uri . '.html';
 			

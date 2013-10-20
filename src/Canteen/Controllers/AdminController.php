@@ -79,7 +79,7 @@ namespace Canteen\Controllers
 			{
 				if (USER_PRIVILEGE >= $child->privilege)
 				{
-					$link = html('a', $child->title, 'href='.BASE_PATH.$child->uri);
+					$link = html('a', $child->title, 'href='.$this->settings->basePath.$child->uri);
 					if ($child->uri == $this->page->uri)
 					{
 						$link->class = 'selected';

@@ -21,18 +21,9 @@ namespace Canteen\Parser
 	*  Located in the namespace __PageBuilder__.
 	*  @class PageBuilder
 	*  @extends CanteenBase
-	*  @constructor
-	*  @param {Dictionary} [customSettings=null] If there are any custom settings to display on the page
 	*/
 	class PageBuilder extends CanteenBase
 	{
-		/** 
-		*  The data
-		*  @property {Dictionary} _data
-		*  @private
-		*/
-		private $_data;
-		
 		/** 
 		*  The page for the index of the site
 		*  @property {Page} _indexPage
@@ -55,13 +46,6 @@ namespace Canteen\Parser
 		private $_isGateway;
 		
 		/** 
-		*  The collection is a list of data keys to use for the global JS Canteen settings
-		*  @property {Dictionary} _customSettings 
-		*  @private
-		*/
-		private $_customSettings;
-		
-		/** 
 		*  The cache context for page renders
 		*  @property {String} RENDER_CONTEXT
 		*  @static
@@ -80,33 +64,29 @@ namespace Canteen\Parser
 		/**
 		*  Build a page builder
 		*/
-		public function __construct($customSettings=null)
+		public function __construct()
 		{			
 			if ($this->profiler) $this->profiler->start('Build Page');
 			
 			// Check to see if this is a gateway request
-			$this->_isGateway = strpos(URI_REQUEST, $this->site->gatewayUri) === 0;
-			
-			// Save for when we generate the settings
-			$this->_customSettings = $customSettings;
+			$this->_isGateway = strpos($this->settings->uriRequest, $this->site->gatewayUri) === 0;
 			
 			// Check to see if this is an ajax request
 			define('ASYNC_REQUEST', ifsetor($_POST['async']) == 'true' || $this->_isGateway);
 						
-			// Add page building specific properties
-			$this->_data = array_merge(
+			// Add some render only properties
+			$this->settings->addSettings(
 				array(
 					'year' => date('Y'),
-					'version' => Site::VERSION,
 					'formSession' => StringUtils::generateRandomString(16),
-					'logoutUri' => $this->site->logoutUri,
-					'gatewayPath' => $this->settings('basePath').$this->site->gatewayUri
-				),
-				$this->settings()
-			);
+					'logoutUri' => $this->site->logoutUri
+				), 0, 1
+			)
+			->addSetting('version', Site::VERSION, 1)
+			->addSetting('gatewayPath', $this->settings->basePath . $this->site->gatewayUri, 1);
 			
 			// Check for the compression setting
-			if (COMPRESS && extension_loaded('zlib')) 
+			if ($this->settings->compress && extension_loaded('zlib')) 
 			{
 				ini_set("output_buffering", "Off");
 				ini_set("zlib.output_compression", "Off");
@@ -116,7 +96,7 @@ namespace Canteen\Parser
 			
 			// See if we should minify the output string
 			// and strip all whitespace
-			if (MINIFY)
+			if ($this->settings->minify)
 			{
 				ob_start(array('Canteen\Utilities\StringUtils', 'minify'));
 			}
@@ -135,12 +115,12 @@ namespace Canteen\Parser
 			$profiler = $this->profiler;
 			
 			// Grab the default index page
-			$this->_indexPage = $this->getPageByUri($this->_data['siteIndex']);
+			$this->_indexPage = $this->getPageByUri($this->settings->siteIndex);
 			
 			// There's no index page
 			if (!$this->_indexPage)
 			{
-				throw new CanteenError(CanteenError::INVALID_INDEX, $this->_data['siteIndex']);
+				throw new CanteenError(CanteenError::INVALID_INDEX, $this->settings->siteIndex);
 			}
 			
 			// If we're processing a form
@@ -164,13 +144,13 @@ namespace Canteen\Parser
 				}
 				else
 				{
-					$this->_data['formFeedback'] = $this->site->formFactory->getFeedback();
+					$this->settings->addSetting('formFeedback', $this->site->formFactory->getFeedback(), 0, 1);
 				}
 			}
 			
 			// Log out the current user if request
 			// redirects home
-			if (URI_REQUEST === $this->site->logoutUri)
+			if ($this->settings->uriRequest === $this->site->logoutUri)
 			{
 				$this->flush();
 				$this->user->logout();
@@ -181,8 +161,9 @@ namespace Canteen\Parser
 			// Setup the server and point to services directory
 			// Only local deployments or administrators can use the 
 			// service browser
-			if ((LOCAL || USER_PRIVILEGE == Privilege::ADMINISTRATOR) 
-				&& DEBUG && strpos(URI_REQUEST, $this->site->browserUri) === 0)
+			if (($this->settings->local || USER_PRIVILEGE == Privilege::ADMINISTRATOR) 
+				&& $this->settings->debug 
+				&& strpos($this->settings->uriRequest, $this->site->browserUri) === 0)
 			{
 				$browser = new ServiceBrowser();
 				$result = $browser->handle();
@@ -200,7 +181,7 @@ namespace Canteen\Parser
 			// Handle the current page request based on the current URI
 			else
 			{
-				return $this->handlePage(URI_REQUEST, ASYNC_REQUEST);
+				return $this->handlePage($this->settings->uriRequest, ASYNC_REQUEST);
 			}
 		}
 		
@@ -221,7 +202,7 @@ namespace Canteen\Parser
 			{
 				$stateTitle = ($parent->id == $page->id) ? ' . ' : ' . '. $parent->title . ' . ';
 			}
-			return $page->title . $stateTitle . $this->_data['siteTitle'];
+			return $page->title . $stateTitle . $this->settings->siteTitle;
 		}
 		
 		/**
@@ -299,16 +280,22 @@ namespace Canteen\Parser
 				if ($profiler) $profiler->start('Page Controller');
 				$controller = new $controllerName($page, $page->dynamicUri);
 				$page = $controller->getPage();
-				$this->_data = array_merge(
-					$controller->getData(),
-					$this->_data
-				);
+				
+				// Add the controller tags to settings
+				$this->settings->addSettings($controller->getData(), 0, 1);
+				
 				if ($profiler) $profiler->end('Page Controller');
 			}
-			$this->_data['pageTitle'] = $page->title;
-			$this->_data['fullTitle'] = $page->fullTitle = $this->getSiteTitle($page);
-			$this->parse($page->content, $this->_data);
-			if ($profiler) $profiler->end('Add Page Content');			
+			// Add the page title
+			$this->settings->addSetting('pageTitle', $page->title, 0, 1);
+			
+			// Add the full title
+			$fullTitle = $page->fullTitle = $this->getSiteTitle($page);
+			$this->settings->addSetting('fullTitle', $fullTitle, 0, 1);
+			
+			$this->parse($page->content, $this->settings->getRenderables());
+			if ($profiler) $profiler->end('Add Page Content');	
+					
 			return $page;
 		}
 		
@@ -379,7 +366,7 @@ namespace Canteen\Parser
 				
 				// Fix the links
 				if ($profiler) $profiler->start('Parse Fix Path');
-				$this->parser->fixPath($page->content, ifconstor('BASE_PATH', ''));
+				$this->parser->fixPath($page->content, $this->settings->basePath);
 				if ($profiler) $profiler->end('Parse Fix Path');
 				
 				$data = json_encode($page);
@@ -388,7 +375,7 @@ namespace Canteen\Parser
 			else
 			{
 				// Assemble all of the page contents
-				$this->_data = array_merge(
+				$this->settings->addSettings(
 					array(
 						'content' => $page->content,
 						'description' => $page->description,
@@ -397,7 +384,7 @@ namespace Canteen\Parser
 						'pageId' => $page->pageId,
 						'settings' => $this->getSettings()
 					),
-					$this->_data
+					0, 1
 				);
 				
 				$profiler = $this->profiler;
@@ -405,7 +392,7 @@ namespace Canteen\Parser
 				if ($profiler) $profiler->start('Template Render');
 				
 				// Get the main template from the path
-				$data = $this->template(MAIN_TEMPLATE, $this->_data);
+				$data = $this->template(MAIN_TEMPLATE, $this->settings->getRenderables());
 				
 				// Clean up
 				$this->removeEmpties($data);
@@ -413,7 +400,7 @@ namespace Canteen\Parser
 				// Fix the links
 				if ($profiler) $profiler->start('Parse Fix Path');
 				
-				$this->parser->fixPath($data, ifconstor('BASE_PATH', ''));
+				$this->parser->fixPath($data, $this->settings->basePath);
 				
 				if ($profiler) $profiler->end('Parse Fix Path');
 				
@@ -453,7 +440,7 @@ namespace Canteen\Parser
 			{
 				$result .= $this->profiler->render();
 			}
-			if (DEBUG)
+			if ($this->settings->debug)
 			{
 				$result .= Logger::instance()->render();
 			}
@@ -472,38 +459,14 @@ namespace Canteen\Parser
 		*  @return {String} HTML Script tag containing all the Canteen and custom settings
 		*/
 		private function getSettings()
-		{			
-			$defaultSettings = array(
-				'version',
-				'local',
-				'debug',
-				'host',
-				'basePath',
-				'baseUrl',
-				'siteIndex',
-				'queryString',
-				'uriRequest',
-				'gatewayPath',
-				'clientEnabled'
-			);
-			
-			$settings = array();
-			
-			// Add the custom settings
-			if (is_array($this->_customSettings))
-				$defaultSettings = array_merge($this->_customSettings, $defaultSettings);
-			
-			foreach($defaultSettings as $key)
-			{
-				// Make sure the data is set
-				if (!isset($this->_data[$key])) continue;
-				$settings[$key] = $this->_data[$key];
-			}
-			
+		{
 			return $this->template(
 				'Settings', 
 				array(
-					'settings' => json_encode($settings, JSON_UNESCAPED_SLASHES)
+					'settings' => json_encode(
+						$this->settings->getClientGlobals(), 
+						JSON_UNESCAPED_SLASHES
+					)
 				)
 			);
 		}

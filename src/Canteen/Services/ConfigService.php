@@ -93,37 +93,6 @@ namespace Canteen\Services
 		}
 		
 		/**
-		*  Get the collection of protected settings that are required
-		*  by Canteen. These values can be changed the name can't be deleted.
-		*  @method getProtectedNames
-		*  @return {Array} A collection of protected config keys
-		*/
-		public function getProtectedNames()
-		{
-			return array(
-				'siteTitle',
-				'contentPath',
-				'templatePath',
-				'clientEnabled'
-			);
-		}
-		
-		/**
-		*  Get the collection of private settings that are required
-		*  by Canteen. The value and name can't be changed of these properties.
-		*  @method getPrivateNames
-		*  @return {Array} A collection of private config keys
-		*/
-		public function getPrivateNames()
-		{
-			return array(
-				'dbVersion',
-				'siteIndex'
-			);
-		}
-		
-		
-		/**
 		*  Get the collection of values types
 		*  @method getValueTypes
 		*  @return {Array} A collection of value type strings

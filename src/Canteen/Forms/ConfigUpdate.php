@@ -98,8 +98,8 @@ namespace Canteen\Forms
 				return;
 			}
 			
-			$protected = $this->service('config')->getProtectedNames();
-			$private = $this->service('config')->getPrivateNames();
+			$protected = $this->settings->getProtectedNames();
+			$private = $this->settings->getPrivateNames();
 			
 			if (in_array($config->name, $protected) || in_array($config->name, $private))
 			{

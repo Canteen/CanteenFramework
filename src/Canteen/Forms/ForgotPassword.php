@@ -68,7 +68,7 @@ namespace Canteen\Forms
 				{
 					$url = BASE_URL.'forgot-password/'.$user->username.'/'.$forgotString;
 					
-					if (LOCAL)
+					if ($this->settings->local)
 					{
 						$this->success($url);
 					}
@@ -76,7 +76,7 @@ namespace Canteen\Forms
 					{
 						// We should replace this with a more abstract method 
 						// of mailing notifications
-						$siteTitle = $this->settings('siteTitle');
+						$siteTitle = $this->settings->siteTitle;
 						
 						$to = $user->email;
 						$subject = 'Password Reset - ' . $siteTitle;

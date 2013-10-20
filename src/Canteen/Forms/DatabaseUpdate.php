@@ -57,7 +57,7 @@ namespace Canteen\Forms
 					$this->service('config')->updateValue($variableName, $version);
 					$this->site->addSetting($variableName, $version);
 				}
-				redirect(URI_REQUEST);
+				redirect($this->settings->uriRequest);
 			}
 		}
 	}

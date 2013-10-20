@@ -7,6 +7,7 @@ namespace Canteen\Server
 {
 	use Canteen\Services\Service;
 	use Canteen\Utilities\Validate;
+	use Canteen\Utilities\CanteenBase;
 	use Canteen\Utilities\StringUtils;
 	use Canteen\Errors\JSONServerError;
 	use \Exception;
@@ -16,8 +17,9 @@ namespace Canteen\Server
 	*  This server handles requests made through the gateway and returns JSON data.  Located in the namespace __Canteen\Server__.
 	*  
 	*  @class JSONServer
+	*  @extends CanteenBase
 	*/
-	class JSONServer
+	class JSONServer extends CanteenBase
 	{		
 		/** 
 		*  If the output produced an error 
@@ -154,7 +156,7 @@ namespace Canteen\Server
 		*/
 		public function processURI()
 		{			
-			$uri = explode('/', URI_REQUEST);
+			$uri = explode('/', $this->settings->uriRequest);
 			$uri = array_slice($uri, 1); // don't use the name of the page
 			
 			// Sanitize the result to remove non charaters

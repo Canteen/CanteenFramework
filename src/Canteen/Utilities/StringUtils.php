@@ -86,12 +86,13 @@ namespace Canteen\Utilities
 		*  Process the URI as an array with different pieces
 		*  @method processURI
 		*  @static
+		*  @param {String} uriRequest The URI request being made
 		*  @param {int} [ignore=1] The number of elements to exclude from the beginning
 		*  @return {Array} The URI request where each stub is an element
 		*/
-		public static function processURI($ignore=1)
+		public static function processURI($uriRequest, $ignore=1)
 		{			
-			$uri = explode('/', URI_REQUEST);
+			$uri = explode('/', $uriRequest);
 			$base = array_slice($uri, 0, $ignore);
 			$uri = array_slice($uri, $ignore); // don't use the name of the page
 			

@@ -29,7 +29,6 @@ namespace Canteen\Services
 		private $termiteAliases = array(
 			'users',
 			'pages',
-			'version',
 			'time',
 			'config'
 		);
@@ -75,7 +74,10 @@ namespace Canteen\Services
 		{
 			$this->browserUri = $this->site->browserUri;
 			$this->aliases = Service::getAliases();
-			$this->uri = StringUtils::processURI(count(explode('/', $this->browserUri)));
+			$this->uri = StringUtils::processURI(
+				$this->settings->uriRequest, 
+				count(explode('/', $this->browserUri))
+			);
 								
 			// Generate the output, if any
 			$output = '';
@@ -145,7 +147,7 @@ namespace Canteen\Services
 								html('div.formButtons', html('input.submit type=submit value="Call Service"'))
 							));
 							
-							$action = BASE_PATH.$this->browserUri.'/'.$serviceAlias.'/'.$callAlias;
+							$action = $this->settings->basePath.$this->browserUri.'/'.$serviceAlias.'/'.$callAlias;
 							$output .= html('form#formInputs method=get action='.$action, $fieldset);
 						
 							// If the function has defaults for all params,
@@ -166,7 +168,11 @@ namespace Canteen\Services
 			$dir = __DIR__.'/';
 			
 			$link = html('a','View Gateway');
-			$link->href = BASE_PATH . str_replace($this->browserUri, $this->site->gatewayUri, URI_REQUEST);
+			$link->href = $this->settings->basePath . str_replace(
+				$this->browserUri,
+				$this->site->gatewayUri, 
+				$this->settings->uriRequest
+			);
 			$link->class = 'gateway';
 			
 			return $this->template(
@@ -246,7 +252,7 @@ namespace Canteen\Services
 					|| substr($method->name, 0, 2) == '__') continue;
 				
 				$link = html('a', $method->name);
-				$link->href = $this->browserUri.'/'.$serviceAlias.'/'.StringUtils::methodCallToUri($method->name);				
+				$link->href = $this->settings->basePath . $this->browserUri.'/'.$serviceAlias.'/'.StringUtils::methodCallToUri($method->name);				
 				$ul->addChild(html('li', $link));	
 			}
 			return html('h2', $this->simpleName($serviceName)) . $ul;
@@ -267,7 +273,7 @@ namespace Canteen\Services
 				foreach ($this->aliases as $alias=>$className)
 				{
 					$link = html('a', $this->simpleName($className));
-					$link->href = $this->browserUri.'/'.$alias;
+					$link->href = $this->settings->basePath . $this->browserUri.'/'.$alias;
 					if (in_array($alias, $this->termiteAliases))
 					{
 						$link->class = 'internal';

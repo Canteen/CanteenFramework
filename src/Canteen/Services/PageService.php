@@ -65,7 +65,7 @@ namespace Canteen\Services
 			parent::__construct('pages');
 						
 			$this->mappings = array(
-				'contentUrl' => $this->settings('contentPath')
+				'contentUrl' => $this->settings->contentPath
 			);
 		}
 		

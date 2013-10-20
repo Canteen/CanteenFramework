@@ -139,7 +139,7 @@ namespace Canteen\Services
 		*/
 		protected function privilege($required=Privilege::GUEST)
 		{
-			if (LOCAL) return;
+			if ($this->settings->local) return;
 			
 			if (!LOGGED_IN)
 			{
@@ -159,7 +159,7 @@ namespace Canteen\Services
 		*/
 		protected function internal($classes)
 		{
-			if (LOCAL) return;
+			if ($this->settings->local) return;
 			
 			$trace = debug_backtrace();
 			
