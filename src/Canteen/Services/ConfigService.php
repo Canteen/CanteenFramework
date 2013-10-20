@@ -84,7 +84,7 @@ namespace Canteen\Services
 						->fields('config_id', 'name', 'value', 'value_type', 'access')
 						->values(1, 'siteIndex', 'home', 'page', SETTING_CLIENT)
 						->values(2, 'siteTitle', $siteTitle, 'string', SETTING_RENDER | SETTING_WRITE)
-						->values(3, 'contentPath', $contentPath, 'path', SETTING_WRITE)
+						->values(3, 'contentPath', $contentPath, 'path', SETTING_WRITE | SETTING_RENDER)
 						->values(4, 'templatePath', $templatePath, 'path', SETTING_WRITE)
 						->values(5, 'dbVersion', Site::DB_VERSION, 'integer', 0)
 						->values(6, 'clientEnabled', 1, 'boolean', SETTING_CLIENT | SETTING_WRITE)

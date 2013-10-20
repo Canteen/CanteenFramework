@@ -24,7 +24,7 @@ namespace Canteen\Upgrades
 			$db->update('config')->set('access', SETTING_WRITE | SETTING_CLIENT)->where("`name`='clientEnabled'")->result();
 			$db->update('config')->set('access', 0)->where("`name`='dbVersion'")->result();
 			$db->update('config')->set('access', SETTING_WRITE)->where("`name`='templatePath'")->result();
-			$db->update('config')->set('access', SETTING_WRITE)->where("`name`='contentPath'")->result();
+			$db->update('config')->set('access', SETTING_WRITE | SETTING_RENDER)->where("`name`='contentPath'")->result();
 			
 			// Return the new version of the database
 			echo 103;
