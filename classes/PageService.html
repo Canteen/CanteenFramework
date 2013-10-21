@@ -121,6 +121,8 @@
             
                 <li><a href="../classes/ServiceBrowser.html">ServiceBrowser</a></li>
             
+                <li><a href="../classes/SettingsManager.html">SettingsManager</a></li>
+            
                 <li><a href="../classes/Site.html">Site</a></li>
             
                 <li><a href="../classes/StringUtils.html">StringUtils</a></li>
@@ -288,6 +290,13 @@
                             </li>
                         
                             <li class="index-item method">
+                                <a href="#method_getPageById">getPageById</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
                                 <a href="#method_getPages">getPages</a>
 
                                 
@@ -345,13 +354,6 @@
                         
                             <li class="index-item method protected inherited">
                                 <a href="#method_service">service</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method protected inherited">
-                                <a href="#method_settings">settings</a>
 
                                 
                                 
@@ -432,6 +434,13 @@
                         
                             <li class="index-item property inherited">
                                 <a href="#property_profiler">profiler</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property inherited">
+                                <a href="#property_settings">settings</a>
 
                                 
                                 
@@ -1273,6 +1282,109 @@
 </div>
 
                 
+                    <div id="method_getPageById" class="method item">
+    <h3 class="name"><code>getPageById</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>uri</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="../classes/Page.html" class="crosslink">Page</a> | <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Get a current page by the URI stub</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">uri</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>Page&#39;s URI stub or collection of URIs</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="../classes/Page.html" class="crosslink">Page</a> | <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>:
+                    
+                    <p>The collection of Page objects or a single Page</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
                     <div id="method_getPages" class="method item">
     <h3 class="name"><code>getPages</code></h3>
 
@@ -2065,111 +2177,6 @@ to do a particular action.</p>
                         <span class="type"><a href="../classes/Service.html" class="crosslink">Service</a></span>:
                     
                     <p>The service matching the alias</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_settings" class="method item protected inherited">
-    <h3 class="name"><code>settings</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code class="optional">[name=null]</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a> | Dictionary</span>
-        </span>
-    
-
-    
-
-    
-        <span class="flag protected">protected</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/CanteenBase.html#method_settings">CanteenBase</a>:
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Get the site setting or settings</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[name=null]</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The name of the config property</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a> | Dictionary</span>:
-                    
-                    <p>Either value of the data or all items if param name is null</p>
 
                 
             </div>
@@ -2986,6 +2993,46 @@ to do a particular action.</p>
 </div>
 
                 
+                    <div id="property_settings" class="property item inherited">
+    <h3 class="name"><code>settings</code></h3>
+    <span class="type"><a href="../classes/SettingsManager.html" class="crosslink">SettingsManager</a></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/CanteenBase.html#property_settings">CanteenBase</a>:
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Get the instance of the settings manager</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="property_site" class="property item inherited">
     <h3 class="name"><code>site</code></h3>
     <span class="type"><a href="../classes/Site.html" class="crosslink">Site</a></span>
@@ -3015,49 +3062,6 @@ to do a particular action.</p>
 
     <div class="description">
         <p>Convenience getter for the site</p>
-
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_table" class="property item private">
-    <h3 class="name"><code>table</code></h3>
-    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-
-    
-
-    
-        <span class="flag private">private</span>
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>The name of the table which contains the pages</p>
 
     </div>
 
@@ -3101,6 +3105,49 @@ to do a particular action.</p>
 
     <div class="description">
         <p>The list of database field properties</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_table" class="property item private">
+    <h3 class="name"><code>table</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The name of the table which contains the pages</p>
 
     </div>
 

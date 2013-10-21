@@ -121,6 +121,8 @@
             
                 <li><a href="../classes/ServiceBrowser.html">ServiceBrowser</a></li>
             
+                <li><a href="../classes/SettingsManager.html">SettingsManager</a></li>
+            
                 <li><a href="../classes/Site.html">Site</a></li>
             
                 <li><a href="../classes/StringUtils.html">StringUtils</a></li>
@@ -320,7 +322,7 @@ setup is wrong. Located in the namespace <strong>Canteen\Errors</strong>.</p>
                 <li class="param">
                     
                         <code class="param-name optional">[data=&#x27;&#x27;]</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a> | <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
@@ -567,6 +569,42 @@ setup is wrong. Located in the namespace <strong>Canteen\Errors</strong>.</p>
                             </li>
                         
                             <li class="index-item property">
+                                <a href="#property_rootPath">rootPath</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_SETTING_DELETE">SETTING_DELETE</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_SETTING_NAME_TAKEN">SETTING_NAME_TAKEN</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_SETTING_WRITEABLE">SETTING_WRITEABLE</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
                                 <a href="#property_SETTINGS_REQUIRED">SETTINGS_REQUIRED</a>
 
                                 
@@ -757,6 +795,10 @@ setup is wrong. Located in the namespace <strong>Canteen\Errors</strong>.</p>
     
 
     
+        <span class="returns-inline">
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+        </span>
+    
 
     
 
@@ -822,6 +864,20 @@ setup is wrong. Located in the namespace <strong>Canteen\Errors</strong>.</p>
         </div>
     
 
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>:
+                    
+                    <p>The collection of arrays</p>
+
+                
+            </div>
+        </div>
     
 
     
@@ -1616,6 +1672,185 @@ setup is wrong. Located in the namespace <strong>Canteen\Errors</strong>.</p>
 
     <div class="description">
         <p>Bad controller implementation</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_rootPath" class="property item">
+    <h3 class="name"><code>rootPath</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+    
+
+    
+
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The source directory path to Canteen folder, this is used
+to remove the verbose path to Canteen</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_SETTING_DELETE" class="property item">
+    <h3 class="name"><code>SETTING_DELETE</code></h3>
+    <span class="type">Int</span>
+
+    
+
+    
+
+    
+        <span class="flag final">final</span>
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Unable to delete the setting</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_SETTING_NAME_TAKEN" class="property item">
+    <h3 class="name"><code>SETTING_NAME_TAKEN</code></h3>
+    <span class="type">Int</span>
+
+    
+
+    
+
+    
+        <span class="flag final">final</span>
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The setting name is already taken</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_SETTING_WRITEABLE" class="property item">
+    <h3 class="name"><code>SETTING_WRITEABLE</code></h3>
+    <span class="type">Int</span>
+
+    
+
+    
+
+    
+        <span class="flag final">final</span>
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Unable to change the setting</p>
 
     </div>
 

@@ -39,6 +39,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "ServerCache",
         "Service",
         "ServiceBrowser",
+        "SettingsManager",
         "Site",
         "StringUtils",
         "TimeService",

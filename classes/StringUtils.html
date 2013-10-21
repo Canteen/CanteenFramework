@@ -121,6 +121,8 @@
             
                 <li><a href="../classes/ServiceBrowser.html">ServiceBrowser</a></li>
             
+                <li><a href="../classes/SettingsManager.html">SettingsManager</a></li>
+            
                 <li><a href="../classes/Site.html">Site</a></li>
             
                 <li><a href="../classes/StringUtils.html">StringUtils</a></li>
@@ -329,6 +331,15 @@
                         
                             <li class="index-item method">
                                 <a href="#method_processURI">processURI</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_propertyToReadable">propertyToReadable</a>
 
                                 
                                     <span class="flag static">static</span>
@@ -1373,6 +1384,12 @@ Respects the textareas</p>
             
                 <li class="arg">
                     
+                        <code>uriRequest</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
                         <code class="optional">[ignore=1]</code>
                     
                 </li>
@@ -1431,6 +1448,22 @@ Respects the textareas</p>
             
                 <li class="param">
                     
+                        <code class="param-name">uriRequest</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The URI request being made</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
                         <code class="param-name optional">[ignore=1]</code>
                         <span class="type">Int</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
@@ -1460,6 +1493,111 @@ Respects the textareas</p>
                         <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>:
                     
                     <p>The URI request where each stub is an element</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_propertyToReadable" class="method item">
+    <h3 class="name"><code>propertyToReadable</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>property</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Convert a property name (myProperty) to a readable name (My Property)</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">property</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The name of the property (lower camel-case)</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>:
+                    
+                    <p>The readable name, title-case</p>
 
                 
             </div>

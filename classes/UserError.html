@@ -121,6 +121,8 @@
             
                 <li><a href="../classes/ServiceBrowser.html">ServiceBrowser</a></li>
             
+                <li><a href="../classes/SettingsManager.html">SettingsManager</a></li>
+            
                 <li><a href="../classes/Site.html">Site</a></li>
             
                 <li><a href="../classes/StringUtils.html">StringUtils</a></li>
@@ -312,7 +314,7 @@
                 <li class="param">
                     
                         <code class="param-name optional">[data=&#x27;&#x27;]</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a> | <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
@@ -405,7 +407,7 @@
                             </li>
                         
                             <li class="index-item property">
-                                <a href="#property_INVALID_DATA_FORMAT">INVALID_DATA_FORMAT</a>
+                                <a href="#property_INVALID_DATA_SET">INVALID_DATA_SET</a>
 
                                 
                                     <span class="flag static">static</span>
@@ -414,7 +416,7 @@
                             </li>
                         
                             <li class="index-item property">
-                                <a href="#property_INVALID_DATA_SET">INVALID_DATA_SET</a>
+                                <a href="#property_INVALID_MYSQL_DATE">INVALID_MYSQL_DATE</a>
 
                                 
                                     <span class="flag static">static</span>
@@ -689,51 +691,6 @@
 </div>
 
                 
-                    <div id="property_INVALID_DATA_FORMAT" class="property item">
-    <h3 class="name"><code>INVALID_DATA_FORMAT</code></h3>
-    <span class="type">Int</span>
-
-    
-
-    
-
-    
-        <span class="flag final">final</span>
-    
-
-    
-        <span class="flag static">static</span>
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>The verify function check to see if data matches a specific regexp format</p>
-
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
                     <div id="property_INVALID_DATA_SET" class="property item">
     <h3 class="name"><code>INVALID_DATA_SET</code></h3>
     <span class="type">Int</span>
@@ -768,6 +725,51 @@
 
     <div class="description">
         <p>Validating a property against a set of options</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_INVALID_MYSQL_DATE" class="property item">
+    <h3 class="name"><code>INVALID_MYSQL_DATE</code></h3>
+    <span class="type">Int</span>
+
+    
+
+    
+
+    
+        <span class="flag final">final</span>
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The supplied data is invalidly formatted for MySQL</p>
 
     </div>
 

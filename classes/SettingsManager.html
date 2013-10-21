@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
     <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
     <script src="http://yui.yahooapis.com/3.10.1/build/yui/yui-min.js"></script>
-	<title>Canteen Database API v1.0.0 API Documentation : PageUpdate</title>  
+	<title>Canteen Database API v1.0.0 API Documentation : SettingsManager</title>  
 </head>
 <body class="yui3-skin-sam">
 
@@ -200,21 +200,17 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>PageUpdate Class</h1>
+                        <h1>SettingsManager Class</h1>
 <div class="box meta">
     
 
-    
-        <div class="extends">
-            Extends <a href="../classes/FormBase.html" class="crosslink">FormBase</a>
-        </div>
     
 
     
 
     
         
-            Namespace: <a href="../modules/Canteen\Forms.html">Canteen\Forms</a>
+            Namespace: <a href="../modules/Canteen\Utilities.html">Canteen\Utilities</a>
         
     
 
@@ -224,7 +220,9 @@
 
 
 <div class="box intro">
-    <p>Update or add a user.  Located in the namespace <strong>Canteen\Forms</strong>.</p>
+    <p>The settings manager keeps track of all Canteen settings and provides
+protection and access control when doing page rendering. All important global
+settings are registered here.</p>
 
 </div>
 
@@ -252,59 +250,45 @@
                 <div class="index-section methods">
                     <h3>Methods</h3>
 
-                    <ul class="index-list methods extends">
+                    <ul class="index-list methods">
                         
-                            <li class="index-item method protected inherited">
-                                <a href="#method_error">error</a>
+                            <li class="index-item method">
+                                <a href="#method_addSetting">addSetting</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method protected inherited">
-                                <a href="#method_getData">getData</a>
+                            <li class="index-item method">
+                                <a href="#method_addSettings">addSettings</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method protected inherited inherited">
-                                <a href="#method_parse">parse</a>
+                            <li class="index-item method public">
+                                <a href="#method_exists">exists</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method protected inherited">
-                                <a href="#method_privilege">privilege</a>
+                            <li class="index-item method public">
+                                <a href="#method_exists">exists</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method protected inherited">
-                                <a href="#method_service">service</a>
+                            <li class="index-item method">
+                                <a href="#method_getClient">getClient</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method protected inherited">
-                                <a href="#method_success">success</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method protected inherited">
-                                <a href="#method_template">template</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method protected inherited">
-                                <a href="#method_verify">verify</a>
+                            <li class="index-item method">
+                                <a href="#method_getRender">getRender</a>
 
                                 
                                 
@@ -318,53 +302,63 @@
                 <div class="index-section properties">
                     <h3>Properties</h3>
 
-                    <ul class="index-list properties extends">
+                    <ul class="index-list properties">
                         
-                            <li class="index-item property inherited">
-                                <a href="#property_cache">cache</a>
+                            <li class="index-item property">
+                                <a href="#property_ALL">ALL</a>
 
+                                
+                                    <span class="flag static">static</span>
                                 
                                 
                             </li>
                         
-                            <li class="index-item property inherited">
-                                <a href="#property_ifError">ifError</a>
+                            <li class="index-item property">
+                                <a href="#property_CLIENT">CLIENT</a>
 
+                                
+                                    <span class="flag static">static</span>
                                 
                                 
                             </li>
                         
-                            <li class="index-item property inherited">
-                                <a href="#property_parser">parser</a>
+                            <li class="index-item property">
+                                <a href="#property_DELETE">DELETE</a>
 
+                                
+                                    <span class="flag static">static</span>
                                 
                                 
                             </li>
                         
-                            <li class="index-item property inherited">
-                                <a href="#property_profiler">profiler</a>
+                            <li class="index-item property">
+                                <a href="#property_RENDER">RENDER</a>
 
+                                
+                                    <span class="flag static">static</span>
                                 
                                 
                             </li>
                         
-                            <li class="index-item property inherited">
+                            <li class="index-item property private">
                                 <a href="#property_settings">settings</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item property inherited">
-                                <a href="#property_site">site</a>
+                            <li class="index-item property private">
+                                <a href="#property_settingsMap">settingsMap</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item property inherited">
-                                <a href="#property_user">user</a>
+                            <li class="index-item property">
+                                <a href="#property_WRITE">WRITE</a>
 
+                                
+                                    <span class="flag static">static</span>
                                 
                                 
                             </li>
@@ -383,94 +377,8 @@
                 <h2 class="off-left">Methods</h2>
 
                 
-                    <div id="method_error" class="method item protected inherited">
-    <h3 class="name"><code>error</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>message</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-
-    
-
-    
-        <span class="flag protected">protected</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/FormBase.html#method_error">FormBase</a>:
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Convenience function for passing an error to the form factory</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">message</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The str error to pass</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="method_getData" class="method item protected inherited">
-    <h3 class="name"><code>getData</code></h3>
+                    <div id="method_addSetting" class="method item">
+    <h3 class="name"><code>addSetting</code></h3>
 
     
         <div class="args">
@@ -488,16 +396,24 @@
                     
                 </li>
             
+                <li class="arg">
+                    
+                        <code class="optional">[access=0]</code>
+                    
+                </li>
+            
             </ul><span class="paren">)</span>
         </div>
     
 
     
-
+        <span class="returns-inline">
+            <span class="type">StateManager</span>
+        </span>
     
 
     
-        <span class="flag protected">protected</span>
+
     
 
     
@@ -511,8 +427,9 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/FormBase.html#method_getData">FormBase</a>:
+                
+                <p>
+                
             
         
         
@@ -525,7 +442,7 @@
     </div>
 
     <div class="description">
-        <p>Save the form data to the form factory</p>
+        <p>Add a single setting to the settings manager</p>
 
     </div>
 
@@ -544,7 +461,7 @@
                     
 
                     <div class="param-description">
-                        <p>The name of the variable to save</p>
+                        <p>The name of the property add</p>
 
                     </div>
 
@@ -560,104 +477,7 @@
                     
 
                     <div class="param-description">
-                        <p>The value of the variable to save</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="method_parse" class="method item protected inherited">
-    <h3 class="name"><code>parse</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>content</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code>substitutions</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-        </span>
-    
-
-    
-
-    
-        <span class="flag protected">protected</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            <p>Inherited from
-            <a href="../classes/CanteenBase.html#method_parse">
-                CanteenBase
-            </a>
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Convenience method for parsing content</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">content</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The string to parse</p>
+                        <p>The value of the setting</p>
 
                     </div>
 
@@ -666,107 +486,7 @@
             
                 <li class="param">
                     
-                        <code class="param-name">substitutions</code>
-                        <span class="type">Dictionary</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The dictionary of tags to replace</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>:
-                    
-                    <p>The parsed string</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_privilege" class="method item protected inherited">
-    <h3 class="name"><code>privilege</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code class="optional">[required=Privilege::GUEST]</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-
-    
-
-    
-        <span class="flag protected">protected</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/FormBase.html#method_privilege">FormBase</a>:
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>You can run to make sure a process requires a particular privilege</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[required=Privilege::GUEST]</code>
+                        <code class="param-name optional">[access=0]</code>
                         <span class="type">Int</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
@@ -774,97 +494,7 @@
                     
 
                     <div class="param-description">
-                        <p>The privilege level required, default is anonymous</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="method_service" class="method item protected inherited">
-    <h3 class="name"><code>service</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>aliasOrClassName</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="../classes/Service.html" class="crosslink">Service</a></span>
-        </span>
-    
-
-    
-
-    
-        <span class="flag protected">protected</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/CanteenBase.html#method_service">CanteenBase</a>:
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Get a service by alias or classname</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">aliasOrClassName</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The alias or classname</p>
+                        <p>The access to enable for access, default to none</p>
 
                     </div>
 
@@ -882,9 +512,9 @@
             <div class="returns-description">
                 
                     
-                        <span class="type"><a href="../classes/Service.html" class="crosslink">Service</a></span>:
+                        <span class="type">StateManager</span>:
                     
-                    <p>The service matching the alias</p>
+                    <p>Make it easier to chain</p>
 
                 
             </div>
@@ -895,8 +525,8 @@
 </div>
 
                 
-                    <div id="method_success" class="method item protected inherited">
-    <h3 class="name"><code>success</code></h3>
+                    <div id="method_addSettings" class="method item">
+    <h3 class="name"><code>addSettings</code></h3>
 
     
         <div class="args">
@@ -904,99 +534,13 @@
             
                 <li class="arg">
                     
-                        <code>message</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-
-    
-
-    
-        <span class="flag protected">protected</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/FormBase.html#method_success">FormBase</a>:
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Convenience function for passing a success message to the form factory</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">message</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The str success message to pass</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="method_template" class="method item protected inherited">
-    <h3 class="name"><code>template</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>name</code>
+                        <code>settings</code>
                     
                 </li>
             
                 <li class="arg">
                     
-                        <code class="optional">[substitutions=array()]</code>
+                        <code class="optional">[access=0]</code>
                     
                 </li>
             
@@ -1006,14 +550,12 @@
 
     
         <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+            <span class="type">StateManager</span>
         </span>
     
 
     
 
-    
-        <span class="flag protected">protected</span>
     
 
     
@@ -1027,8 +569,9 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/CanteenBase.html#method_template">CanteenBase</a>:
+                
+                <p>
+                
             
         
         
@@ -1041,7 +584,7 @@
     </div>
 
     <div class="description">
-        <p>Convenience method for parsing content</p>
+        <p>Add a collection of settings to the settings manager</p>
 
     </div>
 
@@ -1053,31 +596,31 @@
             
                 <li class="param">
                     
-                        <code class="param-name">name</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The name of the template to parse</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[substitutions=array()]</code>
+                        <code class="param-name">settings</code>
                         <span class="type">Dictionary</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The associative-array of properties</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[access=0]</code>
+                        <span class="type">Int</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>The dictionary of tags to replace</p>
+                        <p>The access to enable for access, default to none</p>
 
                     </div>
 
@@ -1095,9 +638,9 @@
             <div class="returns-description">
                 
                     
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>:
+                        <span class="type">StateManager</span>:
                     
-                    <p>The parsed string</p>
+                    <p>Make it easier to chain</p>
 
                 
             </div>
@@ -1108,8 +651,8 @@
 </div>
 
                 
-                    <div id="method_verify" class="method item protected inherited">
-    <h3 class="name"><code>verify</code></h3>
+                    <div id="method_exists" class="method item public">
+    <h3 class="name"><code>exists</code></h3>
 
     
         <div class="args">
@@ -1117,19 +660,7 @@
             
                 <li class="arg">
                     
-                        <code>data</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code class="optional">[type=null]</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code class="optional">[suppressErrors=false]</code>
+                        <code>args</code>
                     
                 </li>
             
@@ -1139,14 +670,14 @@
 
     
         <span class="returns-inline">
-            <span class="type">Mixed</span>
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
         </span>
     
 
     
 
     
-        <span class="flag protected">protected</span>
+        <span class="flag public">public</span>
     
 
     
@@ -1160,8 +691,9 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/FormBase.html#method_verify">FormBase</a>:
+                
+                <p>
+                
             
         
         
@@ -1174,7 +706,7 @@
     </div>
 
     <div class="description">
-        <p>Sanitize input data using the validation types above</p>
+        <p>If multiple settings exist</p>
 
     </div>
 
@@ -1186,48 +718,16 @@
             
                 <li class="param">
                     
-                        <code class="param-name">data</code>
-                        <span class="type">Mixed</span>
+                        <code class="param-name">args</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
                     
 
                     
-
-                    <div class="param-description">
-                        <p>The data to be validated, can be an array of items</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[type=null]</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/RegExp" class="crosslink external" target="_blank">RegExp</a></span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
+                        <span class="flag multiple" title="This argument may occur one or more times.">multiple</span>
                     
 
                     <div class="param-description">
-                        <p>The type of validation, defaults to Numeric. Can also be an array set of items</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[suppressErrors=false]</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>If we should suppress throwing errors</p>
+                        <p>The data names that are required</p>
 
                     </div>
 
@@ -1245,9 +745,254 @@
             <div class="returns-description">
                 
                     
-                        <span class="type">Mixed</span>:
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>:
                     
-                    <p>If we don&#39;t verify and suppress errors, returns false, else returns the data</p>
+                    <p>If the access check out</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_exists" class="method item public">
+    <h3 class="name"><code>exists</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>args</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
+        </span>
+    
+
+    
+
+    
+        <span class="flag public">public</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>If multiple settings exist, throw exception if not</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">args</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+                        <span class="flag multiple" title="This argument may occur one or more times.">multiple</span>
+                    
+
+                    <div class="param-description">
+                        <p>The data names that are required</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>:
+                    
+                    <p>If the access check out</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_getClient" class="method item">
+    <h3 class="name"><code>getClient</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Dictionary</span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Get the collection of settings that are okay-ed for use by the client</p>
+
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Dictionary</span>:
+                    
+                    <p>The collection of settings</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_getRender" class="method item">
+    <h3 class="name"><code>getRender</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Dictionary</span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Get the collection of settings that are okay to render through templates</p>
+
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Dictionary</span>:
+                    
+                    <p>The collection of settings</p>
 
                 
             </div>
@@ -1266,23 +1011,28 @@
                 <h2 class="off-left">Properties</h2>
 
                 
-                    <div id="property_cache" class="property item inherited">
-    <h3 class="name"><code>cache</code></h3>
-    <span class="type"><a href="../classes/ServerCache.html" class="crosslink">ServerCache</a></span>
+                    <div id="property_ALL" class="property item">
+    <h3 class="name"><code>ALL</code></h3>
+    <span class="type">Int</span>
 
     
 
     
 
     
+        <span class="flag final">final</span>
+    
 
+    
+        <span class="flag static">static</span>
     
 
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/CanteenBase.html#property_cache">CanteenBase</a>:
+                
+                <p>
+                
             
         
         
@@ -1294,7 +1044,7 @@
     </div>
 
     <div class="description">
-        <p>Get the instance of the site cache</p>
+        <p>Enable all access</p>
 
     </div>
 
@@ -1306,23 +1056,28 @@
 </div>
 
                 
-                    <div id="property_ifError" class="property item inherited">
-    <h3 class="name"><code>ifError</code></h3>
-    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
+                    <div id="property_CLIENT" class="property item">
+    <h3 class="name"><code>CLIENT</code></h3>
+    <span class="type">Int</span>
 
     
 
     
 
     
+        <span class="flag final">final</span>
+    
 
+    
+        <span class="flag static">static</span>
     
 
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/FormBase.html#property_ifError">FormBase</a>:
+                
+                <p>
+                
             
         
         
@@ -1334,7 +1089,7 @@
     </div>
 
     <div class="description">
-        <p>If we&#39;ve reported errors</p>
+        <p>Option if the setting should be available to the client, JavaScript</p>
 
     </div>
 
@@ -1346,23 +1101,28 @@
 </div>
 
                 
-                    <div id="property_parser" class="property item inherited">
-    <h3 class="name"><code>parser</code></h3>
-    <span class="type"><a href="../classes/Parser.html" class="crosslink">Parser</a></span>
+                    <div id="property_DELETE" class="property item">
+    <h3 class="name"><code>DELETE</code></h3>
+    <span class="type">Int</span>
 
     
 
     
 
     
+        <span class="flag final">final</span>
+    
 
+    
+        <span class="flag static">static</span>
     
 
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/CanteenBase.html#property_parser">CanteenBase</a>:
+                
+                <p>
+                
             
         
         
@@ -1374,7 +1134,7 @@
     </div>
 
     <div class="description">
-        <p>The parser is responsible for rendering templates</p>
+        <p>Option if the option can be deleted from the config panel</p>
 
     </div>
 
@@ -1386,23 +1146,28 @@
 </div>
 
                 
-                    <div id="property_profiler" class="property item inherited">
-    <h3 class="name"><code>profiler</code></h3>
-    <span class="type"><a href="../classes/Profiler.html" class="crosslink">Profiler</a></span>
+                    <div id="property_RENDER" class="property item">
+    <h3 class="name"><code>RENDER</code></h3>
+    <span class="type">Int</span>
 
     
 
     
 
     
+        <span class="flag final">final</span>
+    
 
+    
+        <span class="flag static">static</span>
     
 
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/CanteenBase.html#property_profiler">CanteenBase</a>:
+                
+                <p>
+                
             
         
         
@@ -1414,7 +1179,7 @@
     </div>
 
     <div class="description">
-        <p>The instance of the profiler for debugging performance</p>
+        <p>Option if the setting can be rendered on the page</p>
 
     </div>
 
@@ -1426,12 +1191,14 @@
 </div>
 
                 
-                    <div id="property_settings" class="property item inherited">
+                    <div id="property_settings" class="property item private">
     <h3 class="name"><code>settings</code></h3>
-    <span class="type"><a href="../classes/SettingsManager.html" class="crosslink">SettingsManager</a></span>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
 
     
 
+    
+        <span class="flag private">private</span>
     
 
     
@@ -1441,8 +1208,9 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/CanteenBase.html#property_settings">CanteenBase</a>:
+                
+                <p>
+                
             
         
         
@@ -1454,7 +1222,7 @@
     </div>
 
     <div class="description">
-        <p>Get the instance of the settings manager</p>
+        <p>The collection of all settings</p>
 
     </div>
 
@@ -1466,12 +1234,14 @@
 </div>
 
                 
-                    <div id="property_site" class="property item inherited">
-    <h3 class="name"><code>site</code></h3>
-    <span class="type"><a href="../classes/Site.html" class="crosslink">Site</a></span>
+                    <div id="property_settingsMap" class="property item private">
+    <h3 class="name"><code>settingsMap</code></h3>
+    <span class="type">Dictionary</span>
 
     
 
+    
+        <span class="flag private">private</span>
     
 
     
@@ -1481,8 +1251,9 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/CanteenBase.html#property_site">CanteenBase</a>:
+                
+                <p>
+                
             
         
         
@@ -1494,7 +1265,7 @@
     </div>
 
     <div class="description">
-        <p>Convenience getter for the site</p>
+        <p>The dictionary map of all settings</p>
 
     </div>
 
@@ -1506,23 +1277,28 @@
 </div>
 
                 
-                    <div id="property_user" class="property item inherited">
-    <h3 class="name"><code>user</code></h3>
-    <span class="type"><a href="../classes/Authorization.html" class="crosslink">Authorization</a></span>
+                    <div id="property_WRITE" class="property item">
+    <h3 class="name"><code>WRITE</code></h3>
+    <span class="type">Int</span>
 
     
 
     
 
     
+        <span class="flag final">final</span>
+    
 
+    
+        <span class="flag static">static</span>
     
 
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/CanteenBase.html#property_user">CanteenBase</a>:
+                
+                <p>
+                
             
         
         
@@ -1534,7 +1310,7 @@
     </div>
 
     <div class="description">
-        <p>Get the Authorization class to handle things like login, password change</p>
+        <p>Option if the option can be changed from the config panel</p>
 
     </div>
 

@@ -203,6 +203,13 @@
             "fors": {},
             "namespaces": {}
         },
+        "src/Canteen/Forms/Setup.php": {
+            "name": "src/Canteen/Forms/Setup.php",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "src/Canteen/Forms/UserUpdate.php": {
             "name": "src/Canteen/Forms/UserUpdate.php",
             "modules": {},
@@ -414,6 +421,13 @@
             "fors": {},
             "namespaces": {}
         },
+        "src/Canteen/Upgrades/102.php": {
+            "name": "src/Canteen/Upgrades/102.php",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "src/Canteen/Utilities/CanteenBase.php": {
             "name": "src/Canteen/Utilities/CanteenBase.php",
             "modules": {
@@ -430,6 +444,15 @@
             "modules": {},
             "classes": {
                 "PasswordUtils": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/Canteen/Utilities/SettingsManager.php": {
+            "name": "src/Canteen/Utilities/SettingsManager.php",
+            "modules": {},
+            "classes": {
+                "SettingsManager": 1
             },
             "fors": {},
             "namespaces": {}
@@ -640,6 +663,7 @@
             "classes": {
                 "CanteenBase": 1,
                 "PasswordUtils": 1,
+                "SettingsManager": 1,
                 "StringUtils": 1,
                 "Validate": 1
             },
@@ -659,7 +683,7 @@
             "namespaces": {},
             "tag": "module",
             "file": "src/Canteen/Site.php",
-            "line": 165
+            "line": 173
         },
         "global": {
             "name": "global",
@@ -717,7 +741,7 @@
             "module": "Canteen\\Controllers",
             "namespace": "",
             "file": "src/Canteen/Controllers/AdminConfigController.php",
-            "line": 8,
+            "line": 10,
             "description": "Handle the rendering of the admin config page.\nLocated in the namespace __Canteen\\Controllers__.",
             "extends": "AdminController"
         },
@@ -850,7 +874,7 @@
                 {
                     "name": "data",
                     "description": "Any extra data associated with error",
-                    "type": "String",
+                    "type": "String|Array",
                     "optional": true,
                     "optdefault": "''"
                 },
@@ -887,7 +911,7 @@
                 {
                     "name": "data",
                     "description": "The optional data associated with this error",
-                    "type": "String",
+                    "type": "String|Array",
                     "optional": true,
                     "optdefault": "''"
                 }
@@ -917,7 +941,7 @@
                 {
                     "name": "data",
                     "description": "The optional data associated with this error",
-                    "type": "String",
+                    "type": "String|Array",
                     "optional": true,
                     "optdefault": "''"
                 }
@@ -1086,17 +1110,7 @@
             "file": "src/Canteen/Parser/PageBuilder.php",
             "line": 19,
             "description": "Responsible for building the pages and handling page requests.\nLocated in the namespace __PageBuilder__.",
-            "extends": "CanteenBase",
-            "is_constructor": 1,
-            "params": [
-                {
-                    "name": "customSettings",
-                    "description": "If there are any custom settings to display on the page",
-                    "type": "Dictionary",
-                    "optional": true,
-                    "optdefault": "null"
-                }
-            ]
+            "extends": "CanteenBase"
         },
         "Parser": {
             "name": "Parser",
@@ -1278,8 +1292,9 @@
             "module": "Canteen\\Server",
             "namespace": "",
             "file": "src/Canteen/Server/JSONServer.php",
-            "line": 15,
-            "description": "This server handles requests made through the gateway and returns JSON data.  Located in the namespace __Canteen\\Server__."
+            "line": 16,
+            "description": "This server handles requests made through the gateway and returns JSON data.  Located in the namespace __Canteen\\Server__.",
+            "extends": "CanteenBase"
         },
         "ServerCache": {
             "name": "ServerCache",
@@ -1494,6 +1509,20 @@
             "line": 8,
             "description": "Utilities for managing the user password.  Located in the namespace __Canteen\\Utilities__."
         },
+        "SettingsManager": {
+            "name": "SettingsManager",
+            "shortname": "SettingsManager",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Canteen\\Utilities",
+            "namespace": "",
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 66,
+            "description": "The settings manager keeps track of all Canteen settings and provides\nprotection and access control when doing page rendering. All important global\nsettings are registered here."
+        },
         "StringUtils": {
             "name": "StringUtils",
             "shortname": "StringUtils",
@@ -1533,9 +1562,8 @@
             "module": "Canteen",
             "namespace": "",
             "file": "src/Canteen/Site.php",
-            "line": 165,
+            "line": 173,
             "description": "This is the main class of the framework that needs to be implemented in order to use. Canteen\nis a backend which provides a JSON server, Database connect, template engine, User authentication\nand many other features for building very dynamic data-driven websites. \n\t\n\t// Externally load the deployment settings from a PHP file (default)\n\t$site = new Canteen\\Site('config.php');\n\n\t// Or set the single deployment settings directly\n\t$site = new Canteen\\Site(array(\n\t\t'dbUsername' => 'user',\n\t\t'dbPassword' => 'pass1234',\n\t\t'dbName' => 'my_settingsbase',\n\t));\n\t\n \t// Or create different deployments of the site\n\t// for different domains where the site is hosted\n\t$site = new Canteen\\Site(array(\n\t\t// our local site accessible from http://localhost\n\t\tarray(\n\t\t\t'level' => DeploymentStatus::LOCAL,\n\t\t\t'domain' => 'localhost',\n\t\t\t'dbUsername' => 'root',\n\t\t\t'dbPassword' => '',\n\t\t\t'dbName' => 'my_settingsbase',\n\t\t\t'debug' => true\n\t\t),\n\t\t// Our dev site accessible from http://dev.example.com\n\t\tarray(\n\t\t\t'level' => DeploymentStatus::DEV,\n\t\t\t'domain' => 'dev.example.com',\n\t\t\t'dbUsername' => 'user',\n\t\t\t'dbPassword' => 'pass1234',\n\t\t\t'dbName' => 'my_dev_settingsbase',\n\t\t\t'debug' => true\n\t\t),\n\t\t// Our live site accessible from http://example.com\n\t\tarray(\n\t\t\t'level' => DeploymentStatus::LIVE,\n\t\t\t'domain' => 'example.com',\n\t\t\t'dbUsername' => 'user',\n\t\t\t'dbPassword' => 'pass1234',\n\t\t\t'dbName' => 'my_settingsbase',\n\t\t\t'minify' => true,\n\t\t\t'compress' => true,\n\t\t\t'cacheEnabled' => true\n\t\t)\n \t));\n\t\t\n\t// Echo out the page result\n\t$site->render();",
-            "extends": "CanteenBase",
             "is_constructor": 1,
             "params": [
                 {
@@ -1575,16 +1603,9 @@
                             "optdefault": "DeploymentStatus::LIVE"
                         },
                         {
-                            "name": "domains",
-                            "description": "Collection of domains acceptable for this deployment to run",
-                            "type": "Array",
-                            "optional": true,
-                            "optdefault": "null"
-                        },
-                        {
                             "name": "domain",
-                            "description": "The domain that's acceptable for this deployment to run, default is anywhere",
-                            "type": "String",
+                            "description": "Single domain or collection of domains acceptable for this deployment to run",
+                            "type": "Array|String",
                             "optional": true,
                             "optdefault": "'*'"
                         },
@@ -2159,10 +2180,36 @@
         },
         {
             "file": "src/Canteen/Controllers/AdminConfigController.php",
-            "line": 17,
+            "line": 19,
+            "class": "AdminConfigController",
+            "module": "Canteen\\Controllers"
+        },
+        {
+            "file": "src/Canteen/Controllers/AdminConfigController.php",
+            "line": 22,
             "description": "Process the controller and build the view",
             "itemtype": "method",
             "name": "process",
+            "class": "AdminConfigController",
+            "module": "Canteen\\Controllers"
+        },
+        {
+            "file": "src/Canteen/Controllers/AdminConfigController.php",
+            "line": 71,
+            "description": "Get the users as options",
+            "itemtype": "method",
+            "name": "getPages",
+            "access": "private",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "selectUri",
+                    "description": "Select this optional page uri",
+                    "type": "String",
+                    "optional": true,
+                    "optdefault": "null"
+                }
+            ],
             "class": "AdminConfigController",
             "module": "Canteen\\Controllers"
         },
@@ -2259,14 +2306,14 @@
         },
         {
             "file": "src/Canteen/Controllers/AdminPagesController.php",
-            "line": 79,
+            "line": 87,
             "description": "Get the form select of privileges",
             "class": "AdminPagesController",
             "module": "Canteen\\Controllers"
         },
         {
             "file": "src/Canteen/Controllers/AdminPagesController.php",
-            "line": 98,
+            "line": 106,
             "description": "Get the users as options",
             "itemtype": "method",
             "name": "getPages",
@@ -2463,6 +2510,17 @@
         {
             "file": "src/Canteen/Errors/CanteenError.php",
             "line": 24,
+            "description": "The source directory path to Canteen folder, this is used\nto remove the verbose path to Canteen",
+            "itemtype": "property",
+            "name": "rootPath",
+            "type": "String",
+            "static": 1,
+            "class": "CanteenError",
+            "module": "Canteen\\Errors"
+        },
+        {
+            "file": "src/Canteen/Errors/CanteenError.php",
+            "line": 32,
             "description": "The method being called is for internal use only",
             "itemtype": "property",
             "name": "INTERNAL_ONLY",
@@ -2474,7 +2532,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 32,
+            "line": 40,
             "description": "A particular data name is referenced but doesn exist",
             "itemtype": "property",
             "name": "INVALID_DATA",
@@ -2486,7 +2544,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 40,
+            "line": 48,
             "description": "Trying to access service($alias) and nothing can be created",
             "itemtype": "property",
             "name": "INVALID_SERVICE_ALIAS",
@@ -2498,7 +2556,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 48,
+            "line": 56,
             "description": "Bad controller implementation",
             "itemtype": "property",
             "name": "OVERRIDE_CONTROLLER_PROCESS",
@@ -2510,7 +2568,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 56,
+            "line": 64,
             "description": "The form inheritance is wrong",
             "itemtype": "property",
             "name": "FORM_INHERITANCE",
@@ -2522,7 +2580,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 64,
+            "line": 72,
             "description": "The form specified does not exist",
             "itemtype": "property",
             "name": "INVALID_FORM",
@@ -2534,7 +2592,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 72,
+            "line": 80,
             "description": "The settings are required for setup",
             "itemtype": "property",
             "name": "SETTINGS_REQUIRED",
@@ -2546,7 +2604,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 80,
+            "line": 88,
             "description": "Submitted from the wrong domain",
             "itemtype": "property",
             "name": "WRONG_DOMAIN",
@@ -2558,7 +2616,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 88,
+            "line": 96,
             "description": "The parse template can't be found",
             "itemtype": "property",
             "name": "TEMPLATE_NOT_FOUND",
@@ -2570,7 +2628,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 96,
+            "line": 104,
             "description": "Canteen version is unsufficient",
             "itemtype": "property",
             "name": "INSUFFICIENT_VERSION",
@@ -2582,7 +2640,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 104,
+            "line": 112,
             "description": "PHP version check failed",
             "itemtype": "property",
             "name": "INSUFFICIENT_PHP",
@@ -2594,7 +2652,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 112,
+            "line": 120,
             "description": "The specified site index doesn't exist",
             "itemtype": "property",
             "name": "INVALID_INDEX",
@@ -2606,7 +2664,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 120,
+            "line": 128,
             "description": "The settings file is invalid",
             "itemtype": "property",
             "name": "JSON_INVALID",
@@ -2618,7 +2676,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 128,
+            "line": 136,
             "description": "There was a problem decoding the JSON",
             "itemtype": "property",
             "name": "JSON_DECODE",
@@ -2630,7 +2688,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 136,
+            "line": 144,
             "description": "Couldn't make the cache folder",
             "itemtype": "property",
             "name": "CACHE_FOLDER",
@@ -2642,7 +2700,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 144,
+            "line": 152,
             "description": "The error if the cache dir isn't writable",
             "itemtype": "property",
             "name": "CACHE_FOLDER_WRITEABLE",
@@ -2654,7 +2712,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 152,
+            "line": 160,
             "description": "Duplicate named autoload class",
             "itemtype": "property",
             "name": "AUTOLOAD_CLASS",
@@ -2666,7 +2724,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 160,
+            "line": 168,
             "description": "Duplicate named autoload template",
             "itemtype": "property",
             "name": "AUTOLOAD_TEMPLATE",
@@ -2678,7 +2736,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 168,
+            "line": 176,
             "description": "Duplicate named service alias",
             "itemtype": "property",
             "name": "TAKEN_SERVICE_ALIAS",
@@ -2690,7 +2748,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 176,
+            "line": 184,
             "description": "The template alias is wrong",
             "itemtype": "property",
             "name": "TEMPLATE_UNKNOWN",
@@ -2702,7 +2760,43 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 184,
+            "line": 192,
+            "description": "Unable to change the setting",
+            "itemtype": "property",
+            "name": "SETTING_WRITEABLE",
+            "type": "Int",
+            "static": 1,
+            "final": 1,
+            "class": "CanteenError",
+            "module": "Canteen\\Errors"
+        },
+        {
+            "file": "src/Canteen/Errors/CanteenError.php",
+            "line": 200,
+            "description": "Unable to delete the setting",
+            "itemtype": "property",
+            "name": "SETTING_DELETE",
+            "type": "Int",
+            "static": 1,
+            "final": 1,
+            "class": "CanteenError",
+            "module": "Canteen\\Errors"
+        },
+        {
+            "file": "src/Canteen/Errors/CanteenError.php",
+            "line": 208,
+            "description": "The setting name is already taken",
+            "itemtype": "property",
+            "name": "SETTING_NAME_TAKEN",
+            "type": "Int",
+            "static": 1,
+            "final": 1,
+            "class": "CanteenError",
+            "module": "Canteen\\Errors"
+        },
+        {
+            "file": "src/Canteen/Errors/CanteenError.php",
+            "line": 216,
             "description": "The collection of messages",
             "itemtype": "property",
             "name": "messages",
@@ -2716,7 +2810,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 214,
+            "line": 249,
             "description": "The label for an error that is unknown or unfound in messages",
             "itemtype": "property",
             "name": "UNKNOWN",
@@ -2728,14 +2822,14 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 222,
+            "line": 257,
             "description": "Create the Canteen error",
             "class": "CanteenError",
             "module": "Canteen\\Errors"
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 233,
+            "line": 280,
             "description": "Get the result object",
             "itemtype": "method",
             "name": "getResult",
@@ -2748,7 +2842,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 243,
+            "line": 290,
             "description": "A utility function to convert any exception to formatted result",
             "itemtype": "method",
             "name": "convertToResult",
@@ -2769,7 +2863,7 @@
         },
         {
             "file": "src/Canteen/Errors/CanteenError.php",
-            "line": 260,
+            "line": 307,
             "description": "A utility function to formatted the exception stack trace",
             "itemtype": "method",
             "name": "getFormattedTrace",
@@ -2783,6 +2877,10 @@
                     "type": "Exception"
                 }
             ],
+            "return": {
+                "description": "The collection of arrays",
+                "type": "Array"
+            },
             "class": "CanteenError",
             "module": "Canteen\\Errors"
         },
@@ -2906,9 +3004,9 @@
         {
             "file": "src/Canteen/Errors/UserError.php",
             "line": 52,
-            "description": "The verify function check to see if data matches a specific regexp format",
+            "description": "The supplied data is invalidly formatted for MySQL",
             "itemtype": "property",
-            "name": "INVALID_DATA_FORMAT",
+            "name": "INVALID_MYSQL_DATE",
             "type": "Int",
             "static": 1,
             "final": 1,
@@ -2953,6 +3051,49 @@
             "file": "src/Canteen/Forms/ConfigUpdate.php",
             "line": 17,
             "description": "Process the form and handle the $_POST data.",
+            "class": "ConfigUpdate",
+            "module": "Canteen\\Forms"
+        },
+        {
+            "file": "src/Canteen/Forms/ConfigUpdate.php",
+            "line": 36,
+            "description": "Update the config value",
+            "class": "ConfigUpdate",
+            "module": "Canteen\\Forms"
+        },
+        {
+            "file": "src/Canteen/Forms/ConfigUpdate.php",
+            "line": 80,
+            "description": "Delete a config variable",
+            "class": "ConfigUpdate",
+            "module": "Canteen\\Forms"
+        },
+        {
+            "file": "src/Canteen/Forms/ConfigUpdate.php",
+            "line": 120,
+            "description": "Add a new custom property",
+            "class": "ConfigUpdate",
+            "module": "Canteen\\Forms"
+        },
+        {
+            "file": "src/Canteen/Forms/ConfigUpdate.php",
+            "line": 176,
+            "description": "Auto detect the value type",
+            "itemtype": "method",
+            "name": "autoDetectType",
+            "access": "private",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "value",
+                    "description": "The value to check",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The value type (boolean, string, integer)",
+                "type": "String"
+            },
             "class": "ConfigUpdate",
             "module": "Canteen\\Forms"
         },
@@ -3175,6 +3316,13 @@
         {
             "file": "src/Canteen/Forms/FormFactory.php",
             "line": 57,
+            "description": "Setup the collections",
+            "class": "FormFactory",
+            "module": "Canteen\\Forms"
+        },
+        {
+            "file": "src/Canteen/Forms/FormFactory.php",
+            "line": 67,
             "description": "Allow only certain forms to be run before site loads",
             "itemtype": "method",
             "name": "startup",
@@ -3191,7 +3339,7 @@
         },
         {
             "file": "src/Canteen/Forms/FormFactory.php",
-            "line": 73,
+            "line": 83,
             "description": "Process any forms",
             "itemtype": "method",
             "name": "process",
@@ -3218,7 +3366,7 @@
         },
         {
             "file": "src/Canteen/Forms/FormFactory.php",
-            "line": 157,
+            "line": 171,
             "description": "Report a form error",
             "itemtype": "method",
             "name": "error",
@@ -3234,7 +3382,7 @@
         },
         {
             "file": "src/Canteen/Forms/FormFactory.php",
-            "line": 167,
+            "line": 181,
             "description": "Report a success message",
             "itemtype": "method",
             "name": "success",
@@ -3250,14 +3398,14 @@
         },
         {
             "file": "src/Canteen/Forms/FormFactory.php",
-            "line": 177,
+            "line": 191,
             "description": "The getter",
             "class": "FormFactory",
             "module": "Canteen\\Forms"
         },
         {
             "file": "src/Canteen/Forms/FormFactory.php",
-            "line": 182,
+            "line": 196,
             "description": "If the form has an error",
             "itemtype": "property",
             "name": "ifError",
@@ -3268,7 +3416,7 @@
         },
         {
             "file": "src/Canteen/Forms/FormFactory.php",
-            "line": 195,
+            "line": 209,
             "description": "Return the feedback (errors and successes) as a list",
             "itemtype": "method",
             "name": "getFeedback",
@@ -3281,7 +3429,7 @@
         },
         {
             "file": "src/Canteen/Forms/FormFactory.php",
-            "line": 214,
+            "line": 228,
             "description": "Set data associated with a form, can be retrieved when rendering the page\nusing the getData method",
             "itemtype": "method",
             "name": "setData",
@@ -3302,7 +3450,7 @@
         },
         {
             "file": "src/Canteen/Forms/FormFactory.php",
-            "line": 226,
+            "line": 240,
             "description": "Get data associated with a form",
             "itemtype": "method",
             "name": "getData",
@@ -3349,6 +3497,57 @@
             "module": "Canteen\\Forms"
         },
         {
+            "file": "src/Canteen/Forms/Setup.php",
+            "line": 108,
+            "description": "If there's only one item in the array, return as a string, not an arra",
+            "itemtype": "method",
+            "name": "arrayFilter",
+            "access": "private",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "arr",
+                    "description": "The array to pass",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "The result",
+                "type": "Array|String"
+            },
+            "class": "UserUpdate",
+            "module": "Canteen\\Forms"
+        },
+        {
+            "file": "src/Canteen/Forms/Setup.php",
+            "line": 124,
+            "description": "Create the collection based on comma-separated, POST variable",
+            "itemtype": "method",
+            "name": "createCollection",
+            "access": "private",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "str",
+                    "description": "The name of the POST variable",
+                    "type": "String"
+                },
+                {
+                    "name": "default",
+                    "description": "The default value if nothing is set",
+                    "type": "String",
+                    "optional": true,
+                    "optdefault": "''"
+                }
+            ],
+            "return": {
+                "description": "The collection of items",
+                "type": "Array"
+            },
+            "class": "UserUpdate",
+            "module": "Canteen\\Forms"
+        },
+        {
             "file": "src/Canteen/Forms/UserUpdate.php",
             "line": 19,
             "description": "Process the form and handle the $_POST data.",
@@ -3357,19 +3556,7 @@
         },
         {
             "file": "src/Canteen/Parser/PageBuilder.php",
-            "line": 29,
-            "description": "The data",
-            "itemtype": "property",
-            "name": "_data",
-            "type": "Dictionary",
-            "access": "private",
-            "tagname": "",
-            "class": "PageBuilder",
-            "module": "Canteen\\Parser"
-        },
-        {
-            "file": "src/Canteen/Parser/PageBuilder.php",
-            "line": 36,
+            "line": 27,
             "description": "The page for the index of the site",
             "itemtype": "property",
             "name": "_indexPage",
@@ -3381,7 +3568,7 @@
         },
         {
             "file": "src/Canteen/Parser/PageBuilder.php",
-            "line": 43,
+            "line": 34,
             "description": "The collection of all pages",
             "itemtype": "property",
             "name": "_pages",
@@ -3393,7 +3580,7 @@
         },
         {
             "file": "src/Canteen/Parser/PageBuilder.php",
-            "line": 50,
+            "line": 41,
             "description": "See if the current view is the gate way",
             "itemtype": "property",
             "name": "_isGateway",
@@ -3405,19 +3592,7 @@
         },
         {
             "file": "src/Canteen/Parser/PageBuilder.php",
-            "line": 57,
-            "description": "The collection is a list of data keys to use for the global JS Canteen settings",
-            "itemtype": "property",
-            "name": "_customSettings",
-            "type": "Dictionary",
-            "access": "private",
-            "tagname": "",
-            "class": "PageBuilder",
-            "module": "Canteen\\Parser"
-        },
-        {
-            "file": "src/Canteen/Parser/PageBuilder.php",
-            "line": 64,
+            "line": 48,
             "description": "The cache context for page renders",
             "itemtype": "property",
             "name": "RENDER_CONTEXT",
@@ -3429,7 +3604,7 @@
         },
         {
             "file": "src/Canteen/Parser/PageBuilder.php",
-            "line": 72,
+            "line": 56,
             "description": "The cache context for the page JSON data",
             "itemtype": "property",
             "name": "DATA_CONTEXT",
@@ -3441,14 +3616,14 @@
         },
         {
             "file": "src/Canteen/Parser/PageBuilder.php",
-            "line": 80,
+            "line": 64,
             "description": "Build a page builder",
             "class": "PageBuilder",
             "module": "Canteen\\Parser"
         },
         {
             "file": "src/Canteen/Parser/PageBuilder.php",
-            "line": 128,
+            "line": 108,
             "description": "Handle the current page request",
             "itemtype": "method",
             "name": "handle",
@@ -3461,7 +3636,7 @@
         },
         {
             "file": "src/Canteen/Parser/PageBuilder.php",
-            "line": 207,
+            "line": 188,
             "description": "Construct the site title",
             "itemtype": "method",
             "name": "getSiteTitle",
@@ -3483,7 +3658,7 @@
         },
         {
             "file": "src/Canteen/Parser/PageBuilder.php",
-            "line": 227,
+            "line": 208,
             "description": "Clear both the render and data page caches",
             "itemtype": "method",
             "name": "flush",
@@ -3494,7 +3669,7 @@
         },
         {
             "file": "src/Canteen/Parser/PageBuilder.php",
-            "line": 238,
+            "line": 219,
             "description": "Search a page by a uri",
             "itemtype": "method",
             "name": "getPageByUri",
@@ -3516,7 +3691,7 @@
         },
         {
             "file": "src/Canteen/Parser/PageBuilder.php",
-            "line": 265,
+            "line": 246,
             "description": "Search a page by a uri",
             "itemtype": "method",
             "name": "getPageById",
@@ -3538,7 +3713,7 @@
         },
         {
             "file": "src/Canteen/Parser/PageBuilder.php",
-            "line": 284,
+            "line": 265,
             "description": "Generate the page content",
             "itemtype": "method",
             "name": "addPageContent",
@@ -3560,7 +3735,7 @@
         },
         {
             "file": "src/Canteen/Parser/PageBuilder.php",
-            "line": 315,
+            "line": 302,
             "description": "Render current page",
             "itemtype": "method",
             "name": "handlePage",
@@ -3587,7 +3762,7 @@
         },
         {
             "file": "src/Canteen/Parser/PageBuilder.php",
-            "line": 440,
+            "line": 425,
             "description": "Add the logger and profiler to the output",
             "itemtype": "method",
             "name": "addLoggerProfiler",
@@ -3609,7 +3784,7 @@
         },
         {
             "file": "src/Canteen/Parser/PageBuilder.php",
-            "line": 468,
+            "line": 453,
             "description": "Generate a list of settings to use",
             "itemtype": "method",
             "name": "getSettings",
@@ -3765,7 +3940,7 @@
         {
             "file": "src/Canteen/Parser/Parser.php",
             "line": 169,
-            "description": "Prepare the site content to be displayed\nThis does all of the data substitutions and url fixes",
+            "description": "Prepare the site content to be displayed\nThis does all of the data substitutions and url fixes. The order of operations\nis to do the templates, loops, if blocks, then individual substitutions.",
             "itemtype": "method",
             "name": "parse",
             "params": [
@@ -5292,7 +5467,7 @@
         },
         {
             "file": "src/Canteen/Server/DeploymentStatus.php",
-            "line": 221,
+            "line": 229,
             "description": "Check to see if an array is associative",
             "itemtype": "method",
             "name": "isAssoc",
@@ -5314,7 +5489,7 @@
         },
         {
             "file": "src/Canteen/Server/DeploymentStatus.php",
-            "line": 233,
+            "line": 241,
             "description": "Process the site URI",
             "itemtype": "method",
             "name": "processURI",
@@ -5332,7 +5507,7 @@
         },
         {
             "file": "src/Canteen/Server/JSONServer.php",
-            "line": 22,
+            "line": 24,
             "description": "If the output produced an error",
             "itemtype": "property",
             "name": "ERROR",
@@ -5344,7 +5519,7 @@
         },
         {
             "file": "src/Canteen/Server/JSONServer.php",
-            "line": 30,
+            "line": 32,
             "description": "If the output was successful",
             "itemtype": "property",
             "name": "SUCCESS",
@@ -5356,7 +5531,7 @@
         },
         {
             "file": "src/Canteen/Server/JSONServer.php",
-            "line": 38,
+            "line": 40,
             "description": "The main server handler",
             "itemtype": "method",
             "name": "handle",
@@ -5369,7 +5544,7 @@
         },
         {
             "file": "src/Canteen/Server/JSONServer.php",
-            "line": 75,
+            "line": 77,
             "description": "The internal JSON handle request",
             "itemtype": "method",
             "name": "internalHandle",
@@ -5384,7 +5559,7 @@
         },
         {
             "file": "src/Canteen/Server/JSONServer.php",
-            "line": 150,
+            "line": 152,
             "description": "Process the URI as an array with different pieces",
             "itemtype": "method",
             "name": "processURI",
@@ -5696,10 +5871,20 @@
         {
             "file": "src/Canteen/Services/Objects/Config.php",
             "line": 33,
-            "description": "Either \"string\" or \"integer\"",
+            "description": "Either string, integer, boolean, page, or path",
             "itemtype": "property",
             "name": "type",
             "type": "Sring",
+            "class": "Config",
+            "module": "Canteen\\Services\\Objects"
+        },
+        {
+            "file": "src/Canteen/Services/Objects/Config.php",
+            "line": 39,
+            "description": "The settings manager access option",
+            "itemtype": "property",
+            "name": "access",
+            "type": "Int",
             "class": "Config",
             "module": "Canteen\\Services\\Objects"
         },
@@ -5997,7 +6182,7 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 32,
+            "line": 33,
             "description": "The table with the config",
             "itemtype": "property",
             "name": "table",
@@ -6009,7 +6194,7 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 39,
+            "line": 40,
             "description": "The name of the config class object",
             "itemtype": "property",
             "name": "className",
@@ -6021,14 +6206,14 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 46,
+            "line": 47,
             "description": "Create the service",
             "class": "ConfigService",
             "module": "Canteen\\Services"
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 54,
+            "line": 55,
             "description": "Install the config table",
             "itemtype": "method",
             "name": "install",
@@ -6058,12 +6243,12 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 94,
-            "description": "Get the collection of protected settings that are required\nby Canteen",
+            "line": 97,
+            "description": "Get the collection of values types",
             "itemtype": "method",
-            "name": "getProtectedNames",
+            "name": "getValueTypes",
             "return": {
-                "description": "A collection of protected config keys",
+                "description": "A collection of value type strings",
                 "type": "Array"
             },
             "class": "ConfigService",
@@ -6071,23 +6256,10 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 110,
-            "description": "Get the collection of private settings that are required\nby Canteen",
+            "line": 113,
+            "description": "Get all the the config for the site and add them to the settings",
             "itemtype": "method",
-            "name": "getPrivateNames",
-            "return": {
-                "description": "A collection of private config keys",
-                "type": "Array"
-            },
-            "class": "ConfigService",
-            "module": "Canteen\\Services"
-        },
-        {
-            "file": "src/Canteen/Services/ConfigService.php",
-            "line": 123,
-            "description": "Get all the the config for the site",
-            "itemtype": "method",
-            "name": "getAll",
+            "name": "registerSettings",
             "return": {
                 "description": "The collection of all config items",
                 "type": "Dictionary"
@@ -6097,7 +6269,7 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 151,
+            "line": 145,
             "description": "Get all the the config for the site",
             "itemtype": "method",
             "name": "getConfigs",
@@ -6110,7 +6282,7 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 165,
+            "line": 159,
             "description": "Get a config variable by name",
             "itemtype": "method",
             "name": "getValueByName",
@@ -6130,7 +6302,7 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 188,
+            "line": 182,
             "description": "Get a config variable by id",
             "params": [
                 {
@@ -6148,7 +6320,7 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 203,
+            "line": 197,
             "description": "Add a key to the config",
             "itemtype": "method",
             "name": "addConfig",
@@ -6166,7 +6338,16 @@
                 {
                     "name": "valueType",
                     "description": "The value type (string or integer)",
-                    "type": "String"
+                    "type": "String",
+                    "optional": true,
+                    "optdefault": "'string'"
+                },
+                {
+                    "name": "access",
+                    "description": "The access to the property, see SettingsManager for more\n       information on controlling access to settings.",
+                    "type": "Int",
+                    "optional": true,
+                    "optdefault": "0"
                 }
             ],
             "return": {
@@ -6178,7 +6359,27 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 229,
+            "line": 226,
+            "description": "Get the validator by the current type",
+            "itemtype": "method",
+            "name": "getValidationByType",
+            "params": [
+                {
+                    "name": "type",
+                    "description": "The type of config (path, page, boolean, integer, string)",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The regular expression for validating",
+                "type": "RegExp"
+            },
+            "class": "ConfigService",
+            "module": "Canteen\\Services"
+        },
+        {
+            "file": "src/Canteen/Services/ConfigService.php",
+            "line": 244,
             "description": "Update the value by name",
             "itemtype": "method",
             "name": "updateValue",
@@ -6203,7 +6404,7 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 248,
+            "line": 263,
             "description": "Update a config's property or properties",
             "itemtype": "method",
             "name": "updateConfig",
@@ -6235,7 +6436,7 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 280,
+            "line": 295,
             "description": "Convert the public property names",
             "itemtype": "method",
             "name": "convertPropertyNames",
@@ -6257,7 +6458,7 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 297,
+            "line": 312,
             "description": "Delete a config key",
             "itemtype": "method",
             "name": "removeConfig",
@@ -6332,7 +6533,7 @@
         },
         {
             "file": "src/Canteen/Services/PageService.php",
-            "line": 72,
+            "line": 75,
             "description": "Install the pages table into the database",
             "itemtype": "method",
             "name": "install",
@@ -6341,7 +6542,7 @@
         },
         {
             "file": "src/Canteen/Services/PageService.php",
-            "line": 121,
+            "line": 124,
             "description": "Get the collection of protected pages that are required by Canteen",
             "itemtype": "method",
             "name": "getProtectedUris",
@@ -6354,7 +6555,7 @@
         },
         {
             "file": "src/Canteen/Services/PageService.php",
-            "line": 143,
+            "line": 146,
             "description": "Get a current page by the id number",
             "itemtype": "method",
             "name": "getPageById",
@@ -6374,7 +6575,27 @@
         },
         {
             "file": "src/Canteen/Services/PageService.php",
-            "line": 166,
+            "line": 169,
+            "description": "Get a current page by the URI stub",
+            "itemtype": "method",
+            "name": "getPageById",
+            "params": [
+                {
+                    "name": "uri",
+                    "description": "Page's URI stub or collection of URIs",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The collection of Page objects or a single Page",
+                "type": "Page|Array"
+            },
+            "class": "PageService",
+            "module": "Canteen\\Services"
+        },
+        {
+            "file": "src/Canteen/Services/PageService.php",
+            "line": 189,
             "description": "Get all of the children pages nested within a page",
             "itemtype": "method",
             "name": "getPagesByParentId",
@@ -6394,7 +6615,7 @@
         },
         {
             "file": "src/Canteen/Services/PageService.php",
-            "line": 185,
+            "line": 208,
             "description": "Get all of the pages",
             "itemtype": "method",
             "name": "getPages",
@@ -6407,7 +6628,7 @@
         },
         {
             "file": "src/Canteen/Services/PageService.php",
-            "line": 204,
+            "line": 227,
             "description": "Remove a page",
             "itemtype": "method",
             "name": "removePage",
@@ -6427,7 +6648,7 @@
         },
         {
             "file": "src/Canteen/Services/PageService.php",
-            "line": 220,
+            "line": 243,
             "description": "Add a new page to the site",
             "itemtype": "method",
             "name": "addPage",
@@ -6492,7 +6713,7 @@
         },
         {
             "file": "src/Canteen/Services/PageService.php",
-            "line": 259,
+            "line": 282,
             "description": "Update a user property or properties",
             "itemtype": "method",
             "name": "updatePage",
@@ -6524,7 +6745,7 @@
         },
         {
             "file": "src/Canteen/Services/PageService.php",
-            "line": 293,
+            "line": 316,
             "description": "Convert the public property names into table field names",
             "itemtype": "method",
             "name": "convertPropertyNames",
@@ -6870,7 +7091,7 @@
         },
         {
             "file": "src/Canteen/Services/ServiceBrowser.php",
-            "line": 37,
+            "line": 36,
             "description": "The collection of all service aliases, Canteen and Custom",
             "itemtype": "property",
             "name": "aliases",
@@ -6882,7 +7103,7 @@
         },
         {
             "file": "src/Canteen/Services/ServiceBrowser.php",
-            "line": 44,
+            "line": 43,
             "description": "The full browser URI path",
             "itemtype": "property",
             "name": "browserUri",
@@ -6894,7 +7115,7 @@
         },
         {
             "file": "src/Canteen/Services/ServiceBrowser.php",
-            "line": 51,
+            "line": 50,
             "description": "The full browser URI path",
             "itemtype": "property",
             "name": "uri",
@@ -6906,7 +7127,7 @@
         },
         {
             "file": "src/Canteen/Services/ServiceBrowser.php",
-            "line": 58,
+            "line": 57,
             "description": "Get a service name by an alias",
             "itemtype": "method",
             "name": "getServiceNameByAlias",
@@ -6926,7 +7147,7 @@
         },
         {
             "file": "src/Canteen/Services/ServiceBrowser.php",
-            "line": 70,
+            "line": 69,
             "description": "Create the browser request",
             "itemtype": "method",
             "name": "handle",
@@ -6935,7 +7156,7 @@
         },
         {
             "file": "src/Canteen/Services/ServiceBrowser.php",
-            "line": 184,
+            "line": 190,
             "description": "Call the method and get the result",
             "itemtype": "method",
             "name": "callMethod",
@@ -6964,7 +7185,7 @@
         },
         {
             "file": "src/Canteen/Services/ServiceBrowser.php",
-            "line": 213,
+            "line": 219,
             "description": "The name of the class",
             "itemtype": "method",
             "name": "getMethodsList",
@@ -6979,7 +7200,7 @@
         },
         {
             "file": "src/Canteen/Services/ServiceBrowser.php",
-            "line": 255,
+            "line": 261,
             "description": "Get a list of services",
             "itemtype": "method",
             "name": "getServicesList",
@@ -6994,7 +7215,7 @@
         },
         {
             "file": "src/Canteen/Services/ServiceBrowser.php",
-            "line": 281,
+            "line": 287,
             "description": "Get the name of the class only",
             "itemtype": "method",
             "name": "simpleName",
@@ -7016,7 +7237,7 @@
         },
         {
             "file": "src/Canteen/Services/ServiceBrowser.php",
-            "line": 293,
+            "line": 299,
             "description": "Display the arguments as a string",
             "itemtype": "method",
             "name": "displayArgs",
@@ -7163,7 +7384,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 151,
+            "line": 153,
             "description": "Clear all expired sessions",
             "itemtype": "method",
             "name": "clearExpiredSessions",
@@ -7188,7 +7409,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 169,
+            "line": 171,
             "description": "Freeze the username after the user has failed-out the max number of login attempts",
             "itemtype": "method",
             "name": "freezeUsername",
@@ -7213,7 +7434,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 190,
+            "line": 192,
             "description": "The user attempted another failed try to login",
             "itemtype": "method",
             "name": "reportAttempt",
@@ -7233,7 +7454,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 206,
+            "line": 208,
             "description": "Clear the status",
             "itemtype": "method",
             "name": "createSession",
@@ -7263,7 +7484,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 246,
+            "line": 248,
             "description": "Update the last login point on the user's table",
             "itemtype": "method",
             "name": "refresh",
@@ -7283,7 +7504,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 262,
+            "line": 264,
             "description": "Check the user's session",
             "itemtype": "method",
             "name": "checkSession",
@@ -7318,7 +7539,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 293,
+            "line": 295,
             "description": "Check the cookie for authentication",
             "itemtype": "method",
             "name": "checkCookieLogin",
@@ -7343,7 +7564,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 320,
+            "line": 322,
             "description": "Check the user login",
             "itemtype": "method",
             "name": "checkLogin",
@@ -7375,7 +7596,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 354,
+            "line": 356,
             "description": "Verify that the password has been reset",
             "itemtype": "method",
             "name": "verifyResetPassword",
@@ -7400,7 +7621,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 377,
+            "line": 379,
             "description": "Get a user or user by id",
             "itemtype": "method",
             "name": "getUserById",
@@ -7420,7 +7641,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 398,
+            "line": 400,
             "description": "Get a user or users by email addresses or usernames",
             "itemtype": "method",
             "name": "getUser",
@@ -7440,7 +7661,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 420,
+            "line": 422,
             "description": "Get all of the current users",
             "itemtype": "method",
             "name": "getUsers",
@@ -7453,7 +7674,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 436,
+            "line": 438,
             "description": "Remove a user by an id",
             "itemtype": "method",
             "name": "removeUser",
@@ -7473,7 +7694,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 451,
+            "line": 453,
             "description": "Add a user to the data base",
             "itemtype": "method",
             "name": "adduser",
@@ -7518,7 +7739,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 469,
+            "line": 471,
             "description": "Internal method for adding a user",
             "itemtype": "method",
             "name": "internalAddUser",
@@ -7565,7 +7786,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 499,
+            "line": 501,
             "description": "Update a user property or properties",
             "itemtype": "method",
             "name": "updateUser",
@@ -7597,7 +7818,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 551,
+            "line": 553,
             "description": "Convert the public property names into table field names",
             "itemtype": "method",
             "name": "convertPropertyNames",
@@ -7619,21 +7840,28 @@
         },
         {
             "file": "src/Canteen/Upgrades/1.php",
-            "line": 5,
+            "line": 7,
             "description": "Add a dbVersion config to the database",
             "class": "CanteenBase",
             "module": "Canteen\\Services"
         },
         {
             "file": "src/Canteen/Upgrades/100.php",
-            "line": 5,
+            "line": 7,
             "description": "Add page-specific caching",
             "class": "CanteenBase",
             "module": "Canteen\\Services"
         },
         {
             "file": "src/Canteen/Upgrades/101.php",
-            "line": 8,
+            "line": 7,
+            "description": "Add page-specific caching",
+            "class": "CanteenBase",
+            "module": "Canteen\\Services"
+        },
+        {
+            "file": "src/Canteen/Upgrades/102.php",
+            "line": 7,
             "description": "Add page-specific caching",
             "class": "CanteenBase",
             "module": "Canteen\\Services"
@@ -7641,30 +7869,6 @@
         {
             "file": "src/Canteen/Utilities/CanteenBase.php",
             "line": 19,
-            "description": "Get the site setting or settings",
-            "itemtype": "method",
-            "name": "settings",
-            "access": "protected",
-            "tagname": "",
-            "params": [
-                {
-                    "name": "name",
-                    "description": "The name of the config property",
-                    "type": "String",
-                    "optional": true,
-                    "optdefault": "null"
-                }
-            ],
-            "return": {
-                "description": "Either value of the data or all items if param name is null",
-                "type": "String|Dictionary"
-            },
-            "class": "CanteenBase",
-            "module": "Canteen\\Utilities"
-        },
-        {
-            "file": "src/Canteen/Utilities/CanteenBase.php",
-            "line": 40,
             "description": "Get a service by alias or classname",
             "itemtype": "method",
             "name": "service",
@@ -7686,7 +7890,7 @@
         },
         {
             "file": "src/Canteen/Utilities/CanteenBase.php",
-            "line": 52,
+            "line": 31,
             "description": "Convenience method for parsing content",
             "itemtype": "method",
             "name": "parse",
@@ -7713,7 +7917,7 @@
         },
         {
             "file": "src/Canteen/Utilities/CanteenBase.php",
-            "line": 66,
+            "line": 45,
             "description": "Convenience method for parsing content",
             "itemtype": "method",
             "name": "template",
@@ -7742,7 +7946,7 @@
         },
         {
             "file": "src/Canteen/Utilities/CanteenBase.php",
-            "line": 79,
+            "line": 58,
             "description": "Convenience method for parsing content",
             "itemtype": "method",
             "name": "parse",
@@ -7764,14 +7968,14 @@
         },
         {
             "file": "src/Canteen/Utilities/CanteenBase.php",
-            "line": 92,
+            "line": 71,
             "description": "The getter",
             "class": "CanteenBase",
             "module": "Canteen\\Utilities"
         },
         {
             "file": "src/Canteen/Utilities/CanteenBase.php",
-            "line": 99,
+            "line": 78,
             "description": "Convenience getter for the site",
             "itemtype": "property",
             "name": "site",
@@ -7782,7 +7986,7 @@
         },
         {
             "file": "src/Canteen/Utilities/CanteenBase.php",
-            "line": 106,
+            "line": 85,
             "description": "Get the instance of the site cache",
             "itemtype": "property",
             "name": "cache",
@@ -7793,7 +7997,18 @@
         },
         {
             "file": "src/Canteen/Utilities/CanteenBase.php",
-            "line": 113,
+            "line": 92,
+            "description": "Get the instance of the settings manager",
+            "itemtype": "property",
+            "name": "settings",
+            "type": "SettingsManager",
+            "readonly": "",
+            "class": "CanteenBase",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/CanteenBase.php",
+            "line": 99,
             "description": "Get the Authorization class to handle things like login, password change",
             "itemtype": "property",
             "name": "user",
@@ -7804,7 +8019,7 @@
         },
         {
             "file": "src/Canteen/Utilities/CanteenBase.php",
-            "line": 120,
+            "line": 106,
             "description": "The instance of the profiler for debugging performance",
             "itemtype": "property",
             "name": "profiler",
@@ -7815,7 +8030,7 @@
         },
         {
             "file": "src/Canteen/Utilities/CanteenBase.php",
-            "line": 127,
+            "line": 113,
             "description": "The parser is responsible for rendering templates",
             "itemtype": "property",
             "name": "parser",
@@ -7872,6 +8087,323 @@
             "module": "Canteen\\Utilities"
         },
         {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 12,
+            "description": "Option if the setting should be available to the client, JavaScript",
+            "itemtype": "property",
+            "name": "CLIENT",
+            "type": "Int",
+            "static": 1,
+            "final": 1,
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 20,
+            "description": "Option if the setting can be rendered on the page",
+            "itemtype": "property",
+            "name": "RENDER",
+            "type": "Int",
+            "static": 1,
+            "final": 1,
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 28,
+            "description": "Option if the option can be changed from the config panel",
+            "itemtype": "property",
+            "name": "WRITE",
+            "type": "Int",
+            "static": 1,
+            "final": 1,
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 36,
+            "description": "Option if the option can be deleted from the config panel",
+            "itemtype": "property",
+            "name": "DELETE",
+            "type": "Int",
+            "static": 1,
+            "final": 1,
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 44,
+            "description": "Enable all access",
+            "itemtype": "property",
+            "name": "ALL",
+            "type": "Int",
+            "static": 1,
+            "final": 1,
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 52,
+            "description": "The collection of all settings",
+            "itemtype": "property",
+            "name": "settings",
+            "type": "Array",
+            "access": "private",
+            "tagname": "",
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 59,
+            "description": "The dictionary map of all settings",
+            "itemtype": "property",
+            "name": "settingsMap",
+            "type": "Dictionary",
+            "access": "private",
+            "tagname": "",
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 85,
+            "description": "Add a collection of settings to the settings manager",
+            "itemtype": "method",
+            "name": "addSettings",
+            "params": [
+                {
+                    "name": "settings",
+                    "description": "The associative-array of properties",
+                    "type": "Dictionary"
+                },
+                {
+                    "name": "access",
+                    "description": "The access to enable for access, default to none",
+                    "type": "Int",
+                    "optional": true,
+                    "optdefault": "0"
+                }
+            ],
+            "return": {
+                "description": "Make it easier to chain",
+                "type": "StateManager"
+            },
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 101,
+            "description": "Add a single setting to the settings manager",
+            "itemtype": "method",
+            "name": "addSetting",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The name of the property add",
+                    "type": "String"
+                },
+                {
+                    "name": "value",
+                    "description": "The value of the setting",
+                    "type": "Mixed"
+                },
+                {
+                    "name": "access",
+                    "description": "The access to enable for access, default to none",
+                    "type": "Int",
+                    "optional": true,
+                    "optdefault": "0"
+                }
+            ],
+            "return": {
+                "description": "Make it easier to chain",
+                "type": "StateManager"
+            },
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 121,
+            "description": "Change the access by name",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The name of the setting",
+                    "type": "String"
+                },
+                {
+                    "name": "access",
+                    "description": "The access to enable for access, default to none",
+                    "type": "Int"
+                }
+            ],
+            "return": {
+                "description": "Make it easier to chain",
+                "type": "StateManager"
+            },
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 142,
+            "description": "If multiple settings exist",
+            "itemtype": "method",
+            "name": "exists",
+            "access": "public",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "args",
+                    "description": "The data names that are required",
+                    "type": "String",
+                    "multiple": true
+                }
+            ],
+            "return": {
+                "description": "If the access check out",
+                "type": "Boolean"
+            },
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 163,
+            "description": "If multiple settings exist, throw exception if not",
+            "itemtype": "method",
+            "name": "exists",
+            "access": "public",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "args",
+                    "description": "The data names that are required",
+                    "type": "String",
+                    "multiple": true
+                }
+            ],
+            "return": {
+                "description": "If the access check out",
+                "type": "Boolean"
+            },
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 189,
+            "description": "Get the collection of settings that are okay to render through templates",
+            "itemtype": "method",
+            "name": "getRender",
+            "return": {
+                "description": "The collection of settings",
+                "type": "Dictionary"
+            },
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 207,
+            "description": "Get the collection of settings that are okay-ed for use by the client",
+            "itemtype": "method",
+            "name": "getClient",
+            "return": {
+                "description": "The collection of settings",
+                "type": "Dictionary"
+            },
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 225,
+            "description": "Global getter access",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The name of the setting",
+                    "type": "String"
+                }
+            ],
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 241,
+            "description": "Global setter access",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The name of the setting",
+                    "type": "String"
+                },
+                {
+                    "name": "value",
+                    "description": "The value of the setting",
+                    "type": "Mixed"
+                }
+            ],
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 266,
+            "description": "Remove a setting",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The name of the setting to remove",
+                    "type": "String"
+                }
+            ],
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 302,
+            "description": "Internal class to",
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 307,
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 310,
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 313,
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/SettingsManager.php",
+            "line": 316,
+            "description": "Constructor",
+            "class": "SettingsManager",
+            "module": "Canteen\\Utilities"
+        },
+        {
             "file": "src/Canteen/Utilities/StringUtils.php",
             "line": 15,
             "description": "Convert a uri (eg. get-all-users) to method call (e.g. getAllUsers)",
@@ -7916,6 +8448,27 @@
         {
             "file": "src/Canteen/Utilities/StringUtils.php",
             "line": 49,
+            "description": "Convert a property name (myProperty) to a readable name (My Property)",
+            "itemtype": "method",
+            "name": "propertyToReadable",
+            "static": 1,
+            "params": [
+                {
+                    "name": "property",
+                    "description": "The name of the property (lower camel-case)",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The readable name, title-case",
+                "type": "String"
+            },
+            "class": "StringUtils",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/StringUtils.php",
+            "line": 61,
             "description": "Convert a property name (someProperty to const SOME_PROPERTY)",
             "itemtype": "method",
             "name": "convertPropertyToConst",
@@ -7936,7 +8489,7 @@
         },
         {
             "file": "src/Canteen/Utilities/StringUtils.php",
-            "line": 61,
+            "line": 73,
             "description": "Test a string to see if it's a regular expression",
             "itemtype": "method",
             "name": "isRegex",
@@ -7957,12 +8510,17 @@
         },
         {
             "file": "src/Canteen/Utilities/StringUtils.php",
-            "line": 73,
+            "line": 85,
             "description": "Process the URI as an array with different pieces",
             "itemtype": "method",
             "name": "processURI",
             "static": 1,
             "params": [
+                {
+                    "name": "uriRequest",
+                    "description": "The URI request being made",
+                    "type": "String"
+                },
                 {
                     "name": "ignore",
                     "description": "The number of elements to exclude from the beginning",
@@ -7980,7 +8538,7 @@
         },
         {
             "file": "src/Canteen/Utilities/StringUtils.php",
-            "line": 131,
+            "line": 144,
             "description": "Get a random string of characters (readable-ish format)",
             "itemtype": "method",
             "name": "generateRandomString",
@@ -8003,7 +8561,7 @@
         },
         {
             "file": "src/Canteen/Utilities/StringUtils.php",
-            "line": 159,
+            "line": 172,
             "description": "Global functions to check for a string-based boolean",
             "itemtype": "method",
             "name": "asBoolean",
@@ -8024,7 +8582,7 @@
         },
         {
             "file": "src/Canteen/Utilities/StringUtils.php",
-            "line": 172,
+            "line": 185,
             "description": "Makes sure to include the trailing slash for a directory path",
             "itemtype": "method",
             "name": "requireSeparator",
@@ -8045,7 +8603,7 @@
         },
         {
             "file": "src/Canteen/Utilities/StringUtils.php",
-            "line": 189,
+            "line": 202,
             "description": "Check to see if a string is serialized, if it is return result",
             "itemtype": "method",
             "name": "isSerialized",
@@ -8076,7 +8634,7 @@
         },
         {
             "file": "src/Canteen/Utilities/StringUtils.php",
-            "line": 279,
+            "line": 292,
             "description": "Works like in_array but uses native fnmatch",
             "itemtype": "method",
             "name": "fnmatchInArray",
@@ -8102,7 +8660,7 @@
         },
         {
             "file": "src/Canteen/Utilities/StringUtils.php",
-            "line": 296,
+            "line": 309,
             "description": "Replace the first occurrence in a string",
             "itemtype": "method",
             "name": "replaceOnce",
@@ -8135,7 +8693,7 @@
         },
         {
             "file": "src/Canteen/Utilities/StringUtils.php",
-            "line": 318,
+            "line": 331,
             "description": "Used to remove extra whitespace from a buffer\nRespects the textareas",
             "itemtype": "method",
             "name": "minify",
@@ -8156,7 +8714,7 @@
         },
         {
             "file": "src/Canteen/Utilities/StringUtils.php",
-            "line": 353,
+            "line": 366,
             "description": "Strip new lines, tabs and extra spaces from a string",
             "itemtype": "method",
             "name": "stripBuffer",
@@ -8179,7 +8737,7 @@
         },
         {
             "file": "src/Canteen/Utilities/StringUtils.php",
-            "line": 377,
+            "line": 390,
             "description": "The default backtrack limit for preg expressions is 100KB, \nwe may have pages which ar larger than 100,000, and \nneed to increase the pcre.backtrack_limit",
             "itemtype": "method",
             "name": "checkBacktrackLimit",
@@ -8221,6 +8779,18 @@
         {
             "file": "src/Canteen/Utilities/Validate.php",
             "line": 33,
+            "description": "Validation Type: booleans, includes 0-1",
+            "itemtype": "property",
+            "name": "BOOLEAN",
+            "type": "RegExp",
+            "final": 1,
+            "static": 1,
+            "class": "Validate",
+            "module": "Canteen\\Utilities"
+        },
+        {
+            "file": "src/Canteen/Utilities/Validate.php",
+            "line": 41,
             "description": "Validation Type: remove all non decimal characters, includes 0-9, .",
             "itemtype": "property",
             "name": "DECIMAL",
@@ -8232,7 +8802,7 @@
         },
         {
             "file": "src/Canteen/Utilities/Validate.php",
-            "line": 41,
+            "line": 49,
             "description": "Validation Type: remove all non alpha characters, includes a-z, A-Z",
             "itemtype": "property",
             "name": "ALPHA",
@@ -8244,7 +8814,7 @@
         },
         {
             "file": "src/Canteen/Utilities/Validate.php",
-            "line": 49,
+            "line": 57,
             "description": "Validation Type: for people's names, includes a-z, A-Z, -, .",
             "itemtype": "property",
             "name": "NAMES",
@@ -8256,7 +8826,7 @@
         },
         {
             "file": "src/Canteen/Utilities/Validate.php",
-            "line": 57,
+            "line": 65,
             "description": "Validation type: for file names, includes a-z, A-Z, 0-9, -, _, .",
             "itemtype": "property",
             "name": "FILE_NAME",
@@ -8268,7 +8838,7 @@
         },
         {
             "file": "src/Canteen/Utilities/Validate.php",
-            "line": 65,
+            "line": 73,
             "description": "Validation Type: remove all non alpha numeric punctuation characters",
             "itemtype": "property",
             "name": "FULL_TEXT",
@@ -8280,7 +8850,7 @@
         },
         {
             "file": "src/Canteen/Utilities/Validate.php",
-            "line": 73,
+            "line": 81,
             "description": "Validation Type: remove all non standard uri characters, includes a-z, A-Z, 0-9, -, _, ., /",
             "itemtype": "property",
             "name": "URI",
@@ -8292,7 +8862,7 @@
         },
         {
             "file": "src/Canteen/Utilities/Validate.php",
-            "line": 81,
+            "line": 89,
             "description": "Validation Type: remove all non search characters, includes a-z, A-Z, 0-9, space",
             "itemtype": "property",
             "name": "SEARCH",
@@ -8304,7 +8874,7 @@
         },
         {
             "file": "src/Canteen/Utilities/Validate.php",
-            "line": 89,
+            "line": 97,
             "description": "Validation Type: remove all non email characters, includes a-z, A-Z, 0-9, ., -, _, @",
             "itemtype": "property",
             "name": "EMAIL",
@@ -8316,7 +8886,7 @@
         },
         {
             "file": "src/Canteen/Utilities/Validate.php",
-            "line": 97,
+            "line": 105,
             "description": "The valid mysql date format",
             "itemtype": "property",
             "name": "MYSQL_DATE",
@@ -8328,7 +8898,7 @@
         },
         {
             "file": "src/Canteen/Utilities/Validate.php",
-            "line": 105,
+            "line": 113,
             "description": "Sanitize input data using the validation types above",
             "itemtype": "method",
             "name": "verify",
@@ -8363,7 +8933,7 @@
         },
         {
             "file": "src/Canteen/Utilities/Validate.php",
-            "line": 159,
+            "line": 196,
             "description": "Verify multiple data with multiple types",
             "itemtype": "method",
             "name": "verifyMutli",
@@ -8421,6 +8991,18 @@
         {
             "file": "src/Canteen/Site.php",
             "line": 47,
+            "description": "The name of the main site template alias",
+            "itemtype": "property",
+            "name": "MAIN_TEMPLATE",
+            "type": "String",
+            "static": 1,
+            "final": 1,
+            "class": "Site",
+            "module": "Canteen"
+        },
+        {
+            "file": "src/Canteen/Site.php",
+            "line": 55,
             "description": "The name of the gateway page",
             "itemtype": "property",
             "name": "gatewayUri",
@@ -8431,7 +9013,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 54,
+            "line": 62,
             "description": "The uri name for the service browser",
             "itemtype": "property",
             "name": "browserUri",
@@ -8442,7 +9024,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 61,
+            "line": 69,
             "description": "The logout uri",
             "itemtype": "property",
             "name": "logoutUri",
@@ -8453,18 +9035,18 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 68,
+            "line": 76,
             "description": "The site configuration an associative array in key => value pairs",
             "itemtype": "property",
             "name": "settings",
-            "type": "Dictionary",
+            "type": "SettingsManager",
             "readonly": "",
             "class": "Site",
             "module": "Canteen"
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 75,
+            "line": 83,
             "description": "The dynamic page controllers with keys 'uri' and 'controller'",
             "itemtype": "property",
             "name": "_controllers",
@@ -8476,7 +9058,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 82,
+            "line": 90,
             "description": "The user authorization object, deals with login and session",
             "itemtype": "property",
             "name": "user",
@@ -8487,7 +9069,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 89,
+            "line": 97,
             "description": "The form factory handles the processing of form POST requests",
             "itemtype": "property",
             "name": "formFactory",
@@ -8498,7 +9080,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 96,
+            "line": 104,
             "description": "The Profiler is use for debugging performance issues, SQL speed",
             "itemtype": "property",
             "name": "profiler",
@@ -8509,7 +9091,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 103,
+            "line": 111,
             "description": "The template parser\n\n\t// Add a template to the site\n\t$site->parser->addTemplate('Footer', 'Templates/Footer.html');\n\t\n\t// Or add a JSON manifest with an array of template files\n \t$site->parser->addManifest('templates.json');",
             "itemtype": "property",
             "name": "parser",
@@ -8520,7 +9102,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 117,
+            "line": 125,
             "description": "The instance of the server cache",
             "itemtype": "property",
             "name": "cache",
@@ -8531,7 +9113,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 124,
+            "line": 132,
             "description": "The instance of the database for fetching data using SQL",
             "itemtype": "property",
             "name": "db",
@@ -8542,7 +9124,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 131,
+            "line": 139,
             "description": "The fatal error",
             "itemtype": "property",
             "name": "_fatalError",
@@ -8554,7 +9136,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 138,
+            "line": 146,
             "description": "The singleton instance",
             "itemtype": "property",
             "name": "_instance",
@@ -8567,7 +9149,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 146,
+            "line": 154,
             "description": "The minimum PHP version required to run termite",
             "itemtype": "property",
             "name": "MIN_PHP_VERSION",
@@ -8579,7 +9161,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 154,
+            "line": 162,
             "description": "Get the singleton instance",
             "itemtype": "method",
             "name": "instance",
@@ -8593,7 +9175,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 261,
+            "line": 282,
             "description": "Finish setting up the site",
             "itemtype": "method",
             "name": "setup",
@@ -8611,7 +9193,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 416,
+            "line": 453,
             "description": "Store a page user function call for dynamic pages",
             "itemtype": "method",
             "name": "addController",
@@ -8632,7 +9214,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 447,
+            "line": 484,
             "description": "Check to make sure the database is up-to-date",
             "itemtype": "method",
             "name": "isDatabaseUpdated",
@@ -8658,7 +9240,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 476,
+            "line": 520,
             "description": "Get a page controller by uri",
             "itemtype": "method",
             "name": "getController",
@@ -8678,7 +9260,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 501,
+            "line": 545,
             "description": "Add a collection of custom services",
             "itemtype": "method",
             "name": "addServices",
@@ -8694,7 +9276,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 514,
+            "line": 558,
             "description": "Register a single custom service.",
             "itemtype": "method",
             "name": "addService",
@@ -8715,23 +9297,16 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 532,
+            "line": 576,
             "description": "Get the current page markup, echoes on the page",
             "itemtype": "method",
             "name": "render",
-            "params": [
-                {
-                    "name": "globalSettings",
-                    "description": "Additional keys of global Canteen settings \n       to add to make accessible via the JavaScript Canteen.settings object.",
-                    "type": "Array"
-                }
-            ],
             "class": "Site",
             "module": "Canteen"
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 565,
+            "line": 603,
             "description": "See if there are any errors or warnings\nbail out if we need to",
             "itemtype": "method",
             "name": "readyToProceed",
@@ -8746,7 +9321,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 612,
+            "line": 649,
             "description": "Set the configuration setting",
             "itemtype": "method",
             "name": "addSetting",
@@ -8760,6 +9335,20 @@
                     "name": "value",
                     "description": "The value to set",
                     "type": "String"
+                },
+                {
+                    "name": "client",
+                    "description": "If the setting should be added to the global client JS settings",
+                    "type": "Boolean",
+                    "optional": true,
+                    "optdefault": "true"
+                },
+                {
+                    "name": "renderable",
+                    "description": "If the setting can be rendered",
+                    "type": "Boolean",
+                    "optional": true,
+                    "optdefault": "true"
                 }
             ],
             "class": "Site",
@@ -8767,14 +9356,14 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 623,
+            "line": 662,
             "description": "Private getters",
             "class": "Site",
             "module": "Canteen"
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 642,
+            "line": 681,
             "description": "Check that a version of Canteen is required to run",
             "itemtype": "method",
             "name": "requiresVersion",
@@ -8784,25 +9373,6 @@
                     "name": "required",
                     "description": "The least required version to run",
                     "type": "String"
-                }
-            ],
-            "class": "Site",
-            "module": "Canteen"
-        },
-        {
-            "file": "src/Canteen/Site.php",
-            "line": 660,
-            "description": "If multiple keys exists in an array",
-            "itemtype": "method",
-            "name": "checkSettings",
-            "access": "private",
-            "tagname": "",
-            "params": [
-                {
-                    "name": "args",
-                    "description": "The data names that are required",
-                    "type": "String",
-                    "multiple": true
                 }
             ],
             "class": "Site",
@@ -8820,11 +9390,11 @@
         },
         {
             "message": "unknown tag: copyright",
-            "line": " src/Canteen/Utilities/StringUtils.php:189"
+            "line": " src/Canteen/Utilities/StringUtils.php:202"
         },
         {
             "message": "unknown tag: license",
-            "line": " src/Canteen/Utilities/StringUtils.php:189"
+            "line": " src/Canteen/Utilities/StringUtils.php:202"
         },
         {
             "message": "Missing item type\nConstructor for User",
@@ -8835,8 +9405,12 @@
             "line": " src/Canteen/Authorization/Authorization.php:172"
         },
         {
+            "message": "Missing item type",
+            "line": " src/Canteen/Controllers/AdminConfigController.php:19"
+        },
+        {
             "message": "Missing item type\nGet the form select of privileges",
-            "line": " src/Canteen/Controllers/AdminPagesController.php:79"
+            "line": " src/Canteen/Controllers/AdminPagesController.php:87"
         },
         {
             "message": "Missing item type\nGet the form select of privileges",
@@ -8852,7 +9426,7 @@
         },
         {
             "message": "Missing item type\nCreate the Canteen error",
-            "line": " src/Canteen/Errors/CanteenError.php:222"
+            "line": " src/Canteen/Errors/CanteenError.php:257"
         },
         {
             "message": "Missing item type\nCreate a user error",
@@ -8867,6 +9441,18 @@
             "line": " src/Canteen/Forms/ConfigUpdate.php:17"
         },
         {
+            "message": "Missing item type\nUpdate the config value",
+            "line": " src/Canteen/Forms/ConfigUpdate.php:36"
+        },
+        {
+            "message": "Missing item type\nDelete a config variable",
+            "line": " src/Canteen/Forms/ConfigUpdate.php:80"
+        },
+        {
+            "message": "Missing item type\nAdd a new custom property",
+            "line": " src/Canteen/Forms/ConfigUpdate.php:120"
+        },
+        {
             "message": "Missing item type\nProcess the form and handle the $_POST data.",
             "line": " src/Canteen/Forms/ForgotPassword.php:32"
         },
@@ -8875,8 +9461,12 @@
             "line": " src/Canteen/Forms/FormBase.php:73"
         },
         {
+            "message": "Missing item type\nSetup the collections",
+            "line": " src/Canteen/Forms/FormFactory.php:57"
+        },
+        {
             "message": "Missing item type\nThe getter",
-            "line": " src/Canteen/Forms/FormFactory.php:177"
+            "line": " src/Canteen/Forms/FormFactory.php:191"
         },
         {
             "message": "Missing item type\nProcess the form and handle the $_POST data.",
@@ -8900,7 +9490,7 @@
         },
         {
             "message": "Missing item type\nBuild a page builder",
-            "line": " src/Canteen/Parser/PageBuilder.php:80"
+            "line": " src/Canteen/Parser/PageBuilder.php:64"
         },
         {
             "message": "Missing item type\nCreate the loader",
@@ -8928,11 +9518,11 @@
         },
         {
             "message": "Missing item type\nCreate the service",
-            "line": " src/Canteen/Services/ConfigService.php:46"
+            "line": " src/Canteen/Services/ConfigService.php:47"
         },
         {
             "message": "Missing item type\nGet a config variable by id",
-            "line": " src/Canteen/Services/ConfigService.php:188"
+            "line": " src/Canteen/Services/ConfigService.php:182"
         },
         {
             "message": "Missing item type\nCreate the service",
@@ -8956,23 +9546,63 @@
         },
         {
             "message": "Missing item type\nAdd a dbVersion config to the database",
-            "line": " src/Canteen/Upgrades/1.php:5"
+            "line": " src/Canteen/Upgrades/1.php:7"
         },
         {
             "message": "Missing item type\nAdd page-specific caching",
-            "line": " src/Canteen/Upgrades/100.php:5"
+            "line": " src/Canteen/Upgrades/100.php:7"
         },
         {
             "message": "Missing item type\nAdd page-specific caching",
-            "line": " src/Canteen/Upgrades/101.php:8"
+            "line": " src/Canteen/Upgrades/101.php:7"
+        },
+        {
+            "message": "Missing item type\nAdd page-specific caching",
+            "line": " src/Canteen/Upgrades/102.php:7"
         },
         {
             "message": "Missing item type\nThe getter",
-            "line": " src/Canteen/Utilities/CanteenBase.php:92"
+            "line": " src/Canteen/Utilities/CanteenBase.php:71"
+        },
+        {
+            "message": "Missing item type\nChange the access by name",
+            "line": " src/Canteen/Utilities/SettingsManager.php:121"
+        },
+        {
+            "message": "Missing item type\nGlobal getter access",
+            "line": " src/Canteen/Utilities/SettingsManager.php:225"
+        },
+        {
+            "message": "Missing item type\nGlobal setter access",
+            "line": " src/Canteen/Utilities/SettingsManager.php:241"
+        },
+        {
+            "message": "Missing item type\nRemove a setting",
+            "line": " src/Canteen/Utilities/SettingsManager.php:266"
+        },
+        {
+            "message": "Missing item type\nInternal class to",
+            "line": " src/Canteen/Utilities/SettingsManager.php:302"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/Canteen/Utilities/SettingsManager.php:307"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/Canteen/Utilities/SettingsManager.php:310"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/Canteen/Utilities/SettingsManager.php:313"
+        },
+        {
+            "message": "Missing item type\nConstructor",
+            "line": " src/Canteen/Utilities/SettingsManager.php:316"
         },
         {
             "message": "Missing item type\nPrivate getters",
-            "line": " src/Canteen/Site.php:623"
+            "line": " src/Canteen/Site.php:662"
         }
     ]
 }
