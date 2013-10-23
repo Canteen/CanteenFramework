@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <project name="CanteenFramework" default="docs" basedir="./">
-	
 	<property file="${os.name}.build.properties"/>
 	<property file="build.properties"/>
 	
@@ -43,9 +42,6 @@
 			</fileset>
 		</copy>
 		<delete dir="../${docs.outdir}" />
-	</target>
-	
-	<target name="commit">
 		<!-- Add the files -->
 		<exec executable="${git}" failonerror="true">
 			<arg line="add" />
