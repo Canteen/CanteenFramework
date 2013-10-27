@@ -68,7 +68,7 @@ namespace Canteen\Controllers
 				$data['readOnly'] = $protected ? 'disabled' : '';
 				$data['cache'] = $page->cache ? 'checked' : '';
 				$data['isWriteable'] = is_writeable($page->contentUrl);
-				$data['pageContent'] = $data['isWriteable'] ? @file_get_contents($dir.$page->uri.'.html') : '';
+				$data['pageContent'] = $data['isWriteable'] ? $this->pageContent($dir.$page->uri.'.html') : '';
 				$data['showDelete'] = !$protected;
 			}
 			else
@@ -101,6 +101,25 @@ namespace Canteen\Controllers
 				$options .= (string)$option;
 			}
 			return $options;
+		}
+		
+		/**
+		*  Get the page contents from the path 
+		*  @method getContents
+		*  @private
+		*  @param {String} path The path to the content
+		*  @return {String} The string for the page
+		*/
+		private function pageContent($path)
+		{
+			$contents = @file_get_contents($path);
+			
+			if ($contents === false)
+			{
+				return '';
+			}
+			return str_replace('{{', '&#123;&#123;', 
+				str_replace('}}', '&#125;&#125;', $contents));
 		}
 		
 		/**
