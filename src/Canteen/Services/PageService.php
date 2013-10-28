@@ -219,6 +219,7 @@ namespace Canteen\Services
 			
 			$results = $this->db->select($this->properties)
 				->from($this->table)
+				->orderBy('uri')
 				->results(true);
 			
 			return $this->bindObjects($results, $this->className, $this->mappings);

@@ -15,8 +15,14 @@
 			{{if:isNormal}}
 				<input id="configValue{{id}}" name="configValue" type="text" value="{{value}}" class="text required">
 			{{fi:isNormal}}
-			<input type="submit" value="Save" name="saveButton" class="submit">
-			<input type="submit" value="Delete" name="deleteButton" class="submit confirm {{disabled}}" {{disabled}}>
+			<button type="submit" value="Save" name="saveButton" class="submit">
+				<span class="buttonIcon icon-save"></span>
+				<span class="buttonLabel">Save</span>
+			</button>
+			<button type="submit" value="Delete" name="deleteButton" class="submit confirm {{disabled}}" {{disabled}}>
+				<span class="buttonIcon icon-delete"></span>
+				<span class="buttonLabel">Delete</span>
+			</button>
 			<input type="hidden" name="form" value="Canteen\Forms\ConfigUpdate">
 			<input type="hidden" name="configId" value="{{id}}">
 			<input type="hidden" name="formSession" value="{{formSession}}">
@@ -55,7 +61,10 @@
 				Add value to templates <code>&#123;&#123;myProperty&#125;&#125;</code>
 			</div>
 			<div class="formButtons">
-				<input type="submit" value="Add" name="addButton" tabindex="6" class="submit">
+				<button type="submit" value="Add" name="addButton" tabindex="6" class="submit">
+					<span class="buttonIcon icon-add"></span>
+					<span class="buttonLabel">Add</span>
+				</button>
 				<input type="hidden" name="form" value="Canteen\Forms\ConfigUpdate">
 				<input type="hidden" name="refresh" value="true">
 				<input type="hidden" name="formSession" value="{{formSession}}">

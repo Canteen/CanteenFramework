@@ -43,13 +43,13 @@ namespace Canteen\Controllers
 			
 			$data = array(
 				'formLabel' => $page ? 'Update an Existing Page' : 'Add a New Page',
-				'buttonLabel' => $page ? 'Update' : 'Add',
 				'isDynamic' => '',
 				'pages' => '',
 				'hasPage' => false,
 				'readOnly' => false,
 				'isWriteable' => is_writeable($dir),
-				'showDelete' => false
+				'showDelete' => false,
+				'cache' => 'checked'
 			);
 			
 			if ($page)
@@ -73,11 +73,11 @@ namespace Canteen\Controllers
 			}
 			else
 			{
-				$pages = $this->getPages();
+				$pages = $this->getPages(null, null, false);
 				$data['redirectId'] = $pages;
 				$data['parentId'] = $pages;
 				$data['privileges'] = $this->getPrivileges();
-				$data['pages'] = $pages;
+				$data['pages'] = $this->getPages();
 			}
 			
 			// Update the page with the template
@@ -129,12 +129,14 @@ namespace Canteen\Controllers
 		*  @param {int} [selectId=null] Select this optional page ID
 		*  @param {int} [ignoreId=null] Ignore optional page ID
 		*/
-		private function getPages($selectId=null, $ignoreId=null)
+		private function getPages($selectId=null, $ignoreId=null, $showProtected=true)
 		{
+			$protected = array('404', '401', '500', '403');
+			
 			$options = '';
 			foreach($this->allPages as $page)
 			{
-				if ($ignoreId == $page->id) continue;
+				if ($ignoreId == $page->id || (!$showProtected && in_array($page->uri, $protected))) continue;
 				
 				$option = html(
 					'option value='.$page->id, 

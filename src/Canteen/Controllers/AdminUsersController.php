@@ -32,7 +32,6 @@ namespace Canteen\Controllers
 			
 			$data = array(
 				'formLabel' => $user ? 'Update an Existing User' : 'Add a New User',
-				'buttonLabel' => $user ? 'Update' : 'Add',
 				'isActive' => 'checked',
 				'users' => '',
 				'hasUser' => false

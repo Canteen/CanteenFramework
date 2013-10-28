@@ -23,6 +23,37 @@ namespace Canteen\Forms
 		{
 			$userId = $this->verify(ifsetor($_POST['userId']));
 			$user = $this->service('users')->getUserById($userId);
+			
+			// See if we're going to delete the page
+			// if the delete button was clicked
+			if (isset($_POST['deleteButton']))
+			{
+				// Make sure there's a valid page
+				if (!$user)
+				{
+					$this->error('No user to delete');
+				}
+				else if ($userId == USER_ID)
+				{
+					$this->error('You cannot delete yourself!');
+				}
+				else
+				{
+					// Remove the page
+					if (!$this->service('users')->removeUser($userId))
+					{
+						$this->error('Unable to delete the user');
+					}			
+				}
+				
+				if (!$this->ifError)
+				{
+					// Goto the main pages admin
+					redirect('admin/users');
+				}
+				return;
+			}
+			
 			$privilege = $this->verify(ifsetor($_POST['privilege']));
 			$firstName = $this->verify(ifsetor($_POST['firstName']), Validate::NAMES);
 			$lastName = $this->verify(ifsetor($_POST['lastName']), Validate::NAMES);

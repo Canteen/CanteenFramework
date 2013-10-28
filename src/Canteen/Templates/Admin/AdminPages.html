@@ -10,7 +10,10 @@
 				</select>
 			</div>
 			<div class="formButtons">
-				<input type="submit" value="Edit" id="editButton" class="submit">
+				<button type="submit" value="Edit" id="editButton" class="submit">
+					<span class="buttonIcon icon-edit"></span>
+					<span class="buttonLabel">Edit</span>
+				</button>
 			</div>
 		</fieldset>
 	</form>
@@ -71,27 +74,42 @@
 			</div>
 			{{if:!readOnly}}
 			<div class="clearfix formRow">
-				<label for="parentId">Parent (optional)</label>
+				<label for="parentId">Parent</label>
 				<select name="parentId" id="parentId" tabindex="9">
-					<option value="0">Select parent page</option>
+					<option value="0">No Parent</option>
 					{{parentId}}
 				</select>
 			</div>
 			<div class="clearfix formRow">
-				<label for="redirectId">Redirect (optional)</label>
+				<label for="redirectId">Redirect</label>
 				<select name="redirectId" id="redirectId" tabindex="10">
-					<option value="0">Select redirect page</option>
+					<option value="0">Don't Redirect</option>
 					{{redirectId}}
 				</select>
 			</div>
 			{{fi:!readOnly}}
 			<div class="formButtons">
-				<input type="submit" value="{{buttonLabel}}" class="submit" name="updateButton" id="updateButton" tabindex="11">
+				{{if:!hasPage}}
+					<button type="submit" value="Add" class="submit" name="updateButton" id="updateButton" tabindex="11">
+						<span class="buttonIcon icon-add"></span>
+						<span class="buttonLabel">Add</span>
+					</button>
+				{{fi:!hasPage}}
 				{{if:hasPage}}
-					<a href="admin/pages" class="button" data-refresh="soft">Cancel</a>
+					<button type="submit" value="Update" class="submit" name="updateButton" id="updateButton" tabindex="11">
+						<span class="buttonIcon icon-edit"></span>
+						<span class="buttonLabel">Update</span>
+					</button>
+					<a href="admin/pages" class="button" data-refresh="soft">
+						<span class="buttonIcon icon-cancel"></span>
+						<span class="buttonLabel">Cancel</span>
+					</a>
 				{{fi:hasPage}}
 				{{if:showDelete}}
-					<input type="submit" value="Delete" class="submit confirm" name="deleteButton" id="deleteButton" tabindex="12">
+					<button type="submit" value="Delete" class="submit confirm" name="deleteButton" id="deleteButton" tabindex="12">
+						<span class="buttonIcon icon-delete"></span>
+						<span class="buttonLabel">Delete</span>
+					</button>
 				{{fi:showDelete}}
 				<input type="hidden" name="pageId" value="{{id}}">
 				<input type="hidden" name="form" value="Canteen\Forms\PageUpdate">

@@ -10,7 +10,10 @@
 				</select>
 			</div>
 			<div class="formButtons">
-				<input type="submit" value="Edit" id="editButton" class="submit">
+				<button type="submit" value="Edit" id="editButton" class="submit">
+					<span class="buttonIcon icon-edit"></span>
+					<span class="buttonLabel">Edit</span>
+				</button>
 			</div>
 		</fieldset>
 	</form>
@@ -57,10 +60,25 @@
 				</select>
 			</div>
 			<div class="formButtons">
-				<input type="submit" value="{{buttonLabel}}" class="submit" name="updateButton" id="updateButton" tabindex="9">
+				{{if:!hasUser}}
+					<button type="submit" value="Add" class="submit" name="updateButton" id="updateButton" tabindex="9">
+						<span class="buttonIcon icon-add"></span>
+						<span class="buttonLabel">Add</span>
+					</button>
+				{{fi:!hasUser}}
 				{{if:hasUser}}
-					<a href="admin/users" class="button" data-refresh="soft">Cancel</a>
-					<input type="button" value="Delete" class="button confirm" name="deleteButton" id="deleteButton" tabindex="10">
+					<button type="submit" value="Update" class="submit" name="updateButton" id="updateButton" tabindex="9">
+						<span class="buttonIcon icon-edit"></span>
+						<span class="buttonLabel">Update</span>
+					</button>
+					<a href="admin/users" class="button" data-refresh="soft">
+						<span class="buttonIcon icon-cancel"></span>
+						<span class="buttonLabel">Cancel</span>
+					</a>
+					<button type="submit" value="Delete" class="button confirm" name="deleteButton" id="deleteButton" tabindex="10">
+						<span class="buttonIcon icon-delete"></span>
+						<span class="buttonLabel">Delete</span>
+					</button>
 				{{fi:hasUser}}
 				<input type="hidden" name="refresh" value="true">
 				<input type="hidden" name="userId" value="{{id}}">
