@@ -459,15 +459,24 @@ namespace Canteen\Parser
 		*/
 		private function getSettings()
 		{
-			return $this->template(
-				'Settings', 
-				array(
-					'settings' => json_encode(
-						$this->settings->getClient(), 
-						JSON_UNESCAPED_SLASHES
+			// PHP >= 5.4 compatibility
+			if (defined('JSON_UNESCAPED_SLASHES'))
+			{
+				$settings = json_encode(
+					$this->settings->getClient(), 
+					JSON_UNESCAPED_SLASHES
+				);
+			}
+			else
+			{
+				// PHP < 5.4
+				$settings = str_replace('\\/', '/', 
+					json_encode(
+						$this->settings->getClient()
 					)
-				)
-			);
+				);
+			}			
+			return $this->template('Settings', array('settings' => $settings));
 		}
 	}
 }
