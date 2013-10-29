@@ -158,6 +158,12 @@ namespace Canteen
 		*/
 		const MIN_PHP_VERSION = '5.3.0';
 		
+		/** 
+		*  The starting time to keep track of buildtime
+		*  @property {int} startTime
+		*/
+		public $startTime;
+		
 		/**
 		*  Get the singleton instance
 		*  @method instance
@@ -245,6 +251,9 @@ namespace Canteen
 			
 			// Save singleton
 			self::$_instance = $this;
+			
+			// Microseconds of start
+			$this->startTime = microtime(true);
 			
 			// Create the object to handle forms
 			$this->_formFactory = new FormFactory();

@@ -395,15 +395,20 @@ namespace Canteen\Parser
 				// Get the main template from the path
 				$data = $this->template(Site::MAIN_TEMPLATE, $this->settings->getRender());
 				
-				// Clean up
-				$this->removeEmpties($data);
-				
-				// Fix the links
+				// Fix the links to use the base path
 				if ($profiler) $profiler->start('Parse Fix Path');
-				
 				$this->parser->fixPath($data, $this->settings->basePath);
-				
 				if ($profiler) $profiler->end('Parse Fix Path');
+				
+				// Parse the build time
+				if (DEBUG)
+				{
+					$seconds = round((microtime(true) - $this->site->startTime) * 1000, 4);
+					$this->parser->single($data, 'buildTime', html('comment', 'Page built in ' . $seconds . 'ms'));
+				}
+				
+				// Clean up any lingering tags
+				$this->removeEmpties($data);
 				
 				if ($profiler) $profiler->end('Template Render');
 			}

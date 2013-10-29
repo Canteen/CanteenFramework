@@ -422,14 +422,28 @@ namespace Canteen\Parser
 			if ($profiler) $profiler->start('Parse Tags');
 			foreach($substitutions as $tag=>$value)
 			{
-				$content = str_replace(
-					self::LEX_OPEN.$tag.self::LEX_CLOSE, 
-					(string)$substitutions[$tag], 
-					$content
-				);
+				$this->single($content, $tag, $value);
 			}
 			if ($profiler) $profiler->end('Parse Tags');
 				
+			return $content;
+		}
+		
+		/**
+		*  Parse a single tag
+		*  @method single
+		*  @param {String} content The content data
+		*  @param {String} tag The name of the tag
+		*  @param {String} value The value to substitute
+		*  @return {String} The updated string contents
+		*/
+		public function single(&$content, $tag, $value)
+		{
+			$content = str_replace(
+				self::LEX_OPEN.$tag.self::LEX_CLOSE, 
+				(string)$value, 
+				$content
+			);
 			return $content;
 		}
 		
