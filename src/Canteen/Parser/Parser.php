@@ -258,7 +258,7 @@ namespace Canteen\Parser
 			$profiler = $this->profiler;
 			
 			// Get the first location of the opening tag
-			$i = strpos($content, '{{'); 
+			$i = strpos($content, self::LEX_OPEN); 
 			
 			// Ignore if there are no subs
 			if ($i === false) return $content;
@@ -276,132 +276,134 @@ namespace Canteen\Parser
 			$loopLen = strlen(self::LEX_LOOP);
 			$tempLen = strlen(self::LEX_TEMPLATE);
 			
+			// Limit
+			$j = 0;
+			
 			// While looping through the string content
 			while($i < $len)
 			{
 				// open a tag!
-				if (substr($content, $i, $openLen) == self::LEX_OPEN)
-				{
-					$end = strpos(substr($content, $i + $closeLen), self::LEX_CLOSE);
-					$tag = substr($content, $i + $openLen, $end);
+				$end = strpos(substr($content, $i + $closeLen), self::LEX_CLOSE);
+				$tag = substr($content, $i + $openLen, $end);
 					
-					// check for if tags
-					if (substr($tag, 0, $ifLen) == self::LEX_IF)
+				// check for if tags
+				if (strpos($tag, self::LEX_IF) !== false)
+				{
+					// Get the tag ID, the tag without the if
+					$id = substr($tag, $ifLen);
+											
+					// The string of the opening and closing tags
+					$opening = self::LEX_OPEN . self::LEX_IF . $id . self::LEX_CLOSE;
+					$closing = self::LEX_OPEN . self::LEX_IF_END . $id . self::LEX_CLOSE;
+					
+					// The if blocks can use the negative logic operator
+					// to show the content, e.g. {{if:!debug}} == not debug mode
+					$isNot = substr($id, 0, $notLen) == self::LEX_NOT;
+					$name = ($isNot) ? substr($id, $notLen) : $id;
+					
+					// Remove the if tags, keep the content
+					if ($isNot != StringUtils::asBoolean(ifsetor($substitutions[$name])))
 					{
-						// Get the tag ID, the tag without the if
-						$id = substr($tag, $ifLen);
-												
-						// The string of the opening and closing tags
-						$opening = self::LEX_OPEN . self::LEX_IF . $id . self::LEX_CLOSE;
-						$closing = self::LEX_OPEN . self::LEX_IF_END . $id . self::LEX_CLOSE;
-						
-						// The if blocks can use the negative logic operator
-						// to show the content, e.g. {{if:!debug}} == not debug mode
-						$isNot = substr($id, 0, $notLen) == self::LEX_NOT;
-						$name = ($isNot) ? substr($id, $notLen) : $id;
-						
-						// Remove the if tags, keep the content
-						if ($isNot != StringUtils::asBoolean(ifsetor($substitutions[$name])))
-						{
-							$content = StringUtils::replaceOnce($opening, '', $content);
-							$content = StringUtils::replaceOnce($closing, '', $content);
-						}
-						else
-						{
-							// Remove all content from the start 
-							// the end of the last 
-							$content = substr_replace(
-								$content, '', $i, 
-								// The position at the end of the last tag
-								strpos(substr($content, $i), $closing) + strlen($closing)
-							);
-						}
-						$len = strlen($content);
-						continue;
+						$content = StringUtils::replaceOnce($opening, '', $content);
+						$content = StringUtils::replaceOnce($closing, '', $content);
 					}
-					else if (substr($tag, 0, $loopLen) == self::LEX_LOOP)
+					else
 					{
-						// Get the name name without the loop label
-						$id = substr($tag, $loopLen);
-						
-						if (isset($substitutions[$id]) && is_array($substitutions[$id]))
-						{
-							// The string of the opening and closing tags
-							$opening = self::LEX_OPEN . self::LEX_LOOP . $id . self::LEX_CLOSE;
-							$closing = self::LEX_OPEN . self::LEX_LOOP_END . $id . self::LEX_CLOSE;
-
-							// The closing position
-							$closingPos = strpos($content, $closing);
-							
-							$buffer = '';
-
-							$template = substr(
-								$content, 
-								$i + strlen($opening), // starting position 
-								$closingPos - $i - strlen($opening) // length
-							);
-							
-							foreach($substitutions[$id] as $sub)
-							{				
-								// If the item is an object
-								if (is_object($sub)) 
-									$sub = get_object_vars($sub);
-
-								// The item should be an array
-								if (is_array($sub))
-								{
-									$templateClone = $template;
-									$buffer .= $this->parse($templateClone, $sub);
-								}
-								else
-								{
-									error('Parsing for-loop substitution needs to be an array');
-								}
-							}
-							
-							// Remove all content from the start 
-							// the end of the last 
-							$content = substr_replace(
-								$content, $buffer, $i, 
-								// The position at the end of the last tag
-								strpos(substr($content, $i), $closing) + strlen($closing)
-							);
-							unset($buffer, $template, $templateClone);
-						}
-						$len = strlen($content);
-						continue;				
-					}
-					else if (substr($tag, 0, $tempLen) == self::LEX_TEMPLATE)
-					{
-						// Get the name name without the loop label
-						$id = substr($tag, $tempLen);
-						
-						$content = StringUtils::replaceOnce(
-							self::LEX_OPEN . self::LEX_TEMPLATE . $id . self::LEX_CLOSE,
-							$this->getContents($id, $substitutions),
-							$content
+						// Remove all content from the start 
+						// the end of the last 
+						$content = substr_replace(
+							$content, '', $i, 
+							// The position at the end of the last tag
+							strpos(substr($content, $i), $closing) + strlen($closing)
 						);
-						$len = strlen($content);
-						continue;
 					}
-					$i += $end;
 				}
-				$i++;
+				// Check for loops
+				else if (strpos($tag, self::LEX_LOOP) !== false)
+				{
+					// Get the name name without the loop label
+					$id = substr($tag, $loopLen);
+					
+					if (isset($substitutions[$id]) && is_array($substitutions[$id]))
+					{
+						// The string of the opening and closing tags
+						$opening = self::LEX_OPEN . self::LEX_LOOP . $id . self::LEX_CLOSE;
+						$closing = self::LEX_OPEN . self::LEX_LOOP_END . $id . self::LEX_CLOSE;
+
+						// The closing position
+						$closingPos = strpos($content, $closing);
+						
+						$buffer = '';
+
+						$template = substr(
+							$content, 
+							$i + strlen($opening), // starting position 
+							$closingPos - $i - strlen($opening) // length
+						);
+						
+						foreach($substitutions[$id] as $sub)
+						{				
+							// If the item is an object
+							if (is_object($sub)) 
+								$sub = get_object_vars($sub);
+
+							// The item should be an array
+							if (is_array($sub))
+							{
+								$templateClone = $template;
+								$buffer .= $this->parse($templateClone, $sub);
+							}
+							else
+							{
+								error('Parsing for-loop substitution needs to be an array');
+							}
+						}
+						
+						// Remove all content from the start 
+						// the end of the last 
+						$content = substr_replace(
+							$content, $buffer, $i, 
+							// The position at the end of the last tag
+							strpos(substr($content, $i), $closing) + strlen($closing)
+						);
+						unset($buffer, $template, $templateClone);
+					}			
+				}
+				// Check for templates
+				else if (strpos($tag, self::LEX_TEMPLATE) !== false)
+				{
+					// Get the name name without the loop label
+					$id = substr($tag, $tempLen);
+					
+					$content = StringUtils::replaceOnce(
+						self::LEX_OPEN . self::LEX_TEMPLATE . $id . self::LEX_CLOSE,
+						$this->getContents($id, $substitutions),
+						$content
+					);
+				}
+				// Check for direct substitution
+				else if (isset($substitutions[$tag]))
+				{
+					$content = str_replace(
+						self::LEX_OPEN.$tag.self::LEX_CLOSE, 
+						(string)$substitutions[$tag], 
+						$content
+					);
+				}
+				else
+				{
+					// Tag wasn't avaliable or is invalid, lets move on
+					$i += $openLen;
+				}
+				
+				// Update the string length
+				$len = strlen($content);
+				
+				// Get the position of the next open tag
+				$i += strpos(substr($content, $i), self::LEX_OPEN);
 			}
 			if ($profiler) $profiler->end('Parse Main');
-
-			if ($profiler) $profiler->start('Parse Substitutions');
-			// Do the template replacements
-		   	foreach($substitutions as $id=>$val)
-			{
-				// Define the replace pattern
-				if ($this->contains($id, $content) && !is_array($val))
-				{
-					$content = str_replace('{{'.$id.'}}', $val, $content);
-				}
-			}
-			if ($profiler) $profiler->end('Parse Substitutions');
-			
+						
 			return $content;
 		}
 		
