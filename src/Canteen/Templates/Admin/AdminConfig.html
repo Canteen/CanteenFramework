@@ -8,13 +8,13 @@
 				<select id="configValue{{id}}" name="configValue" class="required">
 					{{value}}
 				</select>
-			{{fi:isPage}}
+			{{/if:isPage}}
 			{{if:isBool}}
 				<input id="configValue{{id}}" name="configValue" type="checkbox" value="1" {{value}} class="checkbox required">
-			{{fi:isBool}}
+			{{/if:isBool}}
 			{{if:isNormal}}
 				<input id="configValue{{id}}" name="configValue" type="text" value="{{value}}" class="text required">
-			{{fi:isNormal}}
+			{{/if:isNormal}}
 			<button type="submit" value="Save" name="saveButton" class="submit">
 				<span class="buttonIcon icon-save"></span>
 				<span class="buttonLabel">Save</span>
@@ -28,7 +28,7 @@
 			<input type="hidden" name="formSession" value="{{formSession}}">
 		</fieldset>
 	</form>
-	{{endfor:configs}}
+	{{/for:configs}}
 </div>
 
 <div class="formContainer configUpdateAdd">

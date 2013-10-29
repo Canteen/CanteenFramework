@@ -18,7 +18,7 @@
 		</fieldset>
 	</form>
 </div>
-{{fi:!hasUser}}
+{{/if:!hasUser}}
 
 <div class="formContainer userUpdate">
 	<form action="{{fullPath}}{{queryString}}" method="post" id="userUpdate">
@@ -65,7 +65,7 @@
 						<span class="buttonIcon icon-add"></span>
 						<span class="buttonLabel">Add</span>
 					</button>
-				{{fi:!hasUser}}
+				{{/if:!hasUser}}
 				{{if:hasUser}}
 					<button type="submit" value="Update" class="submit" name="updateButton" id="updateButton" tabindex="9">
 						<span class="buttonIcon icon-edit"></span>
@@ -79,7 +79,7 @@
 						<span class="buttonIcon icon-delete"></span>
 						<span class="buttonLabel">Delete</span>
 					</button>
-				{{fi:hasUser}}
+				{{/if:hasUser}}
 				<input type="hidden" name="refresh" value="true">
 				<input type="hidden" name="userId" value="{{id}}">
 				<input type="hidden" name="form" value="Canteen\Forms\UserUpdate">

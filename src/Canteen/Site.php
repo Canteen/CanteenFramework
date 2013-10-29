@@ -20,7 +20,6 @@ namespace Canteen
 	use Canteen\Parser\PageBuilder;
 	use Canteen\Parser\Parser;
 	use Canteen\Utilities\StringUtils;
-	use Canteen\Utilities\Templates;
 	use Canteen\Database\Database;
 	use Canteen\HTML5\SimpleList;
 	use Canteen\Utilities\SettingsManager;

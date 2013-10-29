@@ -18,7 +18,7 @@
 		</fieldset>
 	</form>
 </div>
-{{fi:!hasPage}}
+{{/if:!hasPage}}
 
 <div class="formContainer pageUpdate">
 	<form action="{{fullPath}}{{queryString}}" method="post" id="pageUpdate">
@@ -30,7 +30,7 @@
 				<strong>Notice:</strong> Unable to save or edit page contents in
 				<strong>{{contentPath}}</strong>, please make this directory writeable. 
 			</div>
-			{{fi:!isWriteable}}
+			{{/if:!isWriteable}}
 			<div class="clearfix formRow">
 				<label for="title">Title</label>
 				<input name="title" type="text" id="title" class="text required" tabindex="1" value="{{title}}">
@@ -40,14 +40,14 @@
 				<input name="uri" type="text" id="uri" class="text required {{readOnly}}" {{readOnly}} tabindex="2" value="{{uri}}">
 				{{if:readOnly}}
 					<input name="uri" type="hidden" value="{{uri}}">
-				{{fi:readOnly}}
+				{{/if:readOnly}}
 			</div>
 			{{if:isWriteable}}
 			<div class="clearfix formRow">
 				<label for="pageContent">Content</label>
 				<textarea name="pageContent" id="pageContent" tabindex="3" class="large">{{pageContent}}</textarea>
 			</div>
-			{{fi:isWriteable}}
+			{{/if:isWriteable}}
 			<div class="clearfix formRow">
 				<label for="keywords">Keywords</label>
 				<textarea name="keywords" id="keywords" tabindex="4">{{keywords}}</textarea>
@@ -87,14 +87,14 @@
 					{{redirectId}}
 				</select>
 			</div>
-			{{fi:!readOnly}}
+			{{/if:!readOnly}}
 			<div class="formButtons">
 				{{if:!hasPage}}
 					<button type="submit" value="Add" class="submit" name="updateButton" id="updateButton" tabindex="11">
 						<span class="buttonIcon icon-add"></span>
 						<span class="buttonLabel">Add</span>
 					</button>
-				{{fi:!hasPage}}
+				{{/if:!hasPage}}
 				{{if:hasPage}}
 					<button type="submit" value="Update" class="submit" name="updateButton" id="updateButton" tabindex="11">
 						<span class="buttonIcon icon-edit"></span>
@@ -104,13 +104,13 @@
 						<span class="buttonIcon icon-cancel"></span>
 						<span class="buttonLabel">Cancel</span>
 					</a>
-				{{fi:hasPage}}
+				{{/if:hasPage}}
 				{{if:showDelete}}
 					<button type="submit" value="Delete" class="submit confirm" name="deleteButton" id="deleteButton" tabindex="12">
 						<span class="buttonIcon icon-delete"></span>
 						<span class="buttonLabel">Delete</span>
 					</button>
-				{{fi:showDelete}}
+				{{/if:showDelete}}
 				<input type="hidden" name="pageId" value="{{id}}">
 				<input type="hidden" name="form" value="Canteen\Forms\PageUpdate">
 				<input type="hidden" name="formSession" value="{{formSession}}">
