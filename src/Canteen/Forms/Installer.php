@@ -54,9 +54,7 @@ namespace Canteen\Forms
 				$this->error('Site Title is required');
 			
 			if (!$this->ifError)
-			{
-				echo 'Installer Running<br>';
-				
+			{				
 				new ConfigService;
 				new PageService;
 				new UserService;
