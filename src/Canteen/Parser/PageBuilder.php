@@ -282,7 +282,8 @@ namespace Canteen\Parser
 				$page = $controller->getPage();
 				
 				// Add the controller tags to settings
-				$this->settings->addSettings($controller->getData(), SETTING_RENDER);
+				//$this->settings->addSettings($controller->getData(), SETTING_RENDER);
+				$this->parse($page->content, $controller->getData());
 				
 				if ($profiler) $profiler->end('Page Controller');
 			}

@@ -309,14 +309,13 @@ namespace Canteen\Utilities
 		/**
 		*  Replace the first occurrence in a string
 		*  @method replaceOnce
-		*  @private
 		*  @static
 		*  @param {String} search The string to search
 		*  @param {String} replace The string to replace with
 		*  @param {String} subject The string to replace on
 		*  @return {String} The result after replacement
 		*/
-		private static function replaceOnce($search, $replace, $subject)
+		public static function replaceOnce($search, $replace, $subject)
 		{
 			// Looks for the first occurence of $needle in $haystack
 		    // and replaces it with $replace.

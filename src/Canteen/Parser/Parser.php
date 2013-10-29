@@ -19,6 +19,78 @@ namespace Canteen\Parser
 	*/
 	class Parser extends CanteenBase
 	{
+		/**
+		*   Lexer for the opening of a parse tag
+		*   @property {String} LEX_OPEN
+		*   @static
+		*   @final
+		*   @default '{{'
+		*/
+		const LEX_OPEN = '{{';
+			
+		/**
+		*   Lexer for the closing of a parse tag
+		*   @property {String} LEX_CLOSE
+		*   @static
+		*   @final
+		*   @default '}}'
+		*/
+		const LEX_CLOSE = '}}';
+		
+		/**
+		*   Lexer for definition of an if parse tag
+		*   @property {String} LEX_IF
+		*   @static
+		*   @final
+		*   @default 'if:'
+		*/
+		const LEX_IF = 'if:';
+		
+		/**
+		*   Lexer for if logical operator
+		*   @property {String} LEX_NOT
+		*   @static
+		*   @final
+		*   @default '!'
+		*/
+		const LEX_NOT = '!';
+		
+		/**
+		*   Lexer for if closing if tag
+		*   @property {String} LEX_IF_END
+		*   @static
+		*   @final
+		*   @default 'fi:'
+		*/
+		const LEX_IF_END = 'fi:';
+		
+		/**
+		*   Lexer for if opening loop tag
+		*   @property {String} LEX_LOOP
+		*   @static
+		*   @final
+		*   @default 'for:'
+		*/
+		const LEX_LOOP = 'for:';
+		
+		/**
+		*   Lexer for if closing loop tag
+		*   @property {String} LEX_LOOP_END
+		*   @static
+		*   @final
+		*   @default 'endfor:'
+		*/
+		const LEX_LOOP_END = 'endfor:';
+		
+		/**
+		*   Lexer for if defining a template
+		*   @property {String} LEX_TEMPLATE
+		*   @static
+		*   @final
+		*   @default 'template:'
+		*/
+		const LEX_TEMPLATE = 'template:';
+		
 		/** 
 		*  The list of valid templates 
 		*  @property {Array} _templates
@@ -185,37 +257,151 @@ namespace Canteen\Parser
 			// If the constant is defined
 			$profiler = $this->profiler;
 			
-			// If we contain subs, lets do it
-			if (preg_match('/\{\{[^\}]*\}\}/', $content))
+			// Get the first location of the opening tag
+			$i = strpos($content, '{{'); 
+			
+			// Ignore if there are no subs
+			if ($i === false) return $content;
+			
+			if ($profiler) $profiler->start('Parse Main');
+			
+			// The total length of the string
+			$len = strlen($content);
+			
+			// length of the lexers
+			$closeLen = strlen(self::LEX_CLOSE);
+			$openLen = strlen(self::LEX_OPEN);
+			$ifLen = strlen(self::LEX_IF);
+			$notLen = strlen(self::LEX_NOT);
+			$loopLen = strlen(self::LEX_LOOP);
+			$tempLen = strlen(self::LEX_TEMPLATE);
+			
+			// While looping through the string content
+			while($i < $len)
 			{
-				if ($profiler) $profiler->start('Parse Templates');
-				$this->parseTemplates($content, $substitutions);
-				StringUtils::checkBacktrackLimit($content);
-				if ($profiler) $profiler->end('Parse Templates');
-				
-				if ($profiler) $profiler->start('Parse Loops');
-				$this->parseLoops($content, $substitutions);
-				StringUtils::checkBacktrackLimit($content);
-				if ($profiler) $profiler->end('Parse Loops');
-				
-				if ($profiler) $profiler->start('Parse If Blocks');
-				$this->parseIfBlocks($content, $substitutions);
-				StringUtils::checkBacktrackLimit($content);
-				if ($profiler) $profiler->end('Parse If Blocks');
-
-				if ($profiler) $profiler->start('Parse Substitutions');
-				// Do the template replacements
-			   	foreach($substitutions as $id=>$val)
+				// open a tag!
+				if (substr($content, $i, $openLen) == self::LEX_OPEN)
 				{
-					// Define the replace pattern
-					if ($this->contains($id, $content) && !is_array($val))
+					$end = strpos(substr($content, $i + $closeLen), self::LEX_CLOSE);
+					$tag = substr($content, $i + $openLen, $end);
+					
+					// check for if tags
+					if (substr($tag, 0, $ifLen) == self::LEX_IF)
 					{
-						$content = str_replace('{{'.$id.'}}', $val, $content);
+						// Get the tag ID, the tag without the if
+						$id = substr($tag, $ifLen);
+												
+						// The string of the opening and closing tags
+						$opening = self::LEX_OPEN . self::LEX_IF . $id . self::LEX_CLOSE;
+						$closing = self::LEX_OPEN . self::LEX_IF_END . $id . self::LEX_CLOSE;
+						
+						// The if blocks can use the negative logic operator
+						// to show the content, e.g. {{if:!debug}} == not debug mode
+						$isNot = substr($id, 0, $notLen) == self::LEX_NOT;
+						$name = ($isNot) ? substr($id, $notLen) : $id;
+						
+						// Remove the if tags, keep the content
+						if ($isNot != StringUtils::asBoolean(ifsetor($substitutions[$name])))
+						{
+							$content = StringUtils::replaceOnce($opening, '', $content);
+							$content = StringUtils::replaceOnce($closing, '', $content);
+						}
+						else
+						{
+							// Remove all content from the start 
+							// the end of the last 
+							$content = substr_replace(
+								$content, '', $i, 
+								// The position at the end of the last tag
+								strpos(substr($content, $i), $closing) + strlen($closing)
+							);
+						}
+						$len = strlen($content);
+						continue;
 					}
-					StringUtils::checkBacktrackLimit($content);
+					else if (substr($tag, 0, $loopLen) == self::LEX_LOOP)
+					{
+						// Get the name name without the loop label
+						$id = substr($tag, $loopLen);
+						
+						if (isset($substitutions[$id]) && is_array($substitutions[$id]))
+						{
+							// The string of the opening and closing tags
+							$opening = self::LEX_OPEN . self::LEX_LOOP . $id . self::LEX_CLOSE;
+							$closing = self::LEX_OPEN . self::LEX_LOOP_END . $id . self::LEX_CLOSE;
+
+							// The closing position
+							$closingPos = strpos($content, $closing);
+							
+							$buffer = '';
+
+							$template = substr(
+								$content, 
+								$i + strlen($opening), // starting position 
+								$closingPos - $i - strlen($opening) // length
+							);
+							
+							foreach($substitutions[$id] as $sub)
+							{				
+								// If the item is an object
+								if (is_object($sub)) 
+									$sub = get_object_vars($sub);
+
+								// The item should be an array
+								if (is_array($sub))
+								{
+									$templateClone = $template;
+									$buffer .= $this->parse($templateClone, $sub);
+								}
+								else
+								{
+									error('Parsing for-loop substitution needs to be an array');
+								}
+							}
+							
+							// Remove all content from the start 
+							// the end of the last 
+							$content = substr_replace(
+								$content, $buffer, $i, 
+								// The position at the end of the last tag
+								strpos(substr($content, $i), $closing) + strlen($closing)
+							);
+							unset($buffer, $template, $templateClone);
+						}
+						$len = strlen($content);
+						continue;				
+					}
+					else if (substr($tag, 0, $tempLen) == self::LEX_TEMPLATE)
+					{
+						// Get the name name without the loop label
+						$id = substr($tag, $tempLen);
+						
+						$content = StringUtils::replaceOnce(
+							self::LEX_OPEN . self::LEX_TEMPLATE . $id . self::LEX_CLOSE,
+							$this->getContents($id, $substitutions),
+							$content
+						);
+						$len = strlen($content);
+						continue;
+					}
+					$i += $end;
 				}
-				if ($profiler) $profiler->end('Parse Substitutions');
-			}	
+				$i++;
+			}
+			if ($profiler) $profiler->end('Parse Main');
+
+			if ($profiler) $profiler->start('Parse Substitutions');
+			// Do the template replacements
+		   	foreach($substitutions as $id=>$val)
+			{
+				// Define the replace pattern
+				if ($this->contains($id, $content) && !is_array($val))
+				{
+					$content = str_replace('{{'.$id.'}}', $val, $content);
+				}
+			}
+			if ($profiler) $profiler->end('Parse Substitutions');
+			
 			return $content;
 		}
 		
@@ -284,7 +470,7 @@ namespace Canteen\Parser
 		*  @param {Dictionary} substitutions The substitutions array
 		*  @return {String} The updated content string
 		*/
-		private function parseIfBlocks(&$content, $substitutions)
+		/*private function parseIfBlocks(&$content, $substitutions)
 		{
 			$ifPattern = '/\{\{(if\:(\!?[a-zA-Z]+))\}\}(.*?)\{\{fi\:\2\}\}/s';
 			
@@ -312,7 +498,7 @@ namespace Canteen\Parser
 				}
 			}
 			return $content;
-		}
+		}*/
 		
 		/**
 		*  Parse a content string into loops
@@ -321,7 +507,7 @@ namespace Canteen\Parser
 		*  @param {Dictionary} substitutions The substitutions array
 		*  @return {String} The updated content string
 		*/
-		private function parseLoops(&$content, $substitutions)
+		/*private function parseLoops(&$content, $substitutions)
 		{
 			// Check for template matches
 			preg_match_all('/\{\{(for\:([a-zA-Z]+))\}\}(.*?)\{\{endfor\:\2\}\}/s', $content, $matches);
@@ -358,7 +544,7 @@ namespace Canteen\Parser
 				}
 			}
 			return $content;
-		}
+		}*/
 		
 		/**
 		*  Search for and parse templates {{template:SomeTemplate}}
@@ -367,7 +553,7 @@ namespace Canteen\Parser
 		*  @param {Dictionary} substitutions The substitutions array
 		*  @return {String} The updated content string
 		*/
-		private function parseTemplates(&$content, &$substitutions)
+		/*private function parseTemplates(&$content, &$substitutions)
 		{
 			// Check for template matches
 			preg_match_all("/\{\{(template\:([a-zA-Z]+))\}\}/", $content, $matches);
@@ -383,7 +569,7 @@ namespace Canteen\Parser
 				}
 			}
 			return $content;
-		}
+		}*/
 		
 		/**
 		*  Replaces any path (href/src) with the base
