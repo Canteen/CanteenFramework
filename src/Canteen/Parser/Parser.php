@@ -422,7 +422,10 @@ namespace Canteen\Parser
 			if ($profiler) $profiler->start('Parse Tags');
 			foreach($substitutions as $tag=>$value)
 			{
-				if (is_array($value) || is_object($value)) continue;
+				// Ignore arrays, objects and tags that aren't set
+				if (is_array($value) || is_object($value) || !$this->contains($tag, $content)) 
+					continue;
+					
 				$this->single($content, $tag, $value);
 			}
 			if ($profiler) $profiler->end('Parse Tags');
