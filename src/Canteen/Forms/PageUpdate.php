@@ -133,7 +133,7 @@ namespace Canteen\Forms
 					return;
 				}
 								
-				if ($isWritable)
+				if (is_writable($contentUrl))
 				{
 					if ($uri != $page->uri && file_exists($page->contentUrl))
 					{
