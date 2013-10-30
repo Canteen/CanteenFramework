@@ -87,11 +87,16 @@ namespace Canteen\Controllers
 		/**
 		*  Add a data substitution variable
 		*  @method addData
-		*  @param {String|Dictionary} name The name of the data variable or an array of (name=>value, name=>value)
+		*  @param {String|Dictionary|Object} name The name of the data variable or an array of (name=>value, name=>value)
 		*  @param {mixed} value The string of the value (optional if setting one data property)
 		*/
 		public function addData($name, $value=null)
 		{
+			if (is_object($name))
+			{
+				$name = get_object_vars($name);
+			}
+				
 			if (is_array($name))
 			{
 				foreach($name as $i=>$v)
