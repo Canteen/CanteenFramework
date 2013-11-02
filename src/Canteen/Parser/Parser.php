@@ -264,190 +264,137 @@ namespace Canteen\Parser
 			// If the constant is defined
 			$profiler = $this->profiler;
 			
-			// Get the first location of the opening tag
-			$i = strpos($content, self::LEX_OPEN); 
+			// Search pattern for all
+			$pattern = '/'.self::LEX_OPEN.'('
+					.self::LEX_LOOP.'|'
+					.self::LEX_TEMPLATE.'|'
+					.self::LEX_IF.'|'
+					.self::LEX_IF.self::LEX_NOT.
+				')'
+				.'([a-zA-Z0-9]+)'.self::LEX_CLOSE.'/';
+				
+			preg_match_all($pattern, $content, $matches);
 			
-			// Ignore if there are no subs
-			if ($i === false) return $content;
-			
-			if ($profiler) $profiler->start('Parse Main');
-			
-			// The total length of the string
-			$len = strlen($content);
-			
-			// length of the lexers
-			$closeLen = strlen(self::LEX_CLOSE);
-			$openLen = strlen(self::LEX_OPEN);
-			$ifLen = strlen(self::LEX_IF);
-			$notLen = strlen(self::LEX_NOT);
-			$loopLen = strlen(self::LEX_LOOP);
-			$tempLen = strlen(self::LEX_TEMPLATE);
-			
-			// Limit
-			$j = 0;
-			
-			// While looping through the string content
-			while($i < $len)
+			if (count($matches))
 			{
-				// open a tag!
-				$tag = substr(
-					$content, 
-					$i + $openLen, 
-					strpos(substr($content, $i + $closeLen), self::LEX_CLOSE)
-				);
-					
-				// check for if tags
-				if (strpos($tag, self::LEX_IF) !== false)
+				if ($profiler) $profiler->start('Parse Main');
+				
+				// length of opening and closing
+				$closeLen = strlen(self::LEX_CLOSE);
+				$openLen = strlen(self::LEX_OPEN);
+
+				// Loop through all of the matches in order
+				foreach($matches[0] as $i=>$tag)
 				{
-					// Get the tag ID, the tag without the conditional lexer
-					$id = substr($tag, $ifLen);
-											
-					// The string of the opening and closing tags
-					$opening = self::LEX_OPEN . self::LEX_IF . $id . self::LEX_CLOSE;
-					$closing = self::LEX_OPEN . self::LEX_IF_END . $id . self::LEX_CLOSE;
-					
-					// The if blocks can use the negative logic operator
-					// to show the content, e.g. {{if:!debug}} == not debug mode
-					$isNot = strpos($id, self::LEX_NOT) === 0;
-					$name = ($isNot) ? substr($id, $notLen) : $id;
-					
-					// Remove the if tags, keep the content
-					if ($isNot != StringUtils::asBoolean(ifsetor($substitutions[$name])))
-					{
-						$content = StringUtils::replaceOnce($opening, '', $content);
-						$content = StringUtils::replaceOnce($closing, '', $content);
-					}
-					else
-					{
-						// Remove all content from the start 
-						// the end of the last 
-						$content = substr_replace(
-							$content, '', $i, 
-							// The position at the end of the last tag
-							strpos(substr($content, $i), $closing) + strlen($closing)
-						);
-					}
-				}
-				// Check for loops
-				else if (strpos($tag, self::LEX_LOOP) !== false)
-				{
-					// Get the name name without the loop label
-					$id = substr($tag, $loopLen);
-					
-					if (isset($substitutions[$id]) && is_array($substitutions[$id]))
-					{
-						// The string of the opening and closing tags
-						$opening = self::LEX_OPEN . self::LEX_LOOP . $id . self::LEX_CLOSE;
-						$closing = self::LEX_OPEN . self::LEX_LOOP_END . $id . self::LEX_CLOSE;
+					$modifier = $matches[1][$i];
+					$id = $matches[2][$i];
+					$o1 = strpos($content, $tag);
 
-						// The closing position
-						$closingPos = strpos($content, $closing);
-						
-						// The buffer of looped items
-						$buffer = '';
+					if ($o1 === false) continue;
 
-						$template = substr(
-							$content, 
-							$i + strlen($opening), // starting position 
-							$closingPos - $i - strlen($opening) // length
-						);
-						
-						// Loop through all the items
-						foreach($substitutions[$id] as $sub)
-						{				
-							// If the item is an object
-							if (is_object($sub)) 
-								$sub = get_object_vars($sub);
+					// Get the tag prefix
+					switch($modifier)
+					{
+						case self::LEX_IF :
+						case self::LEX_IF.self::LEX_NOT :
+						{
+							$isNot = $modifier == self::LEX_IF.self::LEX_NOT;
+							$endTag = self::LEX_OPEN . self::LEX_IF_END 
+								. ($isNot ? self::LEX_NOT : '')
+								. $id . self::LEX_CLOSE;
 
-							// The item should be an array
-							if (is_array($sub))
+							// Remove the tags if content is true
+							if ($isNot != StringUtils::asBoolean(ifsetor($substitutions[$id])))
 							{
-								$templateClone = $template;
-								$buffer .= $this->parse($templateClone, $sub);
+								$content = StringUtils::replaceOnce($tag, '', $content);
+								$content = StringUtils::replaceOnce($endTag, '', $content);
 							}
 							else
 							{
-								error('Parsing for-loop substitution needs to be an array');
+								//$o1 = strpos($content, $tag);
+								$c1 = strpos($content, $endTag) + strlen($endTag);
+
+								// Remove the if statement
+								$content = substr_replace($content, '', $o1, $c1 - $o1);
 							}
+							break;
 						}
-						
-						// Remove all content from the start 
-						// the end of the last 
-						$content = substr_replace(
-							$content, $buffer, $i, 
-							// The position at the end of the last tag
-							strpos(substr($content, $i), $closing) + strlen($closing)
-						);
-						
-						// Clear variables
-						unset($buffer, $template, $templateClone);
-					}			
+						case self::LEX_LOOP :
+						{
+							// Ignore when the value isn't an array
+							if (!isset($substitutions[$id]) || !is_array($substitutions[$id]))  continue;
+
+							if($profiler) $profiler->start('Parse Loop');
+
+							$endTag = self::LEX_OPEN . self::LEX_LOOP_END . $id . self::LEX_CLOSE;
+
+							// The position order $o1{{for:}}$o2...$c2{{/for:}}$c1
+							$o2 = $o1 + strlen($tag);
+							$c2 = strpos($content, $endTag);
+							$c1 = $c2  + strlen($endTag);
+
+							// There's no ending tag, we shouldn't continue
+							// maybe we should throw an exception here
+							if ($c2 === false) continue;
+
+							$buffer = '';
+							$template = substr($content, $o2, $c2 - $o2);
+
+							foreach($substitutions[$id] as $sub)
+							{				
+								// If the item is an object
+								if (is_object($sub))
+									$sub = get_object_vars($sub);
+							
+								// The item should be an array
+								if (!is_array($sub))
+								{
+									error('Parsing for-loop substitution needs to be an array');
+									continue;
+								}
+								$templateClone = $template;
+								$buffer .= $this->parse(
+									$templateClone, 
+									$sub
+								);
+							}
+
+							// Replace the template with the buffer
+							$content = substr_replace($content, $buffer, $o1, $c1 - $o1);
+							if($profiler) $profiler->end('Parse Loop');
+							break;
+						}
+						case self::LEX_TEMPLATE :
+						{
+							$template = $this->getContents($id, $substitutions);
+							$content = preg_replace('/'.$tag.'/', $template, $content);
+							break;
+						}
+					}
 				}
-				// Check for templates
-				else if (strpos($tag, self::LEX_TEMPLATE) !== false)
-				{
-					// Get the name name without the loop label
-					$id = substr($tag, $tempLen);
-					
-					$content = StringUtils::replaceOnce(
-						self::LEX_OPEN . self::LEX_TEMPLATE . $id . self::LEX_CLOSE,
-						$this->getContents($id, $substitutions),
-						$content
-					);
-				}
-				else
-				{
-					// Tag wasn't avaliable or is invalid, lets move on
-					$i += $openLen;
-				}
-				
-				// Update the string length
-				$len = strlen($content);
-				$nextTag = strpos(substr($content, $i), self::LEX_OPEN);
-				
-				// If we don't have any tags left, bail out!
-				if (empty($len) || $nextTag === false) break;
-				
-				// Get the position of the next open tag
-				$i += $nextTag;
-				
-				if (++$j > $this->limit)
-				{
-					error('Parser maximum number of loops reached, please your parser syntax for errors');
-					break;
-				}
+				if ($profiler) $profiler->end('Parse Main');
 			}
-			if ($profiler) $profiler->end('Parse Main');
 			
-			if ($profiler) $profiler->start('Parse Tags');
-			foreach($substitutions as $tag=>$value)
+			$pattern = '/'.self::LEX_OPEN.'([a-zA-Z0-9]+)'.self::LEX_CLOSE.'/';
+			preg_match_all($pattern, $content, $matches);
+			
+			if (count($matches))
 			{
-				// Ignore arrays, objects and tags that aren't set
-				if (is_array($value) || is_object($value) || !$this->contains($tag, $content)) 
-					continue;
+				if ($profiler) $profiler->start('Parse Singles');
+				foreach($matches[0] as $i=>$tag)
+				{
+					$id = $matches[1][$i];
+					$value = isset($substitutions[$id]) ? $substitutions[$id] : null;
 					
-				$this->single($content, $tag, $value);
+					if (!array_key_exists($id, $substitutions) 
+						|| is_array($value) 
+						|| is_object($value)) 
+							continue;
+							
+					$content = preg_replace('/'.$tag.'/', (string)$value, $content);
+				}
+				if ($profiler) $profiler->end('Parse Singles');
 			}
-			if ($profiler) $profiler->end('Parse Tags');
-				
-			return $content;
-		}
-		
-		/**
-		*  Parse a single tag
-		*  @method single
-		*  @param {String} content The content data
-		*  @param {String} tag The name of the tag
-		*  @param {String} value The value to substitute
-		*  @return {String} The updated string contents
-		*/
-		public function single(&$content, $tag, $value)
-		{
-			$content = str_replace(
-				self::LEX_OPEN.$tag.self::LEX_CLOSE, 
-				(string)$value, 
-				$content
-			);
 			return $content;
 		}
 		
@@ -472,7 +419,7 @@ namespace Canteen\Parser
 		*/
 		public function contains($needle, $haystack)
 		{
-			return strpos($haystack, '{{'.$needle.'}}') !== false;
+			return strpos($haystack, self::LEX_OPEN.$needle.self::LEX_CLOSE) !== false;
 		}
 		
 		/**
