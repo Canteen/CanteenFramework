@@ -186,6 +186,22 @@ namespace Canteen\Parser
 		}
 		
 		/**
+		*  Get the current build time 
+		*  @method buildTime
+		*  @private
+		*  @param {Boolean} isAsync If the request is made asyncronously
+		*  @return {String} The build time HTML comment
+		*/
+		private function buildTime($isAsync)
+		{
+			// Parse the build time
+			if (!DEBUG || $isAsync) return;
+			
+			$seconds = round((microtime(true) - $this->site->startTime) * 1000, 4);
+			return html('comment', 'Page built in ' . $seconds . 'ms');
+		}
+		
+		/**
 		*  Construct the site title
 		*  @method getSiteTitle
 		*  @private
@@ -353,7 +369,7 @@ namespace Canteen\Parser
 				$cache = $this->cache->read($key);
 				if ($cache !== false) 
 				{
-					return $cache;
+					return $cache . $this->buildTime($isAsync);
 				}
 			}
 			
@@ -400,13 +416,6 @@ namespace Canteen\Parser
 				$this->parser->fixPath($data, $this->settings->basePath);
 				if ($profiler) $profiler->end('Parse Fix Path');
 				
-				// Parse the build time
-				if (DEBUG)
-				{
-					$seconds = round((microtime(true) - $this->site->startTime) * 1000, 4);
-					$this->parser->single($data, 'buildTime', html('comment', 'Page built in ' . $seconds . 'ms'));
-				}
-				
 				// Clean up any lingering tags
 				$this->removeEmpties($data);
 				
@@ -425,7 +434,7 @@ namespace Canteen\Parser
 			{
 				$this->addLoggerProfiler($data);
 			}
-			return $data;
+			return $data  . $this->buildTime($isAsync);
 		}
 		
 		/**
