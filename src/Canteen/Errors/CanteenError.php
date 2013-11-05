@@ -86,6 +86,14 @@ namespace Canteen\Errors
 		const SETTINGS_REQUIRED = 107;
 		
 		/** 
+		*  No settings were found for a matching domain
+		*  @property {int} NO_SETTINGS
+		*  @static
+		*  @final
+		*/
+		const NO_SETTINGS = 125;
+		
+		/** 
 		*  Submitted from the wrong domain 
 		*  @property {int} WRONG_DOMAIN
 		*  @static
@@ -233,6 +241,7 @@ namespace Canteen\Errors
 			self::JSON_INVALID => 'File must be a valid JSON file',
 			self::JSON_DECODE => 'Failure decoding JSON',
 			self::SETTINGS_REQUIRED => 'Setup file must contain an array of dictionary objects.',
+			self::NO_SETTINGS => 'No settings were found for this domain (%s) please update your config file',
 			self::WRONG_DOMAIN => 'Form submitted from the wrong domain',
 			self::TEMPLATE_NOT_FOUND => 'Cannot load template file',
 			self::TEMPLATE_UNKNOWN => 'Template not registered',

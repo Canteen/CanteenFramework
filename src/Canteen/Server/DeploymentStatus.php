@@ -198,7 +198,8 @@ namespace Canteen\Server
 					// Set the level to be the level property or the index
 					define('DEPLOYMENT_LEVEL', $l);
 					
-					unset($deploy['domains'], $domains);
+					// Set the domain to be the actual domain
+					$deploy['domain'] = $domain;
 					
 					// If we're local
 					$deploy['local'] = DEPLOYMENT_LEVEL == self::LOCAL;
@@ -216,6 +217,11 @@ namespace Canteen\Server
 				'host', 
 				'domain'
 			);
+			
+			if (!defined('DEPLOYMENT_LEVEL'))
+			{
+				throw new CanteenError(CanteenError::NO_SETTINGS, $domain);
+			}
 						
 			foreach($globals as $property)
 			{

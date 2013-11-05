@@ -387,8 +387,7 @@ namespace Canteen\Parser
 					$value = isset($substitutions[$id]) ? $substitutions[$id] : null;
 					
 					if (!array_key_exists($id, $substitutions) 
-						|| is_array($value) 
-						|| is_object($value)) 
+						|| is_array($value)) 
 							continue;
 							
 					$content = preg_replace('/'.$tag.'/', (string)$value, $content);
