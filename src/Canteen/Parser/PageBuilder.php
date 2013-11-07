@@ -144,7 +144,7 @@ namespace Canteen\Parser
 				}
 				else
 				{
-					$this->settings->addSetting('formFeedback', $this->site->formFactory->getFeedback(), 0, 1);
+					$this->settings->addSetting('formFeedback', $this->site->formFactory->getFeedback(), SETTING_RENDER);
 				}
 			}
 			

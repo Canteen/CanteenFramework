@@ -403,5 +403,31 @@ namespace Canteen\Utilities
 				ini_set('pcre.backtrack_limit', $length);
 			}
 		}
+		
+		/**
+		*  Convert multiline text to be displayed within a textarea for editting
+		*  @method multilineEdit
+		*  @static
+		*  @param {String} content The content to update
+		*  @return {String} The editable content
+		*/
+		public static function multilineEdit(&$content)
+		{
+			$content = preg_replace('/\<br ?\/?\>/', '', $content);
+			return $content;
+		}
+		
+		/**
+		*  Convert multiline text to be saved to the database for markup display
+		*  @method multilineSave
+		*  @static
+		*  @param {String} content The content to save
+		*  @return {String} The editable content
+		*/
+		public static function multilineSave(&$content)
+		{
+			$content = preg_replace('/\n/', '$0<br>', preg_replace('/\r/', '', $content));
+			return $content;
+		}
 	}
 }

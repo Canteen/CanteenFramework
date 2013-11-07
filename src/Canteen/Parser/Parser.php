@@ -256,6 +256,22 @@ namespace Canteen\Parser
 		*/
 		public function parse(&$content, $substitutions)
 		{
+			$content = $this->internalParse($content, $substitutions);
+			return $content;
+		}
+		
+		/**
+		*  Prepare the site content to be displayed
+		*  This does all of the data substitutions and url fixes. The order of operations
+		*  is to do the templates, loops, if blocks, then individual substitutions. 
+		*  @method parse
+		*  @private
+		*  @param {String} content The content data
+		*  @param {Dictionary} substitutions The substitutions key => value replaces {{key}} in template
+		*  @return {String} The parsed template
+		*/
+		private function internalParse($content, $substitutions)
+		{
 			StringUtils::checkBacktrackLimit($content);
 			
 			// Don't proceed if the string is empty
@@ -276,7 +292,7 @@ namespace Canteen\Parser
 			preg_match_all($pattern, $content, $matches);
 			
 			if (count($matches))
-			{
+			{			
 				if ($profiler) $profiler->start('Parse Main');
 				
 				// length of opening and closing
@@ -289,6 +305,7 @@ namespace Canteen\Parser
 					$modifier = $matches[1][$i];
 					$id = $matches[2][$i];
 					$o1 = strpos($content, $tag);
+					$o2 = $o1 + strlen($tag);
 
 					if ($o1 === false) continue;
 
@@ -302,21 +319,33 @@ namespace Canteen\Parser
 							$endTag = self::LEX_OPEN . self::LEX_IF_END 
 								. ($isNot ? self::LEX_NOT : '')
 								. $id . self::LEX_CLOSE;
-
+							
 							// Remove the tags if content is true
-							if ($isNot != StringUtils::asBoolean(ifsetor($substitutions[$id])))
+							$value = isset($substitutions[$id]) ? $substitutions[$id] : '';
+							
+							// The position order $o1{{if:}}$o2...$c2{{/if:}}$c1
+							$c2 = strpos($content, $endTag);
+							$c1 = $c2  + strlen($endTag);
+							
+							// There's no ending tag, we shouldn't continue
+							// maybe we should throw an exception here
+							if ($c2 === false) continue;
+							
+							// Default is to replace with nothing
+							$buffer = '';
+							
+							// If statement logic
+							if ($isNot != StringUtils::asBoolean($value))
 							{
-								$content = StringUtils::replaceOnce($tag, '', $content);
-								$content = StringUtils::replaceOnce($endTag, '', $content);
+								// Get the contents of if and parse it
+								$buffer = $this->internalParse(
+									substr($content, $o2, $c2 - $o2),
+									$substitutions
+								);
 							}
-							else
-							{
-								//$o1 = strpos($content, $tag);
-								$c1 = strpos($content, $endTag) + strlen($endTag);
-
-								// Remove the if statement
-								$content = substr_replace($content, '', $o1, $c1 - $o1);
-							}
+							// Remove the if statement and it's contents							
+							$content = substr_replace($content, $buffer, $o1, $c1 - $o1);
+							
 							break;
 						}
 						case self::LEX_LOOP :
@@ -326,7 +355,6 @@ namespace Canteen\Parser
 							$endTag = self::LEX_OPEN . self::LEX_LOOP_END . $id . self::LEX_CLOSE;
 							
 							// The position order $o1{{for:}}$o2...$c2{{/for:}}$c1
-							$o2 = $o1 + strlen($tag);
 							$c2 = strpos($content, $endTag);
 							$c1 = $c2  + strlen($endTag);
 							
@@ -357,11 +385,7 @@ namespace Canteen\Parser
 									error('Parsing for-loop substitution needs to be an array');
 									continue;
 								}
-								$templateClone = $template;
-								$buffer .= $this->parse(
-									$templateClone, 
-									$sub
-								);
+								$buffer .= $this->internalParse($template, $sub);
 							}
 
 							// Replace the template with the buffer
@@ -371,7 +395,7 @@ namespace Canteen\Parser
 						}
 						case self::LEX_TEMPLATE :
 						{
-							$template = $this->getContents($id, $substitutions);
+							$template = $this->template($id, $substitutions);
 							$content = preg_replace('/'.$tag.'/', $template, $content);
 							break;
 						}
@@ -410,8 +434,7 @@ namespace Canteen\Parser
 		*/
 		public function template($name, $substitutions=array())
 		{
-			$contents = $this->getContents($name);
-			return $this->parse($contents, $substitutions);
+			return $this->internalParse($this->getContents($name), $substitutions);
 		}
 		
 		/**
@@ -457,7 +480,7 @@ namespace Canteen\Parser
 			}
 			
 			// Do a regular parse with the string
-			return $this->parse($content, $substitutions);
+			return $this->internalParse($content, $substitutions);
 		}
 		
 		/**
