@@ -321,21 +321,26 @@ namespace Canteen\Parser
 						}
 						case self::LEX_LOOP :
 						{
-							// Ignore when the value isn't an array
-							if (!isset($substitutions[$id]) || !is_array($substitutions[$id]))  continue;
-
 							if($profiler) $profiler->start('Parse Loop');
-
+												
 							$endTag = self::LEX_OPEN . self::LEX_LOOP_END . $id . self::LEX_CLOSE;
-
+							
 							// The position order $o1{{for:}}$o2...$c2{{/for:}}$c1
 							$o2 = $o1 + strlen($tag);
 							$c2 = strpos($content, $endTag);
 							$c1 = $c2  + strlen($endTag);
-
+							
 							// There's no ending tag, we shouldn't continue
 							// maybe we should throw an exception here
 							if ($c2 === false) continue;
+							
+							// Remove the loop contents if there's no data
+							if (!isset($substitutions[$id]) || !is_array($substitutions[$id]))
+							{
+								$content = substr_replace($content, '', $o1, $c1 - $o1);
+								if($profiler) $profiler->end('Parse Loop');
+								continue;
+							}
 
 							$buffer = '';
 							$template = substr($content, $o2, $c2 - $o2);
