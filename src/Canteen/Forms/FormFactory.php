@@ -93,7 +93,7 @@ namespace Canteen\Forms
             //posts are sent from the current domain
             //because its possible to spoof HTTP_REFERER 
             //this shouldn't be relied on from people spoofing forms
-
+			
 			$host = ifconstor('HOST', '//'.ifsetor($_SERVER['HTTP_HOST']));
 			$refer = ifsetor($_SERVER['HTTP_REFERER']);
 			$refer = substr($refer, strpos($refer, ':')+1);
@@ -122,7 +122,6 @@ namespace Canteen\Forms
 				if ( in_array($_POST['formSession'], $_SESSION['formSession']) )
 				{
 					$this->error("You cannot refresh this form.");
-					return;
 				}
 				else
 				{
@@ -130,20 +129,23 @@ namespace Canteen\Forms
 				}
 			}
 			
-			try
+			if (!$this->ifError)
 			{
-				$form = new $formClass;
-			}
-			catch(UserError $e)
-			{
-				// Report user errors to the user
-				$this->error($e->getMessage());
-			}
-			catch(Exception $e)
-			{
-				// Bubble up other errors
-				// something went wrong, like mysql or syntax error
-				throw $e;
+				try
+				{
+					$form = new $formClass;
+				}
+				catch(UserError $e)
+				{
+					// Report user errors to the user
+					$this->error($e->getMessage());
+				}
+				catch(Exception $e)
+				{
+					// Bubble up other errors
+					// something went wrong, like mysql or syntax error
+					throw $e;
+				}
 			}
 			
 			// If there's no form error then flush the whole cache
