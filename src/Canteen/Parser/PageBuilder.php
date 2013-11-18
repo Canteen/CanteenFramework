@@ -202,26 +202,6 @@ namespace Canteen\Parser
 		}
 		
 		/**
-		*  Construct the site title
-		*  @method getSiteTitle
-		*  @private
-		*  @param {Page} page The page
-		*  @return {String} The page title string
-		*/
-		private function getSiteTitle(Page $page)
-		{
-			if (!$page) return '';
-			
-			$stateTitle = '';
-			
-			if ($parent = $this->getPageById($page->parentId))
-			{
-				$stateTitle = ($parent->id == $page->id) ? ' . ' : ' . '. $parent->title . ' . ';
-			}
-			return $page->title . $stateTitle . $this->settings->siteTitle;
-		}
-		
-		/**
 		*  Clear both the render and data page caches
 		*  @method flush
 		*  @private
@@ -291,27 +271,57 @@ namespace Canteen\Parser
 			
 			if ($profiler) $profiler->start('Add Page Content');
 			$page->content = @file_get_contents($page->contentUrl);
+			
+			// If we have a controller for this page			
 			if ($controllerName = $this->site->getController($page->uri))
 			{
 				if ($profiler) $profiler->start('Page Controller');
 				$controller = new $controllerName($page, $page->dynamicUri);
 				$page = $controller->getPage();
+				$this->setPageTitle($page);
 				
-				// Add the controller tags to settings
-				$this->parse($page->content, $controller->getData());
+				// Page controllers cannot override the base rendering substitutions, like
+				// loggedIn, debug, local, etc
+				$substitutions = array_merge($controller->getData(), $this->settings->getRender());
 				if ($profiler) $profiler->end('Page Controller');
 			}
-			// Add the page title
+			else
+			{
+				$this->setPageTitle($page);				
+				$substitutions = $this->settings->getRender();
+			}
+			
+			if ($profiler) $profiler->start('Page Parse');
+			$this->parse($page->content, $substitutions);
+			if ($profiler) $profiler->end('Page Parse');
+			
+			if ($profiler) $profiler->end('Add Page Content');	
+			
+			return $page;
+		}
+		
+		/**
+		*  Construct the 'pageTitle' and 'fullTitle' render settings
+		*  @method setPageTitle
+		*  @private
+		*  @param {Page} page The page
+		*/
+		private function setPageTitle(Page $page)
+		{
+			// Get the page title				
 			$this->settings->addSetting('pageTitle', $page->title, SETTING_RENDER);
 			
-			// Add the full title
-			$fullTitle = $page->fullTitle = $this->getSiteTitle($page);
-			$this->settings->addSetting('fullTitle', $fullTitle, SETTING_RENDER);
+			// Assemble the full page title
+			$stateTitle = '';
 			
-			$this->parse($page->content, $this->settings->getRender());
-			if ($profiler) $profiler->end('Add Page Content');	
-					
-			return $page;
+			if ($parent = $this->getPageById($page->parentId))
+			{
+				$stateTitle = ($parent->id == $page->id) ? ' . ' : ' . '. $parent->title . ' . ';
+			}
+			$fullTitle = $page->title . $stateTitle . $this->settings->siteTitle;
+			
+			$page->fullTitle = $fullTitle;
+			$this->settings->addSetting('fullTitle', $fullTitle, SETTING_RENDER);
 		}
 		
 		/**
