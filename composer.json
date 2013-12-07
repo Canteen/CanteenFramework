@@ -26,12 +26,12 @@
     },
 	"require": {
 		"php": ">=5.3.0",
-		"canteen/logger": "1.0.0",
-		"canteen/database": "1.0.0",
-		"canteen/html5": "1.0.0"
+		"canteen/logger": "~1.0",
+		"canteen/database": "~1.0",
+		"canteen/html5": "~1.0"
 	},
 	
-	"minimum-stability": "stable",
+	"minimum-stability": "dev",
 	"repositories": [
 		{
 			"type": "vcs",
