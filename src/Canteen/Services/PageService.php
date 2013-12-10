@@ -12,9 +12,9 @@ namespace Canteen\Services
 	*  Service for interacting with site pages in the database.  Located in the namespace __Canteen\Services__.
 	*  
 	*  @class PageService
-	*  @extends CustomService
+	*  @extends ObjectService
 	*/
-	class PageService extends CustomService
+	class PageService extends ObjectService
 	{	
 		/**
 		*  Create the service
@@ -48,7 +48,7 @@ namespace Canteen\Services
 				"REPLACE(`uri`, '/', '-') as `pageId`"
 			);
 
-			$this->mappings(
+			$this->prepends(
 				'contentUrl', 
 				$this->settings->exists('contentPath') ? 
 					$this->settings->contentPath : ''
@@ -59,7 +59,7 @@ namespace Canteen\Services
 				'Canteen\Forms\PageUpdate'
 			);
 
-			$this->access(
+			$this->restrict(
 				array(
 					'getPageById' => array(
 						'Canteen\Parser\PageBuilder', 
@@ -74,7 +74,8 @@ namespace Canteen\Services
 					),
 					'removePage' => $form,
 					'addPage' => $form,
-					'updatePage' => $form
+					'updatePage' => $form,
+					'getPages' => Privilege::ANONYMOUS
 				)
 			);
 		}

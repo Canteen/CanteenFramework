@@ -13,9 +13,9 @@ namespace Canteen\Services
 	*  Services for accessing the Users and logging in to the site.  Located in the namespace __Canteen\Services__.
 	*  
 	*  @class UserService
-	*  @extends CustomService
+	*  @extends ObjectService
 	*/
-	class UserService extends CustomService
+	class UserService extends ObjectService
 	{	
 		/** 
 		*  The list of user select table properties for joining tables 
@@ -77,7 +77,7 @@ namespace Canteen\Services
 			// Add additional selection options
 			$this->properties('CONCAT(`first_name`,\' \',`last_name`) as `fullname`');
 
-			$this->access(
+			$this->restrict(
 				array(
 					'install' => 'Canteen\Forms\Installer',
 					'freezeUsername' => 'Canteen\Authorization\Authorization',

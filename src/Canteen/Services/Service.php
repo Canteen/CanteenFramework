@@ -145,91 +145,32 @@ namespace Canteen\Services
 		}
 		
 		/**
-		*  Convenience check to see if the user has the privilege 
-		*  to do a particular action.
-		*  @method privilege
-		*  @protected
-		*  @param {int} [required=0] The privilege required, (default is guest privilege)
-		*/
-		protected function privilege($required=Privilege::GUEST)
-		{
-			if ($this->settings->local) return;
-			
-			if (!LOGGED_IN)
-			{
-				throw new UserError(UserError::LOGGIN_REQUIRED);
-			}
-			else if (USER_PRIVILEGE < $required)
-			{
-				throw new UserError(UserError::INSUFFICIENT_PRIVILEGE);
-			}
-		}
-		
-		/**
-		*  Explicitly define that only certain classes can call a method.
-		*  @method internal
-		*  @protected
-		*  @param {String} classes* The single class or array of classes or list of classes as separate arg
-		*/
-		protected function internal($classes)
-		{
-			if ($this->settings->local) return;
-			
-			// DEBUG_BACKTRACE_IGNORE_ARGS is only in PHP 5.3.6
-			$trace = defined('DEBUG_BACKTRACE_IGNORE_ARGS') ? 
-				debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS):
-				debug_backtrace();
-
-			// Simplest trace: this, service, caller
-			// Complicated trace: this, access, accessDefault, __method, override
-			// 0 is this class, 2-4 is the internal caller		
-			$classes = is_array($classes) ? $classes : func_get_args();
-			
-			// Check if the class is anywhere in the trace stack
-			// TODO Need to allow CustomService to call and check for the 
-			// specific method called before
-			foreach($trace as $i=>$stack)
-			{
-				// If the stack track is greater than for then we should bail
-				// we are only concernd with the 2-4 level of depth
-				if ($i > 5) break;
-
-				if (isset($stack['class']) && in_array($stack['class'], $classes))
-				{
-					// bail out, proceed as normal
-					return;
-				}
-			}
-			throw new CanteenError(CanteenError::INTERNAL_ONLY);
-		}
-		
-		/**
 		*  Set and check the access control for a method this is important for preventing
 		*  access to these methods that is undesirable, like someone using
 		*  the JSON to edit/add/remove database entries.
 		*
 		*	// To set access controls
-		* 	$this->access('removeContent', Privilege::ADMINISTRATOR);
-		*   $this->access('updateContent', Privilege::GUEST, 'Site\Form\ContentUpdate');
+		* 	$this->restrict('removeContent', Privilege::ADMINISTRATOR);
+		*   $this->restrict('updateContent', Privilege::GUEST, 'Site\Form\ContentUpdate');
 		*   // or
-		* 	$this->access(array(
+		* 	$this->restrict(array(
 		*		'removeContent' => Privilege::ADMINISTRATOR,
 		*		'updateContent' => array(
 		*			Privilege::GUEST, 
 		*			'Site\Form\ContentUpdate'
 		*		)
 		*	));
-		* 	// To check for access control
-		* 	$this->access('removeContent');
+		* 	// To check for access control within a method
+		* 	$this->access();
 		* 
-		*  @method access
+		*  @method restrict
 		*  @protected
-		*  @param {String|Dictionary} [mapOrMethod=null] Either the method string 
-		*    or a map of methods to an collection of controls, if null, then 
-		*    does an access check for the current function called from
+		*  @param {String|Dictionary} [mapOrMethod] Either the method string 
+		*    or a map of methods to an collection of controls.
 		*  @param {Array|String|int} [controls=null] The collection of controls
+		*  @return {Service} Return the instance of this for chaining
 		*/
-		protected function access($mapOrMethod=null, $controls=null)
+		protected function restrict($mapOrMethod, $controls=null)
 		{
 			// Process the map of controls
 			if (is_array($mapOrMethod))
@@ -249,35 +190,68 @@ namespace Canteen\Services
 				}
 				$this->_accessControls[$mapOrMethod] = new AccessControl($mapOrMethod, $controls);
 			}
-			// Control run check
-			else
-			{
-				// If there's not  a method specified, then 
-				if ($mapOrMethod === null)
-				{
-					// DEBUG_BACKTRACE_IGNORE_ARGS is only in PHP 5.3.6
-					$trace = defined('DEBUG_BACKTRACE_IGNORE_ARGS') ? 
-						debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS):
-						debug_backtrace();
-
-					$mapOrMethod = ifsetor($trace[1]['function'], null);
-				}
-
-				// Bail out if there isn't an access control
-				if (!isset($this->_accessControls[$mapOrMethod])) return;
-
-				$control = $this->_accessControls[$mapOrMethod];
-				
-				// Check the privilege
-				if ($control->privilege)
-					$this->privilege($control->privilege);
-				
-				// Check the internal calls
-				if (count($control->internals))
-					$this->internal($control->internals);
-			}
+			return $this;
 		}
 
+		/**
+		*  Check for restricted access. Access can be initialized with the restrict()
+		*  method. 
+		*  @method access
+		*  @protected
+		*/
+		protected function access()
+		{
+			// Ignore access controls if we're local
+			if ($this->settings->local) return;
+
+			// DEBUG_BACKTRACE_IGNORE_ARGS is only in PHP 5.3.6
+			$trace = defined('DEBUG_BACKTRACE_IGNORE_ARGS') ? 
+				debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS):
+				debug_backtrace();
+
+			// Get the method that called this function
+			$method = ifsetor($trace[1]['function'], null);
+
+			// Bail out if there isn't an access control
+			if (!isset($this->_accessControls[$method])) return;
+
+			$control = $this->_accessControls[$method];
+			
+			// Check the privilege
+			if ($control->privilege)
+			{
+				if (!LOGGED_IN)
+				{
+					throw new UserError(UserError::LOGGIN_REQUIRED);
+				}
+				else if (USER_PRIVILEGE < $control->privilege)
+				{
+					throw new UserError(UserError::INSUFFICIENT_PRIVILEGE);
+				}
+			}
+			
+			// Check the internal calls
+			if (count($control->internals))
+			{
+				// Check if the class is in the trace stack
+				foreach($trace as $i=>$stack)
+				{
+					// Simplest trace: this, service, caller
+					// Complicated trace: this, accessDefault, __method, override
+					// 0 is this class, 2-3 is the internal caller
+					// If the stack track is greater than for then we should bail
+					// we are only concernd with the 2-3 level of depth
+					if ($i > 4) break;
+
+					if (isset($stack['class']) && in_array($stack['class'], $control->internals))
+					{
+						// bail out, proceed as normal
+						return;
+					}
+				}
+				throw new CanteenError(CanteenError::INTERNAL_ONLY);
+			}
+		}
 
 		/**
 		*   The public getter 
@@ -331,11 +305,11 @@ namespace Canteen\Services
 		*  @protected
 		*  @param {Array} data The data to bind
 		*  @param {String} dataClass The name of the data class (string to bind)
-		*  @param {Array} [prependMaps=null] The array of maps to prepend to the variables used for 
+		*  @param {Array} [prepends=null] The array of maps to prepend to the variables used for 
 		*		prepending a path or directory to a file/path/url
 		*  @return {Array} The data object
 		*/
-		protected function bindObjects($data, $dataClass, $prependMaps=null)
+		protected function bindObjects($data, $dataClass, $prepends=null)
 		{
 			$objects = array();
 			// Loop through all of the data objects
@@ -347,7 +321,7 @@ namespace Canteen\Services
 					$this->bindObject(
 						$data[$i], 
 						$dataClass, 
-						$prependMaps, 
+						$prepends, 
 						false
 					)
 				);
@@ -362,13 +336,13 @@ namespace Canteen\Services
 		*  @protected
 		*  @param {Array} data The data to bind
 		*  @param {String} dataClass The name of the data class (string to bind)
-		*  @param {Array} [prependMaps=null] The array of maps to prepend to the variables used for 
+		*  @param {Array} [prepends=null] The array of maps to prepend to the variables used for 
 		*		prepending a path or directory to a file/path/url
 		*  @param {Boolean} [useFirstRow=true] If to just return the row in a return,
 		*		only getting one item from a mysql array call
 		*  @return {mixed} The typed data object
 		*/
-		protected function bindObject($data, $dataClass, $prependMaps=null, $useFirstRow=true)
+		protected function bindObject($data, $dataClass, $prepends=null, $useFirstRow=true)
 		{
 			if (!$data) return;
 
@@ -390,9 +364,9 @@ namespace Canteen\Services
 					$obj->$name = $data[$name];
 
 					// If there is a prepend mapping (such as a folder url path)
-					if (isset($prependMaps[$name]))
+					if (isset($prepends[$name]))
 					{
-						$obj->$name = $prependMaps[$name] . $obj->$name;
+						$obj->$name = $prepends[$name] . $obj->$name;
 					}
 				}
 			}
@@ -410,7 +384,7 @@ namespace Canteen\Services
 		public $name;
 
 		/** The privilege required to run this method, default is all */
-		public $privilege = Privilege::ANONYMOUS;
+		public $privilege = Privilege::GUEST;
 
 		/** The collection of methods that can call this function */
 		public $internals = array();

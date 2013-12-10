@@ -87,6 +87,14 @@ namespace Canteen\Utilities
 		const URI = '/[a-zA-Z0-9\-\_\/\.]/';
 		
 		/** 
+		*  Validation Type: remove all non standard URL characters, includes a-z, A-Z, 0-9, -, _, ., /, &, %, :, =
+		*  @property {RegExp} URL
+		*  @final
+		*  @static
+		*/
+		const URL = '/[a-zA-Z0-9\-\_\/\.\:\=\?\#\&\%\,\.]/';
+
+		/** 
 		*  Validation Type: remove all non search characters, includes a-z, A-Z, 0-9, space
 		*  @property {RegExp} SEARCH
 		*  @final

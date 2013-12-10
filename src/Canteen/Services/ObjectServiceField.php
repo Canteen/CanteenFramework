@@ -4,7 +4,7 @@ namespace Canteen\Services
 {
 	use Canteen\Utilities\Validate;
 
-	class CustomField
+	class ObjectServiceField
 	{
 		/** 
 		*  The database field name 
@@ -32,9 +32,9 @@ namespace Canteen\Services
 
 		/**
 		*  The prepend mapping for the bind, useful for prending a path to a file name
-		*  @property {String} prependMap
+		*  @property {String} prepend
 		*/
-		public $prependMap; 
+		public $prepend; 
 
 		/**
 		*  If the property can be index for a select
@@ -51,9 +51,9 @@ namespace Canteen\Services
 		public $isDefault = false;
 
 		/**
-		*  A custom field is used by the CustomService class
+		*  A custom field is used by the ObjectService class
 		*  to represent property and db field definitions
-		*  @class CustomField
+		*  @class ObjectServiceField
 		*  @constructor
 		*  @param {String} id The name of the database field
 		*  @param {RegExp|Array} [type=null] The validation type or set of items to match, default is no validation
@@ -69,7 +69,7 @@ namespace Canteen\Services
 			// The if the name is the same as id, use that!
 			if ($id == $this->name)
 			{
-				$this->select = $id;
+				$this->select = '`'.$id.'`';
 			}
 			// Specific boolean selector
 			else if ($type == Validate::BOOLEAN)
@@ -83,15 +83,15 @@ namespace Canteen\Services
 			}
 
 			// Add the optional prepend mapping
-			$this->prependMap = null;
+			$this->prepend = null;
 		}
 
 		/**
 		*  Set an option
 		*  @method option
-		*  @param {String} property Either type, name, isIndex, select, prependMap
+		*  @param {String} property Either type, name, isIndex, select, prepend
 		*  @param {mixed} value The value of the property to set
-		*  @return {CustomField} Return the field for chaining
+		*  @return {ObjectServiceField} Return the field for chaining
 		*/
 		public function option($property, $value)
 		{

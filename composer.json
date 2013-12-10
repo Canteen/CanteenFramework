@@ -1,7 +1,7 @@
 {
     "name": "canteen/framework",
 	"description" : "Small PHP framework for building JSON-driven, stateless websites.",
-	"version" : "1.0.0",
+	"version" : "1.0.1",
     "type": "library",
 	"keywords": ["framework", "html5", "json", "cms"],
     "license": "MIT",

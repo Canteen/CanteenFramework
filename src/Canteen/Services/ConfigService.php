@@ -13,9 +13,9 @@ namespace Canteen\Services
 	*  Interacts with the config data table from the database. Located in the namespace __Canteen\Services__.
 	*  
 	*  @class ConfigService 
-	*  @extends CustomService
+	*  @extends ObjectService
 	*/
-	class ConfigService extends CustomService
+	class ConfigService extends ObjectService
 	{	
 		/**
 		*  Create the service
@@ -39,14 +39,15 @@ namespace Canteen\Services
 
 			$admin = Privilege::ADMINISTRATOR;
 
-			$this->access(
+			$this->restrict(
 				array(
 					'addConfig' => $admin,
 					'install' => 'Canteen\Forms\Installer',
 					'updateValue' => 'Canteen\Site',
 					'registerSettings' => 'Canteen\Site',
 					'updateConfig' => $admin,
-					'removeConfig' => $admin
+					'removeConfig' => $admin,
+					'registerSettings' => Privilege::ANONYMOUS
 				)
 			);
 		}

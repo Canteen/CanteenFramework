@@ -6,16 +6,16 @@
 namespace Canteen\Errors
 {	
 	/**
-	*  Exceptions specific to the CustomService API.  
+	*  Exceptions specific to the ObjectService API.  
 	*  Located in the namespace __Canteen\Errors__.
 	*  
-	*  @class CustomServiceError
+	*  @class ObjectServiceError
 	*  @extends CanteenError
 	*  @constructor
 	*  @param {int} code The error code
 	*  @param {String|Array} [data=''] The optional data associated with this error
 	*/
-	class CustomServiceError extends CanteenError
+	class ObjectServiceError extends CanteenError
 	{
 		/** 
 		*  There is not a valid dynamic method matching this name

@@ -11,7 +11,7 @@ namespace Canteen\Services
 	use Canteen\Utilities\StringUtils;
 	use Canteen\Utilities\CanteenBase;
 	use Canteen\HTML5\SimpleList;
-	use Canteen\Services\CustomService;
+	use Canteen\Services\ObjectService;
 	use \ReflectionClass;
 	use \Exception;
 	

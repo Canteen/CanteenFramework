@@ -3,9 +3,9 @@
 namespace Canteen\Services
 {
 	use Canteen\Authorization\Privilege;
-	use Canteen\Errors\CustomServiceError;
+	use Canteen\Errors\ObjectServiceError;
 
-	class CustomService extends Service
+	class ObjectService extends Service
 	{
 		/**
 		*  The name of the table of the custom type
@@ -36,7 +36,7 @@ namespace Canteen\Services
 		protected $pluralItemName;
 
 		/**
-		*  The collection of CustomField objects
+		*  The collection of ObjectServiceField objects
 		*  @property {Array} _fields
 		*  @private
 		*/
@@ -44,24 +44,24 @@ namespace Canteen\Services
 
 		/**
 		*  The main field, default
-		*  @property {CustomField} _defaultField
+		*  @property {ObjectServiceField} _defaultField
 		*  @private
 		*/
 		private $_defaultField = null;
 
 		/**
-		*  The map of CustomField objects to their names
+		*  The map of ObjectServiceField objects to their names
 		*  @property {Dictionary} _fieldsByName
 		*  @private
 		*/
 		private $_fieldsByName = array();
 
 		/**
-		*  The property prepend mappings
-		*  @property {Dictionary} _mappings
+		*  The property prepend prepends
+		*  @property {Dictionary} _prepends
 		*  @private
 		*/
-		private $_mappings = array();
+		private $_prepends = array();
 
 		/**
 		*  The collection of mysql select properties
@@ -78,13 +78,13 @@ namespace Canteen\Services
 		private $_indexes = array();
 
 		/**
-		*  The CustomService class is an easy way to do custom
+		*  The ObjectService class is an easy way to do custom
 		*  data types. 
-		*  @class CustomService
+		*  @class ObjectService
 		*  @constructor
 		*  @param {String} alias The name of the service alias
 		*  @param {String} className Class to bind database result to
-		*  @param {Array} field The collection of CustomField objects
+		*  @param {Array} field The collection of ObjectServiceField objects
 		*/
 		public function __construct($alias, $className, $fields)
 		{
@@ -100,20 +100,17 @@ namespace Canteen\Services
 
 			foreach($fields as $f)
 			{
-				if ($f->prependMap)
-				{
-					$this->_mappings[$f->name] = $f->prependMap;
-				}
 				$this->_fieldsByName[$f->name] = $f;
 				$this->_properties[] = $f->select;
+
+				if ($f->prepend)
+					$this->_prepends[$f->name] = $f->prepend;
+
 				if ($f->isIndex)
-				{
 					$this->_indexes[$f->name] = $f;
-				}
+				
 				if ($f->isDefault)
-				{
 					$this->_defaultField = $f;
-				}
 			}
 		}
 
@@ -136,14 +133,14 @@ namespace Canteen\Services
 		}
 
 		/**
-		*  Get or set the collection of mappings
-		*  @method mappings
+		*  Get or set the collection of prepend prepends
+		*  @method prepends
 		*  @protected
-		*  @param {Dictionary|String} [maps=null] If null, returns mappings Dictionary
+		*  @param {Dictionary|String} [maps=null] If null, returns prepends Dictionary
 		*  @param {String} [value=null] The value if setting a single map
-		*  @return {Dictionary} The mappings
+		*  @return {Dictionary} The prepends
 		*/
-		protected function mappings($maps=null, $value=null)
+		protected function prepends($maps=null, $value=null)
 		{
 			if ($maps !== null)
 			{
@@ -154,9 +151,9 @@ namespace Canteen\Services
 				{
 					$maps = array($maps => $value);
 				}
-				$this->_mappings = array_merge($this->_mappings, $maps);
+				$this->_prepends = array_merge($this->_prepends, $maps);
 			}
-			return $this->_mappings;
+			return $this->_prepends;
 		}
 		
 		/**
@@ -166,11 +163,11 @@ namespace Canteen\Services
 		*  @param {String} id The name of the field on the database
 		*  @param {RegExp|Array} [type=null] The validation type or set of values, default is no validation
 		*  @param {String} [name=null] The name of the php property
-		*  @return {CustomField} The new custom field object
+		*  @return {ObjectServiceField} The new custom field object
 		*/
 		protected function field($id, $type=null, $name=null)
 		{
-			return new CustomField($id, $type, $name);
+			return new ObjectServiceField($id, $type, $name);
 		}
 
 		/**
@@ -217,7 +214,7 @@ namespace Canteen\Services
 
 				if (!isset($this->_indexes[$index]))
 				{
-					throw new CustomServiceError(CustomServiceError::INVALID_INDEX, $index);
+					throw new ObjectServiceError(ObjectServiceError::INVALID_INDEX, $index);
 				}
 
 				// Get the field index and pass to the function
@@ -276,7 +273,7 @@ namespace Canteen\Services
 			}
 
 			if (!$internal)
-				throw new CustomServiceError(CustomServiceError::INVALID_METHOD, $internal);
+				throw new ObjectServiceError(ObjectServiceError::INVALID_METHOD, $internal);
 
 			return call_user_func_array(array($this, $internal), $arguments);
 		}
@@ -290,7 +287,7 @@ namespace Canteen\Services
 		private function accessDefault($method)
 		{
 			if ($this->_defaultField) 
-				throw new CustomServiceError(CustomServiceError::NO_DEFAULT_INDEX);
+				throw new ObjectServiceError(ObjectServiceError::NO_DEFAULT_INDEX);
 			
 			$this->access($method.'By'.ucfirst($this->_defaultField));
 		}
@@ -299,13 +296,13 @@ namespace Canteen\Services
 		*  Internal method for getting result by an index
 		*  @method internalGetByIndex
 		*  @private
-		*  @param {CustomField} index The index field to search on
+		*  @param {ObjectServiceField} index The index field to search on
 		*  @param {Boolean} isSingle If the index search is a single
 		*  @param {Array|mixed} search The value to search on
 		*  @return {Array|Object} The collection of objects or a single object matching
 		*     the className from the constuction
 		*/
-		private function internalGetByIndex(CustomField $index, $isSingle, $search)
+		private function internalGetByIndex(ObjectServiceField $index, $isSingle, $search)
 		{
 			$results = $this->db->select($this->_properties)
 				->from($this->table)
@@ -317,7 +314,7 @@ namespace Canteen\Services
 			$results = $this->bindObjects(
 				$results, 
 				$this->className,
-				$this->_mappings
+				$this->_prepends
 			);
 
 			// We should only return the actual item if this is a single search
@@ -340,7 +337,7 @@ namespace Canteen\Services
 			return $this->bindObjects(
 				$results, 
 				$this->className,
-				$this->_mappings
+				$this->_prepends
 			);
 		}
 
@@ -348,11 +345,11 @@ namespace Canteen\Services
 		*  The internal remove of items by index
 		*  @method internalRemoveByIndex
 		*  @private
-		*  @param {CustomField} index The index field to search on
+		*  @param {ObjectServiceField} index The index field to search on
 		*  @param {Array|mixed} search The value to search on
 		*  @return {Boolean} If the remove was successful
 		*/
-		private function internalRemoveByIndex(CustomField $index, $search)
+		private function internalRemoveByIndex(ObjectServiceField $index, $search)
 		{
 			return $this->db->delete($this->table)
 				->where("`{$index->id}` in " . $this->valueSet($search, $index->type))
@@ -363,13 +360,13 @@ namespace Canteen\Services
 		*  The internal remove of items by index
 		*  @method internalUpdateByIndex
 		*  @private
-		*  @param {CustomField} index The index field to search on
+		*  @param {ObjectServiceField} index The index field to search on
 		*  @param {mixed} search The value to search on
 		*  @param {Dictionary|String} prop The property name or map of properties to update
 		*  @param {mixed} [value=null] If updating a single property, the property name
 		*  @return {Boolean} If the remove was successful
 		*/
-		private function internalUpdateByIndex(CustomField $index, $search, $prop, $value=null)
+		private function internalUpdateByIndex(ObjectServiceField $index, $search, $prop, $value=null)
 		{
 			// Validate the index search
 			$this->verify($search, $index->type);
