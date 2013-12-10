@@ -260,7 +260,7 @@ namespace Canteen\Authorization
 			$isValidUser = false;
 			
 			// Get the user by this username
-			$result = $this->service('users')->getUser($username);
+			$result = $this->service('users')->getUserByLogin($username);
 			
 			if ($result)
 			{

@@ -13,43 +13,42 @@ namespace Canteen\Services
 	*  Interacts with the config data table from the database. Located in the namespace __Canteen\Services__.
 	*  
 	*  @class ConfigService 
-	*  @extends Service
+	*  @extends CustomService
 	*/
-	class ConfigService extends Service
-	{
-		/** 
-		*  The collection of fields to get on the table 
-		*  @property {Array} properties
-		*  @private
-		*/
-		private $properties = array(
-			'`config_id` as `id`',
-			'`name`',
-			'`value`',
-			'`value_type` as `type`',
-			'`access`'
-		);
-		
-		/** 
-		*  The table with the config 
-		*  @property {String} table
-		*  @private
-		*/
-		private $table = 'config';
-		
-		/** 
-		*  The name of the config class object 
-		*  @property {String} className
-		*  @private
-		*/
-		private $className = 'Canteen\Services\Objects\Config';
-		
+	class ConfigService extends CustomService
+	{	
 		/**
 		*  Create the service
 		*/
 		public function __construct()
 		{
-			parent::__construct('config');
+			parent::__construct(
+				'config', 
+				'Canteen\Services\Objects\Config',
+				array(
+					$this->field('config_id', Validate::NUMERIC, 'id')
+						->option('isDefault', true)
+						->option('isIndex', true),
+					$this->field('name', Validate::URI)
+						->option('isIndex', true),
+					$this->field('value', Validate::FULL_TEXT),
+					$this->field('value_type', $this->getValueTypes(), 'type'),
+					$this->field('access', Validate::BOOLEAN)
+				)
+			);
+
+			$admin = Privilege::ADMINISTRATOR;
+
+			$this->access(
+				array(
+					'addConfig' => $admin,
+					'install' => 'Canteen\Forms\Installer',
+					'updateValue' => 'Canteen\Site',
+					'registerSettings' => 'Canteen\Site',
+					'updateConfig' => $admin,
+					'removeConfig' => $admin
+				)
+			);
 		}
 		
 		/**
@@ -62,7 +61,7 @@ namespace Canteen\Services
 		*/
 		public function install($siteTitle='', $contentPath='assets/html/content/', $templatePath='assets/html/index.html')
 		{
-			$this->internal('Canteen\Forms\Installer');
+			$this->access();
 			
 			if (!$this->db->tableExists($this->table))
 			{
@@ -117,9 +116,9 @@ namespace Canteen\Services
 		*/
 		public function registerSettings()
 		{
-			$this->internal('Canteen\Site');
-			
-			$result = $this->db->select($this->properties)
+			$this->access();
+
+			$result = $this->db->select($this->properties())
 				->from($this->table)
 				->results(true); // cache
 							
@@ -143,58 +142,6 @@ namespace Canteen\Services
 		}
 		
 		/**
-		*  Get all the the config for the site
-		*  @method getConfigs
-		*  @return {Array} The collection of Config objects
-		*/
-		public function getConfigs()
-		{
-			$result = $this->db->select($this->properties)
-				->from($this->table)
-				->results();
-				
-			return $this->bindObjects($result, $this->className);
-		}
-		
-		/**
-		*  Get a config variable by name
-		*  @method getValueByName
-		*  @param {String} name The name of the config property
-		*  @return {mixed} The value of the config property
-		*/
-		public function getValueByName($name)
-		{
-			$this->verify($name, Validate::URI);
-			
-			$result = $this->db->select('`value`', '`value_type` as `type`')
-				->from($this->table)
-				->where("`name`='$name'")
-				->result();
-			
-			if ($result)
-			{
-				$type = $result['type'];
-				$value = $result['value'];
-				return $type == 'integer' ? (int)$value : $value;
-			}
-		}
-		
-		/**
-		*  Get a config variable by id
-		*  @param {int} id The ID of the config Option
-		*  @return {Config} The config object
-		*/
-		public function getConfigById($id)
-		{
-			$results = $this->db->select($this->properties)
-				->from($this->table)
-				->where("`config_id` in ".$this->valueSet($id))
-				->results();
-				
-			return $this->bindObject($results, $this->className);
-		}
-		
-		/**
 		*  Add a key to the config
 		*  @method addConfig
 		*  @param {String} name The key name to set
@@ -206,7 +153,8 @@ namespace Canteen\Services
 		*/
 		public function addConfig($name, $value, $valueType='string', $access=0)
 		{
-			$this->privilege(Privilege::ADMINISTRATOR);
+			$this->access();
+
 			$this->verify($valueType, $this->getValueTypes());
 			$this->verify($value, $this->getValidationByType($valueType));
 			$this->verify($name, Validate::URI);
@@ -242,24 +190,26 @@ namespace Canteen\Services
 		}
 		
 		/**
-		*  Update the value by name
-		*  @method updateValue
-		*  @param {String} name The name of the key to update
-		*  @param {mixed} value The value to update to
-		*  @return {Boolean} If successfully updated
+		*  Get all the the config for the site
+		*  @method getConfigs
+		*  @return {Array} The collection of Config objects
 		*/
-		public function updateValue($name, $value)
+		public function getConfigs()
 		{
-			$this->internal('Canteen\Site');
-			$this->verify($name, Validate::URI);
-			$this->verify($value, Validate::FULL_TEXT);
-			
-			return $this->db->update($this->table)
-				->set('value', $value)
-				->where("`name`='$name'")
-				->result();
+			return parent::getConfigs();
 		}
-		
+
+		/**
+		*  Get a config variable by id
+		*  @method getConfigById
+		*  @param {int} id The ID of the config Option
+		*  @return {Config} The config object
+		*/
+		public function getConfigById($id)
+		{
+			return parent::getConfigById($id);
+		}
+
 		/**
 		*  Update a config's property or properties
 		*  @method updateConfig
@@ -270,43 +220,7 @@ namespace Canteen\Services
 		*/
 		public function updateConfig($id, $prop, $value=null)
 		{
-			$this->privilege(Privilege::ADMINISTRATOR);
-			$this->verify($id);
-			
-			if (!is_array($prop))
-			{
-				$prop = array($prop => $value);
-			}
-			
-			$properties = array();
-			foreach($prop as $k=>$p)
-			{
-				$k = $this->verify($k, Validate::URI);
-				$k = $this->convertPropertyNames($k);
-				$properties[$k] = $this->verify($p, Validate::FULL_TEXT);
-			}
-			
-			return $this->db->update($this->table)
-				->set($properties)
-				->where('`config_id`='.$id)
-				->result();
-		}
-		
-		/**
-		*  Convert the public property names
-		*  @method convertPropertyNames
-		*  @private
-		*  @param {String} prop The field name
-		*  @return {String} The field name to add to the database
-		*/
-		private function convertPropertyNames($prop)
-		{
-			$props = array(
-				'type' => 'value_type'
-			);
-			return isset($props[$prop]) ? 
-				$props[$prop] : 
-				$this->verify($prop, Validate::URI);
+			return parent::updateConfig($id, $prop, $value);
 		}
 		
 		/**
@@ -317,11 +231,7 @@ namespace Canteen\Services
 		*/
 		public function removeConfig($id)
 		{
-			$this->privilege(Privilege::ADMINISTRATOR);
-			
-			return $this->db->delete($this->table)
-				->where("`config_id` in ".$this->valueSet($id))
-				->result();
+			return parent::removeConfig($id);
 		}
 	}
 }

@@ -9,7 +9,9 @@ namespace Canteen\Services
 	use Canteen\Logger\Logger;
 	use Canteen\Parser\Parser;
 	use Canteen\Utilities\StringUtils;
-	use Canteen\Utilities\CanteenBase;	
+	use Canteen\Utilities\CanteenBase;
+	use Canteen\HTML5\SimpleList;
+	use Canteen\Services\CustomService;
 	use \ReflectionClass;
 	use \Exception;
 	

@@ -12,63 +12,70 @@ namespace Canteen\Services
 	*  Service for interacting with site pages in the database.  Located in the namespace __Canteen\Services__.
 	*  
 	*  @class PageService
-	*  @extends Service
+	*  @extends CustomService
 	*/
-	class PageService extends Service
+	class PageService extends CustomService
 	{	
-		/** 
-		*  The name of the table which contains the pages 
-		*  @property {String} table
-		*  @private
-		*/
-		private $table = 'pages';
-		
-		/** 
-		*  The list of database field properties 
-		*  @property {Array} table
-		*  @private
-		*/
-		private $properties = array(
-			'`page_id` as `id`',
-			'`uri`',
-			"REPLACE(`uri`, '/', '-') as `pageId`",
-			'`title`',
-			'`description`',
-			'`keywords`',
-			'CONCAT(`uri`,\'.html\') as `contentUrl`',
-			'IF(`parent_id` is NULL || `parent_id`=0, `page_id`, `parent_id`) as `parentId`',
-			'`redirect_id` as `redirectId`',
-			'IF(`is_dynamic` > 0, 1, null) as `isDynamic`',
-			'`privilege`',
-			'IF(`cache` > 0, 1, null) as `cache`'
-		);
-		
-		/** 
-		*  The data object associated with each page 
-		*  @property {String} className
-		*  @private
-		*/
-		private $className = 'Canteen\Services\Objects\Page';
-		
-		/** 
-		*  The prepend mappings 
-		*  @property {Array} mappings
-		*  @private
-		*/
-		private $mappings;
-		
 		/**
 		*  Create the service
 		*/
 		public function __construct()
 		{
-			parent::__construct('pages');
-			
-			$contentPath = $this->settings->exists('contentPath') ? 
-				$this->settings->contentPath : '';
-				
-			$this->mappings = array(
-				'contentUrl' => $contentPath
+			parent::__construct(
+				'pages',
+				'Canteen\Services\Objects\Page',
+				array(
+					$this->field('page_id', Validate::NUMERIC, 'id')
+						->option('isDefault', true)
+						->option('isIndex', true),
+					$this->field('uri', Validate::URI)
+						->option('isIndex', true),
+					$this->field('title', Validate::FULL_TEXT),
+					$this->field('description'),
+					$this->field('keywords', Validate::FULL_TEXT),
+					$this->field('redirect_id', Validate::NUMERIC),
+					$this->field('parent_id', Validate::NUMERIC)
+						->option('isIndex', true)
+						->option('select', 'IF(`parent_id` is NULL || `parent_id`=0, `page_id`, `parent_id`) as `parentId`'),
+					$this->field('is_dynamic', Validate::BOOLEAN),
+					$this->field('privilege', Validate::NUMERIC),
+					$this->field('cache', Validate::BOOLEAN)
+				)
+			);
+
+			$this->properties(
+				'CONCAT(`uri`,\'.html\') as `contentUrl`',
+				"REPLACE(`uri`, '/', '-') as `pageId`"
+			);
+
+			$this->mappings(
+				'contentUrl', 
+				$this->settings->exists('contentPath') ? 
+					$this->settings->contentPath : ''
+			);
+
+			$form = array(
+				Privilege::ADMINISTRATOR, 
+				'Canteen\Forms\PageUpdate'
+			);
+
+			$this->access(
+				array(
+					'getPageById' => array(
+						'Canteen\Parser\PageBuilder', 
+						'Canteen\Controllers\AdminPagesController'
+					),
+					'install' => 'Canteen\Forms\Installer',
+					'getPageByUri' => 'Canteen\Forms\ConfigUpdate',
+					'getPagesByParentId' => 'Canteen\Controllers\AdminController',
+					'getPages' => array(
+						'Canteen\Parser\PageBuilder', 
+						'Canteen\Controllers\AdminPagesController'
+					),
+					'removePage' => $form,
+					'addPage' => $form,
+					'updatePage' => $form
+				)
 			);
 		}
 		
@@ -78,9 +85,9 @@ namespace Canteen\Services
 		*/
 		public function install()
 		{		
-			$this->internal('Canteen\Forms\Installer');
+			$this->access();
 			
-			if (!$this->db->tableExists('pages'))
+			if (!$this->db->tableExists($this->table))
 			{
 				$sql = "CREATE TABLE IF NOT EXISTS `pages` (
 				  `page_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -101,7 +108,7 @@ namespace Canteen\Services
 				
 				if ($result)
 				{
-					return $this->db->insert('pages')
+					return $this->db->insert($this->table)
 						->fields('page_id', 'uri', 'title', 'redirect_id', 
 							'parent_id', 'is_dynamic', 'keywords', 'description', 'privilege', 'cache')
 						->values(1, '403', 'Forbidden', NULL, NULL, 0, '', '', 0, 1)
@@ -142,105 +149,7 @@ namespace Canteen\Services
 				'forgot-password'
 			);
 		}
-		
-		/**
-		*  Get a current page by the id number
-		*  @method getPageById
-		*  @param {int} id Page's ID or collection of IDs
-		*  @return {Page|Array} The collection of Page objects or a single Page
-		*/
-		public function getPageById($id)
-		{
-			$this->internal(
-				'Canteen\Parser\PageBuilder', 
-				'Canteen\Controllers\AdminPagesController'
-			);
-						
-			$results = $this->db->select($this->properties)
-				->from($this->table)
-				->where('page_id in '.$this->valueSet($id))
-				->results();
-			
-			return is_array($id) ?
-				$this->bindObjects($results, $this->className, $this->mappings):
-				$this->bindObject($results, $this->className, $this->mappings);
-		}
-		
-		/**
-		*  Get a current page by the URI stub
-		*  @method getPageById
-		*  @param {String} uri Page's URI stub or collection of URIs
-		*  @return {Page|Array} The collection of Page objects or a single Page
-		*/
-		public function getPageByUri($uri)
-		{
-			$this->internal('Canteen\Forms\ConfigUpdate');
-						
-			$results = $this->db->select($this->properties)
-				->from($this->table)
-				->where('`uri` in '.$this->valueSet($uri, Validate::URI))
-				->results();
-			
-			return is_array($uri) ?
-				$this->bindObjects($results, $this->className, $this->mappings):
-				$this->bindObject($results, $this->className, $this->mappings);
-		}
-		
-		/**
-		*  Get all of the children pages nested within a page
-		*  @method getPagesByParentId
-		*  @param {int} parentId A page's parent ID
-		*  @return {Array} The collection of Page objects
-		*/
-		public function getPagesByParentId($parentId)
-		{
-			$this->internal('Canteen\Controllers\AdminController');
-			
-			$this->verify($parentId);
-			$results = $this->db->select($this->properties)
-				->from($this->table)
-				->where('parent_id='.$parentId)
-				->results();
-				
-			return $this->bindObjects($results, $this->className, $this->mappings);
-		}
-		
-		/**
-		*  Get all of the pages
-		*  @method getPages
-		*  @return {Array} The collection of Page objects
-		*/
-		public function getPages()
-		{
-			$this->internal(
-				'Canteen\Parser\PageBuilder', 
-				'Canteen\Controllers\AdminPagesController'
-			);
-			
-			$results = $this->db->select($this->properties)
-				->from($this->table)
-				->orderBy('uri')
-				->results(true);
-			
-			return $this->bindObjects($results, $this->className, $this->mappings);
-		}
-		
-		/**
-		*  Remove a page 
-		*  @method removePage
-		*  @param {id} id The Page ID to remove
-		*  @return {Boolean} If page was deleted successfully
-		*/
-		public function removePage($id)
-		{
-			$this->internal('Canteen\Forms\PageUpdate');
-			$this->privilege(Privilege::ADMINISTRATOR);
-			
-			return $this->db->delete($this->table)
-				->where('page_id in '.$this->valueSet($id))
-				->result();
-		}
-		
+
 		/**
 		*  Add a new page to the site
 		*  @method addPage
@@ -256,8 +165,7 @@ namespace Canteen\Services
 		*/
 		public function addPage($uri, $title, $keywords, $description, $privilege=0, $redirectId=null, $parentId=null, $isDynamic=false, $cache=true)
 		{
-			$this->internal('Canteen\Forms\PageUpdate');
-			$this->privilege(Privilege::ADMINISTRATOR);
+			$this->access();
 			
 			$id = $this->db->nextId($this->table, 'page_id');
 			
@@ -278,8 +186,50 @@ namespace Canteen\Services
 				))
 				->result() ? $id : false;
 		}
-		
-		
+
+		/**
+		*  Get a current page by the URI stub
+		*  @method getPageById
+		*  @param {String} uri Page's URI stub or collection of URIs
+		*  @return {Page|Array} The collection of Page objects or a single Page
+		*/
+		public function getPageById($id)
+		{
+			return parent::getPageById($id);
+		}
+
+		/**
+		*  Get all of the children pages nested within a page
+		*  @method getPagesByParentId
+		*  @param {int} parentId A page's parent ID
+		*  @return {Array} The collection of Page objects
+		*/
+		public function getPagesByParentId($id)
+		{
+			return parent::getPagesByParentId($id);
+		}
+
+		/**
+		*  Get all of the pages
+		*  @method getPages
+		*  @return {Array} The collection of Page objects
+		*/
+		public function getPages()
+		{
+			return parent::getPages();
+		}
+
+		/**
+		*  Remove a page 
+		*  @method removePage
+		*  @param {id} id The Page ID to remove
+		*  @return {Boolean} If page was deleted successfully
+		*/
+		public function removePage($id)
+		{
+			return parent::removePage($id);
+		}
+
 		/**
 		*  Update a user property or properties
 		*  @method updatePage
@@ -290,48 +240,7 @@ namespace Canteen\Services
 		*/
 		public function updatePage($id, $prop, $value=null)
 		{
-			$this->internal('Canteen\Forms\PageUpdate');
-			$this->privilege(Privilege::ADMINISTRATOR);
-			
-			$this->verify($id);
-			
-			if (!is_array($prop))
-			{
-				$prop = array($prop => $value);
-			}
-			
-			$properties = array();
-			foreach($prop as $k=>$p)
-			{
-				$k = $this->verify($k, Validate::URI);
-				$k = $this->convertPropertyNames($k);
-				$properties[$k] = $this->verify($p, Validate::FULL_TEXT);
-			}
-			
-			return $this->db->update($this->table)
-				->set($properties)
-				->where('`page_id`='.$id)
-				->result();
-		}
-		
-		/**
-		*  Convert the public property names into table field names
-		*  @method convertPropertyNames
-		*  @private
-		*  @param {String} prop The name of the public property
-		*  @return {String} The database field name
-		*/
-		private function convertPropertyNames($prop)
-		{
-			$props = array(
-				'isDynamic' => 'is_dynamic',
-				'parentId' => 'parent_id',
-				'redirectId' => 'redirect_id',
-				'id' => 'page_id'
-			);
-			return isset($props[$prop]) ? 
-				$props[$prop] : 
-				$this->verify($prop, Validate::URI);
+			return parent::updatePage($id, $prop, $value);
 		}
 	}
 }

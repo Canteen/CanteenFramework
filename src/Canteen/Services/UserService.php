@@ -13,31 +13,10 @@ namespace Canteen\Services
 	*  Services for accessing the Users and logging in to the site.  Located in the namespace __Canteen\Services__.
 	*  
 	*  @class UserService
-	*  @extends Service
+	*  @extends CustomService
 	*/
-	class UserService extends Service
-	{
-		/** 
-		*  The list of user select table properties 
-		*  @property {Array} properties
-		*  @private
-		*/
-		private $properties = array(
-			'`user_id` as `id`',
-			'IF(`is_active`>0, 1, NULL) as `isActive`',
-			'`username`',
-			'`email`',
-			'`password`',
-			'`first_name` as `firstName`',
-			'`last_name` as `lastName`',
-			'CONCAT(`first_name`,\' \',`last_name`) as `fullname`',
-			'`privilege`',
-			'`attempts`',
-			'UNIX_TIMESTAMP(`frozen`) as `frozen`',
-			'`forgot_string` as `forgotString`',
-			'UNIX_TIMESTAMP(`login`) as `login`'
-		);
-		
+	class UserService extends CustomService
+	{	
 		/** 
 		*  The list of user select table properties for joining tables 
 		*  @property {Array} propertiesJoined
@@ -60,13 +39,6 @@ namespace Canteen\Services
 		);
 		
 		/** 
-		*  The table the stores the users 
-		*  @property {String} table
-		*  @private
-		*/
-		private $table = 'users';
-		
-		/** 
 		*  The table for who's session is currently active
 		*  @property {String} sessionsTable
 		*  @private
@@ -74,18 +46,56 @@ namespace Canteen\Services
 		private $sessionsTable = 'users_sessions';
 		
 		/**
-		*  The name of the user data class 
-		*  @property {String} className
-		*  @private
-		*/
-		private $className = 'Canteen\Services\Objects\User';
-		
-		/**
 		*  Create the service
 		*/
 		public function __construct()
 		{
-			parent::__construct('users');
+			parent::__construct(
+				'users',
+				'Canteen\Services\Objects\User',
+				array(
+					$this->field('user_id', Validate::NUMERIC, 'id')
+						->option('isIndex', true)
+						->option('isDefault', true),
+					$this->field('is_active', Validate::BOOLEAN)
+						->option('isIndex', true),
+					$this->field('username', Validate::ALPHA)
+						->option('isIndex', true),
+					$this->field('email', Validate::EMAIL)
+						->option('isIndex', true),
+					$this->field('password', Validate::URI),
+					$this->field('first_name', Validate::NAMES),
+					$this->field('last_name', Validate::NAMES),
+					$this->field('privilege', Validate::NUMERIC),
+					$this->field('attempts', Validate::NUMERIC),
+					$this->field('frozen', Validate::MYSQL_DATE),
+					$this->field('login', Validate::MYSQL_DATE),
+					$this->field('forgot_string', Validate::URI)
+				)
+			);
+
+			// Add additional selection options
+			$this->properties('CONCAT(`first_name`,\' \',`last_name`) as `fullname`');
+
+			$this->access(
+				array(
+					'install' => 'Canteen\Forms\Installer',
+					'freezeUsername' => 'Canteen\Authorization\Authorization',
+					'reportAttempt' => 'Canteen\Authorization\Authorization',
+					'createSession' => 'Canteen\Authorization\Authorization',
+					'refresh' => 'Canteen\Authorization\Authorization',
+					'checkLogin' => 'Canteen\Authorization\Authorization',
+					'checkCookieLogin' => 'Canteen\Authorization\Authorization',
+					'verifyResetPassword' => 'Canteen\Forms\ForgotPassword',
+					'checkSession' => 'Canteen\Authorization\Authorization',
+					'getUserById' => Privilege::GUEST,
+					'getUserByLogin' => 'Canteen\Authorization\Authorization',
+					'getUsers' => Privilege::GUEST,
+					'removeUser' => Privilege::ADMINISTRATOR,
+					'addUser' => Privilege::ADMINISTRATOR,
+					'updateUser' => Privilege::ADMINISTRATOR
+				)
+			);
 		}
 		
 		/**
@@ -100,8 +110,8 @@ namespace Canteen\Services
 		*/
 		public function install($username, $email, $password, $firstName, $lastName)
 		{
-			$this->internal('Canteen\Forms\Installer');
-			
+			$this->acccess();
+
 			if (!$this->db->tableExists($this->table))
 			{
 				$sql = array();
@@ -177,8 +187,8 @@ namespace Canteen\Services
 		*/
 		public function freezeUsername($username, $frozenMins)
 		{
-			$this->internal('Canteen\Authorization\Authorization');
-			
+			$this->access();
+
 			$this->verify($frozenMins);
 			$this->verify($username, Validate::ALPHA);
 			
@@ -197,8 +207,8 @@ namespace Canteen\Services
 		*/
 		public function reportAttempt($username)
 		{
-			$this->internal('Canteen\Authorization\Authorization');
-			
+			$this->access();
+
 			return $this->db->update($this->table)
 				->set('attempts', '`attempts`+1')
 				->where("`username`='$username'")
@@ -215,7 +225,7 @@ namespace Canteen\Services
 		*/
 		public function createSession($id, $sessionId, $ipAddress)
 		{
-			$this->internal('Canteen\Authorization\Authorization');
+			$this->access();
 			
 			$now = date(DATE_FORMAT_MYSQL);
 
@@ -253,7 +263,7 @@ namespace Canteen\Services
 		*/
 		public function refresh($id)
 		{
-			$this->internal('Canteen\Authorization\Authorization');
+			$this->access();
 
 			return $this->db->update($this->table)
 				->set('login', date(DATE_FORMAT_MYSQL))
@@ -272,7 +282,7 @@ namespace Canteen\Services
 		*/
 		public function checkSession($username, $passwordHash, $sessionId, $ipAddress)
 		{
-			$this->internal('Canteen\Authorization\Authorization');
+			$this->access();
 			
 			$results = $this->db->select($this->propertiesJoined)
 				->from(
@@ -301,7 +311,7 @@ namespace Canteen\Services
 		*/
 		public function checkCookieLogin($userId, $sessionId)
 		{
-			$this->internal('Canteen\Authorization\Authorization');
+			$this->access();
 			
 			$result = $this->db->select($this->propertiesJoined)
 				->from(
@@ -329,10 +339,11 @@ namespace Canteen\Services
 		*/
 		public function checkLogin($usernameOrEmail, $password, $isPasswordHashed=false)
 		{
-			$this->internal('Canteen\Authorization\Authorization');
+			$this->access();
+
 			$this->verify($usernameOrEmail, Validate::EMAIL);
 			
-			$result = $this->db->select($this->properties)
+			$result = $this->db->select($this->properties())
 				->from($this->table)
 				->where("(`username`='".$usernameOrEmail."' || 
 					`email`='".$usernameOrEmail."')",
@@ -362,7 +373,8 @@ namespace Canteen\Services
 		*/
 		public function verifyResetPassword($username, $forgotString)
 		{
-			$this->internal('Canteen\Forms\ForgotPassword');
+			$this->access();
+
 			$this->verify($username, Validate::EMAIL);
 			$this->verify($forgotString, Validate::URI);
 			
@@ -377,38 +389,18 @@ namespace Canteen\Services
 		}
 		
 		/**
-		*  Get a user or user by id
-		*  @method getUserById
-		*  @param {int|Array} id Either a single user ID or an array of IDs
-		*  @return {User|Array} The User object or collection of User objects
-		*/
-		public function getUserById($id)
-		{
-			$this->privilege();
-			
-			$result = $this->db->select($this->properties)
-				->from($this->table)
-				->where('`user_id` in '.$this->valueSet($id))
-				->results();
-			
-			// If we only request one user and we have a result, show that
-			return is_array($id) ?
-			 	$this->bindObjects($result, $this->className):
-				$this->bindObject($result, $this->className);
-		}
-		
-		/**
 		*  Get a user or users by email addresses or usernames
 		*  @method getUser
 		*  @param {String|Array} usernameOrEmail Either the username or email address or collection of usernames
 		*  @return {User} The User object or collection of User objects
 		*/
-		public function getUser($usernameOrEmail)
+		public function getUserByLogin($usernameOrEmail)
 		{
-			$this->internal('Canteen\Authorization\Authorization');
+			$this->access();
+
 			$usernameOrEmail = $this->valueSet($usernameOrEmail, Validate::EMAIL);
 			
-			$result = $this->db->select($this->properties)
+			$result = $this->db->select($this->properties())
 				->from($this->table)
 				->where("`username` in $usernameOrEmail || `email` in $usernameOrEmail")
 				->results();
@@ -417,37 +409,6 @@ namespace Canteen\Services
 			return is_array($usernameOrEmail) ?
 			 	$this->bindObjects($result, $this->className):
 				$this->bindObject($result, $this->className);
-		}
-		
-		/**
-		*  Get all of the current users
-		*  @method getUsers
-		*  @return {Array} A collection of User objects
-		*/
-		public function getUsers()
-		{
-			$this->privilege();
-			
-			$result = $this->db->select($this->properties)
-				->from($this->table)
-				->results();
-			
-			return $this->bindObjects($result, $this->className);
-		}
-		
-		/**
-		*  Remove a user by an id
-		*  @method removeUser
-		*  @param {int|Array} id The user id or collection of IDs
-		*  @return {Boolean} If successfully deleted
-		*/
-		public function removeUser($id)
-		{
-			$this->privilege(Privilege::ADMINISTRATOR);
-			
-			return $this->db->delete($this->table)
-				->where('`user_id` in '.$this->valueSet($id))
-				->result();	
 		}
 		
 		/**
@@ -462,10 +423,17 @@ namespace Canteen\Services
 		*  @return {int|Boolean} If successfully return a new ID, or else false
 		*/
 		public function addUser($username, $email, $password, $firstName, $lastName, $privilege)
-		{
-			$this->privilege(Privilege::ADMINISTRATOR);
-			
-			return $this->internalAddUser($username, $email, $password, $firstName, $lastName, $privilege);
+		{			
+			$this->access();
+
+			return $this->internalAddUser(
+				$username, 
+				$email, 
+				$password, 
+				$firstName, 
+				$lastName, 
+				$privilege
+			);
 		}
 		
 		/**
@@ -508,68 +476,39 @@ namespace Canteen\Services
 		*/
 		public function updateUser($id, $prop, $value=null)
 		{
-			$this->privilege(Privilege::ADMINISTRATOR);
-			$this->verify($id);
-			
-			if (!is_array($prop))
-			{
-				$prop = array($prop => $value);
-			}
-			
-			$properties = array();
-			foreach($prop as $k=>$p)
-			{
-				$k = $this->verify($k, Validate::URI);
-				$k = $this->convertPropertyNames($k);
-				
-				$type = null;
-				switch($k)
-				{
-					case 'login' : 
-					case 'frozen' : $type = Validate::MYSQL_DATE; 
-						break;
-					case 'forgot_string' : $type = Validate::URI; 
-						break;
-					case 'username' : $type = Validate::ALPHA; 
-						break;
-					case 'password' : $type = Validate::FULL_TEXT;
-						break;
-					case 'email' : $type = Validate::EMAIL;
-						break;
-					case 'first_name' :
-					case 'last_name' : $type = Validate::NAMES; 
-						break;
-				}
-				
-				$properties[$k] = $this->verify($p, $type);
-			}
-			
-			return $this->db->update($this->table)
-				->set($properties)
-				->where('`user_id`='.$id)
-				->result();
+			return parent::updateUser($id, $prop, $value);
+		}
+
+		/**
+		*  Get all of the current users
+		*  @method getUsers
+		*  @return {Array} A collection of User objects
+		*/
+		public function getUsers()
+		{
+			return parent::getUsers();
 		}
 		
 		/**
-		*  Convert the public property names into table field names
-		*  @method convertPropertyNames
-		*  @private
-		*  @param {String} prop The name of the public property
-		*  @return {String} The database field name
+		*  Remove a user by an id
+		*  @method removeUser
+		*  @param {int|Array} id The user id or collection of IDs
+		*  @return {Boolean} If successfully deleted
 		*/
-		private function convertPropertyNames($prop)
+		public function removeUser($id)
 		{
-			$props = array(
-				'isActive' => 'is_active',
-				'firstName' => 'first_name',
-				'lastName' => 'last_name',
-				'id' => 'user_id',
-				'fullname' => 'CONCAT(`first_name`,\' \',`last_name`) as `fullname`',
-				'forgotString' => 'forgot_string'
-			);
-			return isset($props[$prop]) ? 
-				$props[$prop] : 
-				$this->verify($prop, Validate::URI);
+			return parent::removeUser($id);
+		}
+
+		/**
+		*  Get a user or user by id
+		*  @method getUserById
+		*  @param {int|Array} id Either a single user ID or an array of IDs
+		*  @return {User|Array} The User object or collection of User objects
+		*/
+		public function getUserById($id)
+		{
+			return parent::getUserById($id);
 		}
 	}
 }
