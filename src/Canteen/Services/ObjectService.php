@@ -101,7 +101,7 @@ namespace Canteen\Services
 			foreach($fields as $f)
 			{
 				$this->_fieldsByName[$f->name] = $f;
-				$this->_properties[] = $f->select;
+				$this->_properties[] = (string)$f;
 
 				if ($f->prepend)
 					$this->_prepends[$f->name] = $f->prepend;
@@ -286,10 +286,10 @@ namespace Canteen\Services
 		*/
 		private function accessDefault($method)
 		{
-			if ($this->_defaultField) 
+			if (!$this->_defaultField) 
 				throw new ObjectServiceError(ObjectServiceError::NO_DEFAULT_INDEX);
 			
-			$this->access($method.'By'.ucfirst($this->_defaultField));
+			$this->access($method.'By'.ucfirst($this->_defaultField->name));
 		}
 
 		/**

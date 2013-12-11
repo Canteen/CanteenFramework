@@ -100,6 +100,16 @@ namespace Canteen\Services
 		}
 
 		/**
+		*  Represent the query as a SQL statement
+		*  @method __toString
+		*  @return {String} The query in SQL string form 
+		*/
+		public function __toString()
+		{
+			return $this->select;
+		}
+
+		/**
 		*  Convert a mysql field (eg. content_id) to property (e.g. contentId)
 		*  @method fieldToProperty 
 		*  @static
