@@ -12,14 +12,14 @@ namespace Canteen\Services
 		*  @property {String} table
 		*  @protected
 		*/
-		protected $table;
+		public $table;
 
 		/**
 		*  The name of the class to bind with
 		*  @property {String} className
 		*  @protected
 		*/
-		protected $className;
+		public $className;
 
 		/**
 		*  The name of the single item to use for dynamic method calls
@@ -78,6 +78,29 @@ namespace Canteen\Services
 		private $_indexes = array();
 
 		/**
+		*  Additional get where properties
+		*  @property {Array} _getWhere
+		*  @private
+		*  @default array()
+		*/
+		private $_getWhere = array();
+
+		/**
+		*  Optional property to order the database select by a property name
+		*  @property {String} _getOrderBy
+		*  @private
+		*/
+		private $_getOrderBy = null;
+
+		/**
+		*  The direction of the orderBy, if using _getOrderBy property
+		*  @property {String} getOrder
+		*  @private
+		*  @default asc
+		*/
+		private $_getOrderDirection = null;
+
+		/**
 		*  The ObjectService class is an easy way to do custom
 		*  data types. 
 		*  @class ObjectService
@@ -112,6 +135,108 @@ namespace Canteen\Services
 				if ($f->isDefault)
 					$this->_defaultField = $f;
 			}
+		}
+
+		/**
+		*  Register additional where clauses for the SQL select on get methods
+		*  @method where
+		*  @protected
+		*  @param {Array|String*} args The collection of extra SQL select where 
+		*     parameters to add to all get selections
+		*  @return {ObjectService} The instance of this class, for chaining
+		*/
+		protected function where($args)
+		{
+			$args = is_array($args) ? $args : func_get_args();
+			$this->_getWhere = array_merge($this->_getWhere, $args);
+			return $this;
+		}
+
+		/**
+		*  Add an order by to the get SQL selection
+		*  @method orderBy
+		*  @protected
+		*  @param {String} name The field name to select on
+		*  @param {String} [direction='asc'] The direction of the order, either asc or desc
+		*  @return {ObjectService} The instance of this class, for chaining
+		*/
+		protected function orderBy($name, $direction='asc')
+		{
+			$this->_getOrderBy = $name;
+			$this->_getOrderDirection = $direction;
+			return $this;
+		}
+
+		/**
+		*  Convience method for the field validation wrapper for verify
+		*  but call by name.
+		*  @method validate
+		*  @private
+		*  @param {Dictionary|String} fieldName The name of the field or a map of name=>values
+		*  @param {mixed} [value=null] The value to check against
+		*  @return {ObjectService} The instance of this object for chaining
+		*/
+		private function validate($fieldName, $value=null)
+		{
+			if (is_array($fieldName))
+			{
+				foreach($fieldName as $n=>$v)
+				{
+					$this->validate($n, $v);
+				}
+			}
+			else
+			{
+				if (!isset($this->_fieldsByName[$fieldName]))
+					throw new ObjectServiceError(ObjectServiceError::INVALID_FIELD_NAME, $fieldName);
+
+				// Do the validation
+				$type = $this->_fieldsByName[$fieldName]->type;
+				if ($type) $this->verify($value, $type);
+			}
+			return $this;
+		}
+
+		/**
+		*  Conviencence method to inserting a new row into a table, this does
+		*  all the field validation and insert.
+		*  @method add
+		*  @protected
+		*  @param {Dictionary} properties The collection map of field names to values
+		*  @return {int} The result
+		*/
+		protected function add($properties)
+		{
+			if (!$this->_defaultField) 
+				throw new ObjectServiceError(ObjectServiceError::NO_DEFAULT_INDEX);
+			
+			$this->validate($properties);
+
+			// Get the next field ID
+			$values = array();
+
+			// Convert the named properties into field inserts
+			foreach($properties as $name=>$value)
+			{
+				$field = $this->_fieldsByName[$name];
+				$values[$field->id] = $value;
+			}
+
+			// If the default index isn't included,
+			// we'll use the next Id on the table, this is only
+			// for index things
+			if (!isset($values[$this->_defaultField->name]))
+			{
+				$values[$this->_defaultField->id] = $this->db->nextId(
+					$this->table, 
+					$this->_defaultField->id
+				);
+			}
+
+			// Insert the item
+			return $this->db->insert($this->table)
+				->values($values)
+				->result() ? $values[$this->_defaultField->id] : false;
 		}
 
 		/**
@@ -194,6 +319,22 @@ namespace Canteen\Services
 		*/
 		public function __call($method, $arguments=null)
 		{
+			// Check for validation call
+			if (preg_match('/^validate([A-Z][a-zA-Z0-9]*)$/', $method))
+			{
+				$name = str_replace('validate', '', $method);
+				$name = strtolower(substr($name, 0, 1)).substr($name, 1);
+
+				if (!isset($this->_fieldsByName[$name]))
+					throw new ObjectServiceError(ObjectServiceError::INVALID_FIELD_NAME, $name);
+
+				if (!is_array($arguments) || count($arguments) != 1)
+					throw new ObjectServiceError(ObjectServiceError::WRONG_ARG_COUNT, array($method, 1, count($arguments)));
+
+				$this->validate($name, $arguments[0]);
+				return;
+			}
+
 			if ($arguments == null) $arguments = array();
 
 			$internal = null;
@@ -304,10 +445,21 @@ namespace Canteen\Services
 		*/
 		private function internalGetByIndex(ObjectServiceField $index, $isSingle, $search)
 		{
-			$results = $this->db->select($this->_properties)
+			$query = $this->db->select($this->_properties)
 				->from($this->table)
-				->where("`{$index->id}` in " . $this->valueSet($search, $index->type))
-				->results();
+				->where("`{$index->id}` in " . $this->valueSet($search, $index->type));
+
+			if ($this->_getOrderBy !== null)
+			{
+				$query->orderBy($this->_getOrderBy, $this->_getOrderDirection);
+			}
+				
+			if (count($this->_getWhere))
+			{
+				$query->where($this->_getWhere);
+			}
+
+			$results = $query->results();
 
 			if (!$results) return null;
 
@@ -330,9 +482,20 @@ namespace Canteen\Services
 		*/
 		private function internalGetAll()
 		{
-			$results = $this->db->select($this->_properties)
-				->from($this->table)
-				->results();
+			$query = $this->db->select($this->_properties)
+				->from($this->table);
+		
+			if ($this->_getOrderBy !== null)
+			{
+				$query->orderBy($this->_getOrderBy, $this->_getOrderDirection);
+			}
+				
+			if (count($this->_getWhere))
+			{
+				$query->where($this->_getWhere);
+			}
+
+			$results = $query->results();
 
 			return $this->bindObjects(
 				$results, 

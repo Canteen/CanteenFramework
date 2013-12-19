@@ -26,17 +26,16 @@ namespace Canteen\Services
 				'Canteen\Services\Objects\Page',
 				array(
 					$this->field('page_id', Validate::NUMERIC, 'id')
-						->option('isDefault', true)
-						->option('isIndex', true),
+						->setDefault(),
 					$this->field('uri', Validate::URI)
-						->option('isIndex', true),
+						->setIndex(),
 					$this->field('title', Validate::FULL_TEXT),
 					$this->field('description'),
 					$this->field('keywords', Validate::FULL_TEXT),
 					$this->field('redirect_id', Validate::NUMERIC),
 					$this->field('parent_id', Validate::NUMERIC)
-						->option('isIndex', true)
-						->option('select', 'IF(`parent_id` is NULL || `parent_id`=0, `page_id`, `parent_id`) as `parentId`'),
+						->setIndex()
+						->setSelect('IF(`parent_id` is NULL || `parent_id`=0, `page_id`, `parent_id`) as `parentId`'),
 					$this->field('is_dynamic', Validate::BOOLEAN),
 					$this->field('privilege', Validate::NUMERIC),
 					$this->field('cache', Validate::BOOLEAN)
@@ -164,28 +163,27 @@ namespace Canteen\Services
 		*  @param {Boolean} [cache=true] If the page should always respect the site cache
 		*  @return {int|Boolean} The ID if successful, false if not
 		*/
-		public function addPage($uri, $title, $keywords, $description, $privilege=0, $redirectId=null, $parentId=null, $isDynamic=false, $cache=true)
+		public function addPage($uri, $title, $keywords, $description, $privilege=0, $redirectId=null, $parentId=null, $isDynamic=0, $cache=1)
 		{
 			$this->access();
 			
+			// Normally the add function would get the page id
+			// but in this case we need to use as the default
+			// parent id, if it's top level page
 			$id = $this->db->nextId($this->table, 'page_id');
-			
-			if ($parentId === null) $parentId = $id;
-			
-			return $this->db->insert($this->table)
-				->values(array(
-					'page_id' => $id,
-					'uri' => $this->verify($uri, Validate::URI),
-					'title' => $this->verify($title, Validate::FULL_TEXT),
-					'redirect_id' => $this->verify($redirectId),
-					'parent_id' => $this->verify($parentId),
-					'is_dynamic' => $isDynamic ? 1 : 0,
-					'keywords' => $this->verify($keywords, Validate::FULL_TEXT),
-					'description' => $this->verify($description, Validate::FULL_TEXT),
-					'privilege' => $this->verify($privilege),
-					'cache' => $cache ? 1 : 0
-				))
-				->result() ? $id : false;
+
+			return $this->add(array(
+				'id' => $id,
+				'uri' => $uri,
+				'title' => $title,
+				'redirectId' => $redirectId,
+				'parentId' => ($parentId === null) ? $id : $parentId,
+				'isDynamic' => $isDynamic,
+				'keywords' => $keywords,
+				'description' => $description,
+				'privilege' => $privilege,
+				'cache' => $cache
+			));
 		}
 
 		/**

@@ -40,7 +40,23 @@ namespace Canteen\Errors
 		*  @final
 		*/
 		const INVALID_METHOD = 602;
+
+		/** 
+		*  There is no field matching the supplied name
+		*  @property {int} INVALID_FIELD_NAME
+		*  @static
+		*  @final
+		*/
+		const INVALID_FIELD_NAME = 603;
 		
+		/** 
+		*  Wrong number of arguments for dynamic method
+		*  @property {int} WRONG_ARG_COUNT
+		*  @static
+		*  @final
+		*/
+		const WRONG_ARG_COUNT = 604;
+
 		/**
 		*  The collection of messages
 		*  @property {Array} messages
@@ -51,7 +67,9 @@ namespace Canteen\Errors
 		private static $messages = array(
 			self::INVALID_INDEX => 'There is no custom field index with the name "%s", set this field to be isIndex=true',
 			self::NO_DEFAULT_INDEX => 'The custom service does not have a default index field, set isDefault=true on a field',
-			self::INVALID_METHOD => 'The dynamic method call "%s" is not valid on this custom service'
+			self::INVALID_METHOD => 'The dynamic method call "%s" is not valid on this custom service',
+			self::INVALID_FIELD_NAME => 'The field name "%s" is not valid',
+			self::WRONG_ARG_COUNT => 'The method call "%s" got %s arguments and was expecting %s'
 		);
 		
 		/**

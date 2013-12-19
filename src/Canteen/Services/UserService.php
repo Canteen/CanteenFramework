@@ -55,14 +55,13 @@ namespace Canteen\Services
 				'Canteen\Services\Objects\User',
 				array(
 					$this->field('user_id', Validate::NUMERIC, 'id')
-						->option('isIndex', true)
-						->option('isDefault', true),
+						->setDefault(),
 					$this->field('is_active', Validate::BOOLEAN)
-						->option('isIndex', true),
+						->setIndex(),
 					$this->field('username', Validate::ALPHA)
-						->option('isIndex', true),
+						->setIndex(),
 					$this->field('email', Validate::EMAIL)
-						->option('isIndex', true),
+						->setIndex(),
 					$this->field('password', Validate::URI),
 					$this->field('first_name', Validate::NAMES),
 					$this->field('last_name', Validate::NAMES),
@@ -449,21 +448,16 @@ namespace Canteen\Services
 		*  @return {int|Boolean} If successfully return a new ID, or else false
 		*/
 		private function internalAddUser($username, $email, $password, $firstName, $lastName, $privilege)
-		{
-			$id = $this->db->nextId($this->table, 'user_id');
-						
-			return $this->db->insert($this->table)
-				->values(array(
-					'user_id' => $id,
-					'username' => $this->verify($username, Validate::FILE_NAME),
-					'email' => $this->verify($email, Validate::EMAIL),
-					'password' => PasswordUtils::hash($password),
-					'first_name' => $this->verify($firstName, Validate::NAMES),
-					'last_name' => $this->verify($lastName, Validate::NAMES),
-					'privilege' => $this->verify($privilege),
-					'is_active' => 1
-				))
-				->result() ? $id : false;
+		{			
+			return $this->add(array(
+				'username' => $username,
+				'email' => $email,
+				'password' => PasswordUtils::hash($password),
+				'firstName' => $firstName,
+				'lastName' => $lastName,
+				'privilege' => $privilege,
+				'isActive' => 1
+			));
 		}
 		
 		/**

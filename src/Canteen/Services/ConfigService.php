@@ -27,13 +27,12 @@ namespace Canteen\Services
 				'Canteen\Services\Objects\Config',
 				array(
 					$this->field('config_id', Validate::NUMERIC, 'id')
-						->option('isDefault', true)
-						->option('isIndex', true),
+						->setDefault(),
 					$this->field('name', Validate::URI)
-						->option('isIndex', true),
+						->setIndex(),
 					$this->field('value', Validate::FULL_TEXT),
 					$this->field('value_type', $this->getValueTypes(), 'type'),
-					$this->field('access', Validate::BOOLEAN)
+					$this->field('access', Validate::NUMERIC)
 				)
 			);
 
@@ -147,29 +146,25 @@ namespace Canteen\Services
 		*  @method addConfig
 		*  @param {String} name The key name to set
 		*  @param {mixed} value The value of the key to set
-		*  @param {String} [valueType='string'] The value type (string or integer)
+		*  @param {String} [type='string'] The value type (string or integer)
 		*  @param {int} [access=0] The access to the property, see SettingsManager for more
 		*         information on controlling access to settings.
 		*  @return {int|Boolean} The new ID if successful, false if not
 		*/
-		public function addConfig($name, $value, $valueType='string', $access=0)
+		public function addConfig($name, $value, $type='string', $access=0)
 		{
 			$this->access();
 
-			$this->verify($valueType, $this->getValueTypes());
-			$this->verify($value, $this->getValidationByType($valueType));
-			$this->verify($name, Validate::URI);
-			
-			$id = $this->db->nextId($this->table, 'config_id');
-			return $this->db->insert($this->table)
-				->values(array(
-					'config_id' => $id,
-					'name' => $name,
-					'value' => $value,
-					'value_type' => $valueType,
-					'access' => $access
-				))
-				->result() ? $id : false;
+			// Specific type validation
+			$this->verify($value, $this->getValidationByType($type));
+
+			return $this->add(array(
+				'type' => $type,
+				'name' => $name,
+				'value' => $value,
+				'type' => $type,
+				'access' => $access
+			));
 		}
 		
 		/**
@@ -189,8 +184,31 @@ namespace Canteen\Services
 				default : return Validate::FULL_TEXT;
 			}
 		}
-		
+
 		/**
+		*  Get a config variable by name
+		*  @method getValueByName
+		*  @param {String} name The name of the config property
+		*  @return {mixed} The value of the config property
+		*/
+		public function getValueByName($name)
+		{
+			$this->validateName($name);
+
+			$result = $this->db->select('`value`', '`value_type` as `type`')
+				->from($this->table)
+				->where("`name`='$name'")
+				->result();
+
+			if ($result)
+			{
+				$type = $result['type'];
+				$value = $result['value'];
+				return $type == 'integer' ? (int)$value : $value;
+			}
+		}
+
+ 		/**
 		*  Get all the the config for the site
 		*  @method getConfigs
 		*  @return {Array} The collection of Config objects

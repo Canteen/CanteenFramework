@@ -66,15 +66,15 @@ namespace Canteen\Services
 			$this->name = $name === null ? self::fieldToProperty($id) : $name;
 			$this->isIndex = false;
 
-			// The if the name is the same as id, use that!
-			if ($id == $this->name)
-			{
-				$this->select = '`'.$id.'`';
-			}
 			// Specific boolean selector
-			else if ($type == Validate::BOOLEAN)
+			if ($type == Validate::BOOLEAN)
 			{
 				$this->select = 'IF(`'.$id.'` > 0, 1, null) as `'.$this->name.'`';
+			}
+			// The if the name is the same as id, use that!
+			else if ($id == $this->name)
+			{
+				$this->select = '`'.$id.'`';
 			}
 			// Default to select field as name
 			else
@@ -89,14 +89,63 @@ namespace Canteen\Services
 		/**
 		*  Set an option
 		*  @method option
+		*  @private
 		*  @param {String} property Either type, name, isIndex, select, prepend
 		*  @param {mixed} value The value of the property to set
 		*  @return {ObjectServiceField} Return the field for chaining
 		*/
-		public function option($property, $value)
+		private function option($property, $value)
 		{
 			$this->$property = $value;
 			return $this;
+		}
+
+		/**
+		*  Set the field to be an index, a method can be called, getItemsByName, where name
+		*  is the indexed field. Database should also consider this an index.
+		*  @method setIndex
+		*  @param {Boolean} [isIndex=true] If the field is index
+		*  @return {ObjectServiceField} Return the field for chaining
+		*/
+		public function setIndex($isIndex=true)
+		{
+			return $this->option('isIndex', $isIndex);
+		}
+
+		/**
+		*  Set the default index, e.g., instead of calling getItemById, you can do getItem
+		*  @method setDefault
+		*  @param {Boolean} [isDefault=true] If the field is the default index
+		*  @return {ObjectServiceField} Return the field for chaining
+		*/
+		public function setDefault($isDefault=true)
+		{
+			// The default should also be an index
+			return $this->setIndex($isDefault)
+				->option('isDefault', $isDefault);
+		}
+
+		/**
+		*  Set a custom SQL select for this item
+		*  @method setSelect
+		*  @param {String} select The SQL select entry that returns this item by name
+		*  @return {ObjectServiceField} Return the field for chaining
+		*/
+		public function setSelect($select)
+		{
+			return $this->option('select', $select);
+		}
+
+		/**
+		*  Prepend this item with a string, useful for prepending full file path
+		*  to a file name stored in the database.
+		*  @method setPrepend
+		*  @param {String} prepend The string to prepend to result value
+		*  @return {ObjectServiceField} Return the field for chaining
+		*/
+		public function setPrepend($prepend)
+		{
+			return $this->option('prepend', $prepend);
 		}
 
 		/**

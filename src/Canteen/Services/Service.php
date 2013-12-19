@@ -198,11 +198,12 @@ namespace Canteen\Services
 		*  method. 
 		*  @method access
 		*  @protected
+		*  @return {Service} Return the instance of this for chaining
 		*/
 		protected function access()
 		{
 			// Ignore access controls if we're local
-			if ($this->settings->local) return;
+			if ($this->settings->local) return $this;
 
 			// DEBUG_BACKTRACE_IGNORE_ARGS is only in PHP 5.3.6
 			$trace = defined('DEBUG_BACKTRACE_IGNORE_ARGS') ? 
@@ -246,11 +247,12 @@ namespace Canteen\Services
 					if (isset($stack['class']) && in_array($stack['class'], $control->internals))
 					{
 						// bail out, proceed as normal
-						return;
+						return $this;
 					}
 				}
 				throw new CanteenError(CanteenError::INTERNAL_ONLY);
 			}
+			return $this;
 		}
 
 		/**
