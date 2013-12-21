@@ -153,18 +153,18 @@ namespace Canteen\Services
 		*/
 		public function addConfig($name, $value, $type='string', $access=0)
 		{
-			$this->access();
-
 			// Specific type validation
 			$this->verify($value, $this->getValidationByType($type));
 
-			return $this->add(array(
-				'type' => $type,
-				'name' => $name,
-				'value' => $value,
-				'type' => $type,
-				'access' => $access
-			));
+			return $this->add(
+				array(
+					'type' => $type,
+					'name' => $name,
+					'value' => $value,
+					'type' => $type,
+					'access' => $access
+				)
+			);
 		}
 		
 		/**

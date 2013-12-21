@@ -210,6 +210,9 @@ namespace Canteen\Services
 			if (!$this->_defaultField) 
 				throw new ObjectServiceError(ObjectServiceError::NO_DEFAULT_INDEX);
 			
+			// Check the access on the calling method
+			$this->access($this->getCaller());
+
 			$this->validate($properties);
 
 			// Get the next field ID

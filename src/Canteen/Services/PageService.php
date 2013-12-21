@@ -164,26 +164,26 @@ namespace Canteen\Services
 		*  @return {int|Boolean} The ID if successful, false if not
 		*/
 		public function addPage($uri, $title, $keywords, $description, $privilege=0, $redirectId=null, $parentId=null, $isDynamic=0, $cache=1)
-		{
-			$this->access();
-			
+		{			
 			// Normally the add function would get the page id
 			// but in this case we need to use as the default
 			// parent id, if it's top level page
 			$id = $this->db->nextId($this->table, 'page_id');
 
-			return $this->add(array(
-				'id' => $id,
-				'uri' => $uri,
-				'title' => $title,
-				'redirectId' => $redirectId,
-				'parentId' => ($parentId === null) ? $id : $parentId,
-				'isDynamic' => $isDynamic,
-				'keywords' => $keywords,
-				'description' => $description,
-				'privilege' => $privilege,
-				'cache' => $cache
-			));
+			return $this->add(
+				array(
+					'id' => $id,
+					'uri' => $uri,
+					'title' => $title,
+					'redirectId' => $redirectId,
+					'parentId' => ($parentId === null) ? $id : $parentId,
+					'isDynamic' => $isDynamic,
+					'keywords' => $keywords,
+					'description' => $description,
+					'privilege' => $privilege,
+					'cache' => $cache
+				)
+			);
 		}
 
 		/**

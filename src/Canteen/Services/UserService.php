@@ -448,16 +448,18 @@ namespace Canteen\Services
 		*  @return {int|Boolean} If successfully return a new ID, or else false
 		*/
 		private function internalAddUser($username, $email, $password, $firstName, $lastName, $privilege)
-		{			
-			return $this->add(array(
-				'username' => $username,
-				'email' => $email,
-				'password' => PasswordUtils::hash($password),
-				'firstName' => $firstName,
-				'lastName' => $lastName,
-				'privilege' => $privilege,
-				'isActive' => 1
-			));
+		{
+			return $this->add(
+				array(
+					'username' => $username,
+					'email' => $email,
+					'password' => PasswordUtils::hash($password),
+					'firstName' => $firstName,
+					'lastName' => $lastName,
+					'privilege' => $privilege,
+					'isActive' => 1
+				)
+			);
 		}
 		
 		/**
