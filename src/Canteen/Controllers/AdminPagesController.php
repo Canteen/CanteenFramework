@@ -35,7 +35,7 @@ namespace Canteen\Controllers
 			
 			if (!empty($pageId))
 			{
-				$page = $this->service('pages')->getPageById($pageId);
+				$page = $this->service('pages')->getPage($pageId);
 			}		
 			
 			// The directory path

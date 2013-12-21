@@ -232,7 +232,7 @@ namespace Canteen\Errors
 			self::SETTING_DELETE => 'The setting \'%s\' cannot be deleted',
 			self::SETTING_WRITEABLE => 'The setting \'%s\' cannot be changed',
 			self::SETTING_NAME_TAKEN => 'The setting name \'%s\' is taken, please rename',
-			self::INTERNAL_ONLY => 'Method is only accessible internally',
+			self::INTERNAL_ONLY => 'Method \'%s\' is only accessible internally from the following classes: %s',
 			self::INVALID_SETTING => 'The setting \'%s\' property does not exist',
 			self::INVALID_SERVICE_ALIAS => 'The alias or class of the service does not exist',
 			self::OVERRIDE_CONTROLLER_PROCESS => "Controller must override 'process' method",

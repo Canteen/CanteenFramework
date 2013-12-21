@@ -116,7 +116,7 @@ namespace Canteen\Utilities
 		*  @final
 		*  @static
 		*/
-		const MYSQL_DATE = '/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}( [0-9]{2}\:[0-9]{2}\:[0-9]{2})?$/';
+		const MYSQL_DATE = '/^NOW\(\)|[0-9]{4}\-[0-9]{2}\-[0-9]{2}( [0-9]{2}\:[0-9]{2}\:[0-9]{2})?$/';
 		
 		/**
 		*  Sanitize input data using the validation types above

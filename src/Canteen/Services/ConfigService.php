@@ -215,18 +215,18 @@ namespace Canteen\Services
 		*/
 		public function getConfigs()
 		{
-			return parent::getConfigs();
+			return $this->call();
 		}
 
 		/**
 		*  Get a config variable by id
-		*  @method getConfigById
+		*  @method getConfig
 		*  @param {int} id The ID of the config Option
 		*  @return {Config} The config object
 		*/
-		public function getConfigById($id)
+		public function getConfig($id)
 		{
-			return parent::getConfigById($id);
+			return $this->call($id);
 		}
 
 		/**
@@ -239,7 +239,7 @@ namespace Canteen\Services
 		*/
 		public function updateConfig($id, $prop, $value=null)
 		{
-			return parent::updateConfig($id, $prop, $value);
+			return $this->call($id, $prop, $value);
 		}
 		
 		/**
@@ -250,7 +250,7 @@ namespace Canteen\Services
 		*/
 		public function removeConfig($id)
 		{
-			return parent::removeConfig($id);
+			return $this->call($id);
 		}
 	}
 }

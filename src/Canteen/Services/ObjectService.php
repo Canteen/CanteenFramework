@@ -315,9 +315,13 @@ namespace Canteen\Services
 		}
 
 		/**
-		*  Handle dynamic method calls
+		*  Override of the dynamic call method to call validate* methods, for instance
+		*  if we're validating Name it would be $this->validateName($value)
+		*  @method __call
+		*  @param {String} method The name of the method to call
+		*  @param {Array} args  The collection of arguments
 		*/
-		public function __call($method, $arguments=null)
+		public function __call($method, $args)
 		{
 			// Check for validation call
 			if (preg_match('/^validate([A-Z][a-zA-Z0-9]*)$/', $method))
@@ -328,15 +332,27 @@ namespace Canteen\Services
 				if (!isset($this->_fieldsByName[$name]))
 					throw new ObjectServiceError(ObjectServiceError::INVALID_FIELD_NAME, $name);
 
-				if (!is_array($arguments) || count($arguments) != 1)
-					throw new ObjectServiceError(ObjectServiceError::WRONG_ARG_COUNT, array($method, 1, count($arguments)));
+				if (is_array($args) && count($args) != 1)
+					throw new ObjectServiceError(ObjectServiceError::WRONG_ARG_COUNT, array($method, 1, count($args)));
 
-				$this->validate($name, $arguments[0]);
+				$this->validate($name, $args[0]);
 				return;
 			}
+		}
 
-			if ($arguments == null) $arguments = array();
-
+		/**
+		*  This allows for the internal dynamic calling of methods, the methods supported 
+		*  include getItems, getItem, updateItem, removeItem, 
+		*  getTotalItems, getTotalItem, getItemBy[IndexName], getTotalItemBy[IndexName],
+		*  removeItemBy[IndexName], updateItemBy[IndexName].
+		*  @method call
+		*  @protected
+		*  @param {mixed} [arguments*] The collection of arguments
+		*/
+		protected function call($args=null)
+		{
+			$method = $this->getCaller();
+			$args = func_get_args();
 			$internal = null;
 
 			// Check for access control of the method
@@ -346,7 +362,7 @@ namespace Canteen\Services
 			$p = $this->pluralItemName;
 
 			// Check for function calls where By is called
-			if (preg_match_all('/^(get|update|remove)('.$s.'|'.$p.')By([A-Z][A-Za-z]+)$/', $method, $matches))
+			if (preg_match_all('/^(get|update|remove|getTotal)('.$s.'|'.$p.')By([A-Z][A-Za-z]+)$/', $method, $matches))
 			{
 				$index = $matches[3][0];
 
@@ -362,53 +378,64 @@ namespace Canteen\Services
 				$f = $this->_indexes[$index];
 
 				// Add a boolean to the beinning of the arguments if this is a single
-				array_unshift($arguments, ($matches[2][0] == $s));
+				array_unshift($args, ($matches[2][0] == $s));
 
 				// Add the field name to the beginning of the arguments
-				array_unshift($arguments, $f);
+				array_unshift($args, $f);
 
 				return call_user_func_array(
 					array($this, 'internal'.ucfirst($matches[1][0]).'ByIndex'), 
-					$arguments
+					$args
 				);
 			}
 
 			// The default methods
-			// ->getContent($id)
-			// ->getContents()
-			// ->removeContent($id)
-			// ->updateContent($id)
-
 			switch($method)
 			{
+				// getItems
 				case 'get'.$p:
 				{
 					$internal = 'internalGetAll';
 					break;
 				}
-				case 'get'.$s:
+				// getTotalItems
+				case 'getTotal'.$p:
 				{
-					// Check against the specific method for access
-					// for instance getPageById and getPage should have the same
-					// if 'id' is the default
-					$this->accessDefault('get'.$s);
-					$internal = 'internalGetByIndex';
-					array_unshift($arguments, true);
-					array_unshift($arguments, $this->_defaultField);
+					$internal = 'internalGetTotalAll';
 					break;
 				}
+				// getTotalItem
+				case 'getTotal'.$s:
+				{
+					$this->accessDefault('getTotal'.$s);
+					$internal = 'internalGetTotalByIndex';
+					array_unshift($args, true);
+					array_unshift($args, $this->_defaultField);
+					break;
+				}
+				// getItem
+				case 'get'.$s:
+				{
+					$this->accessDefault('get'.$s);
+					$internal = 'internalGetByIndex';
+					array_unshift($args, true);
+					array_unshift($args, $this->_defaultField);
+					break;
+				}
+				// removeItem
 				case 'remove'.$s:
 				{
 					$this->accessDefault('remove'.$s);
 					$internal = 'internalRemoveByIndex';
-					array_unshift($arguments, $this->_defaultField);
+					array_unshift($args, $this->_defaultField);
 					break;
 				}	
+				// updateItem
 				case 'update'.$s:
 				{
 					$this->accessDefault('update'.$s);
 					$internal = 'internalUpdateByIndex';
-					array_unshift($arguments, $this->_defaultField);
+					array_unshift($args, $this->_defaultField);
 					break;
 				}
 			}
@@ -416,7 +443,7 @@ namespace Canteen\Services
 			if (!$internal)
 				throw new ObjectServiceError(ObjectServiceError::INVALID_METHOD, $internal);
 
-			return call_user_func_array(array($this, $internal), $arguments);
+			return call_user_func_array(array($this, $internal), $args);
 		}
 
 		/**
@@ -440,10 +467,12 @@ namespace Canteen\Services
 		*  @param {ObjectServiceField} index The index field to search on
 		*  @param {Boolean} isSingle If the index search is a single
 		*  @param {Array|mixed} search The value to search on
+		*  @param {int} [lengthOrIndex=null] The starting index or elements to return
+		*  @param {int} [duration=null] The duration of the items
 		*  @return {Array|Object} The collection of objects or a single object matching
 		*     the className from the constuction
 		*/
-		private function internalGetByIndex(ObjectServiceField $index, $isSingle, $search)
+		private function internalGetByIndex(ObjectServiceField $index, $isSingle, $search, $lengthOrIndex=null, $duration=null)
 		{
 			$query = $this->db->select($this->_properties)
 				->from($this->table)
@@ -457,6 +486,13 @@ namespace Canteen\Services
 			if (count($this->_getWhere))
 			{
 				$query->where($this->_getWhere);
+			}
+
+			if ($lengthOrIndex !== null)
+			{
+				$this->verify($lengthOrIndex);
+				if ($duration !== null) $this->verify($duration);
+				$query->limit($lengthOrIndex, $duration);
 			}
 
 			$results = $query->results();
@@ -475,12 +511,38 @@ namespace Canteen\Services
 		}
 
 		/**
+		*  Internal method for getting result by an index
+		*  @method internalGetTotalByIndex
+		*  @private
+		*  @param {ObjectServiceField} index The index field to search on
+		*  @param {Boolean} isSingle If the index search is a single
+		*  @param {Array|mixed} search The value to search on
+		*  @return {Array|Object} The collection of objects or a single object matching
+		*     the className from the constuction
+		*/
+		private function internalGetTotalByIndex(ObjectServiceField $index, $isSingle, $search)
+		{
+			$query = $this->db->select($this->_properties)
+				->from($this->table)
+				->where("`{$index->id}` in " . $this->valueSet($search, $index->type));
+				
+			if (count($this->_getWhere))
+			{
+				$query->where($this->_getWhere);
+			}
+
+			return $query->length();
+		}
+
+		/**
 		*  Internal getting a collection of items
 		*  @method internalGetAll
 		*  @private
+		*  @param {int} [lengthOrIndex=null] The starting index or elements to return
+		*  @param {int} [duration=null] The duration of the items
 		*  @return {Array} The collection of objects
 		*/
-		private function internalGetAll()
+		private function internalGetAll($lengthOrIndex=null, $duration=null)
 		{
 			$query = $this->db->select($this->_properties)
 				->from($this->table);
@@ -495,6 +557,13 @@ namespace Canteen\Services
 				$query->where($this->_getWhere);
 			}
 
+			if ($lengthOrIndex !== null)
+			{
+				$this->verify($lengthOrIndex);
+				if ($duration !== null) $this->verify($duration);
+				$query->limit($lengthOrIndex, $duration);
+			}
+
 			$results = $query->results();
 
 			return $this->bindObjects(
@@ -502,6 +571,25 @@ namespace Canteen\Services
 				$this->className,
 				$this->_prepends
 			);
+		}
+
+		/**
+		*  Internal getting a total number of items
+		*  @method internalGetTotalAll
+		*  @private
+		*  @return {int} The number of items in selection
+		*/
+		private function internalGetTotalAll()
+		{
+			$query = $this->db->select($this->_properties)
+				->from($this->table);
+				
+			if (count($this->_getWhere))
+			{
+				$query->where($this->_getWhere);
+			}
+
+			return $query->length();
 		}
 
 		/**

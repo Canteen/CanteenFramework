@@ -39,7 +39,7 @@ namespace Canteen\Forms
 		private function save()
 		{	
 			$id = $this->verify(ifsetor($_POST['configId']));
-			$config = $this->service('config')->getConfigById($id);
+			$config = $this->service('config')->getConfig($id);
 			$value = $this->verify(
 				ifsetor($_POST['configValue']), 
 				$this->service('config')->getValidationByType($config->type)
@@ -90,7 +90,7 @@ namespace Canteen\Forms
 				return;
 			}
 			
-			$config = $this->service('config')->getConfigById($id);
+			$config = $this->service('config')->getConfig($id);
 			
 			if (!$config)
 			{

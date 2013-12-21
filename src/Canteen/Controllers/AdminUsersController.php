@@ -27,7 +27,7 @@ namespace Canteen\Controllers
 			
 			if (!empty($userId))
 			{
-				$user = $this->service('users')->getUserById($userId);
+				$user = $this->service('users')->getUser($userId);
 			}	
 			
 			$data = array(

@@ -177,7 +177,7 @@ namespace Canteen\Services
 			{
 				foreach ($mapOrMethod as $m => $c)
 				{
-					$this->access($m, $c);
+					$this->restrict($m, $c);
 				}
 			}
 			else if ($controls !== null)
@@ -198,61 +198,120 @@ namespace Canteen\Services
 		*  method. 
 		*  @method access
 		*  @protected
+		*  @param {String} method The name of the method to check the access for
 		*  @return {Service} Return the instance of this for chaining
 		*/
-		protected function access()
+		protected function access($method=null)
 		{
 			// Ignore access controls if we're local
-			if ($this->settings->local) return $this;
-
-			// DEBUG_BACKTRACE_IGNORE_ARGS is only in PHP 5.3.6
-			$trace = defined('DEBUG_BACKTRACE_IGNORE_ARGS') ? 
-				debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS):
-				debug_backtrace();
-
+			if (!count($this->_accessControls) || $this->settings->local) return $this;
+			
 			// Get the method that called this function
-			$method = ifsetor($trace[1]['function'], null);
+			if ($method === null) $method = $this->getCaller();
 
 			// Bail out if there isn't an access control
-			if (!isset($this->_accessControls[$method])) return;
+			if (!isset($this->_accessControls[$method])) return $this;
 
 			$control = $this->_accessControls[$method];
 			
-			// Check the privilege
-			if ($control->privilege)
-			{
-				if (!LOGGED_IN)
-				{
-					throw new UserError(UserError::LOGGIN_REQUIRED);
-				}
-				else if (USER_PRIVILEGE < $control->privilege)
-				{
-					throw new UserError(UserError::INSUFFICIENT_PRIVILEGE);
-				}
-			}
-			
 			// Check the internal calls
+			// this will override any privilege that's need
+			// and is the more restrictive of the controls
 			if (count($control->internals))
 			{
+				// 0 is Service Class, 1 is caller, 2-3 is the internal caller
+				// If the stack track is greater than for then we should bail
+				// we are only concernd with the 2-3 level of depth
+				$trace = $this->getSimpleStack(3);
+
 				// Check if the class is in the trace stack
 				foreach($trace as $i=>$stack)
 				{
-					// Simplest trace: this, service, caller
-					// Complicated trace: this, accessDefault, __method, override
-					// 0 is this class, 2-3 is the internal caller
-					// If the stack track is greater than for then we should bail
-					// we are only concernd with the 2-3 level of depth
-					if ($i > 4) break;
-
 					if (isset($stack['class']) && in_array($stack['class'], $control->internals))
 					{
 						// bail out, proceed as normal
 						return $this;
 					}
 				}
-				throw new CanteenError(CanteenError::INTERNAL_ONLY);
+				throw new CanteenError(
+					CanteenError::INTERNAL_ONLY, 
+					array($method, implode(', ', $control->internals))
+				);
 			}
+
+			// Check for adequate privilege
+			if ($control->privilege)
+			{
+				$loggedIn = ifconstor('LOGGED_IN', false);
+				$privilege = ifconstor('USER_PRIVILEGE', 0);
+
+				if (!$loggedIn)
+				{
+					throw new UserError(UserError::LOGGIN_REQUIRED);
+				}
+				else if ($privilege < $control->privilege)
+				{
+					throw new UserError(UserError::INSUFFICIENT_PRIVILEGE);
+				}
+			}
+			
 			return $this;
+		}
+
+		/**
+		*  Get the method/function name of the caller function
+		*  @method getCaller
+		*  @protected
+		*  @param {int} [ignore=1] The depth of the call, default is the immediate function
+		*   before this one is called
+		*  @return {String|Array} The name of the method
+		*/
+		protected function getCaller($ignore=1)
+		{
+			// Add one to the depth to get the thing before
+			$trace = $this->getSimpleStack(1, $ignore + 1);
+			return ifsetor($trace[0]['function'], null);
+		}
+
+		/**
+		*  Get the method/function name of the caller function
+		*  @method getStack
+		*  @protected
+		*  @param {int} [limit=0] The number of stack items to return, default is all
+		*  @param {int} [ignore=1] The number of stack levesl to ignore, default is the immediate function
+		*   before this one is called.
+		*  @return {String|Array} The name of the method or full trace
+		*/
+		private function getSimpleStack($limit = 0, $ignore = 1)
+		{
+			// We increase the starting depth to always ignore this method
+			$ignore++;
+
+			// Version 5.4+ has a limit
+			if (version_compare(PHP_VERSION, '5.4.0') >= 0)
+				$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, ($limit > 0 ? $limit + $ignore : 0));
+			// Don't include the arguments if 5.3.6+
+			else if (version_compare(PHP_VERSION, '5.3.6')  >= 0)
+				$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+			// Older versions of PHP
+			else
+				$trace = debug_backtrace();
+
+			// Remove any preceeding levels from the stack
+			$trace = array_slice($trace, $ignore, $limit);
+
+			// Remove all the crap we don't need
+			foreach($trace as $i=>$stack)
+			{
+				unset(
+					$trace[$i]['object'], 
+					$trace[$i]['args'],
+					$trace[$i]['type'],
+					$trace[$i]['line'],
+					$trace[$i]['file']
+				);
+			}
+			return $trace;
 		}
 
 		/**

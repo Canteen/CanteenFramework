@@ -87,7 +87,7 @@ namespace Canteen\Services
 					'checkCookieLogin' => 'Canteen\Authorization\Authorization',
 					'verifyResetPassword' => 'Canteen\Forms\ForgotPassword',
 					'checkSession' => 'Canteen\Authorization\Authorization',
-					'getUserById' => Privilege::GUEST,
+					'getUser' => Privilege::GUEST,
 					'getUserByLogin' => 'Canteen\Authorization\Authorization',
 					'getUsers' => Privilege::GUEST,
 					'removeUser' => Privilege::ADMINISTRATOR,
@@ -470,7 +470,7 @@ namespace Canteen\Services
 		*/
 		public function updateUser($id, $prop, $value=null)
 		{
-			return parent::updateUser($id, $prop, $value);
+			return $this->call($id, $prop, $value);
 		}
 
 		/**
@@ -480,7 +480,7 @@ namespace Canteen\Services
 		*/
 		public function getUsers()
 		{
-			return parent::getUsers();
+			return $this->call();
 		}
 		
 		/**
@@ -491,18 +491,18 @@ namespace Canteen\Services
 		*/
 		public function removeUser($id)
 		{
-			return parent::removeUser($id);
+			return $this->call($id);
 		}
 
 		/**
 		*  Get a user or user by id
-		*  @method getUserById
+		*  @method getUser
 		*  @param {int|Array} id Either a single user ID or an array of IDs
 		*  @return {User|Array} The User object or collection of User objects
 		*/
-		public function getUserById($id)
+		public function getUser($id)
 		{
-			return parent::getUserById($id);
+			return $this->call($id);
 		}
 	}
 }

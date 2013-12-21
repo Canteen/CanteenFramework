@@ -241,12 +241,12 @@ namespace Canteen\Parser
 		
 		/**
 		*  Search a page by a uri
-		*  @method getPageById
+		*  @method getPage
 		*  @private
 		*  @param {int} id The page ID to search for
 		*  @return {Page} The site page matching the ID
 		*/		
-		private function getPageById($id)
+		private function getPage($id)
 		{
 			foreach($this->_pages as $p)
 			{
@@ -314,7 +314,7 @@ namespace Canteen\Parser
 			// Assemble the full page title
 			$stateTitle = '';
 			
-			if ($parent = $this->getPageById($page->parentId))
+			if ($parent = $this->getPage($page->parentId))
 			{
 				$stateTitle = ($parent->id == $page->id) ? ' . ' : ' . '. $parent->title . ' . ';
 			}
@@ -355,7 +355,7 @@ namespace Canteen\Parser
 			}
 			else if ($page->redirectId)
 			{
-				$page = $this->getPageById($page->redirectId);
+				$page = $this->getPage($page->redirectId);
 				redirect($page->uri);
 				return;
 			}

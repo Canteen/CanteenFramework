@@ -21,7 +21,7 @@ namespace Canteen\Forms
 		public function __construct()
 		{		
 			$pageId = $this->verify(ifsetor($_POST['pageId']));
-			$page = $this->service('pages')->getPageById($pageId);
+			$page = $this->service('pages')->getPage($pageId);
 			
 			// See if we're going to delete the page
 			// if the delete button was clicked

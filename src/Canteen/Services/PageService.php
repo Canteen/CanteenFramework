@@ -60,7 +60,7 @@ namespace Canteen\Services
 
 			$this->restrict(
 				array(
-					'getPageById' => array(
+					'getPage' => array(
 						'Canteen\Parser\PageBuilder', 
 						'Canteen\Controllers\AdminPagesController'
 					),
@@ -188,13 +188,13 @@ namespace Canteen\Services
 
 		/**
 		*  Get a current page by the URI stub
-		*  @method getPageById
+		*  @method getPage
 		*  @param {String} uri Page's URI stub or collection of URIs
 		*  @return {Page|Array} The collection of Page objects or a single Page
 		*/
-		public function getPageById($id)
+		public function getPage($id)
 		{
-			return parent::getPageById($id);
+			return $this->call($id);
 		}
 
 		/**
@@ -205,7 +205,7 @@ namespace Canteen\Services
 		*/
 		public function getPagesByParentId($id)
 		{
-			return parent::getPagesByParentId($id);
+			return $this->call($id);
 		}
 
 		/**
@@ -215,7 +215,7 @@ namespace Canteen\Services
 		*/
 		public function getPages()
 		{
-			return parent::getPages();
+			return $this->call();
 		}
 
 		/**
@@ -226,7 +226,7 @@ namespace Canteen\Services
 		*/
 		public function removePage($id)
 		{
-			return parent::removePage($id);
+			return $this->call($id);
 		}
 
 		/**
@@ -239,7 +239,7 @@ namespace Canteen\Services
 		*/
 		public function updatePage($id, $prop, $value=null)
 		{
-			return parent::updatePage($id, $prop, $value);
+			return $this->call($id, $prop, $value);
 		}
 	}
 }

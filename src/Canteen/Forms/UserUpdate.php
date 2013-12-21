@@ -22,7 +22,7 @@ namespace Canteen\Forms
 		public function __construct()
 		{
 			$userId = $this->verify(ifsetor($_POST['userId']));
-			$user = $this->service('users')->getUserById($userId);
+			$user = $this->service('users')->getUser($userId);
 			
 			// See if we're going to delete the page
 			// if the delete button was clicked
