@@ -525,7 +525,7 @@ namespace Canteen\Services
 		*/
 		private function internalGetTotalByIndex(ObjectServiceField $index, $isSingle, $search)
 		{
-			$query = $this->db->select($this->_properties)
+			$query = $this->db->select('*')
 				->from($this->table)
 				->where("`{$index->id}` in " . $this->valueSet($search, $index->type));
 				
@@ -584,7 +584,7 @@ namespace Canteen\Services
 		*/
 		private function internalGetTotalAll()
 		{
-			$query = $this->db->select($this->_properties)
+			$query = $this->db->select('*')
 				->from($this->table);
 				
 			if (count($this->_getWhere))
