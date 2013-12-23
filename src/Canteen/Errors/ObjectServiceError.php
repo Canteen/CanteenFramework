@@ -57,6 +57,22 @@ namespace Canteen\Errors
 		*/
 		const WRONG_ARG_COUNT = 604;
 
+		/** 
+		*  The definition name is invalid
+		*  @property {int} UNREGISTERED_ITEM
+		*  @static
+		*  @final
+		*/
+		const UNREGISTERED_ITEM = 605;
+
+		/** 
+		*  The dynamic method name is invalid for the service
+		*  @property {int} INVALID_PROPERTY
+		*  @static
+		*  @final
+		*/
+		const INVALID_PROPERTY = 606;
+
 		/**
 		*  The collection of messages
 		*  @property {Array} messages
@@ -69,7 +85,9 @@ namespace Canteen\Errors
 			self::NO_DEFAULT_INDEX => 'The custom service does not have a default index field, set isDefault=true on a field',
 			self::INVALID_METHOD => 'The dynamic method call "%s" is not valid on this custom service',
 			self::INVALID_FIELD_NAME => 'The field name "%s" is not valid',
-			self::WRONG_ARG_COUNT => 'The method call "%s" got %s arguments and was expecting %s'
+			self::WRONG_ARG_COUNT => 'The method call "%s" got %s arguments and was expecting %s',
+			self::UNREGISTERED_ITEM => 'The item name "%s" is not registered on this service',
+			self::INVALID_PROPERTY => 'The property "%s" doesn\'t exist on this class'
 		);
 		
 		/**

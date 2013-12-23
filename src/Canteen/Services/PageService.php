@@ -12,9 +12,9 @@ namespace Canteen\Services
 	*  Service for interacting with site pages in the database.  Located in the namespace __Canteen\Services__.
 	*  
 	*  @class PageService
-	*  @extends ObjectService
+	*  @extends SimpleObjectService
 	*/
-	class PageService extends ObjectService
+	class PageService extends SimpleObjectService
 	{	
 		/**
 		*  Create the service
@@ -42,17 +42,6 @@ namespace Canteen\Services
 				)
 			);
 
-			$this->properties(
-				'CONCAT(`uri`,\'.html\') as `contentUrl`',
-				"REPLACE(`uri`, '/', '-') as `pageId`"
-			);
-
-			$this->prepends(
-				'contentUrl', 
-				$this->settings->exists('contentPath') ? 
-					$this->settings->contentPath : ''
-			);
-
 			$form = array(
 				Privilege::ADMINISTRATOR, 
 				'Canteen\Forms\PageUpdate'
@@ -76,6 +65,14 @@ namespace Canteen\Services
 					'updatePage' => $form,
 					'getPages' => Privilege::ANONYMOUS
 				)
+			)
+			->setProperties(
+				'CONCAT(`uri`,\'.html\') as `contentUrl`',
+				"REPLACE(`uri`, '/', '-') as `pageId`"
+			)
+			->setPrepends(
+				'contentUrl', 
+				$this->settings->exists('contentPath') ? $this->settings->contentPath : ''
 			);
 		}
 		

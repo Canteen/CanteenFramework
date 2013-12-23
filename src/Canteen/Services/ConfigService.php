@@ -13,9 +13,9 @@ namespace Canteen\Services
 	*  Interacts with the config data table from the database. Located in the namespace __Canteen\Services__.
 	*  
 	*  @class ConfigService 
-	*  @extends ObjectService
+	*  @extends SimpleObjectService
 	*/
-	class ConfigService extends ObjectService
+	class ConfigService extends SimpleObjectService
 	{	
 		/**
 		*  Create the service
@@ -35,17 +35,15 @@ namespace Canteen\Services
 					$this->field('access', Validate::NUMERIC)
 				)
 			);
-
-			$admin = Privilege::ADMINISTRATOR;
-
+			
 			$this->restrict(
 				array(
-					'addConfig' => $admin,
+					'addConfig' => Privilege::ADMINISTRATOR,
 					'install' => 'Canteen\Forms\Installer',
 					'updateValue' => 'Canteen\Site',
 					'registerSettings' => 'Canteen\Site',
-					'updateConfig' => $admin,
-					'removeConfig' => $admin,
+					'updateConfig' => Privilege::ADMINISTRATOR,
+					'removeConfig' => Privilege::ADMINISTRATOR,
 					'registerSettings' => Privilege::ANONYMOUS
 				)
 			);
@@ -118,7 +116,7 @@ namespace Canteen\Services
 		{
 			$this->access();
 
-			$result = $this->db->select($this->properties())
+			$result = $this->db->select($this->properties)
 				->from($this->table)
 				->results(true); // cache
 							
@@ -193,7 +191,7 @@ namespace Canteen\Services
 		*/
 		public function getValueByName($name)
 		{
-			$this->validateName($name);
+			$this->verifyName($name);
 
 			$result = $this->db->select('`value`', '`value_type` as `type`')
 				->from($this->table)

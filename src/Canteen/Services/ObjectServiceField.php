@@ -51,6 +51,14 @@ namespace Canteen\Services
 		public $isDefault = false;
 
 		/**
+		*  If we should sort queries by this field, null is no sort,
+		*  can either be desc or asc
+		*  @property {String} orderBy
+		*  @default null
+		*/
+		public $orderBy = null;
+
+		/**
 		*  A custom field is used by the ObjectService class
 		*  to represent property and db field definitions
 		*  @class ObjectServiceField
@@ -146,6 +154,17 @@ namespace Canteen\Services
 		public function setPrepend($prepend)
 		{
 			return $this->option('prepend', $prepend);
+		}
+
+		/**
+		*  If we should sort collection selects by this property.
+		*  @method setOrderBy
+		*  @param {String} [orderBy='asc'] The string to prepend to result value
+		*  @return {ObjectServiceField} Return the field for chaining
+		*/
+		public function setOrderBy($orderBy='asc')
+		{
+			return $this->option('orderBy', $orderBy);
 		}
 
 		/**

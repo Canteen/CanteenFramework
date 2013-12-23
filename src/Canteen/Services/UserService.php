@@ -13,9 +13,9 @@ namespace Canteen\Services
 	*  Services for accessing the Users and logging in to the site.  Located in the namespace __Canteen\Services__.
 	*  
 	*  @class UserService
-	*  @extends ObjectService
+	*  @extends SimpleObjectService
 	*/
-	class UserService extends ObjectService
+	class UserService extends SimpleObjectService
 	{	
 		/** 
 		*  The list of user select table properties for joining tables 
@@ -73,9 +73,6 @@ namespace Canteen\Services
 				)
 			);
 
-			// Add additional selection options
-			$this->properties('CONCAT(`first_name`,\' \',`last_name`) as `fullname`');
-
 			$this->restrict(
 				array(
 					'install' => 'Canteen\Forms\Installer',
@@ -94,7 +91,9 @@ namespace Canteen\Services
 					'addUser' => Privilege::ADMINISTRATOR,
 					'updateUser' => Privilege::ADMINISTRATOR
 				)
-			);
+			)
+			// Add additional selection options
+			->setProperties('CONCAT(`first_name`,\' \',`last_name`) as `fullname`');
 		}
 		
 		/**
@@ -342,7 +341,7 @@ namespace Canteen\Services
 
 			$this->verify($usernameOrEmail, Validate::EMAIL);
 			
-			$result = $this->db->select($this->properties())
+			$result = $this->db->select($this->properties)
 				->from($this->table)
 				->where("(`username`='".$usernameOrEmail."' || 
 					`email`='".$usernameOrEmail."')",
@@ -399,7 +398,7 @@ namespace Canteen\Services
 
 			$usernameOrEmail = $this->valueSet($usernameOrEmail, Validate::EMAIL);
 			
-			$result = $this->db->select($this->properties())
+			$result = $this->db->select($this->properties)
 				->from($this->table)
 				->where("`username` in $usernameOrEmail || `email` in $usernameOrEmail")
 				->results();
