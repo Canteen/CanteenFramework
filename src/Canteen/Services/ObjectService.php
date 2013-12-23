@@ -47,22 +47,50 @@ namespace Canteen\Services
 		}
 
 		/**
-		*  Convience method for the field validation wrapper for verify
-		*  but call by name.
-		*  @method verifyByItem
+		*  The more manual method for verifying a field value.
+		*  @method verifyField
 		*  @protected
-		*  @param {String} itemName The name of the item to validate fields on
-		*  @param {Dictionary|String} fieldName The name of the field or a map of name=>values
+		*  @param {ObjectServiceItem} item Registered item
+		*  @param {Dictionary|String} name The name of the field or a map of name=>values
 		*  @param {mixed} [value=null] The value to check against
 		*  @return {ObjectService} The instance of this object for chaining
 		*/
-		protected function verifyByItem($itemName, $fieldName, $value=null)
+		protected function verifyField(ObjectServiceItem $item, $name, $value=null)
 		{
-			if (!isset($this->items[$itemName]))
-				throw new ObjectServiceError(ObjectServiceError::UNREGISTERED_ITEM, $itemName);
+			$item->verify($name, $value);
+			return $this;
+		}
 
-			$this->items[$itemName]->verify($fieldName, $value);
+		/**
+		*  Override of the dynamic call method to call verify* methods, for instance
+		*  if we're validating Name it would be $this->verifyName($value)
+		*  @method __call
+		*  @param {String} method The name of the method to call
+		*  @param {Array} args  The collection of arguments
+		*  @return {ObjectService} The instance of ObjectService for chaining
+		*/
+		public function __call($method, $args)
+		{
+			// Check for validation call
+			if (preg_match('/^verify([A-Z][a-zA-Z0-9]*)$/', $method))
+			{
+				// Auto-detect the name of the item, needs to be called within
+				// a method that has the name of an item
+				$item = $this->autoDetectItem($this->getCaller());
 
+				// Extract the field name from the method name
+				$fieldName = str_replace('verify', '', $method);
+				$fieldName = strtolower(substr($fieldName, 0, 1)).substr($fieldName, 1);
+
+				if (is_array($args) && count($args) != 1)
+					throw new ObjectServiceError(ObjectServiceError::WRONG_ARG_COUNT, array($method, 1, count($args)));
+
+				$item->verify($fieldName, $args[0]);
+			}
+			else
+			{
+				throw new ObjectServiceError(ObjectServiceError::INVALID_METHOD, $method);
+			}
 			return $this;
 		}
 
@@ -71,17 +99,12 @@ namespace Canteen\Services
 		*  all the field validation and insert.
 		*  @method addByItem
 		*  @protected
-		*  @param {String} itemName The name of the item to add on
+		*  @param {ObjectServiceItem} item The item to use
 		*  @param {Dictionary} properties The collection map of field names to values
 		*  @return {int} The result
 		*/
-		protected function addByItem($itemName, $properties)
+		protected function addByItem(ObjectServiceItem $item, array $properties)
 		{
-			if (!isset($this->items[$itemName]))
-				throw new ObjectServiceError(ObjectServiceError::UNREGISTERED_ITEM, $itemName);
-
-			$item = $this->items[$itemName];
-
 			if (!$item->defaultField) 
 				throw new ObjectServiceError(ObjectServiceError::NO_DEFAULT_INDEX);
 			
@@ -141,46 +164,62 @@ namespace Canteen\Services
 		*  removeItemBy[IndexName], updateItemBy[IndexName].
 		*  @method call
 		*  @protected
-		*  @param {String} itemName The name of the item to call for
 		*  @param {mixed} [args*] Additional arguments to call
 		*  @return {mixed} The result of the method call
 		*/
 		protected function call($args=null)
 		{
-			// Get all arguments but remove the item name and method
-			$args = func_get_args();
+			$method = $this->getCaller();
+			$item = $this->autoDetectItem($method);
+			return $this->callByItem($item, $method, func_get_args());
+		}
 
-			// Make sure we have at least one argument
-			if (!count($args))
-				throw new ObjectServiceError(ObjectServiceError::WRONG_ARG_COUNT, array('call', 0, 1));
+		/**
+		*  Auto detect the item name based on the name of the method that called it
+		*  @method autoDetectItem
+		*  @private
+		*  @param {String} method The name of the method
+		*  @return {String} Returns the name of item or throw error
+		*/
+		private function autoDetectItem($method)
+		{
+			$testName = preg_replace('/^(get|update|remove|getTotal)/', '',
+				preg_replace('/By[A-Z][a-zA-Z]+$/', '', $method)
+			);
 
-			// Get the itemname and remove it from the rest of the args
-			$itemName = $args[0];
-			array_shift($args);
+			// Default the item name to use to be false
+			$itemName = false;
 
-			// Make sure the first argument is a valid registered item
+			foreach($this->items as $name=>$item)
+			{
+				// Compare against the single and plural name
+				if ($name == $testName || $item->itemsName == $testName)
+				{
+					$itemName = $name;
+					break;
+				}
+			}
+
+			if (!$itemName)
+				throw new ObjectServiceError(ObjectServiceError::UNREGISTERED_ITEM, $testName);
+
 			if (!isset($this->items[$itemName]))
 				throw new ObjectServiceError(ObjectServiceError::UNREGISTERED_ITEM, $itemName);
 
-			return $this->callByItem($this->items[$itemName], $this->getCaller(), $args);
+			return $this->items[$itemName];
 		}
 
 		/**
 		*  Generally called for calling the item methods
 		*  @method callByItem
 		*  @protected
-		*  @param {String} itemName The name of the item to call for
+		*  @param {ObjectServiceItem} item The item to call for
 		*  @param {String} method The method name to call
 		*  @param {Array} args The collection of additional arguments
 		*  @return {mixed} The result of the method call
 		*/
-		protected function callByItem($itemName, $method, $args)
+		protected function callByItem(ObjectServiceItem $item, $method, array $args)
 		{
-			if (!isset($this->items[$itemName]))
-				throw new ObjectServiceError(ObjectServiceError::UNREGISTERED_ITEM, $itemName);
-
-			$item = $this->items[$itemName];
-
 			// See if we can access this method
 			$this->access($method);
 
@@ -311,9 +350,9 @@ namespace Canteen\Services
 
 			$item->orderByQuery($query);
 				
-			if (count($item->getWhere))
+			if (count($item->where))
 			{
-				$query->where($item->getWhere);
+				$query->where($item->where);
 			}
 
 			if ($lengthOrIndex !== null)
@@ -355,9 +394,9 @@ namespace Canteen\Services
 				->from($this->table)
 				->where("`{$index->id}` in " . $this->valueSet($search, $index->type));
 				
-			if (count($item->getWhere))
+			if (count($item->where))
 			{
-				$query->where($item->getWhere);
+				$query->where($item->where);
 			}
 
 			return $query->length();
@@ -379,9 +418,9 @@ namespace Canteen\Services
 		
 			$item->orderByQuery($query);
 				
-			if (count($item->getWhere))
+			if (count($item->where))
 			{
-				$query->where($item->getWhere);
+				$query->where($item->where);
 			}
 
 			if ($lengthOrIndex !== null)
@@ -408,9 +447,9 @@ namespace Canteen\Services
 			$query = $this->db->select('*')
 				->from($this->table);
 				
-			if (count($item->getWhere))
+			if (count($item->where))
 			{
-				$query->where($item->getWhere);
+				$query->where($item->where);
 			}
 
 			return $query->length();

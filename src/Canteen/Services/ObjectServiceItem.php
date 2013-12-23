@@ -42,7 +42,7 @@ namespace Canteen\Services
 		*  The main field, default
 		*  @property {ObjectServiceField} defaultField
 		*/
-		public $_defaultField = null;
+		public $defaultField = null;
 
 		/**
 		*  The map of ObjectServiceField objects to their names
@@ -70,10 +70,10 @@ namespace Canteen\Services
 
 		/**
 		*  Additional get where properties
-		*  @property {Array} getWhere
+		*  @property {Array} where
 		*  @default array()
 		*/
-		public $getWhere = array();
+		public $where = array();
 
 		/**
 		*  The encapsulation of a single data type, requires a predefined
@@ -120,7 +120,7 @@ namespace Canteen\Services
 		public function setWhere($args)
 		{
 			$args = is_array($args) ? $args : func_get_args();
-			$this->getWhere = array_merge($this->getWhere, $args);
+			$this->where = array_merge($this->where, $args);
 			return $this;
 		}
 

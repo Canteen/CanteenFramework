@@ -15,13 +15,6 @@ namespace Canteen\Services
 		protected $item;
 
 		/**
-		*  The object item name
-		*  @property {String} itemName
-		*  @private
-		*/
-		private $itemName;
-
-		/**
 		*  This is like the ObjectService but provides some convience methods if only
 		*  dealing with one object type. This include custom verify* methods for checking
 		*  different field types (e.g. `$this->verifyName($name)`)
@@ -40,13 +33,7 @@ namespace Canteen\Services
 			parent::__construct($alias);
 
 			$item = $this->registerItem($className, $alias, $fields, $itemName, $itemsName);
-
 			$this->item = $item;
-			$this->itemName = $item->itemName;
-
-			// convenience getters, even those these are copies
-			$this->table = $item->table;
-			$this->className = $item->className;
 		}
 
 		/**
@@ -96,7 +83,7 @@ namespace Canteen\Services
 		*/
 		protected function add($properties)
 		{
-			return $this->addByItem($this->itemName, $properties);
+			return $this->addByItem($this->item, $properties);
 		}
 
 		/**
@@ -108,21 +95,6 @@ namespace Canteen\Services
 		*/
 		public function __call($method, $args)
 		{
-			// Check for validation call
-			if (preg_match('/^verify([A-Z][a-zA-Z0-9]*)$/', $method))
-			{
-				$name = str_replace('verify', '', $method);
-				$name = strtolower(substr($name, 0, 1)).substr($name, 1);
-
-				if (!isset($this->item->fieldsByName[$name]))
-					throw new ObjectServiceError(ObjectServiceError::INVALID_FIELD_NAME, $name);
-
-				if (is_array($args) && count($args) != 1)
-					throw new ObjectServiceError(ObjectServiceError::WRONG_ARG_COUNT, array($method, 1, count($args)));
-
-				$this->item->verify($name, $args[0]);
-			}
-
 			// Pass-throughs for the item's methods
 			switch($method)
 			{
@@ -157,12 +129,16 @@ namespace Canteen\Services
 				case 'setPrepends' :
 				{
 					call_user_func_array(array($this->item, $method), $args);
-					return $this;
 					break;
 				}
 				default :
-					throw new ObjectServiceError(ObjectServiceError::INVALID_METHOD, $method);
+				{
+					// pass to the parent
+					parent::__call($method, $args);
+					break;
+				}
 			}
+			return $this;
 		}
 
 		/**
@@ -176,7 +152,7 @@ namespace Canteen\Services
 		*/
 		protected function call($args=null)
 		{			
-			return $this->callByItem($this->itemName, $this->getCaller(), func_get_args());
+			return $this->callByItem($this->item, $this->getCaller(), func_get_args());
 		}
 	}
 }
