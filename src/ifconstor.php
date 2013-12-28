@@ -18,5 +18,5 @@
 	*/
 	function ifconstor($constName, $default=null)
 	{
-	    return defined($constName) ? constant($constName) : $default;
+		return defined($constName) ? constant($constName) : $default;
 	}

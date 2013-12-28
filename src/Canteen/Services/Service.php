@@ -20,7 +20,7 @@ namespace Canteen\Services
 	*  @constructor
 	*  @param {String} alias The alias to register service as
 	*/
-	class Service extends CanteenBase
+	abstract class Service extends CanteenBase
 	{		
 		/**
 		*  The name of the service alias
@@ -166,7 +166,7 @@ namespace Canteen\Services
 		*  @method restrict
 		*  @protected
 		*  @param {String|Dictionary} [mapOrMethod] Either the method string 
-		*    or a map of methods to an collection of controls.
+		*	or a map of methods to an collection of controls.
 		*  @param {Array|String|int} [controls=null] The collection of controls
 		*  @return {Service} Return the instance of this for chaining
 		*/

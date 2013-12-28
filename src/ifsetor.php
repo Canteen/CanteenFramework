@@ -18,5 +18,5 @@
 	*/
 	function ifsetor(&$val, $default = null)
 	{
-	    return isset($val) ? $val : $default;
+		return isset($val) ? $val : $default;
 	}

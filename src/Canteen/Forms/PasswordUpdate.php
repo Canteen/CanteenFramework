@@ -50,9 +50,9 @@ namespace Canteen\Forms
 			if (!$this->ifError)
 			{
 				if ( !$this->user->updatePassword($newPassword))
-	            {
-	                $this->error("There was a problem updating your password. Try again.");
-	            }
+				{
+					$this->error("There was a problem updating your password. Try again.");
+				}
 				else
 				{
 					$this->success("Password updated!");

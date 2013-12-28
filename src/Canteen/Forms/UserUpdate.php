@@ -22,7 +22,7 @@ namespace Canteen\Forms
 		public function __construct()
 		{
 			$userId = $this->verify(ifsetor($_POST['userId']));
-			$user = $this->service('users')->getUser($userId);
+			$user = $this->service('user')->getUser($userId);
 			
 			// See if we're going to delete the page
 			// if the delete button was clicked
@@ -40,7 +40,7 @@ namespace Canteen\Forms
 				else
 				{
 					// Remove the page
-					if (!$this->service('users')->removeUser($userId))
+					if (!$this->service('user')->removeUser($userId))
 					{
 						$this->error('Unable to delete the user');
 					}			
@@ -156,7 +156,7 @@ namespace Canteen\Forms
 					return;
 				}
 				
-				$result = $this->service('users')->updateUser($userId, $properties);
+				$result = $this->service('user')->updateUser($userId, $properties);
 				
 				if (!$result)
 				{
@@ -176,7 +176,7 @@ namespace Canteen\Forms
 					return;
 				}
 				
-				$result = $this->service('users')->addUser(
+				$result = $this->service('user')->addUser(
 					$username, 
 					$email, 
 					$password, 

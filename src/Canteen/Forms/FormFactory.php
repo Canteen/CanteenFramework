@@ -20,40 +20,40 @@ namespace Canteen\Forms
 	*/
 	class FormFactory extends CanteenBase
 	{
-	    /** 
+		/** 
 		*  class of ul for form errors 
 		*  @property {String} ERROR
 		*  @final
 		*/
-	    const ERROR = 'formError';
-    
-	    /** 
+		const ERROR = 'formError';
+	
+		/** 
 		*  class of ul for form successes 
 		*  @property {String} SUCCESS
 		*  @final
 		*/
-	    const SUCCESS = 'formSuccess';
-    
-	    /** 
+		const SUCCESS = 'formSuccess';
+	
+		/** 
 		*  Contain the success message 
 		*  @property {Array} _successMessages
 		*  @private
 		*/
-	    private $_successMessages;
-    
-	    /** 
+		private $_successMessages;
+	
+		/** 
 		*  Contain the form errors 
 		*  @property {Array} _errorMessages
 		*/
-	    private $_errorMessages;
-    
-	    /** 
+		private $_errorMessages;
+	
+		/** 
 		*  Contain the form data to return 
 		*  @property {Array} _formData
 		*  @private
 		*/
-	    private $_formData;
-    
+		private $_formData;
+	
 		/**
 		*  Setup the collections
 		*/
@@ -80,29 +80,29 @@ namespace Canteen\Forms
 			}
 		}
 		
-	    /**
+		/**
 		*  Process any forms
 		*  @method process
 		*  @param {String} formClass The form id (e.g. LoginForm = login-form)
 		*  @param {Boolean} [async=false] If the request to process is an ajax-style request
 		*  @return {Object} If the request is async, the result object
 		*/
-	    public function process($formClass, $async=false)
-	    {            
-            //Before process any form request, we check that only
-            //posts are sent from the current domain
-            //because its possible to spoof HTTP_REFERER 
-            //this shouldn't be relied on from people spoofing forms
+		public function process($formClass, $async=false)
+		{			
+			//Before process any form request, we check that only
+			//posts are sent from the current domain
+			//because its possible to spoof HTTP_REFERER 
+			//this shouldn't be relied on from people spoofing forms
 			
 			$host = ifconstor('HOST', '//'.ifsetor($_SERVER['HTTP_HOST']));
 			$refer = ifsetor($_SERVER['HTTP_REFERER']);
 			$refer = substr($refer, strpos($refer, ':')+1);
 			
-            if (strpos($refer, $host) !== 0) 
-            {
-                throw new CanteenError(CanteenError::WRONG_DOMAIN, $refer);
-           	}
-           			
+			if (strpos($refer, $host) !== 0) 
+			{
+				throw new CanteenError(CanteenError::WRONG_DOMAIN, $refer);
+		   	}
+		   			
 			if (!class_exists($formClass)) 
 			{
 				throw new CanteenError(CanteenError::INVALID_FORM, $formClass);
@@ -168,27 +168,27 @@ namespace Canteen\Forms
 						ifsetor($this->_successMessages)
 				)
 			);
-	    }
-    
-	    /**
+		}
+	
+		/**
 		*  Report a form error
 		*  @method error
 		*  @param {String} message The message error to report
 		*/
-	    public function error($message)
-	    {
-	        $this->_errorMessages[] = $message;
-	    }
-    
-	    /**
+		public function error($message)
+		{
+			$this->_errorMessages[] = $message;
+		}
+	
+		/**
 		*  Report a success message
 		*  @method success
 		*  @param {String} message The message to report success
 		*/
-	    public function success($message)
-	    {
-	        $this->_successMessages[] = $message;
-	    }
+		public function success($message)
+		{
+			$this->_successMessages[] = $message;
+		}
 	
 		/**
 		*  The getter 
@@ -207,47 +207,47 @@ namespace Canteen\Forms
 			return parent::__get($name);
 		}
 		
-		    
+			
 		/**
 		*  Return the feedback (errors and successes) as a list 
 		*  @method getFeedback
 		*  @return {String} The html string with errors in a UL list
 		*/
-	    public function getFeedback()
-	    {			        
+		public function getFeedback()
+		{					
 			$list = '';
-	        if (count($this->_errorMessages))
-	        {
+			if (count($this->_errorMessages))
+			{
 				$list = new SimpleList($this->_errorMessages, 'class='.self::ERROR);
-	        }
-	        else if (count($this->_successMessages))
-	        {
+			}
+			else if (count($this->_successMessages))
+			{
 				$list = new SimpleList($this->_successMessages, 'class='.self::SUCCESS);
-	        }
+			}
 			return (string)$list;
-	    }
-    
+		}
+	
 		/** 
 		*  Set data associated with a form, can be retrieved when rendering the page
 		*  using the getData method
 		*  @method setData
-	    *  @param {String} name The name of the variable to set
+		*  @param {String} name The name of the variable to set
 	 	*  @param {mixed} value The value of the data
 		*/ 
-	    public function setData($name, $value)
-	    {
-	        $this->_formData[$name] = $value;
-	    }
-    
+		public function setData($name, $value)
+		{
+			$this->_formData[$name] = $value;
+		}
+	
 		/**
 		*  Get data associated with a form
 		*  @method getData
 		*  @param {String} The name of the parameter to get
 		*  @return {mixed} The value of the data
 		*/
-	    public function getData($name)
-	    {
-	        return ifsetor($this->_formData[$name], '');
-	    }
+		public function getData($name)
+		{
+			return ifsetor($this->_formData[$name], '');
+		}
 	}
 }

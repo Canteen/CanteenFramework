@@ -54,25 +54,25 @@ namespace Canteen\Forms
 		*  @protected
 		*  @param {String} message The str error to pass
 		*/
-	    protected function error($message)
-	    {
-	        $this->site->formFactory->error($message); 
-	    }
+		protected function error($message)
+		{
+			$this->site->formFactory->error($message); 
+		}
 
-	    /**
+		/**
 		*  Convenience function for passing a success message to the form factory
 		*  @method success
 		*  @protected
 		*  @param {String} message The str success message to pass
 		*/
-	    protected function success($message) 
-	    { 
-	        $this->site->formFactory->success($message);
-	    }
+		protected function success($message) 
+		{ 
+			$this->site->formFactory->success($message);
+		}
 
-	    /**
-	    *   Getter 
-	    */
+		/**
+		*   Getter 
+		*/
 		public function __get($name)
 		{
 			/**
@@ -94,9 +94,9 @@ namespace Canteen\Forms
 		*  @param {String} name The name of the variable to save
 		*  @param {mixed} value The value of the variable to save
 		*/
-	    protected function setData($name, $value) 
-	    {
-	        $this->site->formFactory->setData($name, $value);
-	    }
+		protected function setData($name, $value) 
+		{
+			$this->site->formFactory->setData($name, $value);
+		}
 	}
 }

@@ -51,8 +51,9 @@ namespace Canteen\Services
 		public function __construct()
 		{
 			parent::__construct(
-				'users',
+				'user',
 				'Canteen\Services\Objects\User',
+				'users',
 				array(
 					$this->field('user_id', Validate::NUMERIC, 'id')
 						->setDefault(),
@@ -75,7 +76,7 @@ namespace Canteen\Services
 
 			$this->restrict(
 				array(
-					'install' => 'Canteen\Forms\Installer',
+					'setup' => 'Canteen\Forms\Installer',
 					'freezeUsername' => 'Canteen\Authorization\Authorization',
 					'reportAttempt' => 'Canteen\Authorization\Authorization',
 					'createSession' => 'Canteen\Authorization\Authorization',
@@ -98,7 +99,7 @@ namespace Canteen\Services
 		
 		/**
 		*  Install the table for the first time.
-		*  @method install
+		*  @method setup
 		*  @param {String} username The admin username
 		*  @param {String} email The admin email address
 		*  @param {String} password The admin password
@@ -106,9 +107,9 @@ namespace Canteen\Services
 		*  @param {String} lastName The admin last name
 		*  @return {Boolean} if successfully installed
 		*/
-		public function install($username, $email, $password, $firstName, $lastName)
+		public function setup($username, $email, $password, $firstName, $lastName)
 		{
-			$this->acccess();
+			$this->access();
 
 			if (!$this->db->tableExists($this->table))
 			{

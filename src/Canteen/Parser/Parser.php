@@ -493,7 +493,7 @@ namespace Canteen\Parser
 		public function fixPath(&$content, $basePath)
 		{
 			// Replace the path to the stuff
-		    $content = preg_replace(
+			$content = preg_replace(
 				'/(href|src)=["\']([^\/][^:"\']*)["\']/', 
 				'$1="'.$basePath.'$2"', 
 				$content

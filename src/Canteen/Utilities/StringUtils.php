@@ -79,7 +79,7 @@ namespace Canteen\Utilities
 		*/
 		public static function isRegex($str)
 		{
-		    return (bool)preg_match('/^\/[\s\S]+\/$/', $str);
+			return (bool)preg_match('/^\/[\s\S]+\/$/', $str);
 		}
 		
 		/**
@@ -149,25 +149,25 @@ namespace Canteen\Utilities
 		*  @return {String} The string of random characters
 		*/
 		public static function generateRandomString($length=8) 
-	    {
-	        srand ( ( double ) microtime () * 1000000 ); 
+		{
+			srand ( ( double ) microtime () * 1000000 ); 
 
-	        $password = '';
-	        $vowels = array('a','e','i','o','u'); 
-	        $cons = array(
-	            'b','c','d','g','h','j','k','l','m','n','p','r','s','t','u','v','w','tr', 
-	            'cr','br','fr','th','dr','ch','ph','wr','st','sp','sw','pr','sl','cl'
-	        ); 
+			$password = '';
+			$vowels = array('a','e','i','o','u'); 
+			$cons = array(
+				'b','c','d','g','h','j','k','l','m','n','p','r','s','t','u','v','w','tr', 
+				'cr','br','fr','th','dr','ch','ph','wr','st','sp','sw','pr','sl','cl'
+			); 
 
-	        $num_vowels = count($vowels); 
-	        $num_cons = count($cons); 
+			$num_vowels = count($vowels); 
+			$num_cons = count($cons); 
 
-	        for($i = 0; $i < $length; $i++)
-	        { 
-	            $password .= $cons [ rand ( 0, $num_cons - 1 ) ] . $vowels [ rand ( 0, $num_vowels - 1 ) ]; 
-	        }
-	        return substr($password, 0, $length); 
-	    }
+			for($i = 0; $i < $length; $i++)
+			{ 
+				$password .= $cons [ rand ( 0, $num_cons - 1 ) ] . $vowels [ rand ( 0, $num_vowels - 1 ) ]; 
+			}
+			return substr($password, 0, $length); 
+		}
 	
 		/**
 		*  Global functions to check for a string-based boolean
@@ -179,7 +179,7 @@ namespace Canteen\Utilities
 		public static function asBoolean($str)
 		{
 			$str = (string)$str;
-		    return (strtolower(trim(ifsetor($str, 'false'))) === 'false') ? false : (boolean)$str;
+			return (strtolower(trim(ifsetor($str, 'false'))) === 'false') ? false : (boolean)$str;
 		}
 		
 		/**
@@ -318,13 +318,13 @@ namespace Canteen\Utilities
 		public static function replaceOnce($search, $replace, $subject)
 		{
 			// Looks for the first occurence of $needle in $haystack
-		    // and replaces it with $replace.
-		    $pos = strpos($subject, $search);
+			// and replaces it with $replace.
+			$pos = strpos($subject, $search);
 			if ($pos === false) 
 			{
-		    	return $subject; // Nothing found
-		    }
-		    return substr_replace($subject, $replace, $pos, strlen($search));
+				return $subject; // Nothing found
+			}
+			return substr_replace($subject, $replace, $pos, strlen($search));
 		}
 		
 		/**
@@ -340,21 +340,21 @@ namespace Canteen\Utilities
 			self::checkBacktrackLimit($buffer);
 			
 			// search for the textareas or tags that need newlines
-            preg_match_all('/\<(textarea|pre)[^\>]*( \/\>|\>.*?\<\/\1\>)/s', $buffer, $matches);
-            
-            if ( count($matches[0]) )
-            {
-                // Remove textarea, pre elements
-                foreach ($matches[0] as $i=>$m)
-                    $buffer = StringUtils::replaceOnce($m, "<pre$i>", $buffer);
+			preg_match_all('/\<(textarea|pre)[^\>]*( \/\>|\>.*?\<\/\1\>)/s', $buffer, $matches);
+			
+			if ( count($matches[0]) )
+			{
+				// Remove textarea, pre elements
+				foreach ($matches[0] as $i=>$m)
+					$buffer = StringUtils::replaceOnce($m, "<pre$i>", $buffer);
 
-                // Remove new line characters and tabs
-                $buffer = self::stripBuffer($buffer);
+				// Remove new line characters and tabs
+				$buffer = self::stripBuffer($buffer);
 
-                // Reinsert textarea, pre elements
-                foreach ($matches[0] as $i=>$m)
-                    $buffer = StringUtils::replaceOnce("<pre$i>", $m, $buffer);
-            }
+				// Reinsert textarea, pre elements
+				foreach ($matches[0] as $i=>$m)
+					$buffer = StringUtils::replaceOnce("<pre$i>", $m, $buffer);
+			}
 			else
 			{
 				$buffer = self::stripBuffer($buffer);

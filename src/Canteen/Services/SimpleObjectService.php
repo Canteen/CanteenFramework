@@ -5,7 +5,7 @@ namespace Canteen\Services
 	use Canteen\Authorization\Privilege;
 	use Canteen\Errors\ObjectServiceError;
 
-	class SimpleObjectService extends ObjectService
+	abstract class SimpleObjectService extends ObjectService
 	{
 		/** 
 		*  The item definition
@@ -17,23 +17,29 @@ namespace Canteen\Services
 		/**
 		*  This is like the ObjectService but provides some convience methods if only
 		*  dealing with one object type. This include custom verify* methods for checking
-		*  different field types (e.g. `$this->verifyName($name)`)
+		*  different field types (e.g. `$this->verifyName($name)`). Located in the namespace __Canteen\Services__.
 		*  @class SimpleObjectService
 		*  @extends ObjectService
 		*  @constructor
 		*  @param {String} alias The name of the service alias and the name of the table
 		*  @param {String} className Class to bind database result to
+		*  @param {String} table The table that the objects are on
 		*  @param {Array} field The collection of ObjectServiceField objects
 		*  @param {String} [itemName] The optional item name to specify, defaults to 
-		*    unqalified class name (without the full namespace)
+		*	unqalified class name (without the full namespace)
 		*  @param {String} [itemsName] The optional items name (plural) of itemName 
 		*/
-		public function __construct($alias, $className, $fields, $itemName=null, $itemsName=null)
+		public function __construct($alias, $className, $table, $fields, $itemName=null, $itemsName=null)
 		{
 			parent::__construct($alias);
 
-			$item = $this->registerItem($className, $alias, $fields, $itemName, $itemsName);
-			$this->item = $item;
+			$this->item = $this->registerItem(
+				$className, 
+				$table, 
+				$fields, 
+				$itemName, 
+				$itemsName
+			);
 		}
 
 		/**
@@ -87,6 +93,20 @@ namespace Canteen\Services
 		}
 
 		/**
+		*  Use the install method that comes built-in, this is experimental
+		*  and may not set the best default data type on the table. It's encouraged
+		*  that manual adjustments are made afterwards.
+		*  @method install
+		*  @protected
+		*  @return {Boolean} If the install was successful
+		*/
+		protected function install()
+		{
+			$this->access(__METHOD__);
+			return $this->installItem($this->item);
+		}
+
+		/**
 		*  Override of the dynamic call method to call verify* methods, for instance
 		*  if we're validating Name it would be $this->verifyName($value)
 		*  @method __call
@@ -103,7 +123,7 @@ namespace Canteen\Services
 				*  @method setWhere
 				*  @protected
 				*  @param {Array|String*} args The collection of extra SQL select where 
-				*     parameters to add to all get selections
+				*	 parameters to add to all get selections
 				*  @return {ObjectService} The instance of this class, for chaining
 				*/
 				case 'setWhere' :
@@ -113,7 +133,7 @@ namespace Canteen\Services
 				*  @method setProperties
 				*  @protected
 				*  @param {Array|String*} [props=null] N-number of strings to set as additional properties,
-				*     or a collection of strings to add to the existing properties.
+				*	 or a collection of strings to add to the existing properties.
 				*  @return {ObjectService} The instance of this class, for chaining
 				*/
 				case 'setProperties' :
@@ -133,8 +153,24 @@ namespace Canteen\Services
 				}
 				default :
 				{
-					// pass to the parent
-					parent::__call($method, $args);
+					// Check for validation call with a field name some method that starts
+					// verify*($value), for instance verifyItemId($id)
+					if (preg_match('/^verify[A-Z][a-zA-Z0-9]*$/', $method))
+					{
+						// Extract the field name from the method name
+						$fieldName = str_replace('verify', '', $method);
+						$fieldName = strtolower(substr($fieldName, 0, 1)).substr($fieldName, 1);
+
+						if (is_array($args) && count($args) != 1)
+							throw new ObjectServiceError(ObjectServiceError::WRONG_ARG_COUNT, array($method, 1, count($args)));
+
+						$item->verifyField($this->item, $fieldName, $args[0]);
+					}
+					else
+					{
+						// pass to the parent
+						return parent::__call($method, $args);
+					}
 					break;
 				}
 			}

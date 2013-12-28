@@ -43,8 +43,8 @@ namespace Canteen\Controllers
 				}
 				list($username, $forgotString) = $uri;
 				
-				$user = $this->service('users')->getUser($username);
-				$result = $this->service('users')->verifyResetPassword($username, $forgotString);
+				$user = $this->service('user')->getUser($username);
+				$result = $this->service('user')->verifyResetPassword($username, $forgotString);
 				
 				if (!$result || !$user)
 				{
@@ -55,7 +55,7 @@ namespace Canteen\Controllers
 					$password = StringUtils::generateRandomString();
 					$hash = PasswordUtils::hash($password);
 					
-					$result = $this->service('users')->updateUser(
+					$result = $this->service('user')->updateUser(
 						$user->id, 
 						array(
 							'password' => $hash,
@@ -64,9 +64,9 @@ namespace Canteen\Controllers
 					);
 					
 					if (!$result)
-		            {
-		                $data['error'] = "There was a problem resetting your password. Try again.";
-		            }
+					{
+						$data['error'] = "There was a problem resetting your password. Try again.";
+					}
 					else
 					{
 						$data['success'] = 'Please login with this temporary password';

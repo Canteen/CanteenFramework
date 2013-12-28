@@ -2,8 +2,8 @@
 
 	if(!function_exists('fnmatch')) 
 	{
-	    function fnmatch($pattern, $string) 
+		function fnmatch($pattern, $string) 
 		{
-	        return preg_match("#^".strtr(preg_quote($pattern, '#'), array('\*' => '.*', '\?' => '.'))."$#i", $string);
-	    }
+			return preg_match("#^".strtr(preg_quote($pattern, '#'), array('\*' => '.*', '\?' => '.'))."$#i", $string);
+		}
 	}

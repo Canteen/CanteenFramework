@@ -25,6 +25,7 @@ namespace Canteen\Services
 			parent::__construct(
 				'config', 
 				'Canteen\Services\Objects\Config',
+				'config',
 				array(
 					$this->field('config_id', Validate::NUMERIC, 'id')
 						->setDefault(),
@@ -39,7 +40,7 @@ namespace Canteen\Services
 			$this->restrict(
 				array(
 					'addConfig' => Privilege::ADMINISTRATOR,
-					'install' => 'Canteen\Forms\Installer',
+					'setup' => 'Canteen\Forms\Installer',
 					'updateValue' => 'Canteen\Site',
 					'registerSettings' => 'Canteen\Site',
 					'updateConfig' => Privilege::ADMINISTRATOR,
@@ -51,13 +52,13 @@ namespace Canteen\Services
 		
 		/**
 		*  Install the config table
-		*  @method install
+		*  @method setup
 		*  @param {String} siteTitle The name of the site title
 		*  @param {String} contentPath The local path to the page HTML content
 		*  @param {String} templatePath The local path to the HTML main template
 		*  @return {Boolean} If the table was installed
 		*/
-		public function install($siteTitle='', $contentPath='assets/html/content/', $templatePath='assets/html/index.html')
+		public function setup($siteTitle='', $contentPath='assets/html/content/', $templatePath='assets/html/index.html')
 		{
 			$this->access();
 			
@@ -146,7 +147,7 @@ namespace Canteen\Services
 		*  @param {mixed} value The value of the key to set
 		*  @param {String} [type='string'] The value type (string or integer)
 		*  @param {int} [access=0] The access to the property, see SettingsManager for more
-		*         information on controlling access to settings.
+		*		 information on controlling access to settings.
 		*  @return {int|Boolean} The new ID if successful, false if not
 		*/
 		public function addConfig($name, $value, $type='string', $access=0)

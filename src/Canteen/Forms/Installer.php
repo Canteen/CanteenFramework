@@ -9,6 +9,7 @@ namespace Canteen\Forms
 	use Canteen\Services\ConfigService;
 	use Canteen\Services\PageService;
 	use Canteen\Services\UserService;
+	use Canteen\Events\CanteenEvent;
 	use \Exception;
 	
 	/**
@@ -59,9 +60,12 @@ namespace Canteen\Forms
 				new PageService;
 				new UserService;
 				
-				$this->service('config')->install($siteTitle, $contentPath, $templatePath);
-				$this->service('users')->install($username, $email, $password, $firstName, $lastName);
-				$this->service('pages')->install();
+				$this->service('config')->setup($siteTitle, $contentPath, $templatePath);
+				$this->service('user')->setup($username, $email, $password, $firstName, $lastName);
+				$this->service('page')->setup();
+
+				// Trigger the site event for being installed
+				$this->site->trigger(CanteenEvent::INSTALLED);
 
 				// We're already installed, no need to keep checking
 				// for the rest of this session

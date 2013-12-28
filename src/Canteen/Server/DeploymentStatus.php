@@ -135,7 +135,7 @@ namespace Canteen\Server
 		*  @constructor
 		*  @param {String|Array} settingsPath The path to the settings PHP file or an Array
 		*  @param {String} [domain=null] The domain to specific where we're coming from (optional)
-		*         checks the server constants if domain is not supplied
+		*		 checks the server constants if domain is not supplied
 		*/
 		public function __construct($settingsPath, $domain=null)
 		{
@@ -241,7 +241,7 @@ namespace Canteen\Server
 		*/
 		private function isAssoc($arr)
 		{
-		    return array_keys($arr) !== range(0, count($arr) - 1);
+			return array_keys($arr) !== range(0, count($arr) - 1);
 		}
 		
 		/**
@@ -251,9 +251,9 @@ namespace Canteen\Server
 		*  @param {String} basePath The base path of the site, if any
 		*/
 		private function processURI($basePath) 
-	    {			
-	        if (isset($_SERVER['REQUEST_URI']))
-	        {
+		{			
+			if (isset($_SERVER['REQUEST_URI']))
+			{
 				if (isset($_SERVER['HTTP_X_ORIGINAL_URL']))
 				{
 					$request = substr($_SERVER['HTTP_X_ORIGINAL_URL'], 
@@ -272,13 +272,13 @@ namespace Canteen\Server
 				}
 
 				$this->settings['queryString'] = $query;
-	     		$uri = explode('/', $request);
-	            return implode('/', array_filter($uri, function($var)
+		 		$uri = explode('/', $request);
+				return implode('/', array_filter($uri, function($var)
 				{
 					return ($var != '');
 				}));
-	        }
-	        return '';
-	    }	
+			}
+			return '';
+		}	
 	}
 }

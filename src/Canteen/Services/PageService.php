@@ -22,8 +22,9 @@ namespace Canteen\Services
 		public function __construct()
 		{
 			parent::__construct(
-				'pages',
+				'page',
 				'Canteen\Services\Objects\Page',
+				'pages',
 				array(
 					$this->field('page_id', Validate::NUMERIC, 'id')
 						->setDefault(),
@@ -53,7 +54,7 @@ namespace Canteen\Services
 						'Canteen\Parser\PageBuilder', 
 						'Canteen\Controllers\AdminPagesController'
 					),
-					'install' => 'Canteen\Forms\Installer',
+					'setup' => 'Canteen\Forms\Installer',
 					'getPageByUri' => 'Canteen\Forms\ConfigUpdate',
 					'getPagesByParentId' => 'Canteen\Controllers\AdminController',
 					'getPages' => array(
@@ -78,9 +79,9 @@ namespace Canteen\Services
 		
 		/**
 		*  Install the pages table into the database
-		*  @method install
+		*  @method setup
 		*/
-		public function install()
+		public function setup()
 		{		
 			$this->access();
 			

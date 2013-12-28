@@ -135,7 +135,7 @@ namespace Canteen\Forms
 			
 			if ($type == 'page')
 			{
-				$page = $this->service('pages')->getPageByUri($value);
+				$page = $this->service('page')->getPageByUri($value);
 				if (!$page)
 				{
 					$this->error('Not a valid page URI stub');

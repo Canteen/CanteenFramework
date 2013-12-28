@@ -114,7 +114,7 @@ namespace Canteen\Services
 		*  Register additional where clauses for the SQL select on get methods
 		*  @method setWhere
 		*  @param {Array|String*} args The collection of extra SQL select where 
-		*     parameters to add to all get selections
+		*	 parameters to add to all get selections
 		*  @return {ObjectService} The instance of this class, for chaining
 		*/
 		public function setWhere($args)
@@ -146,7 +146,7 @@ namespace Canteen\Services
 		*  Get the select properties
 		*  @method setProperties
 		*  @param {Array|String*} [props] N-number of strings to set as additional properties,
-		*     or a collection of strings to add to the existing properties.
+		*	 or a collection of strings to add to the existing properties.
 		*/
 		public function setProperties($props)
 		{
@@ -163,7 +163,7 @@ namespace Canteen\Services
 		*/
 		public function setPrepends($maps, $value=null)
 		{
-			if (is_string($maps) && $value)
+			if (is_string($maps))
 			{
 				$maps = array($maps => $value);
 			}
@@ -197,6 +197,68 @@ namespace Canteen\Services
 
 				if ($type) Validate::verify($value, $type);
 			}
+		}
+
+		/**
+		*  Experimental install feature to take the fields
+		*  and convert them into a MySQL create table query.
+		*  @method getInstallQuery
+		*  @return {String} The sql query to install the table
+		*/
+		public function getInstallQuery()
+		{
+			$keys = array();
+			$fields = array();
+
+			foreach($this->fields as $f)
+			{
+				$field = "`{$f->id}` ";
+				if (is_array($f->type))
+				{
+ 					$field .= "set('".implode("','",$f->type)."') CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL";
+				}
+				else
+				{
+					switch($f->type)
+					{
+						case Validate::NUMERIC :
+							$field .= 'int(10) unsigned NOT NULL';
+							break;
+						case Validate::BOOLEAN :
+							$field .= 'tinyint(1) unsigned NOT NULL DEFAULT \'0\'';
+							break;
+						case Validate::MYSQL_DATE :
+							$field .= 'datetime NOT NULL';
+							break;
+						case null :
+							$field .= 'text COLLATE latin1_general_ci NOT NULL';
+							break;
+						default :
+						case Validate::FULL_TEXT :
+							$field .= 'varchar(255) COLLATE latin1_general_ci NOT NULL';
+							break;
+					}
+				}
+				// Add the keys
+				if ($f->isDefault)
+				{
+					$field .= ' AUTO_INCREMENT';
+					$keys[] = "PRIMARY KEY (`{$f->id}`)";
+				}
+				else if ($f->isIndex)
+				{
+					$keys[] = "KEY `{$f->id}` (`{$f->id}`)";
+				}
+
+				// Add to fields list
+				$fields[] = $field;
+			}
+
+			$sql = "CREATE TABLE IF NOT EXISTS `{$this->table}` (";
+			$sql .= implode(', ', $fields) . ', ' . implode(', ', $keys);
+			$sql .= ') ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;';
+			
+			return $sql;
 		}
 
 		/**

@@ -203,7 +203,7 @@ namespace Canteen\Authorization
 		public function logout()
 		{		
 			// Remove sessions that have expired
-			$this->service('users')->clearExpiredSessions(
+			$this->service('user')->clearExpiredSessions(
 				$this->_user->id, 
 				$this->loginExpires
 			);
@@ -260,7 +260,7 @@ namespace Canteen\Authorization
 			$isValidUser = false;
 			
 			// Get the user by this username
-			$result = $this->service('users')->getUserByLogin($username);
+			$result = $this->service('user')->getUserByLogin($username);
 			
 			if ($result)
 			{
@@ -285,14 +285,14 @@ namespace Canteen\Authorization
 				if ($attempts == $this->loginAttempts)
 				{
 					$this->error = self::ERR_FROZEN;
-					$this->service('users')->freezeUsername($username, $this->frozenMinutes);
+					$this->service('user')->freezeUsername($username, $this->frozenMinutes);
 					return false;
 				}
 			}
 		
 			// After all that crap, 
 			// lets finally check username & password
-			if ($user = $this->service('users')->checkLogin($username, $password, $isPasswordHashed))
+			if ($user = $this->service('user')->checkLogin($username, $password, $isPasswordHashed))
 			{
 				$this->setSession($user, $remember);
 				return true;
@@ -302,7 +302,7 @@ namespace Canteen\Authorization
 				// Wrong password for user
 				$attempts++;
 				$this->error = self::ERR_PASS . $attempts . ' of ' . $this->loginAttempts . ' for ' . $username;
-				$this->service('users')->reportAttempt($username);
+				$this->service('user')->reportAttempt($username);
 			}
 			else 
 			{
@@ -349,7 +349,7 @@ namespace Canteen\Authorization
 			// then we'll create a new session
 			if ($init)
 			{
-				$this->service('users')->createSession(
+				$this->service('user')->createSession(
 					$this->_user->id, 
 					$this->_sessionId, 
 					$this->_ipAddress
@@ -358,7 +358,7 @@ namespace Canteen\Authorization
 			// else we're refreshing the user login time
 			else
 			{  
-				$this->service('users')->refresh($this->_user->id);
+				$this->service('user')->refresh($this->_user->id);
 			} 
 		}
 	
@@ -370,7 +370,7 @@ namespace Canteen\Authorization
 		*/
 		private function checkSession()
 		{			
-			$user = $this->service('users')->checkSession(
+			$user = $this->service('user')->checkSession(
 				ifsetor($_SESSION['username']), 
 				ifsetor($_SESSION['password']), 
 				$this->_sessionId, 
@@ -401,7 +401,7 @@ namespace Canteen\Authorization
 			if (!$userId || !$sessionId) return;
 
 			// Check the cookie credientials against the saved sessions
-			$user = $this->service('users')->checkCookieLogin($userId, $sessionId);
+			$user = $this->service('user')->checkCookieLogin($userId, $sessionId);
 			
 			if ($user)
 			{				
@@ -442,7 +442,7 @@ namespace Canteen\Authorization
 			if (!LOGGED_IN) return false;
 			
 			$hash = PasswordUtils::hash($password);
-			$result = $this->service('users')->updateUser(USER_ID, 'password', $hash);
+			$result = $this->service('user')->updateUser(USER_ID, 'password', $hash);
 			
 			if ($result)
 			{

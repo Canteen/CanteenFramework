@@ -86,7 +86,7 @@ namespace Canteen\Errors
 		*  @return {String} The string representation of this Error
 		*/
 		public function __toString()
-	    {
+		{
 			return $this->getMessage();
 		}
 	}

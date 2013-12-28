@@ -23,9 +23,10 @@ namespace Canteen
 	use Canteen\Database\Database;
 	use Canteen\HTML5\SimpleList;
 	use Canteen\Utilities\SettingsManager;
+	use Canteen\Events\EventDispatcher;
 	use \Exception;
 	
-	class Site
+	class Site extends EventDispatcher
 	{	
 		/** 
 		*  The current version of the Canteen site 
@@ -230,7 +231,7 @@ namespace Canteen
 		*  @class Site
 		*  @constructor
 		*  @param {String|Array|Dictionary} [settings='config.php'] The path to the settings PHP, the collection of
-		*            deployment settings, or the single deployment dictionary.
+		*			deployment settings, or the single deployment dictionary.
 		*  @param {String} settings.dbUsername The username for the database
 		*  @param {String} settings.dbPassword The password for the database
 		*  @param {String|Dictionary} settings.dbName The name of the database or collection of aliases and databases ('default' is required)
@@ -242,12 +243,17 @@ namespace Canteen
 		*  @param {Boolean} [settings.compress=false] If the site should be compressed with gzip
 		*  @param {Boolean} [settings.minify=false] If the output page should be minified
 		*  @param {String} [settings.cacheDirectory=null] The directory for storing file cache if Memcache isn't available
+		*  @param {String} [callerPath=null] The path to the root script of the site, useful if we
+		*     are inheriting this class.
 		*/
-		public function __construct($settings='config.php')
+		public function __construct($settings='config.php', $callerPath=null)
 		{		
-			$bt = debug_backtrace();
-			$callerPath = dirname($bt[0]['file']).'/';
-			unset($bt);
+			if ($callerPath === null)
+			{
+				$bt = debug_backtrace();
+				$callerPath = dirname($bt[0]['file']).'/';
+				unset($bt);
+			}
 			
 			// Save singleton
 			self::$_instance = $this;
@@ -675,16 +681,57 @@ namespace Canteen
 			$default = '_'.$name;
 			switch($name)
 			{
+				/**
+				*  The instance of the parser
+				*  @property {Parser} parser
+				*  @readOnly
+				*/
 				case 'parser' :
-				case 'formFactory' :				
+
+				/**
+				*  The instance of the Form Factory handler
+				*  @property {FormFactory} formFactory
+				*  @readOnly
+				*/
+				case 'formFactory' :
+
+				/**
+				*  The instance of the Database
+				*  @property {Database} db
+				*  @readOnly
+				*/			
 				case 'db' :
+
+				/**
+				*  The instance of the server cache
+				*  @property {ServerCache} cache
+				*  @readOnly
+				*/
 				case 'cache' :
+
+				/**
+				*  The instance of the user authorization object
+				*  @property {Authorization} user
+				*  @readOnly
+				*/
 				case 'user' :
+
+				/**
+				*  The instance of settings manager
+				*  @property {SettingsManager} settings
+				*  @readOnly
+				*/
 				case 'settings' :
+
+				/**
+				*  The instance of PHP performance profiler
+				*  @property {Profiler} profiler
+				*  @readOnly
+				*/
 				case 'profiler' : 
 					return $this->$default;
 			}
-	    }
+		}
 		
 		/**
 		*  Check that a version of Canteen is required to run

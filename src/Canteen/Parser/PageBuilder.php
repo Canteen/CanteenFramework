@@ -102,7 +102,7 @@ namespace Canteen\Parser
 			}
 			
 			// Get the collection of all the pages
-			$this->_pages = $this->service('pages')->getPages();
+			$this->_pages = $this->service('page')->getPages();
 		}
 		
 		/**
@@ -125,7 +125,7 @@ namespace Canteen\Parser
 			
 			// If we're processing a form
 			if (isset($_POST['form'])) 
-	        {
+			{
 				if ($profiler) $profiler->start('Form Process');
 				
 				// We save the result incase this is an ajax request
@@ -367,7 +367,7 @@ namespace Canteen\Parser
 			}
 			
 			// If we are on the default page, redirect to index
-		    if ($uri == $this->_indexPage->uri) return redirect();
+			if ($uri == $this->_indexPage->uri) return redirect();
 			
 			// Check to see if the page is cache-able
 			if ($page->cache)

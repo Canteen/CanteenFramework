@@ -35,7 +35,7 @@ namespace Canteen\Forms
 		public function __construct()
 		{
 			$usernameOrEmail = ifsetor($_POST['usernameOrEmail']);
-			$user = $this->service('users')->getUser($usernameOrEmail);
+			$user = $this->service('user')->getUser($usernameOrEmail);
 			
 			if (!$usernameOrEmail)
 			{
@@ -57,7 +57,7 @@ namespace Canteen\Forms
 				// populate with new forgot string
 				$forgotString = uniqid();
 				
-				$result = $this->service('users')->updateUser(
+				$result = $this->service('user')->updateUser(
 					$user->id, 'forgotString', $forgotString);
 				
 				if (!$result)

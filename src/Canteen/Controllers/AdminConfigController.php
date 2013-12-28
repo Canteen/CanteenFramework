@@ -25,7 +25,7 @@ namespace Canteen\Controllers
 		*/
 		public function process()
 		{
-			$this->allPages = $this->service('pages')->getPages();
+			$this->allPages = $this->service('page')->getPages();
 			
 			$configs = $this->service('config')->getConfigs();
 

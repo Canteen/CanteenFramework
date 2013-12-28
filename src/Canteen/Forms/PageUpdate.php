@@ -21,7 +21,7 @@ namespace Canteen\Forms
 		public function __construct()
 		{		
 			$pageId = $this->verify(ifsetor($_POST['pageId']));
-			$page = $this->service('pages')->getPage($pageId);
+			$page = $this->service('page')->getPage($pageId);
 			
 			// See if we're going to delete the page
 			// if the delete button was clicked
@@ -32,14 +32,14 @@ namespace Canteen\Forms
 				{
 					$this->error('No page to delete');
 				}
-				else if (in_array($page->uri, $this->service('pages')->getProtectedUris()))
+				else if (in_array($page->uri, $this->service('page')->getProtectedUris()))
 				{
 					$this->error('Page is protected an cannot be deleted');
 				}
 				else
 				{
 					// Remove the page
-					if (!$this->service('pages')->removePage($pageId))
+					if (!$this->service('page')->removePage($pageId))
 					{
 						$this->error('Unable to delete page');
 					}
@@ -107,7 +107,7 @@ namespace Canteen\Forms
 				if ($page->parentId == $pageId) $page->parentId = 0;
 				
 				// The protected pages, you cannot change the uri
-				$protected = in_array($page->uri, $this->service('pages')->getProtectedUris());
+				$protected = in_array($page->uri, $this->service('page')->getProtectedUris());
 				$protectedProperties = array('uri', 'parentId', 'redirectId', 'privilege');
 				
 				// Change for changes in properties
@@ -161,7 +161,7 @@ namespace Canteen\Forms
 				
 				if (count($properties))
 				{
-					$result = $this->service('pages')->updatePage($pageId, $properties);
+					$result = $this->service('page')->updatePage($pageId, $properties);
 
 					if (!$result)
 					{
@@ -172,7 +172,7 @@ namespace Canteen\Forms
 			// Add new page
 			else
 			{
-				$result = $this->service('pages')->addPage(
+				$result = $this->service('page')->addPage(
 					$uri, 
 					$title, 
 					$keywords, 

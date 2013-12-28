@@ -49,9 +49,9 @@ namespace Canteen\Forms
 					// Output buffer the update include
 					// should output a new version number
 					ob_start();
-			            include $updatesFolder.$version.'.php';
-			            $version = ob_get_contents();
-			        ob_end_clean();
+						include $updatesFolder.$version.'.php';
+						$version = ob_get_contents();
+					ob_end_clean();
 
 					// Update the config and the site version number
 					$this->service('config')->updateValue($variableName, $version);

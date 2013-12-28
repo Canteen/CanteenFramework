@@ -20,21 +20,21 @@ namespace Canteen\Forms
 		public function __construct()
 		{
 			// Check the user login form
-	        $username = ifsetor($_POST['username']);
-	        $password = ifsetor($_POST['password']);
-	        $remember = isset($_POST['remember']);
+			$username = ifsetor($_POST['username']);
+			$password = ifsetor($_POST['password']);
+			$remember = isset($_POST['remember']);
 			
 			$this->verify($username, Validate::EMAIL);
 			
-	        // Create a user to check login
-	        if (!$this->user->login($username, $password, $remember))
-	        {
+			// Create a user to check login
+			if (!$this->user->login($username, $password, $remember))
+			{
 				$this->error($this->user->error);
-	        }
-	        else
-	        {
+			}
+			else
+			{
 				redirect($this->settings->uriRequest);
-	        }
+			}
 		}
 	}
 }	

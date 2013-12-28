@@ -29,13 +29,13 @@ namespace Canteen\Controllers
 		*/
 		public function process()
 		{			
-			$this->allPages = $this->service('pages')->getPages();
+			$this->allPages = $this->service('page')->getPages();
 			$page = null;
 			$pageId = (int)ifsetor($_POST['pageId']);
 			
 			if (!empty($pageId))
 			{
-				$page = $this->service('pages')->getPage($pageId);
+				$page = $this->service('page')->getPage($pageId);
 			}		
 			
 			// The directory path
@@ -54,7 +54,7 @@ namespace Canteen\Controllers
 			
 			if ($page)
 			{
-				$protected = in_array($page->uri, $this->service('pages')->getProtectedUris());
+				$protected = in_array($page->uri, $this->service('page')->getProtectedUris());
 				$data['privileges'] = $this->getPrivileges($page->privilege);
 				$data['id'] = $page->id;
 				$data['title'] = $page->title;

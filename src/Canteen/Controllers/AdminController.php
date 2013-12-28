@@ -69,11 +69,11 @@ namespace Canteen\Controllers
 		{
 			$this->_isPrerendered = true;
 			
-			$pages = $this->service('pages')->getPagesByParentId($this->page->parentId);
+			$pages = $this->service('page')->getPagesByParentId($this->page->parentId);
 			$custom = array();
 			$builtIn = array();
 			
-			$protected = $this->service('pages')->getProtectedUris();
+			$protected = $this->service('page')->getProtectedUris();
 			
 			foreach($pages as $child)
 			{

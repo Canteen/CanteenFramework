@@ -27,7 +27,7 @@ namespace Canteen\Controllers
 			
 			if (!empty($userId))
 			{
-				$user = $this->service('users')->getUser($userId);
+				$user = $this->service('user')->getUser($userId);
 			}	
 			
 			$data = array(
@@ -84,7 +84,7 @@ namespace Canteen\Controllers
 		*/
 		private function getUsers()
 		{
-			$users = $this->service('users')->getUsers();
+			$users = $this->service('user')->getUsers();
 			$options = '';
 			foreach($users as $user)
 			{

@@ -2,7 +2,9 @@
 
 namespace Canteen\Services
 {
-	class ObjectService extends Service
+	use Canteen\Errors\ObjectServiceError;
+	
+	abstract class ObjectService extends Service
 	{
 		/** 
 		*  The dictionary of item names to ObjectServiceItem objects
@@ -24,8 +26,9 @@ namespace Canteen\Services
 
 		/**
 		*  Add a new Item definition to the service. This is required before using
-		*  any of the methods for updating, getting, removing.
+		*  any of the methods for updating, getting, removing. Located in the namespace __Canteen\Services__.
 		*  @method registerItem
+		*  @protected
 		*  @param {String} className Class to bind database result to
 		*  @param {String} table The name of the database table
 		*  @param {Array} field The collection of ObjectServiceField objects
@@ -33,7 +36,7 @@ namespace Canteen\Services
 		*  @param {String} itemsName The name of the plural items
 		*  @return {ObjectServiceItem} The new service definition created
 		*/
-		public function registerItem($className, $table, $fields, $itemName = null, $itemsName = null)
+		protected function registerItem($className, $table, $fields, $itemName = null, $itemsName = null)
 		{
 			$item = new ObjectServiceItem(
 				$className,
@@ -62,8 +65,42 @@ namespace Canteen\Services
 		}
 
 		/**
-		*  Override of the dynamic call method to call verify* methods, for instance
-		*  if we're validating Name it would be $this->verifyName($value)
+		*  Auto install the service item
+		*  @method installItem
+		*  @protected
+		*  @param {ObjectServiceItem} item Registered item
+		*  @return {Boolean} If item was installed successfully
+		*/
+		protected function installItem(ObjectServiceItem $item)
+		{
+			return (Boolean) $this->db->execute($item->getInstallQuery());
+		}
+
+		/**
+		*  Auto install multiple service items
+		*  @method installItems
+		*  @protected
+		*  @param {Array|ObjectServiceItem} items Registered items as different arguments
+		*	  or as a collection of ObjectServiceItems
+		*  @return {Boolean} If item was installed successfully
+		*/
+		protected function installItems($items)
+		{
+			$success = true;
+			$items = is_array($items) ? $items : func_get_args();
+			foreach($items as $item)
+			{
+				if (!$this->installItem($item))
+				{
+					$success = false;
+				}
+			}
+			return $success;
+		}
+
+		/**
+		*  Override of the dynamic call method to call install* methods, for instance
+		*  if we're install an item name Object it would be `$this->installObject()`
 		*  @method __call
 		*  @param {String} method The name of the method to call
 		*  @param {Array} args  The collection of arguments
@@ -71,21 +108,13 @@ namespace Canteen\Services
 		*/
 		public function __call($method, $args)
 		{
-			// Check for validation call
-			if (preg_match('/^verify([A-Z][a-zA-Z0-9]*)$/', $method))
+			// Auto-detect the name of the item, needs to be called within
+			// a method that has the name of an item
+			$item = $this->autoDetectItem($this->getCaller());
+
+			if (preg_match('/^install'.$item->itemName.'$/', $method))
 			{
-				// Auto-detect the name of the item, needs to be called within
-				// a method that has the name of an item
-				$item = $this->autoDetectItem($this->getCaller());
-
-				// Extract the field name from the method name
-				$fieldName = str_replace('verify', '', $method);
-				$fieldName = strtolower(substr($fieldName, 0, 1)).substr($fieldName, 1);
-
-				if (is_array($args) && count($args) != 1)
-					throw new ObjectServiceError(ObjectServiceError::WRONG_ARG_COUNT, array($method, 1, count($args)));
-
-				$item->verify($fieldName, $args[0]);
+				return $this->installItem($item);
 			}
 			else
 			{
@@ -105,8 +134,8 @@ namespace Canteen\Services
 		*/
 		protected function addByItem(ObjectServiceItem $item, array $properties)
 		{
-			if (!$item->defaultField) 
-				throw new ObjectServiceError(ObjectServiceError::NO_DEFAULT_INDEX);
+			//if (!$item->defaultField) 
+			//	throw new ObjectServiceError(ObjectServiceError::NO_DEFAULT_INDEX);
 			
 			// Check the access on the calling method
 			$this->access($this->getCaller());
@@ -127,7 +156,7 @@ namespace Canteen\Services
 			// If the default index isn't included,
 			// we'll use the next Id on the table, this is only
 			// for index things
-			if (!isset($values[$item->defaultField->name]))
+			if ($item->defaultField && !isset($values[$item->defaultField->id]))
 			{
 				$values[$item->defaultField->id] = $this->db->nextId(
 					$item->table, 
@@ -136,11 +165,16 @@ namespace Canteen\Services
 			}
 
 			// Insert the item
-			return $this->db->insert($item->table)
+			$success = $this->db->insert($item->table)
 				->values($values)
-				->result() ? $values[$item->defaultField->id] : false;
+				->result();
 
-			return $this;
+			// If there's a default field, we'll return the id
+			// of the next item
+			if ($item->defaultField)
+				return $success ? $values[$item->defaultField->id] : false;
+			else
+				return $success;
 		}
 
 		/**
@@ -179,21 +213,17 @@ namespace Canteen\Services
 		*  @method autoDetectItem
 		*  @private
 		*  @param {String} method The name of the method
-		*  @return {String} Returns the name of item or throw error
+		*  @return {ObjectServiceItem} Returns the item or throw error
 		*/
 		private function autoDetectItem($method)
 		{
-			$testName = preg_replace('/^(get|update|remove|getTotal)/', '',
-				preg_replace('/By[A-Z][a-zA-Z]+$/', '', $method)
-			);
-
 			// Default the item name to use to be false
 			$itemName = false;
 
 			foreach($this->items as $name=>$item)
 			{
 				// Compare against the single and plural name
-				if ($name == $testName || $item->itemsName == $testName)
+				if (preg_match('/'.$name.'|'.$item->itemsName.'/', $method))
 				{
 					$itemName = $name;
 					break;
@@ -201,10 +231,10 @@ namespace Canteen\Services
 			}
 
 			if (!$itemName)
-				throw new ObjectServiceError(ObjectServiceError::UNREGISTERED_ITEM, $testName);
+				throw new ObjectServiceError(ObjectServiceError::UNREGISTERED_ITEM, $method);
 
 			if (!isset($this->items[$itemName]))
-				throw new ObjectServiceError(ObjectServiceError::UNREGISTERED_ITEM, $itemName);
+				throw new ObjectServiceError(ObjectServiceError::UNREGISTERED_ITEM, $method);
 
 			return $this->items[$itemName];
 		}
@@ -274,7 +304,7 @@ namespace Canteen\Services
 				// getTotalItem
 				case 'getTotal'.$s:
 				{
-					$this->accessDefault('getTotal'.$s);
+					$this->accessDefault($item, 'getTotal'.$s);
 					$internal = 'internalGetTotalByIndex';
 					array_unshift($args, true);
 					array_unshift($args, $item->defaultField);
@@ -283,7 +313,7 @@ namespace Canteen\Services
 				// getItem
 				case 'get'.$s:
 				{
-					$this->accessDefault('get'.$s);
+					$this->accessDefault($item, 'get'.$s);
 					$internal = 'internalGetByIndex';
 					array_unshift($args, true);
 					array_unshift($args, $item->defaultField);
@@ -292,7 +322,7 @@ namespace Canteen\Services
 				// removeItem
 				case 'remove'.$s:
 				{
-					$this->accessDefault('remove'.$s);
+					$this->accessDefault($item, 'remove'.$s);
 					$internal = 'internalRemoveByIndex';
 					array_unshift($args, $item->defaultField);
 					break;
@@ -300,7 +330,7 @@ namespace Canteen\Services
 				// updateItem
 				case 'update'.$s:
 				{
-					$this->accessDefault('update'.$s);
+					$this->accessDefault($item, 'update'.$s);
 					$internal = 'internalUpdateByIndex';
 					array_unshift($args, $item->defaultField);
 					break;
@@ -340,7 +370,7 @@ namespace Canteen\Services
 		*  @param {int} [lengthOrIndex=null] The starting index or elements to return
 		*  @param {int} [duration=null] The duration of the items
 		*  @return {Array|Object} The collection of objects or a single object matching
-		*     the className from the constuction
+		*	 the className from the constuction
 		*/
 		private function internalGetByIndex(ObjectServiceItem $item, ObjectServiceField $index, $isSingle, $search, $lengthOrIndex=null, $duration=null)
 		{
@@ -368,7 +398,7 @@ namespace Canteen\Services
 
 			$results = $this->bindObjects(
 				$results, 
-				$this->className,
+				$item->className,
 				$item->prepends
 			);
 
@@ -386,7 +416,7 @@ namespace Canteen\Services
 		*  @param {Boolean} isSingle If the index search is a single
 		*  @param {Array|mixed} search The value to search on
 		*  @return {Array|Object} The collection of objects or a single object matching
-		*     the className from the constuction
+		*	 the className from the constuction
 		*/
 		private function internalGetTotalByIndex(ObjectServiceItem $item, ObjectServiceField $index, $isSingle, $search)
 		{
@@ -414,7 +444,7 @@ namespace Canteen\Services
 		private function internalGetAll(ObjectServiceItem $item, $lengthOrIndex=null, $duration=null)
 		{
 			$query = $this->db->select($item->properties)
-				->from($this->table);
+				->from($item->table);
 		
 			$item->orderByQuery($query);
 				
@@ -432,7 +462,11 @@ namespace Canteen\Services
 
 			$results = $query->results();
 
-			return $this->bindObjects($results, $item->className, $item->prepends);
+			return $this->bindObjects(
+				$results, 
+				$item->className, 
+				$item->prepends
+			);
 		}
 
 		/**

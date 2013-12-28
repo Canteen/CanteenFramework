@@ -16,7 +16,7 @@
 	*  @return {String} If the request is made asynchronously, returns the json redirect object as a string
 	*/
 	function redirect($uri='')
-    {
+	{
 		$query = ifconstor('QUERY_STRING');
 		$uri = $uri . ($query ? '/' . $query : '');
 		if (ifconstor('ASYNC_REQUEST', false))
@@ -30,4 +30,4 @@
 			header('Location: '.  $host . $basePath . $uri);
 		}
 		die();
-    }
+	}

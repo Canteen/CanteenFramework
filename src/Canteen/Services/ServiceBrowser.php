@@ -29,8 +29,8 @@ namespace Canteen\Services
 		*  @private
 		*/
 		private $termiteAliases = array(
-			'users',
-			'pages',
+			'user',
+			'page',
 			'time',
 			'config'
 		);
@@ -238,7 +238,7 @@ namespace Canteen\Services
 			$names = array();
 			foreach ($methods as $key => $method)
 			{
-			    $names[$key] = $method->name;
+				$names[$key] = $method->name;
 			}
 			array_multisort($names, SORT_ASC, $methods);
 			
