@@ -273,7 +273,10 @@ namespace Canteen\Services
 				$f = $item->indexes[$index];
 
 				// Add a boolean to the beinning of the arguments if this is a single
-				array_unshift($args, ($matches[2][0] == $s));
+				if ($matches[1][0] == 'get')
+				{
+					array_unshift($args, ($matches[2][0] == $s));
+				}
 
 				// Add the field name to the beginning of the arguments
 				array_unshift($args, $f);
@@ -501,7 +504,7 @@ namespace Canteen\Services
 		*/
 		private function internalRemoveByIndex(ObjectServiceItem $item, ObjectServiceField $index, $search)
 		{
-			return $this->db->delete($this->table)
+			return $this->db->delete($item->table)
 				->where("`{$index->id}` in " . $this->valueSet($search, $index->type))
 				->result();
 		}
