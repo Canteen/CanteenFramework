@@ -134,9 +134,6 @@ namespace Canteen\Services
 		*/
 		protected function addByItem(ObjectServiceItem $item, array $properties)
 		{
-			//if (!$item->defaultField) 
-			//	throw new ObjectServiceError(ObjectServiceError::NO_DEFAULT_INDEX);
-			
 			// Check the access on the calling method
 			$this->access($this->getCaller());
 
@@ -149,6 +146,10 @@ namespace Canteen\Services
 			// Convert the named properties into field inserts
 			foreach($properties as $name=>$value)
 			{
+				// Check for invalid field name
+				if (!isset($item->fieldsByName[$name])) 
+					throw new ObjectServiceError(ObjectServiceError::INVALID_FIELD_NAME, $name);
+
 				$field = $item->fieldsByName[$name];
 				$values[$field->id] = $value;
 			}
