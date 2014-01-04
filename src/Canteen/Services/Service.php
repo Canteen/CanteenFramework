@@ -433,6 +433,30 @@ namespace Canteen\Services
 			}
 			return $obj;
 		}
+
+		/**
+		*  Turn a collection of objects into a dictionary by a property name.
+		*  @method dataMap
+		*  @protected
+		*  @param {Array} results The objects collection
+		*  @param {String} [key='id'] The name of the key to create the map on
+		*  @return {Dictionary} The objects mapped by property
+		*/
+		protected function dataMap($results, $key='id')
+		{
+			$map = array();
+			
+			if ($results)
+			{
+				// Create a map of all the users by id
+				foreach($results as $u)
+				{
+					if (!in_array($u->id, $map))
+						$map[$u->id] = $u;
+				}
+			}
+			return $map;
+		}
 	}
 
 	/**

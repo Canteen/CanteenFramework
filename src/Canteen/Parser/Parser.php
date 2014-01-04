@@ -72,6 +72,15 @@ namespace Canteen\Parser
 		*   @default 'for:'
 		*/
 		const LEX_LOOP = 'for:';
+
+		/**
+		*   The property seperator similar to object "->"
+		*   @property {String} LEX_SEP
+		*   @static
+		*   @final
+		*   @default '.'
+		*/
+		const LEX_SEP = '.';
 		
 		/**
 		*   Lexer for if closing loop tag
@@ -287,7 +296,7 @@ namespace Canteen\Parser
 					.self::LEX_IF.'|'
 					.self::LEX_IF.self::LEX_NOT.
 				')'
-				.'([a-zA-Z0-9]+)'.self::LEX_CLOSE.'/';
+				.'([a-zA-Z0-9\''.self::LEX_SEP.']+)'.self::LEX_CLOSE.'/';
 				
 			preg_match_all($pattern, $content, $matches);
 			
@@ -321,7 +330,7 @@ namespace Canteen\Parser
 								. $id . self::LEX_CLOSE;
 							
 							// Remove the tags if content is true
-							$value = isset($substitutions[$id]) ? $substitutions[$id] : '';
+							$value = $this->lookupValue($substitutions, $id);
 							
 							// The position order $o1{{if:}}$o2...$c2{{/if:}}$c1
 							$c2 = strpos($content, $endTag);
@@ -362,8 +371,10 @@ namespace Canteen\Parser
 							// maybe we should throw an exception here
 							if ($c2 === false) continue;
 							
+							$value = $this->lookupValue($substitutions, $id);
+
 							// Remove the loop contents if there's no data
-							if (!isset($substitutions[$id]) || !is_array($substitutions[$id]))
+							if ($value === null || !is_array($value))
 							{
 								$content = substr_replace($content, '', $o1, $c1 - $o1);
 								if($profiler) $profiler->end('Parse Loop');
@@ -373,7 +384,7 @@ namespace Canteen\Parser
 							$buffer = '';
 							$template = substr($content, $o2, $c2 - $o2);
 
-							foreach($substitutions[$id] as $sub)
+							foreach($value as $sub)
 							{				
 								// If the item is an object
 								if (is_object($sub))
@@ -404,7 +415,7 @@ namespace Canteen\Parser
 				if ($profiler) $profiler->end('Parse Main');
 			}
 			
-			$pattern = '/'.self::LEX_OPEN.'([a-zA-Z0-9]+)'.self::LEX_CLOSE.'/';
+			$pattern = '/'.self::LEX_OPEN.'([a-zA-Z0-9\''.self::LEX_SEP.']+)'.self::LEX_CLOSE.'/';
 			preg_match_all($pattern, $content, $matches);
 			
 			if (count($matches))
@@ -413,17 +424,51 @@ namespace Canteen\Parser
 				foreach($matches[0] as $i=>$tag)
 				{
 					$id = $matches[1][$i];
-					$value = isset($substitutions[$id]) ? $substitutions[$id] : null;
-					
-					if (!array_key_exists($id, $substitutions) 
-						|| is_array($value)) 
-							continue;
-							
+					$value = $this->lookupValue($substitutions, $id);
+				
+					// only do replacements if the id exists in the substitutions
+					// there might be another pass that actually does the replacement
+					// for instance the Canteen parse then the Controller parse
+					if ($value === null) continue;
+
+					if (is_array($value))
+						throw new CanteenError(CanteenError::PARSE_ARRAY, array($id, implode(', ', $value)));
+
 					$content = preg_replace('/'.$tag.'/', (string)$value, $content);
 				}
 				if ($profiler) $profiler->end('Parse Singles');
 			}
 			return $content;
+		}
+
+		/**
+		*  Get the nested value for a dot-syntax array/object lookup
+		*  For instance, `getNextVar($substitutions, 'event.name')`
+		*  @method lookupValue
+		*  @private
+		*  @param {Dictionary|Object} context The associative array or object
+		*  @param {String} name The do matrix name
+		*  @return {mixed} The value of the lookup
+		*/
+		private function lookupValue($context, $name)
+		{
+		    $pieces = explode(self::LEX_SEP, $name);
+		    foreach($pieces as $piece)
+		    {
+		        if (is_array($context) && array_key_exists($piece, $context))
+		        {
+		           $context = $context[$piece];
+		        }
+		        else if (is_object($context) && property_exists($context, $piece))
+		        {
+		        	$context = $context->$piece;
+		        }
+		        else
+		        {
+		        	return null;
+		        }
+		    }
+		    return $context;
 		}
 		
 		/**

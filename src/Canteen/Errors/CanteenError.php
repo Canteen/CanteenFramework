@@ -220,6 +220,14 @@ namespace Canteen\Errors
 		*  @final
 		*/
 		const SETTING_NAME_TAKEN = 124;
+
+		/** 
+		*  The parse substitution is invalid
+		*  @property {int} PARSE_ARRAY
+		*  @static
+		*  @final
+		*/
+		const PARSE_ARRAY = 125;
 		
 		/**
 		*  The collection of messages
@@ -252,7 +260,8 @@ namespace Canteen\Errors
 			self::CACHE_FOLDER_WRITEABLE => 'Cache folder is not writable. Change file permissions',
 			self::AUTOLOAD_CLASS => 'Class has already been loaded',
 			self::AUTOLOAD_TEMPLATE => 'Template has already been loaded',
-			self::TAKEN_SERVICE_ALIAS => 'The custom service alias is already taken'
+			self::TAKEN_SERVICE_ALIAS => 'The custom service alias is already taken',
+			self::PARSE_ARRAY => 'The parse substitution value \'%s\' cannot be an array \'%s\''
 		);
 		
 		/** 
