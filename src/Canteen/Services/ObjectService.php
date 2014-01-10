@@ -540,7 +540,7 @@ namespace Canteen\Services
 					{
 						$this->verify($p, $f->type);
 					}
-					$properties[$k] = $p;
+					$properties[$f->id] = $p;
 				}
 			}
 
