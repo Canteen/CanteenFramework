@@ -125,8 +125,8 @@ namespace Canteen\Parser
 		/**
 		*  Add a single template
 		*  @method addTemplate
-		*  @param {String} The alias name of the template
-		*  @param {String} The full path to the template file
+		*  @param {String} name The alias name of the template
+		*  @param {String} path The full path to the template file
 		*/
 		public function addTemplate($name, $path)
 		{

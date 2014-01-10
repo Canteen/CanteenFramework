@@ -1,20 +1,18 @@
+<h1><span class="icon-admin-pages"></span>{{pageTitle}}</h1>
+
 {{if:!hasPage}}
-<div class="formContainer pageUpdateSelect">
+<div class="formContainer pageUpdateSelect selectForm">
 	<form action="{{fullPath}}{{queryString}}" method="post" id="pageUpdateSelect">
 		<fieldset>
-			<div class="clearfix formRow">
-				<label for="pageId">Edit Page</label>
-				<select name="pageId" id="pageId" require>
-					<option value="0">Select a page</option>
-					{{pages}}
-				</select>
-			</div>
-			<div class="formButtons">
-				<button type="submit" value="Edit" id="editButton" class="submit">
-					<span class="buttonIcon icon-edit"></span>
-					<span class="buttonLabel">Edit</span>
-				</button>
-			</div>
+			<label for="pageId">Edit Page</label>
+			<select name="pageId" id="pageId" require>
+				<option value="0">Select a page</option>
+				{{pages}}
+			</select>
+			<button type="submit" value="Edit" id="editButton" class="submit">
+				<span class="buttonIcon icon-edit"></span>
+				<span class="buttonLabel">Edit</span>
+			</button>
 		</fieldset>
 	</form>
 </div>

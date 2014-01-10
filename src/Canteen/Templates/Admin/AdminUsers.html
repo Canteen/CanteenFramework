@@ -1,20 +1,18 @@
+<h1><span class="icon-admin-users"></span>{{pageTitle}}</h1>
+
 {{if:!hasUser}}
-<div class="formContainer userUpdateSelect">
+<div class="formContainer userUpdateSelect selectForm">
 	<form action="{{fullPath}}{{queryString}}" method="post" id="userUpdateSelect">
 		<fieldset>
-			<div class="clearfix formRow">
-				<label for="userId">Edit User</label>
-				<select name="userId" id="userId" require>
-					<option value="0">Select a user</option>
-					{{users}}
-				</select>
-			</div>
-			<div class="formButtons">
-				<button type="submit" value="Edit" id="editButton" class="submit">
-					<span class="buttonIcon icon-edit"></span>
-					<span class="buttonLabel">Edit</span>
-				</button>
-			</div>
+			<label class="hidden" for="userId">Edit User</label>
+			<select name="userId" id="userId" require>
+				<option value="0">Select a user</option>
+				{{users}}
+			</select>
+			<button type="submit" value="Edit" id="editButton" class="submit">
+				<span class="buttonIcon icon-edit"></span>
+				<span class="buttonLabel">Edit</span>
+			</button>
 		</fieldset>
 	</form>
 </div>
