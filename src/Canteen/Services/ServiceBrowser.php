@@ -183,7 +183,7 @@ namespace Canteen\Services
 					'output' => $output,
 					'services' => $this->getServicesList(),
 					'methods' => $this->getMethodsList($serviceName, $serviceAlias),
-					'logger' => Logger::instance()->render(),
+					'logger' => (string)Logger::instance()->render(),
 					'gatewayLink' => (string)$link
 				)
 			);
