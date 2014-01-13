@@ -151,9 +151,10 @@ namespace Canteen\Services
 		/**
 		*  Add a new page to the site
 		*  @method addPage
-		*  @param {String} uri The URI stub
-		*  @param {String} title The page title
-		*  @param {String} keywords The collection of keywords for meta
+		*  @param {Dictionary|String} propertiesOrUri The collection of page properties
+		*  @param {String} [title=''] The page title
+		*  @param {String} [description=''] The description of the page
+		*  @param {String} [keywords=''] The collection of keywords for meta
 		*  @param {int} [privilege=0] The minimum privilege required to view this page
 		*  @param {int|null} [redirectId=null] Always redirect to another page
 		*  @param {int|null} [parentId=null] Optional page to specify as the parent (default is null at the root level)
@@ -161,27 +162,33 @@ namespace Canteen\Services
 		*  @param {Boolean} [cache=true] If the page should always respect the site cache
 		*  @return {int|Boolean} The ID if successful, false if not
 		*/
-		public function addPage($uri, $title, $keywords, $description, $privilege=0, $redirectId=null, $parentId=null, $isDynamic=0, $cache=1)
-		{			
+		public function addPage($propertiesOrUri, $title='', $keywords='', $description='', $privilege=0, $redirectId=null, $parentId=null, $isDynamic=0, $cache=1)
+		{
+			$properties = $propertiesOrUri;
+
+			if (!is_array($properties))
+			{
+				$properties = array(
+					'uri' => $properties,
+					'title' => $title, 
+					'keywords' => $keywords,
+					'description' => $description,
+					'privilege' => $privilege,
+					'redirectId' => $redirectId,
+					'parentId' => $parentId,
+					'isDynamic' => $isDynamic,
+					'cache' => $cache
+				);
+			}
+
 			// Normally the add function would get the page id
 			// but in this case we need to use as the default
 			// parent id, if it's top level page
 			$id = $this->db->nextId($this->table, 'page_id');
+			$parentId = ifsetor($properties['parentId'], $id);
+			$properties['id'] = $id;
 
-			return $this->add(
-				array(
-					'id' => $id,
-					'uri' => $uri,
-					'title' => $title,
-					'redirectId' => $redirectId,
-					'parentId' => ($parentId === null) ? $id : $parentId,
-					'isDynamic' => $isDynamic,
-					'keywords' => $keywords,
-					'description' => $description,
-					'privilege' => $privilege,
-					'cache' => $cache
-				)
-			);
+			return $this->call($properties);
 		}
 
 		/**

@@ -11,42 +11,49 @@ namespace Canteen\Services
 		/**
 		*  The name of the table of the custom type
 		*  @property {String} table
+		*  @readOnly
 		*/
 		public $table;
 
 		/**
 		*  The name of the class to bind with
 		*  @property {String} className
+		*  @readOnly
 		*/
 		public $className;
 
 		/**
 		*  The collection of ObjectServiceField objects
 		*  @property {Array} _fields
+		*  @readOnly
 		*/
 		public $fields;
 
 		/**
 		*  The name of the single item to use for dynamic method calls
 		*  @property {String} itemName
+		*  @readOnly
 		*/
 		public $itemName;
 
 		/**
 		*  The name of multiple items to use for dynamic class
 		*  @property {String} itemsName
+		*  @readOnly
 		*/
 		public $itemsName;
 
 		/**
 		*  The main field, default
 		*  @property {ObjectServiceField} defaultField
+		*  @readOnly
 		*/
 		public $defaultField = null;
 
 		/**
 		*  The map of ObjectServiceField objects to their names
 		*  @property {Dictionary} fieldsByName
+		*  @readOnly
 		*/
 		public $fieldsByName = array();
 
@@ -59,21 +66,30 @@ namespace Canteen\Services
 		/**
 		*  The collection of mysql select properties
 		*  @property {Array} properties
+		*  @readOnly
 		*/
 		public $properties = array();
 
 		/**
 		*  The map of field names that can be indexed
 		*  @property {Dictionary} indexes
+		*  @readOnly
 		*/
 		public $indexes = array();
 
 		/**
 		*  Additional get where properties
 		*  @property {Array} where
-		*  @default array()
+		*  @readOnly
 		*/
 		public $where = array();
+
+		/**
+		*  The reference to the service this originates on
+		*  @property {ObjectService} service
+		*  @readOnly
+		*/
+		public $service = null;
 
 		/**
 		*  The encapsulation of a single data type, requires a predefined

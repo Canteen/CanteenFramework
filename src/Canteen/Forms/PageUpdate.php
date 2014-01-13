@@ -7,199 +7,183 @@ namespace Canteen\Forms
 {
 	use Canteen\Authorization\Privilege;
 	use Canteen\Utilities\Validate;
+	use Canteen\Events\ObjectFormEvent;
 	
 	/**
 	*  Update or add a user.  Located in the namespace __Canteen\Forms__.
 	*  @class PageUpdate
-	*  @extends FormBase
+	*  @extends ObjectForm
 	*/
-	class PageUpdate extends FormBase
+	class PageUpdate extends ObjectForm
 	{
 		/**
-		*  Process the form and handle the $_POST data.
+		*  Constructor
 		*/
 		public function __construct()
-		{		
-			$pageId = $this->verify(ifsetor($_POST['pageId']));
-			$page = $this->service('page')->getPage($pageId);
-			
-			// See if we're going to delete the page
-			// if the delete button was clicked
-			if (isset($_POST['deleteButton']))
+		{
+			$this->on(ObjectFormEvent::VALIDATE, array($this, 'onValidate'))
+				->on(ObjectFormEvent::BEFORE_REMOVE, array($this, 'onBeforeRemove'))
+				->on(ObjectFormEvent::BEFORE_UPDATE, array($this, 'onBeforeUpdate'))
+				->on(ObjectFormEvent::UPDATED, array($this, 'onUpdated'))
+				->on(ObjectFormEvent::REMOVED, array($this, 'onRemoved'))
+				->on(ObjectFormEvent::ADDED, array($this, 'onAdded'));
+
+			parent::__construct(
+				$this->service('page')->item,
+				$this->settings->uriRequest
+			);
+		}
+
+		/**
+		*  Event handler before a page is removed
+		*  @method onBeforeRemove
+		*  @param {ObjectFormEvent} event The before remove event
+		*/
+		public function onBeforeRemove(ObjectFormEvent $event)
+		{
+			if (in_array($event->object->uri, $this->item->service->getProtectedUris()))
 			{
-				// Make sure there's a valid page
-				if (!$page)
-				{
-					$this->error('No page to delete');
-				}
-				else if (in_array($page->uri, $this->service('page')->getProtectedUris()))
-				{
-					$this->error('Page is protected an cannot be deleted');
-				}
-				else
-				{
-					// Remove the page
-					if (!$this->service('page')->removePage($pageId))
-					{
-						$this->error('Unable to delete page');
-					}
-					
-					// If we can write to the 
-					if (file_exists($page->contentUrl) && is_writable($page->contentUrl))
-					{
-						$removed = @unlink($page->contentUrl);
-						if ($removed === false)
-						{
-							$this->error('Unable to delete page contents');
-						}
-					}			
-				}
-				
-				if (!$this->ifError)
-				{
-					// Goto the main pages admin
-					redirect('admin/pages');
-				}
-				return;
+				$this->error('Page is protected an cannot be deleted');
 			}
-			
-			$privilege = $this->verify(ifsetor($_POST['privilege']));
-			$uri = $this->verify(ifsetor($_POST['uri']), Validate::URI);
-			$title = $this->verify(ifsetor($_POST['title']), Validate::FULL_TEXT);
-			$keywords = $this->verify(ifsetor($_POST['keywords']), Validate::FULL_TEXT);			
-			$description = $this->verify(ifsetor($_POST['description']), Validate::FULL_TEXT);
-			$isDynamic = isset($_POST['isDynamic']);
-			$cache = isset($_POST['cache']);
-			$parentId = $this->verify(ifsetor($_POST['parentId'], 0));
-			$redirectId = $this->verify(ifsetor($_POST['redirectId'], 0));
-			
-			// Default both the new and old content to be empty
-			if ($page) $page->content = '';
-			$content = '';
-			
-			// The write directory where to save HTML files
-			$dir =  $this->settings->contentPath;
-			$isWritable = is_writable($this->settings->callerPath . $dir) !== false;
-			$contentUrl = $dir . $uri . '.html';
-			
-			// Make sure the content path is writeable
-			if ($isWritable)
+		}
+
+		/**
+		*  Event handler after a page is removed
+		*  @method onRemoved
+		*  @param {ObjectFormEvent} event The removed event
+		*/
+		public function onRemoved(ObjectFormEvent $event)
+		{
+			if (file_exists($event->object->contentUrl) && is_writable($event->object->contentUrl))
 			{
-				$content = ifsetor($_POST['pageContent']);
-				if ($page) $page->content = @file_get_contents($page->contentUrl);
-			}
-			
+				$removed = @unlink($event->object->contentUrl);
+				if ($removed === false)
+				{
+					$this->error('Unable to delete page contents');
+				}
+			}	
+		}
+
+		/**
+		*  Handler to do some validation before an add or update
+		*  @method onValidate
+		*  @param {ObjectFormEvent} event The beforeAdd or beforeUpdate event
+		*/
+		public function onValidate(ObjectFormEvent $event)
+		{
+			// Set checkbox defaults
+			ifsetor($_POST['redirectId'], 0);
+			ifsetor($_POST['parentId'], 0);
+
+			// Check for required fields
+			$uri = ifsetor($_POST['uri']);
+			$title = ifsetor($_POST['title']);
+			$privilege = ifsetor($_POST['privilege']);
+
+			if (!$uri) $this->error('URI is a required field');
+			if (!$title) $this->error('Title is a required field');
 			if ($privilege < Privilege::ANONYMOUS || $privilege > Privilege::ADMINISTRATOR)
 				$this->error('Not a valid privilege');
-			
-			if (!$uri) $this->error('URI is a required field');
-				
-			if (!$title) $this->error('Title is a required field');
-			
-			// Don't process if we have errors
-			if ($this->ifError) return;
-			
-			// Update if there's a current page
-			if ($page)
+
+			if ($uri && $event->object)
 			{
-				// if the parent id is the current id the parentid should be 0
-				// well pull the parent id as current
-				if ($page->parentId == $pageId) $page->parentId = 0;
-				
-				// The protected pages, you cannot change the uri
-				$protected = in_array($page->uri, $this->service('page')->getProtectedUris());
+				// Update the page contents
+				$event->object->content = @file_get_contents(
+					$this->settings->contentPath . $uri . '.html'
+				);
+			}
+		}
+
+		/**
+		*  Handler to do some extra privilege checking before we update
+		*  @method onBeforeUpdate
+		*  @param {ObjectFormEvent} event The beforeUpdate event
+		*/
+		public function onBeforeUpdate(ObjectFormEvent $event)
+		{
+			$page = $event->object;
+
+			// if the parent id is the current id the parentid should be 0
+			// well pull the parent id as current
+			if ($page->parentId == $page->id) 
+				$page->parentId = 0;
+
+			// The protected pages, you cannot change the uri
+			$protected = in_array($page->uri, $this->item->service->getProtectedUris());
+			
+			// For protected page we can't override some properties
+			// like privilege, redirect, parentId and uri
+			if ($protected)
+			{
 				$protectedProperties = array('uri', 'parentId', 'redirectId', 'privilege');
-				
-				// Change for changes in properties
-				$properties = array();
-				
-				foreach(array('title', 'uri', 'keywords', 'description', 'isDynamic', 'privilege', 'parentId', 'redirectId', 'cache') as $p)
+
+				foreach($protectedProperties as $prop)
 				{
-					// Ignore protected properties on protected pages
-					if ($protected && in_array($p, $protectedProperties)) continue;
-					
-					if ($$p != $page->$p) 
+					// See if the property changed
+					// if it did, we should invalidate the posted value
+					if (isset($_POST[$prop]) && $_POST[$prop] != $page->$prop)
 					{
-						$properties[$p] = $$p;
+						$_POST[$prop] = $event->object->$prop;
 					}
 				}
-				
-				// Boolean if the content changed from the original
-				$contentChanged = ($content != $page->content);
-								
-				if (!$contentChanged && !count($properties))
+			}
+
+			$dir =  $this->settings->contentPath;
+			$isWritable = is_writable($this->settings->callerPath . $dir) !== false;
+			$contentUrl = $dir . $page->uri . '.html';
+
+			if (is_writable($contentUrl))
+			{
+				$content = ifsetor($_POST['content']);
+				$contentChanged = $content != $page->content;
+
+				if (file_exists($page->contentUrl))
 				{
-					$this->error('Nothing to update');
-					return;
-				}
-								
-				if (is_writable($contentUrl))
-				{
-					if ($uri != $page->uri && file_exists($page->contentUrl))
-					{
-						// If the content change, we an just delete the old file
-						if ($contentChanged)
-						{
-							@unlink($page->contentUrl);
-						}
-						// If the content didn't change, just move the file
-						else
-						{
-							@rename($page->contentUrl, $contentUrl);
-						}	
-					}
-					
+					// If the content change, we an just delete the old file
 					if ($contentChanged)
 					{
-						$success = @file_put_contents($contentUrl, $content);
-						if ($success === false)
-						{
-							$this->error('Unable to update the page content ' . $contentUrl);
-						}
+						@unlink($page->contentUrl);
 					}
-				}
-				
-				if (count($properties))
-				{
-					$result = $this->service('page')->updatePage($pageId, $properties);
-
-					if (!$result)
+					// If the content didn't change, just move the file
+					else
 					{
-						$this->error('Unable to update page');	
-					}
+						@rename($page->contentUrl, $contentUrl);
+					}	
 				}
-			}
-			// Add new page
-			else
-			{
-				$result = $this->service('page')->addPage(
-					$uri, 
-					$title, 
-					$keywords, 
-					$description, 
-					$privilege, 
-					$redirectId, 
-					$parentId, 
-					$isDynamic,
-					$cache
-				);
 				
-				if ($isWritable && $content)
+				if ($contentChanged)
 				{
 					$success = @file_put_contents($contentUrl, $content);
+
 					if ($success === false)
 					{
-						$this->error('Unable to update the page content');
+						$this->error('Unable to update the page content ' . $contentUrl);
+					}
+					else
+					{
+						$this->success('Updated page content');
+						$this->updateNothingError = false;
 					}
 				}
-				
-				if (!$result)
-				{
-					$this->error('Unable to add the page');
-				}
 			}
-			
-			if (!$this->ifError) redirect('admin/pages');
+		}
+
+		/**
+		*  Handler write the content file after we added
+		*  @method onAdded
+		*  @param {ObjectFormEvent} event The added event
+		*/
+		public function onAdded(ObjectFormEvent $event)
+		{
+			$success = @file_put_contents(
+				$event->object->contentUrl, 
+				ifsetor($_POST['content'])
+			);
+
+			if ($success === false)
+			{
+				$this->error('Unable to update the page content');
+			}
 		}
 	}
 }

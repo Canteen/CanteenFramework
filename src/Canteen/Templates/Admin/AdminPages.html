@@ -44,7 +44,7 @@
 			{{if:isWriteable}}
 			<div class="clearfix formRow">
 				<label for="pageContent">Content</label>
-				<textarea name="pageContent" id="pageContent" tabindex="3" class="large">{{pageContent}}</textarea>
+				<textarea name="content" id="pageContent" tabindex="3" class="large">{{pageContent}}</textarea>
 			</div>
 			{{/if:isWriteable}}
 			<div class="clearfix formRow">
@@ -63,12 +63,12 @@
 			</div>
 			<div class="clearfix formRow">
 				<label for="isDynamic">Is Dynamic</label>
-				<input name="isDynamic" type="checkbox" class="checkbox" id="isDynamic" {{isDynamic}} tabindex="7">
+				<input name="isDynamic" type="checkbox" class="checkbox" value="1" id="isDynamic" {{isDynamic}} tabindex="7">
 				Page location can have appending URI elements
 			</div>
 			<div class="clearfix formRow">
 				<label for="cache">Cache</label>
-				<input name="cache" type="checkbox" class="checkbox" id="cache" {{cache}} tabindex="8">
+				<input name="cache" type="checkbox" class="checkbox" value="1" id="cache" {{cache}} tabindex="8">
 				Always cache the page
 			</div>
 			{{if:!readOnly}}
@@ -89,13 +89,13 @@
 			{{/if:!readOnly}}
 			<div class="formButtons">
 				{{if:!hasPage}}
-					<button type="submit" value="Add" class="submit" name="updateButton" id="updateButton" tabindex="11">
+					<button type="submit" value="add" class="submit" name="action" tabindex="11">
 						<span class="buttonIcon icon-add"></span>
 						<span class="buttonLabel">Add</span>
 					</button>
 				{{/if:!hasPage}}
 				{{if:hasPage}}
-					<button type="submit" value="Update" class="submit" name="updateButton" id="updateButton" tabindex="11">
+					<button type="submit" value="update" class="submit" name="action" tabindex="11">
 						<span class="buttonIcon icon-edit"></span>
 						<span class="buttonLabel">Update</span>
 					</button>
@@ -105,12 +105,12 @@
 					</a>
 				{{/if:hasPage}}
 				{{if:showDelete}}
-					<button type="submit" value="Delete" class="submit confirm" name="deleteButton" id="deleteButton" tabindex="12">
+					<button type="submit" value="remove" class="submit confirm" name="action" tabindex="12">
 						<span class="buttonIcon icon-delete"></span>
 						<span class="buttonLabel">Delete</span>
 					</button>
 				{{/if:showDelete}}
-				<input type="hidden" name="pageId" value="{{id}}">
+				<input type="hidden" name="id" value="{{id}}">
 				<input type="hidden" name="form" value="Canteen\Forms\PageUpdate">
 				<input type="hidden" name="formSession" value="{{formSession}}">
 			</div>

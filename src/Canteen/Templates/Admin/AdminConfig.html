@@ -7,26 +7,26 @@
 		<fieldset class="clearfix formRow">
 			<label for="configValue{{id}}">{{name}}</label>
 			{{if:isPage}}
-				<select id="configValue{{id}}" name="configValue" class="required">
+				<select id="configValue{{id}}" name="value" class="required">
 					{{value}}
 				</select>
 			{{/if:isPage}}
 			{{if:isBool}}
-				<input id="configValue{{id}}" name="configValue" type="checkbox" value="1" {{value}} class="checkbox required">
+				<input id="configValue{{id}}" name="value" type="checkbox" value="1" {{value}} class="checkbox required">
 			{{/if:isBool}}
 			{{if:isNormal}}
-				<input id="configValue{{id}}" name="configValue" type="text" value="{{value}}" class="text required">
+				<input id="configValue{{id}}" name="value" type="text" value="{{value}}" class="text required">
 			{{/if:isNormal}}
-			<button type="submit" value="Save" name="saveButton" class="submit">
+			<button type="submit" value="update" name="action" class="submit">
 				<span class="buttonIcon icon-save"></span>
 				<span class="buttonLabel">Save</span>
 			</button>
-			<button type="submit" value="Delete" name="deleteButton" class="submit confirm {{disabled}}" {{disabled}}>
+			<button type="submit" value="remove" name="action" class="submit confirm {{disabled}}" {{disabled}}>
 				<span class="buttonIcon icon-delete"></span>
 				<span class="buttonLabel">Delete</span>
 			</button>
 			<input type="hidden" name="form" value="Canteen\Forms\ConfigUpdate">
-			<input type="hidden" name="configId" value="{{id}}">
+			<input type="hidden" name="id" value="{{id}}">
 			<input type="hidden" name="formSession" value="{{formSession}}">
 		</fieldset>
 	</form>
@@ -40,15 +40,15 @@
 			{{formFeedback}}
 			<div class="clearfix formRow">
 				<label for="configName">Name</label>
-				<input id="configName" name="configName" type="text" class="text required" tabindex="1">
+				<input id="configName" name="name" type="text" class="text required" tabindex="1">
 			</div>
 			<div class="clearfix formRow">
 				<label for="configValue">Value</label>
-				<input id="configValue" name="configValue" type="text" class="text required" tabindex="2">
+				<input id="configValue" name="value" type="text" class="text required" tabindex="2">
 			</div>
 			<div class="clearfix formRow">
 				<label for="configType">Type</label>
-				<select id="configType" name="configType" class="required" tabindex="3">
+				<select id="configType" name="type" class="required" tabindex="3">
 					{{types}}
 				</select>
 			</div>
@@ -63,7 +63,7 @@
 				Add value to templates <code>&#123;&#123;myProperty&#125;&#125;</code>
 			</div>
 			<div class="formButtons">
-				<button type="submit" value="Add" name="addButton" tabindex="6" class="submit">
+				<button type="submit" value="add" name="action" tabindex="6" class="submit">
 					<span class="buttonIcon icon-add"></span>
 					<span class="buttonLabel">Add</span>
 				</button>

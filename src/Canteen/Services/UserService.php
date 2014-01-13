@@ -146,12 +146,12 @@ namespace Canteen\Services
 				
 				$success = (bool)$this->db->execute($sql);
 								
-				$added = $this->internalAddUser(
-					$username, 
-					$email, 
-					$password, 
-					$firstName, 
-					$lastName, 
+				$added = $this->addUser(
+					$username,
+					$email,
+					PasswordUtils::hash($password),
+					$firstName,
+					$lastName,
 					Privilege::ADMINISTRATOR
 				);
 				
@@ -413,53 +413,32 @@ namespace Canteen\Services
 		/**
 		*  Add a user to the data base
 		*  @method adduser
-		*  @param {String} username The username
-		*  @param {String} email The email address
-		*  @param {String} password The unhashed plain password
-		*  @param {String} firstName The first name
-		*  @param {String} lastName The last name
-		*  @param {int} privilege The privilege
+		*  @param {Dictionary|String} propertiesOrUsername The collection of values to set or username
+		*  @param {String} [email] The email address
+		*  @param {String} [password] The unhashed plain password
+		*  @param {String} [firstName] The first name
+		*  @param {String} [lastName] The last name
+		*  @param {int} [privilege=Privilege::GUEST] The privilege
+		*  @param {Boolean} [isActive=true] If the user is active
 		*  @return {int|Boolean} If successfully return a new ID, or else false
 		*/
-		public function addUser($username, $email, $password, $firstName, $lastName, $privilege)
-		{			
-			$this->access();
-
-			return $this->internalAddUser(
-				$username, 
-				$email, 
-				$password, 
-				$firstName, 
-				$lastName, 
-				$privilege
-			);
-		}
-		
-		/**
-		*  Internal method for adding a user
-		*  @method internalAddUser
-		*  @private
-		*  @param {String} username The username
-		*  @param {String} email The email address
-		*  @param {String} password The unhashed plain password
-		*  @param {String} firstName The first name
-		*  @param {String} lastName The last name
-		*  @param {int} privilege The privilege
-		*  @return {int|Boolean} If successfully return a new ID, or else false
-		*/
-		private function internalAddUser($username, $email, $password, $firstName, $lastName, $privilege)
+		public function addUser($propertiesOrUsername, $email='', $password='', $firstName='', $lastName='', $privilege=Privilege::GUEST, $isActive=1)
 		{
-			return $this->add(
-				array(
-					'username' => $username,
+			$properties = $propertiesOrUsername;
+			
+			if (!is_array($properties))
+			{
+				$properties = array(
+					'username' => $properties,
 					'email' => $email,
-					'password' => PasswordUtils::hash($password),
+					'password' => $password,
 					'firstName' => $firstName,
 					'lastName' => $lastName,
 					'privilege' => $privilege,
-					'isActive' => 1
-				)
-			);
+					'isActive' => $isActive
+				);
+			}
+			return $this->call($properties);
 		}
 		
 		/**

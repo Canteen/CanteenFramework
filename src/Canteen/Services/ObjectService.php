@@ -45,6 +45,7 @@ namespace Canteen\Services
 				$itemName, 
 				$itemsName
 			);
+			$item->service = $this;
 			$this->items[$item->itemName] = $item;
 			return $item;
 		}
@@ -122,62 +123,6 @@ namespace Canteen\Services
 			}
 			return $this;
 		}
-
-		/**
-		*  Conviencence method to inserting a new row into a table, this does
-		*  all the field validation and insert.
-		*  @method addByItem
-		*  @protected
-		*  @param {ObjectServiceItem} item The item to use
-		*  @param {Dictionary} properties The collection map of field names to values
-		*  @return {int} The result
-		*/
-		protected function addByItem(ObjectServiceItem $item, array $properties)
-		{
-			// Check the access on the calling method
-			$this->access($this->getCaller());
-
-			// Validate the properties
-			$item->verify($properties);
-
-			// Get the next field ID
-			$values = array();
-
-			// Convert the named properties into field inserts
-			foreach($properties as $name=>$value)
-			{
-				// Check for invalid field name
-				if (!isset($item->fieldsByName[$name])) 
-					throw new ObjectServiceError(ObjectServiceError::INVALID_FIELD_NAME, $name);
-
-				$field = $item->fieldsByName[$name];
-				$values[$field->id] = $value;
-			}
-
-			// If the default index isn't included,
-			// we'll use the next Id on the table, this is only
-			// for index things
-			if ($item->defaultField && !isset($values[$item->defaultField->id]))
-			{
-				$values[$item->defaultField->id] = $this->db->nextId(
-					$item->table, 
-					$item->defaultField->id
-				);
-			}
-
-			// Insert the item
-			$success = $this->db->insert($item->table)
-				->values($values)
-				->result();
-
-			// If there's a default field, we'll return the id
-			// of the next item
-			if ($item->defaultField)
-				return $success ? $values[$item->defaultField->id] : false;
-			else
-				return $success;
-		}
-
 		/**
 		*  Convenience function for creating a new field
 		*  @method field
@@ -297,6 +242,11 @@ namespace Canteen\Services
 				case 'get'.$p:
 				{
 					$internal = 'internalGetAll';
+					break;
+				}
+				case 'add'.$s:
+				{
+					$internal = 'internalAdd';
 					break;
 				}
 				// getTotalItems
@@ -548,6 +498,72 @@ namespace Canteen\Services
 				->set($properties)
 				->where("`{$index->id}`='$search'")
 				->result();
+		}
+
+		/**
+		*  Conviencence method to inserting a new row into a table, this does
+		*  all the field validation and insert.
+		*  @method internalAdd
+		*  @protected
+		*  @param {ObjectServiceItem} item The item to use
+		*  @param {Dictionary|Object} properties The collection map of field names to values
+		*  @return {int} The result
+		*/
+		protected function internalAdd(ObjectServiceItem $item, $properties)
+		{
+			// Check the access on the calling method
+			$this->access($this->getCaller());
+
+			// Check for object
+			if (is_object($properties))
+			{
+				$properties = get_object_vars($properties);
+			}
+
+			// Validate the properties
+			$item->verify($properties);
+
+			// Get the next field ID
+			$values = array();
+
+			// Convert the named properties into field inserts
+			foreach($properties as $name=>$value)
+			{
+				// Check for invalid field name
+				if (!isset($item->fieldsByName[$name])) 
+					throw new ObjectServiceError(ObjectServiceError::INVALID_FIELD_NAME, $name);
+
+				$field = $item->fieldsByName[$name];
+				$values[$field->id] = $value;
+			}
+
+			// If the default index isn't included,
+			// we'll use the next Id on the table, this is only
+			// for index things
+			if ($item->defaultField)
+			{
+				$id = ifsetor($values[$item->defaultField->id]);
+
+				if (!$id)
+				{
+					$values[$item->defaultField->id] = $this->db->nextId(
+						$item->table, 
+						$item->defaultField->id
+					);
+				}
+			}
+
+			// Insert the item
+			$success = $this->db->insert($item->table)
+				->values($values)
+				->result();
+
+			// If there's a default field, we'll return the id
+			// of the next item
+			if ($item->defaultField)
+				return $success ? $values[$item->defaultField->id] : false;
+			else
+				return $success;
 		}
 	}
 }

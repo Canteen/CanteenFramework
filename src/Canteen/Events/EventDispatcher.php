@@ -59,7 +59,6 @@ namespace Canteen\Events
 					break;
 				}
 			}
-
 			return $event;
 		}
 
@@ -71,21 +70,31 @@ namespace Canteen\Events
 		*/
 		public function has($eventType)
 		{
-			return (Boolean) count($this->getListeners($eventType));
+			return (boolean) count($this->getListeners($eventType));
 		}
 
 		/**
 		*   Adds an event listener that listens on the specified events.
 		*   @method on
-		*   @param {String} eventType The event to listen on
+		*   @param {String|Array} eventType The event to listen on or collection of events
 		*   @param {callable} listener  The listener
 		*   @param {int} [priority=0]  The higher this value, the earlier an event
 		*	 listener will be triggered in the chain
+		*   @return {EventDispatcher} Reference reference of this for chaining
 		*/
 		public function on($eventType, $listener, $priority = 0)
 		{
+			if (is_array($eventType))
+			{
+				foreach($eventType as $e)
+				{
+					$this->on($e, $listener, $priority);
+				}
+				return $this;
+			}
 			$this->listeners[$eventType][$priority][] = $listener;
 			unset($this->sorted[$eventType]);
+			return $this;
 		}
 
 		/**
@@ -94,6 +103,7 @@ namespace Canteen\Events
 		*   @param {String|Array} eventType The event(s) to remove a listener from
 		*   @param {callable} [listener=null] The listener to remove, if not specified
 		*     removes all listeners with matching event type
+		*   @return {EventDispatcher} Reference reference of this for chaining
 		*/
 		public function off($eventType, $listener=null)
 		{
@@ -104,7 +114,7 @@ namespace Canteen\Events
 				{
 					$this->off($type, $listener);
 				}
-				return;
+				return $this;
 			}
 
 			// Bail out if no registered listeners
@@ -124,6 +134,7 @@ namespace Canteen\Events
 					}
 				}
 			}
+			return $this;
 		}
 
 		/**

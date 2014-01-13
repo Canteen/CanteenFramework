@@ -52,44 +52,44 @@ namespace Canteen\Services
 				/**
 				*  The list of select properties
 				*  @property {Array} properties
+				*  @readOnly
 				*/
 				case 'properties':
 
 				/**
 				*  The list of prepend map
 				*  @property {Dictionary} prepends
+				*  @readOnly
 				*/
 				case 'prepends':
 
 				/**
 				*  The name of the class to bind with
 				*  @property {String} className
+				*  @readOnly
 				*/
 				case 'className':
 
 				/**
 				*  The name of the table of the custom type
 				*  @property {String} table
+				*  @readOnly
 				*/
 				case 'table':
 				{
 					return $this->item->$name;
-				}					
+				}
+				/**
+				*  The reference to the object
+				*  @property {ObjectServiceItem} item
+				*  @readOnly
+				*/
+				case 'item':
+				{
+					return $this->item;
+				}				
 			}
 			return parent::__get($name);
-		}
-		
-		/**
-		*  Conviencence method to inserting a new row into a table, this does
-		*  all the field validation and insert.
-		*  @method add
-		*  @protected
-		*  @param {Dictionary} properties The collection map of field names to values
-		*  @return {int} The result
-		*/
-		protected function add($properties)
-		{
-			return $this->addByItem($this->item, $properties);
 		}
 
 		/**

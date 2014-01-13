@@ -59,13 +59,13 @@
 			</div>
 			<div class="formButtons">
 				{{if:!hasUser}}
-					<button type="submit" value="Add" class="submit" name="updateButton" id="updateButton" tabindex="9">
+					<button type="submit" value="add" class="submit" name="action" tabindex="9">
 						<span class="buttonIcon icon-add"></span>
 						<span class="buttonLabel">Add</span>
 					</button>
 				{{/if:!hasUser}}
 				{{if:hasUser}}
-					<button type="submit" value="Update" class="submit" name="updateButton" id="updateButton" tabindex="9">
+					<button type="submit" value="update" class="submit" name="action" tabindex="9">
 						<span class="buttonIcon icon-edit"></span>
 						<span class="buttonLabel">Update</span>
 					</button>
@@ -73,13 +73,13 @@
 						<span class="buttonIcon icon-cancel"></span>
 						<span class="buttonLabel">Cancel</span>
 					</a>
-					<button type="submit" value="Delete" class="button confirm" name="deleteButton" id="deleteButton" tabindex="10">
+					<button type="submit" value="remove" class="button confirm" name="action"  tabindex="10">
 						<span class="buttonIcon icon-delete"></span>
 						<span class="buttonLabel">Delete</span>
 					</button>
 				{{/if:hasUser}}
 				<input type="hidden" name="refresh" value="true">
-				<input type="hidden" name="userId" value="{{id}}">
+				<input type="hidden" name="id" value="{{id}}">
 				<input type="hidden" name="form" value="Canteen\Forms\UserUpdate">
 				<input type="hidden" name="formSession" value="{{formSession}}">
 			</div>

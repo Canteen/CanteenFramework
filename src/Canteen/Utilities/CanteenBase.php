@@ -8,13 +8,14 @@ namespace Canteen\Utilities
 	use Canteen\Site;
 	use Canteen\Errors\CanteenError;
 	use Canteen\Services\Service;
+	use Canteen\Events\EventDispatcher;
 	
 	/**
 	*  Common functionality for Services, Controllers, Forms. Located in the namespace __Canteen\Utilities__.
 	*  
 	*  @class CanteenBase
 	*/
-	abstract class CanteenBase
+	abstract class CanteenBase extends EventDispatcher
 	{		
 		/**
 		*  Get a service by alias or classname

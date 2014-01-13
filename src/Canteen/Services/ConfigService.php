@@ -58,7 +58,7 @@ namespace Canteen\Services
 		*  @param {String} templatePath The local path to the HTML main template
 		*  @return {Boolean} If the table was installed
 		*/
-		public function setup($siteTitle='', $contentPath='assets/html/content/', $templatePath='assets/html/index.html')
+		public function setup($siteTitle, $contentPath, $templatePath)
 		{
 			$this->access();
 			
@@ -143,27 +143,32 @@ namespace Canteen\Services
 		/**
 		*  Add a key to the config
 		*  @method addConfig
-		*  @param {String} name The key name to set
-		*  @param {mixed} value The value of the key to set
-		*  @param {String} [type='string'] The value type (string or integer)
-		*  @param {int} [access=0] The access to the property, see SettingsManager for more
-		*		 information on controlling access to settings.
+		*  @param {Dictionary|String} propertiesOrName The collection of properties or name
+		*  @param {mixed} [value=''] The value of the config
+		*  @param {String} [type='string'] The value type
+		*  @param {int} [access=0] The access type
 		*  @return {int|Boolean} The new ID if successful, false if not
 		*/
-		public function addConfig($name, $value, $type='string', $access=0)
+		public function addConfig($propertiesOrName, $value='', $type='string', $access=0)
 		{
-			// Specific type validation
-			$this->verify($value, $this->getValidationByType($type));
+			$properties = $propertiesOrName;
 
-			return $this->add(
-				array(
-					'type' => $type,
-					'name' => $name,
+			if (!is_array($properties))
+			{
+				$properties = array(
+					'name' => $properties,
 					'value' => $value,
 					'type' => $type,
 					'access' => $access
-				)
-			);
+				);
+			}
+
+			// Specific type validation
+			$type = ifsetor($properties['type']);
+			$value = ifsetor($properties['value']);
+			$this->verify($value, $this->getValidationByType($type));
+
+			return $this->call($properties);
 		}
 		
 		/**

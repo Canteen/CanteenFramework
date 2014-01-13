@@ -54,26 +54,25 @@ namespace Canteen\Forms
 			if (!$siteTitle)
 				$this->error('Site Title is required');
 			
-			if (!$this->ifError)
-			{				
-				new ConfigService;
-				new PageService;
-				new UserService;
-				
-				$this->service('config')->setup($siteTitle, $contentPath, $templatePath);
-				$this->service('user')->setup($username, $email, $password, $firstName, $lastName);
-				$this->service('page')->setup();
+			if ($this->ifError) return;
+							
+			new ConfigService;
+			new PageService;
+			new UserService;
+			
+			$this->service('config')->setup($siteTitle, $contentPath, $templatePath);
+			$this->service('user')->setup($username, $email, $password, $firstName, $lastName);
+			$this->service('page')->setup();
 
-				// Trigger the site event for being installed
-				$this->site->trigger(CanteenEvent::INSTALLED);
+			// Trigger the site event for being installed
+			$this->site->trigger(CanteenEvent::INSTALLED);
 
-				// We're already installed, no need to keep checking
-				// for the rest of this session
-				$_SESSION['installed'] = true;
+			// We're already installed, no need to keep checking
+			// for the rest of this session
+			$_SESSION['installed'] = true;
 
-				// redirect to the home page
-				redirect();
-			}	
+			// redirect to the home page
+			redirect();
 		}
 	}
 }	
