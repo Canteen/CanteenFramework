@@ -494,7 +494,7 @@ namespace Canteen\Services
 				}
 			}
 
-			return $this->db->update($this->table)
+			return $this->db->update($item->table)
 				->set($properties)
 				->where("`{$index->id}`='$search'")
 				->result();

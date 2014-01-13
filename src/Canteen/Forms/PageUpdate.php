@@ -24,7 +24,6 @@ namespace Canteen\Forms
 			$this->on(ObjectFormEvent::VALIDATE, array($this, 'onValidate'))
 				->on(ObjectFormEvent::BEFORE_REMOVE, array($this, 'onBeforeRemove'))
 				->on(ObjectFormEvent::BEFORE_UPDATE, array($this, 'onBeforeUpdate'))
-				->on(ObjectFormEvent::UPDATED, array($this, 'onUpdated'))
 				->on(ObjectFormEvent::REMOVED, array($this, 'onRemoved'))
 				->on(ObjectFormEvent::ADDED, array($this, 'onAdded'));
 
