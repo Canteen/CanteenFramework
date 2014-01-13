@@ -119,7 +119,7 @@ namespace Canteen\Controllers
 				return '';
 			}
 			return str_replace('{{', '&#123;&#123;', 
-				str_replace('}}', '&#125;&#125;', $contents));
+				str_replace('}}', '&#125;&#125;', htmlentities($contents)));
 		}
 		
 		/**
