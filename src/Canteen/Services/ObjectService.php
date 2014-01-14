@@ -537,33 +537,10 @@ namespace Canteen\Services
 				$values[$field->id] = $value;
 			}
 
-			// If the default index isn't included,
-			// we'll use the next Id on the table, this is only
-			// for index things
-			if ($item->defaultField)
-			{
-				$id = ifsetor($values[$item->defaultField->id]);
-
-				if (!$id)
-				{
-					$values[$item->defaultField->id] = $this->db->nextId(
-						$item->table, 
-						$item->defaultField->id
-					);
-				}
-			}
-
 			// Insert the item
-			$success = $this->db->insert($item->table)
+			return $this->db->insert($item->table)
 				->values($values)
 				->result();
-
-			// If there's a default field, we'll return the id
-			// of the next item
-			if ($item->defaultField)
-				return $success ? $values[$item->defaultField->id] : false;
-			else
-				return $success;
 		}
 	}
 }

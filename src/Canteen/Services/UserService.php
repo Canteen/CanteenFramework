@@ -133,7 +133,7 @@ namespace Canteen\Services
 				  UNIQUE KEY `username` (`username`),
 				  KEY `privilege` (`privilege`),
 				  KEY `is_active` (`is_active`)
-				) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;";
+				) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3";
 				
 				$sql[] = "CREATE TABLE IF NOT EXISTS `{$this->sessionsTable}` (
 				  `user_id` int(10) unsigned NOT NULL,
@@ -142,10 +142,12 @@ namespace Canteen\Services
 				  `session_id` varchar(32) NOT NULL,
 				  PRIMARY KEY (`session_id`),
 				  KEY `user_id` (`user_id`)
-				) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
+				) ENGINE=MyISAM DEFAULT CHARSET=latin1";
 				
-				$success = (bool)$this->db->execute($sql);
-								
+				$success = $this->db->execute($sql);
+			
+				print_r($success);
+
 				$added = $this->addUser(
 					$username,
 					$email,

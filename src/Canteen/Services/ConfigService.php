@@ -72,7 +72,7 @@ namespace Canteen\Services
 				  `access` tinyint(1) UNSIGNED NOT NULL DEFAULT  '0',
 				  PRIMARY KEY (`config_id`),
 				  UNIQUE KEY `name` (`name`)
-				) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
+				) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1";
 				
 				$result = (bool)$this->db->execute($sql);
 				

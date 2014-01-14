@@ -100,7 +100,7 @@ namespace Canteen\Services
 				  `cache` int(1) unsigned NOT NULL DEFAULT '0',
 				  PRIMARY KEY (`page_id`),
 				  UNIQUE KEY `uri` (`uri`)
-				) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
+				) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1";
 				
 				$result = (bool)$this->db->execute($sql);
 				
@@ -180,14 +180,6 @@ namespace Canteen\Services
 					'cache' => $cache
 				);
 			}
-
-			// Normally the add function would get the page id
-			// but in this case we need to use as the default
-			// parent id, if it's top level page
-			$id = $this->db->nextId($this->table, 'page_id');
-			$parentId = ifsetor($properties['parentId'], $id);
-			$properties['id'] = $id;
-
 			return $this->call($properties);
 		}
 
