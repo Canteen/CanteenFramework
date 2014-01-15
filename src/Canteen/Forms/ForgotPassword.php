@@ -80,10 +80,10 @@ namespace Canteen\Forms
 						
 						$to = $user->email;
 						$subject = 'Password Reset - ' . $siteTitle;
-						$message = $this->template('PasswordRecovery', array(
+						$message = $this->template('PasswordRecovery', [
 							'url' => $url,
 							'siteTitle' => $siteTitle
-						));
+						]);
 						$headers  = 'MIME-Version: 1.0' . "\r\n";
 						$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 						$headers .= 'From: no-reply@' . DOMAIN . "\r\n";

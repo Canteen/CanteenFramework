@@ -63,10 +63,10 @@ namespace Canteen\Server
 				throw $e;
 			}
 			
-			$output = array(
+			$output = [
 				'result' => $result,
 				'type' => $type
-			);
+			];
 			
 			// See if there's an error code
 			if ($errorCode !== null) $output['errorCode'] = $errorCode;
@@ -124,7 +124,7 @@ namespace Canteen\Server
 			if (!($service instanceof Service)) 
 				throw new JSONServerError(JSONServerError::SERVICE_ERROR);
 		
-			$call = array($service, $callName);
+			$call = [$service, $callName];
 		
 			// Get the arguments (optional)
 			$args = isset($scope['args']) && $scope['args'] ? $scope['args'] : '';
@@ -183,11 +183,11 @@ namespace Canteen\Server
 			}
 			
 			// Turn into a result
-			return array(
+			return [
 				'service' => ifsetor($uri[0], ''),
 				'call' => StringUtils::uriToMethodCall(ifsetor($uri[1], '')),
 				'args' => $args
-			);
+			];
 		}
 	}
 }

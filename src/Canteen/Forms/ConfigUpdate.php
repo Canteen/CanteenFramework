@@ -22,8 +22,9 @@ namespace Canteen\Forms
 		{
 			$this->updateRedirect = false;
 
-			$this->on(ObjectFormEvent::BEFORE_REMOVE, array($this, 'onBeforeRemove'))
-				->on(ObjectFormEvent::BEFORE_ADD, array($this, 'onBeforeAdd'));
+			$this->on(ObjectFormEvent::BEFORE_REMOVE, [$this, 'onBeforeRemove'])
+				->on(ObjectFormEvent::BEFORE_ADD, [$this, 'onBeforeAdd'])
+				->on(ObjectFormEvent::BEFORE_UPDATE, [$this, 'onBeforeUpdate']);
 
 			parent::__construct(
 				$this->service('config')->item,
@@ -44,6 +45,19 @@ namespace Canteen\Forms
 			}
 		}
 		
+		/**
+		*  Do some checking before updating
+		*  @method onBeforeUpdate
+		*  @param {ObjectFormEvent} event The before update event
+		*/
+		public function onBeforeUpdate(ObjectFormEvent $event)
+		{
+			if ($event->object->type == 'boolean')
+			{
+				$_POST['value'] = ifsetor($_POST['value'], 0);
+			}
+		}
+
 		/**
 		*  Delete a config variable 
 		*  @method onBeforeAdd

@@ -25,7 +25,7 @@ namespace Canteen\Services
 				'page',
 				'Canteen\Services\Objects\Page',
 				'pages',
-				array(
+				[
 					$this->field('page_id', Validate::NUMERIC, 'id')
 						->setDefault(),
 					$this->field('uri', Validate::URI)
@@ -40,32 +40,32 @@ namespace Canteen\Services
 					$this->field('is_dynamic', Validate::BOOLEAN),
 					$this->field('privilege', Validate::NUMERIC),
 					$this->field('cache', Validate::BOOLEAN)
-				)
+				]
 			);
 
-			$form = array(
+			$form = [
 				Privilege::ADMINISTRATOR, 
 				'Canteen\Forms\PageUpdate'
-			);
+			];
 
 			$this->restrict(
-				array(
-					'getPage' => array(
+				[
+					'getPage' => [
 						'Canteen\Parser\PageBuilder', 
 						'Canteen\Controllers\AdminPagesController'
-					),
+					],
 					'setup' => 'Canteen\Forms\Installer',
 					'getPageByUri' => 'Canteen\Forms\ConfigUpdate',
 					'getPagesByParentId' => 'Canteen\Controllers\AdminController',
-					'getPages' => array(
+					'getPages' => [
 						'Canteen\Parser\PageBuilder', 
 						'Canteen\Controllers\AdminPagesController'
-					),
+					],
 					'removePage' => $form,
 					'addPage' => $form,
 					'updatePage' => $form,
 					'getPages' => Privilege::ANONYMOUS
-				)
+				]
 			)
 			->setProperties(
 				'CONCAT(`uri`,\'.html\') as `contentUrl`',
@@ -133,7 +133,7 @@ namespace Canteen\Services
 		*/
 		public function getProtectedUris()
 		{
-			return array(
+			return [
 				'401', 
 				'403', 
 				'404', 
@@ -145,7 +145,7 @@ namespace Canteen\Services
 				'admin/pages',
 				'admin/config',
 				'forgot-password'
-			);
+			];
 		}
 
 		/**
@@ -168,7 +168,7 @@ namespace Canteen\Services
 
 			if (!is_array($properties))
 			{
-				$properties = array(
+				$properties = [
 					'uri' => $properties,
 					'title' => $title, 
 					'keywords' => $keywords,
@@ -178,7 +178,7 @@ namespace Canteen\Services
 					'parentId' => $parentId,
 					'isDynamic' => $isDynamic,
 					'cache' => $cache
-				);
+				];
 			}
 			return $this->call($properties);
 		}

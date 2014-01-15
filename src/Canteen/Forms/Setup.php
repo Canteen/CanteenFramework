@@ -50,38 +50,40 @@ namespace Canteen\Forms
 				$configPath = $this->settings->callerPath . $configFile;
 				$htaccessPath = $this->settings->callerPath . '.htaccess';
 				
-				$config = $this->template('Config', array(
-					'properties' => var_export(array(
-						'dbHost' => $dbHost,
-						'dbUsername' => $dbUsername,
-						'dbPassword' => $dbPassword,
-						'dbName' => $this->arrayFilter($dbName),
-						'level' => $level,
-						'domain' => $this->arrayFilter($domain),
-						'debug' => $debug,
-						'minify' => $minify,
-						'cacheEnabled' => $cacheEnabled,
-						'cacheDirectory' => $cacheDirectory,
-						'compress' => $compress											
-					), true))
+				$config = $this->template('Config', 
+					[
+						'properties' => var_export([
+							'dbHost' => $dbHost,
+							'dbUsername' => $dbUsername,
+							'dbPassword' => $dbPassword,
+							'dbName' => $this->arrayFilter($dbName),
+							'level' => $level,
+							'domain' => $this->arrayFilter($domain),
+							'debug' => $debug,
+							'minify' => $minify,
+							'cacheEnabled' => $cacheEnabled,
+							'cacheDirectory' => $cacheDirectory,
+							'compress' => $compress											
+						], true)
+					]
 				);
 				
 				$basePath = dirname($_SERVER['PHP_SELF']);
 				if ($basePath != '/') $basePath .= '/';
 				
-				$htaccess = $this->template('Htaccess', array(
+				$htaccess = $this->template('Htaccess', [
 					'basePath' => $basePath
-				));
+				]);
 				
 				if (!is_writable($this->settings->callerPath))
 				{
 					$this->error("Please manually save the file.");
 					
-					die($this->template('SetupManual', array(
+					die($this->template('SetupManual', [
 						'config' => $config,
 						'configFile' => $configFile,
 						'htaccess' => $htaccess
-					)));
+					]));
 				}
 				else
 				{

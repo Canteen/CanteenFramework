@@ -80,7 +80,7 @@ namespace Canteen\Errors
 		*  @static
 		*  @final
 		*/
-		private static $messages = array(
+		private static $messages = [
 			self::INVALID_INDEX => 'There is no custom field index with the name "%s", set this field to be isIndex=true',
 			self::NO_DEFAULT_INDEX => 'The custom service does not have a default index field, set isDefault=true on a field',
 			self::INVALID_METHOD => 'The dynamic method call "%s" is not valid on this custom service',
@@ -88,7 +88,7 @@ namespace Canteen\Errors
 			self::WRONG_ARG_COUNT => 'The method call "%s" got %s arguments and was expecting %s',
 			self::UNREGISTERED_ITEM => 'The item name "%s" is not registered on this service',
 			self::INVALID_PROPERTY => 'The property "%s" doesn\'t exist on this class'
-		);
+		];
 		
 		/**
 		*  Create a user error

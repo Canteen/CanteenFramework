@@ -41,7 +41,7 @@ namespace Canteen\Controllers
 			// The directory path
 			$dir = $this->settings->callerPath . $this->settings->contentPath;
 			
-			$data = array(
+			$data = [
 				'formLabel' => $page ? 'Update an Existing Page' : 'Add a New Page',
 				'isDynamic' => '',
 				'pages' => '',
@@ -50,7 +50,7 @@ namespace Canteen\Controllers
 				'isWriteable' => is_writeable($dir),
 				'showDelete' => false,
 				'cache' => 'checked'
-			);
+			];
 			
 			if ($page)
 			{
@@ -131,7 +131,7 @@ namespace Canteen\Controllers
 		*/
 		private function getPages($selectId=null, $ignoreId=null, $showProtected=true)
 		{
-			$protected = array('404', '401', '500', '403');
+			$protected = ['404', '401', '500', '403'];
 			
 			$options = '';
 			foreach($this->allPages as $page)

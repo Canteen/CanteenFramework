@@ -26,7 +26,7 @@ namespace Canteen\Services
 				'config', 
 				'Canteen\Services\Objects\Config',
 				'config',
-				array(
+				[
 					$this->field('config_id', Validate::NUMERIC, 'id')
 						->setDefault(),
 					$this->field('name', Validate::URI)
@@ -34,11 +34,11 @@ namespace Canteen\Services
 					$this->field('value', Validate::FULL_TEXT),
 					$this->field('value_type', $this->getValueTypes(), 'type'),
 					$this->field('access', Validate::NUMERIC)
-				)
+				]
 			);
 			
 			$this->restrict(
-				array(
+				[
 					'addConfig' => Privilege::ADMINISTRATOR,
 					'setup' => 'Canteen\Forms\Installer',
 					'updateValue' => 'Canteen\Site',
@@ -46,7 +46,7 @@ namespace Canteen\Services
 					'updateConfig' => Privilege::ADMINISTRATOR,
 					'removeConfig' => Privilege::ADMINISTRATOR,
 					'registerSettings' => Privilege::ANONYMOUS
-				)
+				]
 			);
 		}
 		
@@ -99,13 +99,13 @@ namespace Canteen\Services
 		*/
 		public function getValueTypes()
 		{
-			return array(
+			return [
 				'integer', 
 				'string', 
 				'path', 
 				'boolean', 
 				'page'
-			);
+			];
 		}
 		
 		/**
@@ -155,12 +155,12 @@ namespace Canteen\Services
 
 			if (!is_array($properties))
 			{
-				$properties = array(
+				$properties = [
 					'name' => $properties,
 					'value' => $value,
 					'type' => $type,
 					'access' => $access
-				);
+				];
 			}
 
 			// Specific type validation

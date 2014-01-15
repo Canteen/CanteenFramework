@@ -30,12 +30,12 @@ namespace Canteen\Controllers
 				$user = $this->service('user')->getUser($userId);
 			}	
 			
-			$data = array(
+			$data = [
 				'formLabel' => $user ? 'Update an Existing User' : 'Add a New User',
 				'isActive' => 'checked',
 				'users' => '',
 				'hasUser' => false
-			);
+			];
 			
 			if ($user)
 			{

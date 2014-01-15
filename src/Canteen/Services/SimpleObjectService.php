@@ -162,7 +162,7 @@ namespace Canteen\Services
 						$fieldName = strtolower(substr($fieldName, 0, 1)).substr($fieldName, 1);
 
 						if (is_array($args) && count($args) != 1)
-							throw new ObjectServiceError(ObjectServiceError::WRONG_ARG_COUNT, array($method, 1, count($args)));
+							throw new ObjectServiceError(ObjectServiceError::WRONG_ARG_COUNT, [$method, 1, count($args)]);
 
 						$this->item->verify($fieldName, $args[0]);
 					}

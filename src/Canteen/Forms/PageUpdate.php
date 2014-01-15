@@ -21,11 +21,11 @@ namespace Canteen\Forms
 		*/
 		public function __construct()
 		{
-			$this->on(ObjectFormEvent::VALIDATE, array($this, 'onValidate'))
-				->on(ObjectFormEvent::BEFORE_REMOVE, array($this, 'onBeforeRemove'))
-				->on(ObjectFormEvent::BEFORE_UPDATE, array($this, 'onBeforeUpdate'))
-				->on(ObjectFormEvent::REMOVED, array($this, 'onRemoved'))
-				->on(ObjectFormEvent::ADDED, array($this, 'onAdded'));
+			$this->on(ObjectFormEvent::VALIDATE, [$this, 'onValidate'])
+				->on(ObjectFormEvent::BEFORE_REMOVE, [$this, 'onBeforeRemove'])
+				->on(ObjectFormEvent::BEFORE_UPDATE, [$this, 'onBeforeUpdate'])
+				->on(ObjectFormEvent::REMOVED, [$this, 'onRemoved'])
+				->on(ObjectFormEvent::ADDED, [$this, 'onAdded']);
 
 			parent::__construct(
 				$this->service('page')->item,
@@ -114,7 +114,7 @@ namespace Canteen\Forms
 			// like privilege, redirect, parentId and uri
 			if ($protected)
 			{
-				$protectedProperties = array('uri', 'parentId', 'redirectId', 'privilege');
+				$protectedProperties = ['uri', 'parentId', 'redirectId', 'privilege'];
 
 				foreach($protectedProperties as $prop)
 				{

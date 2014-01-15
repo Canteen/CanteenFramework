@@ -58,7 +58,7 @@ namespace Canteen\Server
 		*  @property {Dictionary} defaultSettings
 		*  @private
 		*/
-		private $defaultSettings = array(
+		private $defaultSettings = [
 			
 			/** 
 			*  The default deployment leve
@@ -125,7 +125,7 @@ namespace Canteen\Server
 			*  @default null
 			*/
 			'cacheDirectory' => null
-		);
+		];
 		
 		/**
 		*  Does a check on the server host to see what server
@@ -156,7 +156,7 @@ namespace Canteen\Server
 			// then we'll add it a collection of deployments
 			if ($this->isAssoc($settings))
 			{
-				$settings = array($settings);
+				$settings = [$settings];
 			}
 			
 			// If no domain is specified then we'll use the current domain
@@ -172,7 +172,7 @@ namespace Canteen\Server
 			$uriRequest = $this->processURI($basePath);
 			
 			// Setup the data
-			$this->settings = array(
+			$this->settings = [
 				'queryString' => $this->settings['queryString'],
 				'domain' => $domain,
 				'host' => '//'.$domain,
@@ -180,7 +180,7 @@ namespace Canteen\Server
 				'basePath' => $basePath,
 				'baseUrl' => '//'.$domain.$basePath,
 				'fullPath' => $basePath . $uriRequest
-			);
+			];
 			
 			// Loop through each of the settings levels
 			foreach($settings as $deploy)
@@ -190,7 +190,7 @@ namespace Canteen\Server
 				$domains = ifsetor($deploy['domain']);
 				$l = ifsetor($deploy['level']);
 				
-				if (is_string($domains)) $domains = array($domains);				
+				if (is_string($domains)) $domains = [$domains];				
 				
 				// Make sure the array matches
 				if (StringUtils::fnmatchInArray($domain, $domains))
@@ -209,14 +209,14 @@ namespace Canteen\Server
 			}
 			
 			// Define some global constants that we can use anywhere
-			$globals = array(
+			$globals = [
 				'basePath', 
 				'debug', 
 				'queryString', 
 				'local', 
 				'host', 
 				'domain'
-			);
+			];
 			
 			if (!defined('DEPLOYMENT_LEVEL'))
 			{

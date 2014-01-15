@@ -59,9 +59,9 @@ namespace Canteen\Forms
 		*/
 		public function __construct()
 		{
-			$this->_formData = array();
-			$this->_errorMessages = array();
-			$this->_successMessages = array();
+			$this->_formData = [];
+			$this->_errorMessages = [];
+			$this->_successMessages = [];
 		}
 		
 		/**
@@ -117,7 +117,7 @@ namespace Canteen\Forms
 			// this is to prevent refreshing the form
 			if (isset($_POST['formSession']))
 			{
-				$_SESSION['formSession'] = ifsetor($_SESSION['formSession'], array());
+				$_SESSION['formSession'] = ifsetor($_SESSION['formSession'], []);
 
 				if ( in_array($_POST['formSession'], $_SESSION['formSession']) )
 				{
@@ -159,14 +159,14 @@ namespace Canteen\Forms
 			if (!$async) return;
 			
 			return json_encode(
-				array(
+				[
 					'type' => 'formFeedback',
 					'data' => ifsetor($this->_formData),
 					'ifError' => $this->ifError,
 					'messages' => $this->ifError ? 
 						ifsetor($this->_errorMessages):
 						ifsetor($this->_successMessages)
-				)
+				]
 			);
 		}
 	

@@ -28,12 +28,12 @@ namespace Canteen\Services
 		*  @property {Array} termiteAliases 
 		*  @private
 		*/
-		private $termiteAliases = array(
+		private $termiteAliases = [
 			'user',
 			'page',
 			'time',
 			'config'
-		);
+		];
 		
 		/** 
 		*  The collection of all service aliases, Canteen and Custom
@@ -132,22 +132,22 @@ namespace Canteen\Services
 								}
 								$inputType = $param->getName() == 'password' ? 'password' : 'text';
 								$inputs .= html('label', $param->getName(), 'for:serviceInput'.$i);
-								$input = html('input', array(
+								$input = html('input', [
 									'type' => $inputType,
 									'id' => 'serviceInput'.$i,
 									'class' => 'text '.$className,
 									'name' => 'arguments[]',
 									'value' => ifsetor($default, '')								
-								));
+								]);
 								$inputs .= $input . html('br'); 
 								$i++;
 							}
 							
-							$fieldset = html('fieldset', array(
+							$fieldset = html('fieldset', [
 								html('legend', "$numParams additional argument(s) required for this method"),
 								html('div', $inputs),
 								html('div.formButtons', html('input.submit type=submit value="Call Service"'))
-							));
+							]);
 							
 							$action = $this->settings->basePath.$this->browserUri.'/'.$serviceAlias.'/'.$callAlias;
 							$output .= html('form#formInputs method=get action='.$action, $fieldset);
@@ -179,13 +179,13 @@ namespace Canteen\Services
 			
 			return $this->template(
 				'ServiceBrowser',
-				array(
+				[
 					'output' => $output,
 					'services' => $this->getServicesList(),
 					'methods' => $this->getMethodsList($serviceName, $serviceAlias),
 					'logger' => (string)Logger::instance()->render(),
 					'gatewayLink' => (string)$link
-				)
+				]
 			);
 		}
 		
@@ -235,7 +235,7 @@ namespace Canteen\Services
 			$methods = $reflector->getMethods();
 			
 			// Sort the methods alphabetically by name
-			$names = array();
+			$names = [];
 			foreach ($methods as $key => $method)
 			{
 				$names[$key] = $method->name;
@@ -306,7 +306,7 @@ namespace Canteen\Services
 		*/
 		private function displayArgs($args)
 		{
-			$res = array();
+			$res = [];
 			if ($args)
 			{
 				foreach($args as $i=>$val)

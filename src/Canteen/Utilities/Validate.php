@@ -151,7 +151,7 @@ namespace Canteen\Utilities
 					if (!in_array($data, $type))
 					{						
 						if (!$suppressErrors)
-							throw new UserError(UserError::INVALID_DATA_SET, array($data, implode(', ', $type)));
+							throw new UserError(UserError::INVALID_DATA_SET, [$data, implode(', ', $type)]);
 							
 						return false;
 					}
@@ -189,11 +189,11 @@ namespace Canteen\Utilities
 								$chars .= chr($i);
 							}
 						}
-						throw new UserError(UserError::INVALID_DATA, array(
+						throw new UserError(UserError::INVALID_DATA, [
 							$data, 
 							$chars, 
-							stripcslashes(substr($type, 2, -2)))
-						);
+							stripcslashes(substr($type, 2, -2))
+						]);
 					}						
 					return false;
 				}
@@ -205,8 +205,8 @@ namespace Canteen\Utilities
 		*  Verify multiple data with multiple types
 		*  @method verifyMutli
 		*  @static
-		*  @param {Array} data The associative array of data e.g. array('name'=>"something", 'title'=>"another")
-		*  @param {Array} types The associate array of types e.g. array('name'=>Validate::NAMES, 'title'=>Validate::FULL_TEXT)
+		*  @param {Array} data The associative array of data e.g. ['name'=>"something", 'title'=>"another"]
+		*  @param {Array} types The associate array of types e.g. ['name'=>Validate::NAMES, 'title'=>Validate::FULL_TEXT]
 		*  @param {Boolean} [suppressErrors=false] If we should suppress throwing errors
 		*  @return {mixed} False if anything doesn't verify or else returns data
 		*/

@@ -55,34 +55,34 @@ namespace Canteen\Services
 		*  @property {Dictionary} fieldsByName
 		*  @readOnly
 		*/
-		public $fieldsByName = array();
+		public $fieldsByName = [];
 
 		/**
 		*  The property prepend prepends
 		*  @property {Dictionary} prepends
 		*/
-		public $prepends = array();
+		public $prepends = [];
 
 		/**
 		*  The collection of mysql select properties
 		*  @property {Array} properties
 		*  @readOnly
 		*/
-		public $properties = array();
+		public $properties = [];
 
 		/**
 		*  The map of field names that can be indexed
 		*  @property {Dictionary} indexes
 		*  @readOnly
 		*/
-		public $indexes = array();
+		public $indexes = [];
 
 		/**
 		*  Additional get where properties
 		*  @property {Array} where
 		*  @readOnly
 		*/
-		public $where = array();
+		public $where = [];
 
 		/**
 		*  The reference to the service this originates on
@@ -181,7 +181,7 @@ namespace Canteen\Services
 		{
 			if (is_string($maps))
 			{
-				$maps = array($maps => $value);
+				$maps = [$maps => $value];
 			}
 			$this->prepends = array_merge($this->prepends, $maps);
 		}
@@ -223,8 +223,8 @@ namespace Canteen\Services
 		*/
 		public function getInstallQuery()
 		{
-			$keys = array();
-			$fields = array();
+			$keys = [];
+			$fields = [];
 
 			foreach($this->fields as $f)
 			{

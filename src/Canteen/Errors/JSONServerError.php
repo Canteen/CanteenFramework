@@ -56,12 +56,12 @@ namespace Canteen\Errors
 		*  @static
 		*  @final
 		*/
-		private static $messages = array(
+		private static $messages = [
 			self::INVALID_SERVICE => 'No valid service found',
 			self::SERVICE_ERROR => 'Invalid service',
 			self::INVALID_METHOD => 'No valid method found',
 			self::INCORRECT_PARAMETERS => 'Incorrect parameter count'
-		);
+		];
 		
 		/**
 		*  Create a user error

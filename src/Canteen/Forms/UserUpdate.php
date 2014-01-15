@@ -39,10 +39,10 @@ namespace Canteen\Forms
 		*/
 		public function __construct()
 		{
-			$this->on(ObjectFormEvent::VALIDATE, array($this, 'onValidate'))
-				->on(ObjectFormEvent::BEFORE_REMOVE, array($this, 'onBeforeRemove'))
-				->on(ObjectFormEvent::BEFORE_UPDATE, array($this, 'onBeforeUpdate'))
-				->on(ObjectFormEvent::BEFORE_ADD, array($this, 'onBeforeAdd'));
+			$this->on(ObjectFormEvent::VALIDATE, [$this, 'onValidate'])
+				->on(ObjectFormEvent::BEFORE_REMOVE, [$this, 'onBeforeRemove'])
+				->on(ObjectFormEvent::BEFORE_UPDATE, [$this, 'onBeforeUpdate'])
+				->on(ObjectFormEvent::BEFORE_ADD, [$this, 'onBeforeAdd']);
 
 			parent::__construct(
 				$this->service('user')->item,

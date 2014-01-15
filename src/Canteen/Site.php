@@ -157,7 +157,7 @@ namespace Canteen
 		*  @final
 		*  @static
 		*/
-		const MIN_PHP_VERSION = '5.3.0';
+		const MIN_PHP_VERSION = '5.4.0';
 		
 		/** 
 		*  The starting time to keep track of buildtime
@@ -185,35 +185,35 @@ namespace Canteen
 		*	$site = new Canteen\Site('config.php');
 		*  
 		*	// Or set the single deployment settings directly
-		*	$site = new Canteen\Site(array(
+		*	$site = new Canteen\Site([
 		*		'dbUsername' => 'user',
 		*		'dbPassword' => 'pass1234',
 		*		'dbName' => 'my_settingsbase',
-		*  	));
+		*  	]);
 		*	
 		* 	// Or create different deployments of the site
 		*	// for different domains where the site is hosted
-		*	$site = new Canteen\Site(array(
+		*	$site = new Canteen\Site([
 		*  		// our local site accessible from http://localhost
-		*  		array(
+		*  		[
 		*  			'level' => DeploymentStatus::LOCAL,
 		*  			'domain' => 'localhost',
 		*			'dbUsername' => 'root',
 		*			'dbPassword' => '',
 		*			'dbName' => 'my_settingsbase',
 		*  			'debug' => true
-		*  		),
+		*  		],
 		*  		// Our dev site accessible from http://dev.example.com
-		*  		array(
+		*  		[
 		*  			'level' => DeploymentStatus::DEV,
 		*  			'domain' => 'dev.example.com',
 		*  			'dbUsername' => 'user',
 		*			'dbPassword' => 'pass1234',
 		*			'dbName' => 'my_dev_settingsbase',
 		*  			'debug' => true
-		*  		),
+		*  		],
 		*  		// Our live site accessible from http://example.com
-		*  		array(
+		*  		[
 		*  			'level' => DeploymentStatus::LIVE,
 		*  			'domain' => 'example.com',
 		*  			'dbUsername' => 'user',
@@ -222,8 +222,8 @@ namespace Canteen
 		*  			'minify' => true,
 		*  			'compress' => true,
 		*  			'cacheEnabled' => true
-		*  		)
-		* 	));
+		*  		]
+		* 	]);
 		*		
 		*	// Echo out the page result
 		*	$site->render();
@@ -304,7 +304,7 @@ namespace Canteen
 			// Check for the version of PHP required to do the autoloading/namespacing
 			if (version_compare(self::MIN_PHP_VERSION, PHP_VERSION) >= 0) 
 			{
-				throw new CanteenError(CanteenError::INSUFFICIENT_PHP, 'Minimum PHP version: '.self::MIN_PHP_VERSION);
+				throw new CanteenError(CanteenError::INSUFFICIENT_PHP, [PHP_VERSION, self::MIN_PHP_VERSION]);
 			}
 			
 			// Check that the settings exists
@@ -312,10 +312,10 @@ namespace Canteen
 			{
 				$this->_formFactory->startup('Canteen\Forms\Setup');
 				die($this->_parser->template('Setup',
-					array(
+					[
 						'formFeedback' => $this->_formFactory->getFeedback(),
 						'configFile' => $settings
-					)
+					]
 				));
 			}
 			
@@ -374,8 +374,8 @@ namespace Canteen
 				// Setup the database profiler calls
 				if ($profiler)
 				{
-					$this->_db->profilerStart = array($profiler, 'sqlStart');
-					$this->_db->profilerStop = array($profiler, 'sqlEnd');
+					$this->_db->profilerStart = [$profiler, 'sqlStart'];
+					$this->_db->profilerStop = [$profiler, 'sqlEnd'];
 				}
 			}
 			
@@ -393,9 +393,9 @@ namespace Canteen
 				{
 					if (!$this->_db->tableExists('config'))
 					{
-						die($this->_parser->template('Installer', array(
-							'formFeedback' => $this->_formFactory->getFeedback()
-						)));
+						die($this->_parser->template('Installer', 
+							['formFeedback' => $this->_formFactory->getFeedback()]
+						));
 					}
 					else
 					{
@@ -440,7 +440,7 @@ namespace Canteen
 			if ($profiler) $profiler->end('Authorization');
 			
 			// Set the globals
-			$this->_controllers = array();
+			$this->_controllers = [];
 			$this->addController('admin', 'Canteen\Controllers\AdminController');
 			$this->addController('admin/users', 'Canteen\Controllers\AdminUsersController');
 			$this->addController('admin/pages', 'Canteen\Controllers\AdminPagesController');
@@ -488,10 +488,10 @@ namespace Canteen
 					$pageUri = preg_replace('/\*/', '[a-zA-Z0-9\-_\/]+', $pageUri);
 					$pageUri = '/^'.$pageUri.'$/';
 				}
-				$this->_controllers[] = array(
+				$this->_controllers[] = [
 					'uri' => $pageUri,
 					'controller' => $controllerClassName
-				);
+				];
 			}
 		}
 		
@@ -521,13 +521,13 @@ namespace Canteen
 			if ($version < $targetVersion && file_exists($updatesFolder.$version.'.php'))
 			{
 				// Specifically ask for an database update
-				die($this->_parser->template('UpgradeDatabase', array(
+				die($this->_parser->template('UpgradeDatabase', [
 					'targetVersion' => $targetVersion,
 					'version' => $version,
 	 				'updatesFolder' => $updatesFolder,
 					'variableName' => $variableName,
 					'formFeedback' => $this->_formFactory->getFeedback()
-				)));
+				]));
 			}
 		}
 		
@@ -630,10 +630,10 @@ namespace Canteen
 				$debug = ifconstor('DEBUG', true);
 				$async = ifconstor('ASYNC_REQUEST', false);
 				
-				$data = array(
+				$data = [
 					'type' => 'fatalError',
 					'debug' => $debug
-				);
+				];
 				
 				$data = array_merge(self::$_fatalError, $data);
 				
@@ -745,7 +745,7 @@ namespace Canteen
 			{
 				$e =  new CanteenError(
 					CanteenError::INSUFFICIENT_VERSION, 
-					array(self::VERSION, $required)
+					[self::VERSION, $required]
 				);
 				self::$_fatalError = $e->getResult();
 			}

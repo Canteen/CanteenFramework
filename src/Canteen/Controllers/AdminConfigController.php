@@ -60,12 +60,12 @@ namespace Canteen\Controllers
 				$config->disabled = (SETTING_DELETE & $config->access) ? '' : 'disabled';
 			}
 			
-			$this->addTemplate('AdminConfig', array(
+			$this->addTemplate('AdminConfig', [
 				'configs' => $configs,
 				'types' => $types,
 				'client' => SETTING_CLIENT,
 				'render' => SETTING_RENDER
-			));
+			]);
 		}
 		
 		/**

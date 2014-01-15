@@ -76,11 +76,12 @@ namespace Canteen\Parser
 						
 			// Add some render only properties
 			$this->settings->addSettings(
-				array(
+				[
 					'year' => date('Y'),
 					'formSession' => StringUtils::generateRandomString(16),
 					'logoutUri' => $this->site->logoutUri
-				), SETTING_RENDER
+				], 
+				SETTING_RENDER
 			)
 			->addSetting('version', Site::VERSION, SETTING_CLIENT)
 			->addSetting('gatewayPath', $this->settings->basePath . $this->site->gatewayUri, SETTING_CLIENT);
@@ -401,14 +402,14 @@ namespace Canteen\Parser
 			{
 				// Assemble all of the page contents
 				$this->settings->addSettings(
-					array(
+					[
 						'content' => $page->content,
 						'description' => $page->description,
 						'keywords' => $page->keywords,
 						'pageUri' => $page->uri,
 						'pageId' => $page->pageId,
 						'settings' => $this->getSettings()
-					),
+					],
 					SETTING_RENDER
 				);
 				
@@ -498,7 +499,7 @@ namespace Canteen\Parser
 					)
 				);
 			}			
-			return $this->template('Settings', array('settings' => $settings));
+			return $this->template('Settings', ['settings' => $settings]);
 		}
 	}
 }

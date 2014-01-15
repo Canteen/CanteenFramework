@@ -72,8 +72,8 @@ namespace Canteen\Utilities
 		*/
 		public function __construct()
 		{
-			$this->settings = array();
-			$this->settingsMap = array();
+			$this->settings = [];
+			$this->settingsMap = [];
 			
 			define('SETTING_CLIENT', self::CLIENT);
 			define('SETTING_RENDER', self::RENDER);
@@ -149,7 +149,7 @@ namespace Canteen\Utilities
 		public function exists($args)
 		{
 			$keys = is_array($args) ? $args : func_get_args();
-			$missing = array();
+			$missing = [];
 			foreach($keys as $key)
 			{
 				if (!isset($this->settingsMap[$key]))
@@ -170,7 +170,7 @@ namespace Canteen\Utilities
 		public function existsThrow($args)
 		{
 			$keys = is_array($args) ? $args : func_get_args();
-			$missing = array();
+			$missing = [];
 			foreach($keys as $key)
 			{
 				if (!isset($this->settingsMap[$key]))
@@ -193,7 +193,7 @@ namespace Canteen\Utilities
 		*/
 		public function getRender()
 		{
-			$result = array();
+			$result = [];
 			foreach($this->settings as $s)
 			{
 				if ($s->access & self::RENDER)
@@ -211,7 +211,7 @@ namespace Canteen\Utilities
 		*/
 		public function getClient()
 		{
-			$result = array();
+			$result = [];
 			foreach($this->settings as $s)
 			{
 				if ($s->access & self::CLIENT)

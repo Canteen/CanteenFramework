@@ -64,13 +64,13 @@ namespace Canteen\Errors
 		*  @static
 		*  @final
 		*/
-		private static $messages = array(
+		private static $messages = [
 			self::LOGGIN_REQUIRED => 'Login required',
 			self::INSUFFICIENT_PRIVILEGE => 'Insufficient privilege required',
 			self::INVALID_DATA_SET => '\'%s\' is not in the set [%s]',
 			self::INVALID_DATA => '\'%s\' cannot contain [%s], only [%s]',
 			self::INVALID_MYSQL_DATE => '\'%s\' is not a valid MySQL format (YYYY-MM-DD or YYYY-MM-DD HH:mm:ss)'
-		);
+		];
 		
 		/**
 		*  Create a user error

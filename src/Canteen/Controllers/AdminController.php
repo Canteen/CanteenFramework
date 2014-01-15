@@ -39,9 +39,9 @@ namespace Canteen\Controllers
 		*  @method addTemplate
 		*  @protected
 		*  @param {String} template The template name
-		*  @param {Dictionary} [data=array()] The optional substitution variables
+		*  @param {Dictionary} [data=[]] The optional substitution variables
 		*/
-		protected function addTemplate($template, $data=array())
+		protected function addTemplate($template, $data=[])
 		{
 			$this->page->content .= $this->template($template, $data);
 		}
@@ -70,8 +70,8 @@ namespace Canteen\Controllers
 			$this->_isPrerendered = true;
 			
 			$pages = $this->service('page')->getPagesByParentId($this->page->parentId);
-			$custom = array();
-			$builtIn = array();
+			$custom = [];
+			$builtIn = [];
 			
 			$protected = $this->service('page')->getProtectedUris();
 			
@@ -100,11 +100,11 @@ namespace Canteen\Controllers
 				}
 			}
 			
-			$data = array(
+			$data = [
 				'adminNavCustom' => count($custom) ? (string)new SimpleList($custom, 'class=custom') : false,
 				'adminNav' => (string)new SimpleList($builtIn, 'class=builtIn'),
 				'adminContent' => $this->parse($this->page->content, $this->data)
-			);
+			];
 			
 			$this->page->content = $this->template('Admin', $data); 
 		}

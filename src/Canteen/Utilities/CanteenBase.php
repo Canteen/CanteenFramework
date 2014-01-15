@@ -48,10 +48,10 @@ namespace Canteen\Utilities
 		*  @method template
 		*  @protected
 		*  @param {String} name The name of the template to parse
-		*  @param {Dictionary} [substitutions=array()] The dictionary of tags to replace
+		*  @param {Dictionary} [substitutions=[]] The dictionary of tags to replace
 		*  @return {String} The parsed string
 		*/
-		protected function template($name, $substitutions=array())
+		protected function template($name, $substitutions=[])
 		{
 			return $this->parser->template($name, $substitutions);
 		}

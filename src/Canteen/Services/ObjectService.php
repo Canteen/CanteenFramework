@@ -10,7 +10,7 @@ namespace Canteen\Services
 		*  The dictionary of item names to ObjectServiceItem objects
 		*  @property {Dictionary} items 
 		*/
-		public $items = array();
+		public $items = [];
 
 		/**
 		*  Service provides basic methods for getting, updating, remove multiple objects 
@@ -230,7 +230,7 @@ namespace Canteen\Services
 				array_unshift($args, $item);
 
 				return call_user_func_array(
-					array($this, 'internal'.ucfirst($matches[1][0]).'ByIndex'), 
+					[$this, 'internal'.ucfirst($matches[1][0]).'ByIndex'], 
 					$args
 				);
 			}
@@ -477,10 +477,10 @@ namespace Canteen\Services
 
 			if (!is_array($prop))
 			{
-				$prop = array($prop => $value);
+				$prop = [$prop => $value];
 			}
 			
-			$properties = array();
+			$properties = [];
 			foreach($prop as $k=>$p)
 			{
 				if (isset($item->fieldsByName[$k]))
@@ -524,7 +524,7 @@ namespace Canteen\Services
 			$item->verify($properties);
 
 			// Get the next field ID
-			$values = array();
+			$values = [];
 
 			// Convert the named properties into field inserts
 			foreach($properties as $name=>$value)

@@ -181,7 +181,7 @@ namespace Canteen\Authorization
 			*/
 			if ($name == 'settings')
 			{
-				return array(
+				return [
 					'loggedIn' => $this->_loggedin,
 					'userFullname' => $this->_user->fullname,
 					'userEmail' => $this->_user->email,
@@ -189,7 +189,7 @@ namespace Canteen\Authorization
 					'userUsername' => $this->_user->username,
 					'userPrivilege' => $this->_user->privilege,
 					'userLogin' => $this->_user->login
-				);
+				];
 			}
 			return parent::__get($name);
 		}

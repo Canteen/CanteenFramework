@@ -59,7 +59,7 @@ namespace Canteen\Profiler
 		{ 
 			$res = $this->template(
 				'ProfilerNode',
-				array(
+				[
 					'depth' => $node->getDepth(),
 					'trivial' => $this->profiler->isTrivial($node) && !$node->hasNonTrivialChildren() ? 'profiler-trivial' : '',
 					'indent' => str_repeat('&nbsp;&nbsp;&nbsp;', $node->getDepth() - 1),
@@ -70,7 +70,7 @@ namespace Canteen\Profiler
 					'id' => md5($node->getName() . $node->getStart()),
 					'queryCount' => $node->getSQLQueryCount(),
 					'queryTime' => $node->getTotalSQLQueryDuration()
-				)
+				]
 			);
 
 			if ($node->hasChildren() && ($maxDepth == -1 || $maxDepth > $node->getDepth()))
@@ -102,25 +102,25 @@ namespace Canteen\Profiler
 
 				$id = md5($node->getName() . $node->getStart());
 
-				$res .= $this->template('ProfilerSQLHeader', array(
+				$res .= $this->template('ProfilerSQLHeader', [
 					'id' => $id,
 					'name' => $node->getName()
-				));
+				]);
 
 				foreach ($nodeQueries as $query)
 				{
-					$stack = array();
+					$stack = [];
 					foreach ($query->getCallstack() as $stackStep)
 					{
-						$stack[] = array(
+						$stack[] = [
 							'rowClass' => ++$c % 2? 'odd' : 'even',
 							'class' => !empty($stackStep['class'])? $stackStep['class'] . $stackStep['type'] : '',
 							'function' => $stackStep['function']
-						);
+						];
 					}
 					$res .= $this->template(
 						'ProfilerSQLNode', 
-						array(
+						[
 							'id' => $id,
 							'startTimer' => round($query->getStart() - $this->profiler->getGlobalStart(), 1),
 							'duration' => $query->getDuration(),
@@ -128,7 +128,7 @@ namespace Canteen\Profiler
 							'stack' => $stack,
 							'queryId' => md5($query->getQuery()),
 							'query' => $query->getQuery()
-						)
+						]
 					);
 				}
 			}

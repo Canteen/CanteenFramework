@@ -236,7 +236,7 @@ namespace Canteen\Errors
 		*  @static
 		*  @final
 		*/
-		private static $messages = array(
+		private static $messages = [
 			self::SETTING_DELETE => 'The setting \'%s\' cannot be deleted',
 			self::SETTING_WRITEABLE => 'The setting \'%s\' cannot be changed',
 			self::SETTING_NAME_TAKEN => 'The setting name \'%s\' is taken, please rename',
@@ -254,7 +254,7 @@ namespace Canteen\Errors
 			self::TEMPLATE_NOT_FOUND => 'Cannot load template file',
 			self::TEMPLATE_UNKNOWN => 'Template not registered',
 			self::INSUFFICIENT_VERSION => 'The installed version of Canteen Site (%s) is insufficient to run site (%s)',
-			self::INSUFFICIENT_PHP => 'The current version of PHP is insufficient to run site',
+			self::INSUFFICIENT_PHP => 'The current version of PHP (%s) is insufficient to run site (%s)',
 			self::INVALID_INDEX => 'The index page for the site does not exist',
 			self::CACHE_FOLDER => 'Could not create the cache folder',
 			self::CACHE_FOLDER_WRITEABLE => 'Cache folder is not writable. Change file permissions',
@@ -262,7 +262,7 @@ namespace Canteen\Errors
 			self::AUTOLOAD_TEMPLATE => 'Template has already been loaded',
 			self::TAKEN_SERVICE_ALIAS => 'The custom service alias is already taken',
 			self::PARSE_ARRAY => 'The parse substitution value \'%s\' cannot be an array \'%s\''
-		);
+		];
 		
 		/** 
 		*  The label for an error that is unknown or unfound in messages 
@@ -284,7 +284,7 @@ namespace Canteen\Errors
 			// we should apply the subs
 			if (preg_match('/\%s/', $message))
 			{
-				$args = array_merge(array($message), is_array($data) ? $data : array($data));
+				$args = array_merge(array($message), is_array($data) ? $data : [$data]);
 				$message = call_user_func_array('sprintf', $args);
 			}
 			// Just add the extra data at the end of the message
@@ -314,12 +314,12 @@ namespace Canteen\Errors
 		*/
 		public static function convertToResult(Exception $e)
 		{
-			return array(
+			return [
 				'message' => $e->getMessage(),
 				'file' => str_replace(self::$rootPath, '', $e->getFile())." (line:{$e->getLine()})",
 				'code' => $e->getCode(),
 				'stackTrace' => self::getFormattedTrace($e)
-			);
+			];
 		}
 		
 		/**
@@ -334,7 +334,7 @@ namespace Canteen\Errors
 		{
 			$trace = $e->getTraceAsString();
 			$trace = preg_split('/\#[0-9]+ /', $trace);
-			$stack = array();
+			$stack = [];
 			foreach($trace as $t)
 			{
 				$t = trim($t);

@@ -17,14 +17,14 @@ namespace Canteen\Events
       	*  @property {Array} listeners
       	*  @private
         */
-		private $listeners = array();
+		private $listeners = [];
 
         /**
       	*  The collection of sorted listeners
       	*  @property {Array} sorted
       	*  @private
         */
-		private $sorted = array();
+		private $sorted = [];
 
 		/**
 		*  Dispatches an event to all registered listeners.
@@ -173,7 +173,7 @@ namespace Canteen\Events
 		*/
 		private function sortListeners($eventType)
 		{
-			$this->sorted[$eventType] = array();
+			$this->sorted[$eventType] = [];
 
 			if (isset($this->listeners[$eventType]))
 			{

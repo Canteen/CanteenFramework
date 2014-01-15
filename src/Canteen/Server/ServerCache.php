@@ -167,7 +167,7 @@ namespace Canteen\Server
 		{
 			if (!$this->_enabled) return false;
 			
-			return $this->save($context, array(), null, $expires);
+			return $this->save($context, [], null, $expires);
 		}
 		
 		/**
@@ -211,7 +211,7 @@ namespace Canteen\Server
 		{
 			$result = $this->read($context);
 			
-			if (!is_array($result)) $result = array();
+			if (!is_array($result)) $result = [];
 			
 			// If it's not already here add
 			if (!in_array($key, $result))

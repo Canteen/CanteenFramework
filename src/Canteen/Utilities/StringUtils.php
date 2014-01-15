@@ -133,12 +133,12 @@ namespace Canteen\Utilities
 			}
 			
 			// Turn into a result
-			return array(
+			return [
 				'base' => implode('/', $base),
 				'service' => ifsetor($uri[0], ''),
 				'call' => ifsetor($uri[1], ''),
 				'args' => $args
-			);
+			];
 		}
 		
 		/**
@@ -153,11 +153,11 @@ namespace Canteen\Utilities
 			srand ( ( double ) microtime () * 1000000 ); 
 
 			$password = '';
-			$vowels = array('a','e','i','o','u'); 
-			$cons = array(
+			$vowels = ['a','e','i','o','u']; 
+			$cons = [
 				'b','c','d','g','h','j','k','l','m','n','p','r','s','t','u','v','w','tr', 
 				'cr','br','fr','th','dr','ch','ph','wr','st','sp','sw','pr','sl','cl'
-			); 
+			]; 
 
 			$num_vowels = count($vowels); 
 			$num_cons = count($cons); 
@@ -372,16 +372,16 @@ namespace Canteen\Utilities
 		*/
 		private static function stripBuffer($buffer)
 		{
-			$search = array(
+			$search = [
 				'/\>[^\S ]+/s', //strip whitespaces after tags, except space
 				'/[^\S ]+\</s', //strip whitespaces before tags, except space
 				'/(\s)+/s'  // shorten multiple whitespace sequences
-			);
-			$replace = array(
+			];
+			$replace = [
 				'>',
 				'<',
 				'\\1'
-			);
+			];
 			self::checkBacktrackLimit($buffer);
 			return preg_replace($search, $replace, $buffer);
 		}

@@ -69,14 +69,14 @@ namespace Canteen\Authorization
 		*/
 		public static function getAll()
 		{
-			return array(
+			return [
 				self::ANONYMOUS => 'Anonymous',
 				self::GUEST => 'Guest',
 				self::SUBSCRIBER => 'Subscriber',
 				self::CONTRIBUTOR => 'Contributor',
 				self::EDITOR => 'Editor',
 				self::ADMINISTRATOR => 'Administrator'
-			);
+			];
 		}
 	}
 }

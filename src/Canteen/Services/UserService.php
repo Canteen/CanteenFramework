@@ -22,7 +22,7 @@ namespace Canteen\Services
 		*  @property {Array} propertiesJoined
 		*  @private
 		*/
-		private $propertiesJoined = array(
+		private $propertiesJoined = [
 			'u.`user_id` as `id`',
 			'IF(u.`is_active`>0, 1, NULL) as `isActive`',
 			'u.`username`',
@@ -36,7 +36,7 @@ namespace Canteen\Services
 			'UNIX_TIMESTAMP(u.`frozen`) as `frozen`',
 			'u.`forgot_string` as `forgotString`',
 			'UNIX_TIMESTAMP(u.`login`) as `login`'
-		);
+		];
 		
 		/** 
 		*  The table for who's session is currently active
@@ -54,7 +54,7 @@ namespace Canteen\Services
 				'user',
 				'Canteen\Services\Objects\User',
 				'users',
-				array(
+				[
 					$this->field('user_id', Validate::NUMERIC, 'id')
 						->setDefault(),
 					$this->field('is_active', Validate::BOOLEAN)
@@ -71,11 +71,11 @@ namespace Canteen\Services
 					$this->field('frozen', Validate::MYSQL_DATE),
 					$this->field('login', Validate::MYSQL_DATE),
 					$this->field('forgot_string', Validate::URI)
-				)
+				]
 			);
 
 			$this->restrict(
-				array(
+				[
 					'setup' => 'Canteen\Forms\Installer',
 					'freezeUsername' => 'Canteen\Authorization\Authorization',
 					'reportAttempt' => 'Canteen\Authorization\Authorization',
@@ -91,7 +91,7 @@ namespace Canteen\Services
 					'removeUser' => Privilege::ADMINISTRATOR,
 					'addUser' => Privilege::ADMINISTRATOR,
 					'updateUser' => Privilege::ADMINISTRATOR
-				)
+				]
 			)
 			// Add additional selection options
 			->setProperties('CONCAT(`first_name`,\' \',`last_name`) as `fullname`');
@@ -113,7 +113,7 @@ namespace Canteen\Services
 
 			if (!$this->db->tableExists($this->table))
 			{
-				$sql = array();
+				$sql = [];
 				
 				$sql[] = "CREATE TABLE IF NOT EXISTS `{$this->table}` (
 				  `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -430,7 +430,7 @@ namespace Canteen\Services
 			
 			if (!is_array($properties))
 			{
-				$properties = array(
+				$properties = [
 					'username' => $properties,
 					'email' => $email,
 					'password' => $password,
@@ -438,7 +438,7 @@ namespace Canteen\Services
 					'lastName' => $lastName,
 					'privilege' => $privilege,
 					'isActive' => $isActive
-				);
+				];
 			}
 			return $this->call($properties);
 		}

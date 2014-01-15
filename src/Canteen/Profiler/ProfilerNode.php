@@ -70,7 +70,7 @@ namespace Canteen\Profiler
 		*  @property {Array} childNodes
 		*  @protected
 		*/
-		protected $childNodes = array();
+		protected $childNodes = [];
 
 		/**
 		*  Number of queries run at this step
@@ -84,7 +84,7 @@ namespace Canteen\Profiler
 		*  @property {Array} sqlQueries
 		*  @protected
 		*/
-		protected $sqlQueries = array();
+		protected $sqlQueries = [];
 
 		/**
 		*  Total time spent performing SQL queries. Stored in microseconds

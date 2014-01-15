@@ -64,7 +64,7 @@ namespace Canteen\Profiler
 		*  @property {Array} topNodes
 		*  @protected
 		*/	
-		protected $topNodes = array();
+		protected $topNodes = [];
 
 		/**
 		*  Time the profiler was included. This is used to calculate 
@@ -96,7 +96,7 @@ namespace Canteen\Profiler
 		*  @property {Array} childDurations
 		*  @protected  
 		*/	
-		protected $childDurations = array();
+		protected $childDurations = [];
 
 		/**
 		*  Percentile boundary for trivial execution times
@@ -363,10 +363,10 @@ namespace Canteen\Profiler
 				$unit = 'T';
 			}
 
-			return array(
+			return [
 				'num' => $usage,
 				'unit' => $unit,
-			);
+			];
 		}
 
 		/**
@@ -394,7 +394,7 @@ namespace Canteen\Profiler
 			
 			$result = $this->template(
 				'Profiler',
-				array(
+				[
 					'globalDuration' => $duration,
 					'memUsage' => $mem['num'], 
 					'memUnit' => $mem['unit'],
@@ -404,7 +404,7 @@ namespace Canteen\Profiler
 					'queryPercent' => $duration > 0 ? round($this->getTotalQueryTime() / $duration, 2)*  100 : 0,
 					'nodes' => $renderer->nodes,
 					'queryNodes' => $renderer->queryNodes
-				)
+				]
 			);
 			unset($renderer);
 			return $result;

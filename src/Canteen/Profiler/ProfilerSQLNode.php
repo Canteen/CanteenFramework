@@ -49,7 +49,7 @@ namespace Canteen\Profiler
 		*  @property {Array} callstack
 		*  @protected
 		*/
-		protected $callstack = array();
+		protected $callstack = [];
 
 		/**
 		*  Class representing each SQL query run

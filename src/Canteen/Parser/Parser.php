@@ -119,7 +119,7 @@ namespace Canteen\Parser
 		*/
 		public function __construct()
 		{
-			$this->_templates = array();
+			$this->_templates = [];
 		}
 		
 		/**
@@ -202,12 +202,12 @@ namespace Canteen\Parser
 			// Introduced in PHP 5.3.0
 			if (function_exists('json_last_error'))
 			{
-				$errors = array(
+				$errors = [
 					JSON_ERROR_DEPTH => 'Maximum stack depth exceeded',
 					JSON_ERROR_STATE_MISMATCH => 'Underflow or the modes mismatch',
 					JSON_ERROR_CTRL_CHAR => 'Unexpected control character found',
 					JSON_ERROR_SYNTAX => 'Syntax error, malformed JSON'
-				);
+				];
 				// Introduced in PHP 5.3.3
 				if (defined('JSON_ERROR_UTF8'))
 				{
@@ -432,8 +432,8 @@ namespace Canteen\Parser
 					if ($value === null) continue;
 
 					if (is_array($value))
-						throw new CanteenError(CanteenError::PARSE_ARRAY, array($id, implode(', ', $value)));
-
+						throw new CanteenError(CanteenError::PARSE_ARRAY, [$id, implode(', ', $value)]);
+					
 					$content = preg_replace('/'.$tag.'/', (string)$value, $content);
 				}
 				if ($profiler) $profiler->end('Parse Singles');
@@ -475,9 +475,9 @@ namespace Canteen\Parser
 		*  Get the template by form name
 		*  @method template
 		*  @param {String} name The name of the template as defined in Autoloader
-		*  @param {Dictionary} [substitutions=array()] The collection of data to substitute
+		*  @param {Dictionary} [substitutions=[]] The collection of data to substitute
 		*/
-		public function template($name, $substitutions=array())
+		public function template($name, $substitutions=[])
 		{
 			return $this->internalParse($this->getContents($name), $substitutions);
 		}

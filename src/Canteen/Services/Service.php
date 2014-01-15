@@ -34,7 +34,7 @@ namespace Canteen\Services
 		*  @private
 		*  @static
 		*/
-		private static $_registered = array();
+		private static $_registered = [];
 		
 		/** 
 		*  A map of the class name to registered alias 
@@ -42,7 +42,7 @@ namespace Canteen\Services
 		*  @private
 		*  @static
 		*/
-		private static $_registeredMaps = array();
+		private static $_registeredMaps = [];
 		
 		/** 
 		*  A map of the class name to registered alias to class name 
@@ -50,21 +50,21 @@ namespace Canteen\Services
 		*  @private
 		*  @static
 		*/
-		private static $_registeredAliases = array();
+		private static $_registeredAliases = [];
 		
 		/**
 		*  The mappings used to prepend the data object paths
 		*  @property {Array} mappings
 		*  @private
 		*/
-		private $mappings = array();
+		private $mappings = [];
 
 		/**
 		*  The map of access controls by function name
 		*  @property {Dictionary}
 		*  @private
 		*/
-		private $_accessControls = array();
+		private $_accessControls = [];
 		
 		/**
 		*  Create the service
@@ -155,10 +155,10 @@ namespace Canteen\Services
 		*   // or
 		* 	$this->restrict(array(
 		*		'removeContent' => Privilege::ADMINISTRATOR,
-		*		'updateContent' => array(
+		*		'updateContent' => [
 		*			Privilege::GUEST, 
 		*			'Site\Form\ContentUpdate'
-		*		)
+		*		]
 		*	));
 		* 	// To check for access control within a method
 		* 	$this->access();
@@ -235,7 +235,7 @@ namespace Canteen\Services
 				}
 				throw new CanteenError(
 					CanteenError::INTERNAL_ONLY, 
-					array($method, implode(', ', $control->internals))
+					[$method, implode(', ', $control->internals)]
 				);
 			}
 
@@ -355,7 +355,7 @@ namespace Canteen\Services
 		*/
 		protected function valueSet($id, $validationType=null)
 		{
-			$id = !is_array($id) ? array($id) : $id;
+			$id = !is_array($id) ? [$id] : $id;
 			$this->verify($id, $validationType);
 			return '(\'' . implode('\',\'', $id) . '\')';
 		}
@@ -372,7 +372,7 @@ namespace Canteen\Services
 		*/
 		protected function bindObjects($data, $dataClass, $prepends=null)
 		{
-			$objects = array();
+			$objects = [];
 			// Loop through all of the data objects
 			// and create a data object to match the data content
 			for($i = 0; $i < count($data); $i++)
@@ -437,22 +437,34 @@ namespace Canteen\Services
 		/**
 		*  Turn a collection of objects into a dictionary by a property name.
 		*  @method dataMap
-		*  @protected
+		*  @static
 		*  @param {Array} results The objects collection
 		*  @param {String} [key='id'] The name of the key to create the map on
 		*  @return {Dictionary} The objects mapped by property
 		*/
-		protected function dataMap($results, $key='id')
+		static public function dataMap($results, $key='id')
 		{
-			$map = array();
+			$map = [];
 			
 			if ($results)
 			{
 				// Create a map of all the users by id
-				foreach($results as $u)
+				foreach($results as $object)
 				{
-					if (!in_array($u->id, $map))
-						$map[$u->id] = $u;
+					if (is_object($object))
+					{
+						if (!isset($map[$object->$key]))
+						{
+							$map[$object->$key] = $object;
+						}
+					}
+					else if (is_array($object))
+					{
+						if (isset($object[$key]) && !isset($map[$object[$key]]))
+						{
+							$map[$object[$key]] = $object;
+						}
+					}	
 				}
 			}
 			return $map;
@@ -472,7 +484,7 @@ namespace Canteen\Services
 		public $privilege = Privilege::GUEST;
 
 		/** The collection of methods that can call this function */
-		public $internals = array();
+		public $internals = [];
 
 		/**
 		*  Create the control
@@ -484,7 +496,7 @@ namespace Canteen\Services
 		{
 			$this->name = $name;
 
-			if (!is_array($controls)) $controls = array($controls);
+			if (!is_array($controls)) $controls = [$controls];
 
 			foreach($controls as $c)
 			{

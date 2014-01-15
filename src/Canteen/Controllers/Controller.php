@@ -49,7 +49,7 @@ namespace Canteen\Controllers
 		{
 			$this->page = $page;
 			$this->dynamicUri = $dynamicUri;
-			$this->data = array();
+			$this->data = [];
 			
 			$this->process();
 		}

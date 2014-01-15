@@ -30,7 +30,7 @@ namespace Canteen\Controllers
 				return;
 			}
 			
-			$data = array();
+			$data = [];
 			
 			if ($this->dynamicUri)
 			{
@@ -57,10 +57,10 @@ namespace Canteen\Controllers
 					
 					$result = $this->service('user')->updateUser(
 						$user->id, 
-						array(
+						[
 							'password' => $hash,
 							'forgotString' => ''
-						)
+						]
 					);
 					
 					if (!$result)

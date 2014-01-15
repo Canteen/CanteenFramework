@@ -150,7 +150,7 @@ namespace Canteen\Forms
 
 			if ($this->ifError) return;
 
-			$properties = array();
+			$properties = [];
 
 			// Get the object variables
 			$fields = $this->item->fieldsByName;
@@ -208,7 +208,7 @@ namespace Canteen\Forms
 
 			if ($this->ifError) return;
 
-			$properties = array();
+			$properties = [];
 
 			foreach($this->item->fieldsByName as $name=>$field)
 			{
