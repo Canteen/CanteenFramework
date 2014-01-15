@@ -169,7 +169,7 @@ namespace Canteen\Services
 					else
 					{
 						// pass to the parent
-						return parent::__call($method, $args);
+						throw new ObjectServiceError(ObjectServiceError::INVALID_METHOD, $method);
 					}
 					break;
 				}
