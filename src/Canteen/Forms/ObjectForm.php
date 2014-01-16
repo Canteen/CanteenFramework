@@ -116,7 +116,7 @@ namespace Canteen\Forms
 			// Always redirect if the update was successful
 			if ($this->ifError) return;
 			
-			if ($this->redirect && $this->removeRedirect)
+			if ($this->redirect !== null && $this->removeRedirect)
 			{
 				redirect($this->redirect);
 			}
@@ -183,7 +183,7 @@ namespace Canteen\Forms
 			// to a page of choice or just stay here and report the success
 			if ($this->ifError) return;
 
-			if ($this->redirect && $this->updateRedirect)
+			if ($this->redirect !== null && $this->updateRedirect)
 			{
 				redirect($this->redirect);
 			}
@@ -235,13 +235,13 @@ namespace Canteen\Forms
 
 			$this->trigger(new ObjectFormEvent(ObjectFormEvent::ADDED, $this->getObject($id)));
 
-			if ($this->redirect && $this->addRedirect)
+			if ($this->redirect !== null && $this->addRedirect)
 			{
 				redirect($this->redirect);
 			}
 			else
 			{
-				$this->success('Added ' . $ths->item->itemName.' successfully');
+				$this->success('Added ' . $this->item->itemName.' successfully');
 			}
 		}
 
