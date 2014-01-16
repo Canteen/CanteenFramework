@@ -6,60 +6,97 @@
 namespace Canteen\Controllers
 {
 	use Canteen\Authorization\Privilege;
+	use Canteen\Events\ObjectControllerEvent;
 	
 	/** 
 	*  Controller to manage the user management form.
 	*  Located in the namespace __Canteen\Controllers__.
 	*  
 	*  @class AdminUsersController
-	*  @extends AdminController
+	*  @extends AdminObjectController
 	*/
-	class AdminUsersController extends AdminController
+	class AdminUsersController extends AdminObjectController
 	{
 		/**
-		*  Process the controller and build the view
-		*  @method process
+		*  The constructor
 		*/
-		public function process()
-		{			
-			$user = null;
-			$userId = (int)ifsetor($_POST['userId']);
-			
-			if (!empty($userId))
+		public function __construct()
+		{
+			parent::__construct(
+				$this->service('user')->item,
+				'Canteen\Forms\UserUpdate',
+				'fullname'
+			);
+
+			// These fields aren't editable
+			array_push($this->ignoreFields, 
+				'frozen', 
+				'login', 
+				'forgotString', 
+				'attempts'
+			);
+
+			array_push($this->optionalFields,
+				'password'
+			);
+
+			$this->on(ObjectControllerEvent::ADD_ELEMENT, [$this, 'onElementAdd'])
+				->on(ObjectControllerEvent::ADDED_ELEMENT, [$this, 'onElementAdded']);
+		}
+
+
+		/**
+		*  Handle specific elements
+		*  @method onElementAdded
+		*  @param {ObjectControllerEvent} event
+		*/
+		public function onElementAdded(ObjectControllerEvent $event)
+		{
+			if ($event->element->name == 'password')
 			{
-				$user = $this->service('user')->getUser($userId);
-			}	
-			
-			$data = [
-				'formLabel' => $user ? 'Update an Existing User' : 'Add a New User',
-				'isActive' => 'checked',
-				'users' => '',
-				'hasUser' => false
-			];
-			
-			if ($user)
-			{
-				$data['privileges'] = $this->getPrivileges($user->privilege);
-				$data['id'] = $user->id;
-				$data['firstName'] = $user->firstName;
-				$data['lastName'] = $user->lastName;
-				$data['username'] = $user->username;
-				$data['email'] = $user->email;
-				$data['isActive'] = $user->isActive ? 'checked' : '';
-				$data['hasUser'] = true;
+				$repeat = new ObjectFormElement(
+					'repeatPassword',
+					'',
+					$event->element->tabIndex + 1
+				);
+				$repeat->type = 'password';
+				$repeat->template = 'ObjectText';
+
+				$this->addElement($repeat);
 			}
-			else
+		}
+
+		/**
+		*  Handle specific elements
+		*  @method onElementAdd
+		*  @param {ObjectControllerEvent} event
+		*/
+		public function onElementAdd(ObjectControllerEvent $event)
+		{
+			$element = $event->element;
+
+			if ($element->name == 'password')
 			{
-				$data['privileges'] = $this->getPrivileges();
-				$data['users'] = $this->getUsers();
+				$element->type = 'password';
+				$element->value = ''; // don't output hash
 			}
-			
-			// Update the page with the template
-			$this->addTemplate('AdminUsers', $data);
+			// Make privilege a selection list, no an input
+			else if ($element->name == 'privilege')
+			{
+				$element->template = 'ObjectSelect';
+				$element->options = $this->getPrivileges($element->value);
+			}
+			else if ($element->name == 'isActive')
+			{
+				$element->description = 'User can login';
+			}
 		}
 		
 		/**
 		*  Get the form select of privileges
+		*  @method getPrivileges
+		*  @private
+		*  @param {int} [privilege=0] The current user's privileger
 		*/
 		private function getPrivileges($privilege = 0)
 		{
@@ -73,22 +110,6 @@ namespace Canteen\Controllers
 				{
 					$option->selected = 'selected';
 				}
-				$options .= (string)$option;
-			}
-			return $options;
-		}
-		
-		/**
-		*  Get the users as options
-		*  @param Ignore the user with this id
-		*/
-		private function getUsers()
-		{
-			$users = $this->service('user')->getUsers();
-			$options = '';
-			foreach($users as $user)
-			{
-				$option = html('option value='.$user->id, $user->fullname);
 				$options .= (string)$option;
 			}
 			return $options;

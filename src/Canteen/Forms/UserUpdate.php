@@ -93,17 +93,21 @@ namespace Canteen\Forms
 			$password = ifsetor($_POST['password']);
 			$repeatPassword = ifsetor($_POST['repeatPassword']);
 
+			$this->doPassword = false;
+
 			if ($password)
 			{
-				$this->doPassword = true;
-				
 				if ($password != $repeatPassword)
 				{
 					$this->error('Password and repeat password don\'t match');
 				}
-				if (strlen($password) < self::MIN_PASSWORD_LENGTH)
+				else if (strlen($password) < self::MIN_PASSWORD_LENGTH)
 				{
 					$this->error('Password much be six ('.self::MIN_PASSWORD_LENGTH.') or more characters long');
+				}
+				else
+				{
+					$this->doPassword = true;
 				}
 			}
 		}
@@ -117,39 +121,47 @@ namespace Canteen\Forms
 		{
 			$isSelf = $event->object->id == USER_ID;
 
-			$password = ifsetor($_POST['password']);
-
 			if ($this->doPassword)
 			{
+				$password = ifsetor($_POST['password']);
+
 				if (PasswordUtils::validate($password, $event->object->password))
 				{
 					$this->error('Already the user\'s password');
 				}
 
-				// The user is trying to update their own password
-				if ($isSelf && $this->user->updatePassword($password))
+				if ($isSelf)
 				{
-					$this->success('Updated your password');
-				}
-				else
-				{
-					$_POST['password'] = PasswordUtils::hash($password);
+					$hash = $this->user->updatePassword($password);
+
+					if (!$hash)
+					{
+						$this->error('Unable to update password');
+					}
+					else
+					{
+						$_POST['password'] = $hash;
+					}
 				}
 			}
+			else
+			{
+				unset($_POST['password'], $_POST['repeatPassword']);
+			}			
 
 			// User is trying to deactive themselves, we shouldn't do this!
 			if ($isSelf)
 			{
 				// Only other admins can deactivate other admins
 				// can't deactivate yourseld
-				if ($event->object->isActive != $isActive)
+				if ($event->object->isActive != $_POST['isActive'])
 				{
 					$this->error('You cannot deactivate yourself');
 				}
 
 				// User is trying to change their privilege
 				// only another administrator can do this
-				if ($event->object->privilege != $privilege)
+				if ($event->object->privilege != $_POST['privilege'])
 				{
 					$this->error('You cannot change your privilege');
 				}

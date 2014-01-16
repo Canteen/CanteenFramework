@@ -28,34 +28,30 @@ namespace Canteen\Forms
 			
 			if (!PasswordUtils::validate($oldPassword, USER_HASH))
 			{
-				$this->error("This is not your current password");
+				$this->error('This is not your current password');
 			}
 			if ($oldPassword == $newPassword)
 			{
-				$this->error("This is your current password");
+				$this->error('This is your current password');
 			}
 			if ($newPassword != $repeatPassword)
 			{
-				$this->error("New password and repeat password don't match");
+				$this->error('New password and repeat password don\'t match');
 			}
 			if (strlen($newPassword) < 6)
 			{
-				$this->error("Password much be six (6) or more characters long");
-			}
-			if (!$this->verify($newPassword, Validate::ALPHA_NUMERIC, true))
-			{
-				$this->error("Password can only contain alpha numeric characters");
+				$this->error('Password much be six (6) or more characters long');
 			}
 			
 			if (!$this->ifError)
 			{
-				if ( !$this->user->updatePassword($newPassword))
+				if (!$this->user->updatePassword($newPassword))
 				{
-					$this->error("There was a problem updating your password. Try again.");
+					$this->error('There was a problem updating your password. Try again.');
 				}
 				else
 				{
-					$this->success("Password updated!");
+					$this->success('Password updated!');
 				}
 			}
 		}

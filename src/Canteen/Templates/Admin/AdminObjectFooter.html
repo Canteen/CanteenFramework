@@ -1,0 +1,29 @@
+			<div class="formButtons">
+				{{if:!hasObject}}
+					<button type="submit" value="add" class="submit" name="action" id="{{objectType}}_add">
+						<span class="buttonIcon icon-add"></span>
+						<span class="buttonLabel">Add</span>
+					</button>
+				{{/if:!hasObject}}
+				{{if:hasObject}}
+					<button type="submit" value="update" class="submit" name="action" id="{{objectType}}_update">
+						<span class="buttonIcon icon-edit"></span>
+						<span class="buttonLabel">Update</span>
+					</button>
+					<a href="{{cancelUri}}" class="button" data-refresh="soft">
+						<span class="buttonIcon icon-cancel"></span>
+						<span class="buttonLabel">Cancel</span>
+					</a>
+					<button type="submit" value="remove" class="submit confirm" name="action" id="{{objectType}}_remove">
+						<span class="buttonIcon icon-remove"></span>
+						<span class="buttonLabel">Delete</span>
+					</button>
+				{{/if:hasObject}}
+				<input type="hidden" name="refresh" value="true">
+				<input type="hidden" name="{{defaultName}}" value="{{objectDefaultValue}}">
+				<input type="hidden" name="form" value="{{formName}}">
+				<input type="hidden" name="formSession" value="{{formSession}}">
+			</div>
+		</fieldset>
+	</form>
+</div>

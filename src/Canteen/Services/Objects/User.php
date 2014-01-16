@@ -28,13 +28,13 @@ namespace Canteen\Services\Objects
 		*  The privilege 
 		*  @property {int} privilege
 		*/
-		public $privilege;
+		public $privilege = 1;
 		
 		/** 
 		*  If the user is an active user 
 		*  @property {Boolean} isActive
 		*/
-		public $isActive;
+		public $isActive = true;
 		
 		/** 
 		*  The username 

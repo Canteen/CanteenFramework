@@ -1,0 +1,27 @@
+<h1><span class="icon-{{objectType}}"></span>{{pageTitle}}</h1>
+
+{{if:!hasObject}}
+	{{if:objects}}
+	<div class="formContainer {{objectType}}UpdateSelect selectForm">
+		<form action="{{fullPath}}{{queryString}}" method="post" id="{{objectType}}UpdateSelect">
+			<fieldset>
+				<legend class="hidden">Edit {{objectLabel}}</legend>
+				<select name="{{defaultName}}" require>
+					<option value="0">Select a {{objectLabel}}</option>
+					{{objects}}
+				</select>
+				<button type="submit" value="edit" id="editButton" class="submit">
+					<span class="buttonIcon icon-edit"></span>
+					<span class="buttonLabel">Edit</span>
+				</button>
+			</fieldset>
+		</form>
+	</div>
+	{{/if:objects}}
+{{/if:!hasObject}}
+
+<div class="formContainer {{objectType}}Update">
+	<form action="{{fullPath}}{{queryString}}" method="post" enctype="multipart/form-data" id="{{objectType}}Update">
+		<fieldset>
+			<legend>{{formLabel}} {{objectLabel}}</legend>
+			{{formFeedback}}

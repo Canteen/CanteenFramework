@@ -77,7 +77,7 @@ namespace Canteen\Services
 			// Specific boolean selector
 			if ($type == Validate::BOOLEAN)
 			{
-				$this->select = 'IF(`'.$id.'` > 0, 1, null) as `'.$this->name.'`';
+				$this->select = 'IF(`'.$id.'` = 1, 1, 0) as `'.$this->name.'`';
 			}
 			// The if the name is the same as id, use that!
 			else if ($id == $this->name)

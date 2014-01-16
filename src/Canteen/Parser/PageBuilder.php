@@ -277,7 +277,9 @@ namespace Canteen\Parser
 			if ($controllerName = $this->site->getController($page->uri))
 			{
 				if ($profiler) $profiler->start('Page Controller');
-				$controller = new $controllerName($page, $page->dynamicUri);
+				$controller = new $controllerName();
+				$controller->setPage($page);
+				$controller->process();
 				$page = $controller->getPage();
 				$this->setPageTitle($page);
 				

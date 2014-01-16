@@ -435,7 +435,7 @@ namespace Canteen\Authorization
 		*  Update the user password
 		*  @method updatePassword
 		*  @param {String} password The plain text password (not hashed)
-		*  @return {Boolean} If password was set successfully
+		*  @return {String|Boolean} If password was set successfully return hash else false
 		*/
 		public function updatePassword($password)
 		{
@@ -448,7 +448,7 @@ namespace Canteen\Authorization
 			{
 				$_SESSION['password'] = $hash;
 				$this->updateCookie(USER_ID);
-				return true;
+				return $hash;
 			}
 			else
 			{

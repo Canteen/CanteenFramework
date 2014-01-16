@@ -27,7 +27,7 @@ namespace Canteen\Events
 		*  @static
 		*/
 		const BEFORE_REMOVE = 'beforeRemove';
-
+		
 		/**
 		*  Fired after an object is successfully removed can be used to do 
 		*  any additional removals on additional tables.

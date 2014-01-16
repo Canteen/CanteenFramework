@@ -40,19 +40,7 @@ namespace Canteen\Controllers
 		*  @property {Dictionary} data
 		*  @protected
 		*/
-		protected $data;
-		
-		/**
-		*  Create the controller and attach a page
-		*/
-		public function __construct(Page $page, $dynamicUri='')
-		{
-			$this->page = $page;
-			$this->dynamicUri = $dynamicUri;
-			$this->data = [];
-			
-			$this->process();
-		}
+		protected $data = [];
 		
 		/**
 		*  Process the controller, all controllers should extend this function
@@ -61,6 +49,27 @@ namespace Canteen\Controllers
 		public function process()
 		{
 			throw new CanteenError(CanteenError::OVERRIDE_CONTROLLER_PROCESS);
+		}
+
+		/**
+		*  Set the current page
+		*  @method setPage
+		*  @param {Page} page The page to build with this Controller
+		*/
+		public function setPage(Page $page)
+		{
+			$this->page = $page;
+			$this->dynamicUri = $page->dynamicUri;
+		}
+
+		/**
+		*  Get the current page object
+		*  @method getPage
+		*  @return {Page} The updated page object
+		*/
+		public function getPage()
+		{
+			return $this->page;
 		}
 		
 		/**
@@ -108,16 +117,6 @@ namespace Canteen\Controllers
 			{
 				$this->data[$name] = $value;
 			}
-		}
-		
-		/**
-		*  Get the current page object
-		*  @method getPage
-		*  @return {Page} The updated page object
-		*/
-		public function getPage()
-		{
-			return $this->page;
 		}
 	}
 }

@@ -57,16 +57,16 @@ namespace Canteen\Services
 				[
 					$this->field('user_id', Validate::NUMERIC, 'id')
 						->setDefault(),
-					$this->field('is_active', Validate::BOOLEAN)
-						->setIndex(),
+					$this->field('first_name', Validate::NAMES),
+					$this->field('last_name', Validate::NAMES),
 					$this->field('username', Validate::ALPHA)
 						->setIndex(),
 					$this->field('email', Validate::EMAIL)
 						->setIndex(),
 					$this->field('password', Validate::URI),
-					$this->field('first_name', Validate::NAMES),
-					$this->field('last_name', Validate::NAMES),
 					$this->field('privilege', Validate::NUMERIC),
+					$this->field('is_active', Validate::BOOLEAN)
+						->setIndex(),
 					$this->field('attempts', Validate::NUMERIC),
 					$this->field('frozen', Validate::MYSQL_DATE),
 					$this->field('login', Validate::MYSQL_DATE),
