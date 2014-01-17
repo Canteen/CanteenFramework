@@ -184,14 +184,25 @@ namespace Canteen\Services
 		}
 
 		/**
-		*  Get a current page by the URI stub
+		*  Get a current page by ID
 		*  @method getPage
-		*  @param {String} uri Page's URI stub or collection of URIs
+		*  @param {int|Array} id Page's ID
 		*  @return {Page|Array} The collection of Page objects or a single Page
 		*/
 		public function getPage($id)
 		{
 			return $this->call($id);
+		}
+
+		/**
+		*  Get a current page by the URI stub
+		*  @method getPageByUri
+		*  @param {String|Array} uri Page's URI stub or collection of URIs
+		*  @return {Page|Array} The collection of Page objects or a single Page
+		*/
+		public function getPageByUri($uri)
+		{
+			return $this->call($uri);
 		}
 
 		/**

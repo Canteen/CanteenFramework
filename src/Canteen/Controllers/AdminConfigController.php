@@ -47,6 +47,7 @@ namespace Canteen\Controllers
 				$config->isPage = ($config->type == 'page');
 				$config->isBool = ($config->type == 'boolean');
 				$config->isNormal = !$config->isPage && !$config->isBool;
+				$config->label = StringUtils::propertyToReadable($config->name);
 				
 				// Disable protected properties
 				if ($config->isPage)

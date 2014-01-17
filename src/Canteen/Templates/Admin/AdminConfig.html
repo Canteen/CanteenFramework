@@ -5,7 +5,7 @@
 	{{for:configs}}
 	<form action="{{fullPath}}{{queryString}}" method="post">
 		<fieldset class="clearfix formRow">
-			<label for="configValue{{id}}">{{name}}</label>
+			<label for="configValue{{id}}">{{label}}</label>
 			{{if:isPage}}
 				<select id="configValue{{id}}" name="value" class="required">
 					{{value}}
