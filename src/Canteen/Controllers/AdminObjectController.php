@@ -112,6 +112,7 @@ namespace Canteen\Controllers
 		{
 			$this->_ignoreFields = array_merge($this->_ignoreFields, func_get_args());
 		}
+		
 		/**
 		*  Don't add the required class to these fields
 		*  @method optionalFields
