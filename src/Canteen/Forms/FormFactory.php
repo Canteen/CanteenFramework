@@ -108,7 +108,7 @@ namespace Canteen\Forms
 				throw new CanteenError(CanteenError::INVALID_FORM, $formClass);
 			}
 			
-			if (!in_array('Canteen\Forms\FormBase', class_parents($formClass)))
+			if (!in_array('Canteen\Forms\Form', class_parents($formClass)))
 			{
 				throw new CanteenError(CanteenError::FORM_INHERITANCE, $formClass);
 			}

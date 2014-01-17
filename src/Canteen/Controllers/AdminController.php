@@ -100,13 +100,16 @@ namespace Canteen\Controllers
 				}
 			}
 			
-			$data = [
-				'adminNavCustom' => count($custom) ? (string)new SimpleList($custom, 'class=custom') : false,
-				'adminNav' => (string)new SimpleList($builtIn, 'class=builtIn'),
-				'adminContent' => $this->parse($this->page->content, $this->data)
-			];
-			
-			$this->page->content = $this->template('Admin', $data); 
+			$adminNavCustom = count($custom) ? new SimpleList($custom, 'class=custom') : false;
+
+			$this->page->content = $this->template(
+				'Admin', 
+				[
+					'adminNavCustom' => $adminNavCustom,
+					'adminNav' => new SimpleList($builtIn, 'class=builtIn'),
+					'adminContent' => $this->parse($this->page->content, $this->data)
+				]
+			); 
 		}
 	}
 }

@@ -40,7 +40,7 @@ namespace Canteen\Services
 			$this->restrict(
 				[
 					'addConfig' => Privilege::ADMINISTRATOR,
-					'setup' => 'Canteen\Forms\Installer',
+					'setup' => 'Canteen\Forms\InstallerForm',
 					'updateValue' => 'Canteen\Site',
 					'registerSettings' => 'Canteen\Site',
 					'updateConfig' => Privilege::ADMINISTRATOR,

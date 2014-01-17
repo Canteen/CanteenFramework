@@ -11,10 +11,10 @@ namespace Canteen\Forms
 	
 	/**
 	*  Update or add a user.  Located in the namespace __Canteen\Forms__.
-	*  @class PageUpdate
+	*  @class PageForm
 	*  @extends ObjectForm
 	*/
-	class PageUpdate extends ObjectForm
+	class PageForm extends ObjectForm
 	{
 		/**
 		*  Constructor

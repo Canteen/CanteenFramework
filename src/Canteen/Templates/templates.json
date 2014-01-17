@@ -9,6 +9,7 @@
 	"Admin/AdminConfig.html",
 	"Admin/AdminObjectHeader.html",
 	"Admin/AdminObjectFooter.html",
+	"Admin/Elements/ObjectNotice.html",
 	"Admin/Elements/ObjectSelect.html",
 	"Admin/Elements/ObjectCheckbox.html",
 	"Admin/Elements/ObjectText.html",

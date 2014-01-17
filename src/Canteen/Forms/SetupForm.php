@@ -11,10 +11,10 @@ namespace Canteen\Forms
 	/**
 	*  Handle the necessary database and deployment setup.
 	*  Located in the namespace __Canteen\Forms__.
-	*  @class UserUpdate
-	*  @extends FormBase
+	*  @class SetupForm
+	*  @extends Form
 	*/
-	class Setup extends FormBase
+	class SetupForm extends Form
 	{
 		public function __construct()
 		{			

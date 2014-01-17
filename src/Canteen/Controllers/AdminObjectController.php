@@ -42,16 +42,16 @@ namespace Canteen\Controllers
 		/**
 		*  The collection of field names which are optional to input
 		*  @property {Array} optionalFields
-		*  @protected
+		*  @private
 		*/
-		protected $optionalFields = [];
+		private $_optionalFields = [];
 
 		/**
 		*  The collection of field names which we should ignore render for
 		*  @property {Array} ignoreFields
-		*  @protected
+		*  @private
 		*/
-		protected $ignoreFields = [];
+		private $_ignoreFields = [];
 
 		/**
 		*  The method name on the item service to get the object by id
@@ -68,6 +68,29 @@ namespace Canteen\Controllers
 		protected $getObjects;
 
 		/**
+		*  The collection of all object, this can be used to eliminate an additional
+		*  database request for all the pages. 
+		*  @property {Array} allObjects
+		*  @protected
+		*/
+		protected $allObjects;
+
+		/**
+		*  The selected object
+		*  @property {Object} object
+		*  @protected
+		*/
+		protected $object;
+
+		/**
+		*  If the delete button is enabled
+		*  @property {Boolean} removeEnabled
+		*  @protected
+		*  @default true
+		*/
+		protected $removeEnabled = true;
+
+		/**
 		*  Create the controller and attach a page, item
 		*/
 		public function __construct(ObjectServiceItem $item, $formName, $titleName='title')
@@ -75,9 +98,28 @@ namespace Canteen\Controllers
 			$this->item = $item;
 			$this->formName = $formName;
 			$this->titleName = $titleName;
-			$this->ignoreFields[] = $this->item->defaultField->name;
 			$this->getObject =  'get'.$this->item->itemName;
 			$this->getObjects = 'get'.$this->item->itemsName;
+			$this->ignoreFields($this->item->defaultField->name);
+		}
+
+		/**
+		*  Ignore field names 
+		*  @method ignoreFields
+		*  @param {String} fields* The field name as separate arguments
+		*/
+		public function ignoreFields($fields)
+		{
+			$this->_ignoreFields = array_merge($this->_ignoreFields, func_get_args());
+		}
+		/**
+		*  Don't add the required class to these fields
+		*  @method optionalFields
+		*  @param {String} fields* The field name as separate arguments
+		*/
+		public function optionalFields($fields)
+		{
+			$this->_optionalFields = array_merge($this->_optionalFields, func_get_args());
 		}
 
 		/**
@@ -103,44 +145,56 @@ namespace Canteen\Controllers
 				$id = $_POST[$defaultName];
 			}
 
-			$object = $id ? $this->item->service->{$this->getObject}($id) : null;
+			$this->object = $id ? $this->item->service->{$this->getObject}($id) : null;
+
+			$hasObject = (bool)$this->object;
+
+			if (!$hasObject)
+			{
+				$this->object = new $this->item->className;
+
+				if (!$this->allObjects)
+				{
+					$this->allObjects = $this->item->service->{$this->getObjects}();
+				}	
+			}
+
+			// Star the rendering process
+			$this->trigger(new Event(Event::START));
+
+			// The options for all objects
+			$objects = '';
+
+			// Get the objects as select form options
+			if ($this->allObjects)
+			{
+				foreach($this->allObjects as $o)
+				{
+					$objects .= html('option value="'.$o->$defaultName.'"', $o->{$this->titleName});
+				}
+			}	
 
 			// Settup required preoperties
 			$data = [
-				'hasObject' => (bool)$object,
+				'hasObject' => $hasObject,
 				'formName' => $this->formName,
-				'formLabel' => (bool)$object ? 'Edit' : 'Add',
+				'formLabel' => $hasObject ? 'Edit' : 'Add',
 				'defaultName' => $defaultName,
-				'objectDefaultValue' => $object ? $object->$defaultName : '',
+				'objectDefaultValue' => $hasObject ? $this->object->$defaultName : '',
 				'objectType' => strtolower($this->item->itemName),
 				'objectLabel' => $this->item->itemName,
 				'cancelUri' => $this->page->uri,
-				'objects' => '',
-				'object' => $object
+				'removeEnabled' => $this->removeEnabled,
+				'cancelRefresh' => !$this->dynamicUri ? 'data-refresh="soft"' : '',
+				'objects' => $objects,
+				'object' => $this->object,
+				'pageId' => $this->page->pageId
 			];
-
-			if (!$object)
-			{
-				$objects = $this->item->service->{$this->getObjects}();
-
-				if ($objects)
-				{
-					$result = '';
-					foreach($objects as $o)
-					{
-						$result .= html('option value="'.$o->$defaultName.'"', $o->{$this->titleName});
-					}
-					$data['objects'] = $result;
-				}		
-			}
 
 			// Add the footer of the form, this include the select form
 			$this->addTemplate('AdminObjectHeader', $data);
 
-			// We should create an empty object to use 
-			if (!$object) $object = new $this->item->className;
-
-			$this->trigger(new Event(Event::BEING_ADDING));
+			$this->trigger(new Event(Event::START_ELEMENTS));
 
 			$tabIndex = 1;
 
@@ -148,18 +202,18 @@ namespace Canteen\Controllers
 			foreach($this->item->fieldsByName as $name=>$field)
 			{
 				// Ignore the id
-				if (in_array($name, $this->ignoreFields)) continue;
+				if (in_array($name, $this->_ignoreFields)) continue;
 
 				// Create a new form element
 				$element = new ObjectFormElement(
 					$name, 
-					$object->$name,
+					$this->object->$name,
 					$tabIndex++
 				);
 
 				$element->objectType = $data['objectType'];
 
-				if (!in_array($name, $this->optionalFields))
+				if (!in_array($name, $this->_optionalFields))
 				{
 					$element->classes .= 'required ';
 				}
@@ -211,10 +265,25 @@ namespace Canteen\Controllers
 				$this->trigger(new Event(Event::ADDED_ELEMENT, $element));
 			}
 
-			$this->trigger(new Event(Event::COMPLETED));
+			$this->trigger(new Event(Event::DONE_ELEMENTS));
 
 			// Include the footer and buttons
 			$this->addTemplate('AdminObjectFooter', $data);
+
+			$this->trigger(new Event(Event::COMPLETED));
+		}
+
+		/**
+		*  Add a notice to the buffer output
+		*  @method addNotice
+		*  @protected
+		*  @param {String} message The message to output
+		*/
+		protected function addNotice($message)
+		{
+			$this->addTemplate('ObjectNotice', [
+				'message' => $message
+			]);	
 		}
 
 		/**
@@ -226,6 +295,7 @@ namespace Canteen\Controllers
 		protected function addElement(ObjectFormElement $element)
 		{
 			// Render the template
+			$element->objectType = strtolower($this->item->itemName);
 			$this->addTemplate($element->template, $element);
 		}
 	}

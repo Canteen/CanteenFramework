@@ -10,10 +10,10 @@ namespace Canteen\Forms
 	
 	/**
 	*  Form for the user to handle their password update.  Located in the namespace __Canteen\Forms__.
-	*  @class PasswordUpdate
-	*  @extends FormBase
+	*  @class PasswordForm
+	*  @extends Form
 	*/
-	class PasswordUpdate extends FormBase
+	class PasswordForm extends Form
 	{
 		/**
 		*  Process the form and handle the $_POST data.

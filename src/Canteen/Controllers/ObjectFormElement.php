@@ -66,6 +66,18 @@ namespace Canteen\Controllers
 		public $tabIndex = 0;
 
 		/**
+		*  The object type
+		*  @property {String} objectType
+		*/
+		public $objectType = '';
+
+		/**
+		*  Additional attributes to element
+		*  @property {String} attributes
+		*/
+		public $attributes = '';
+
+		/**
 		*  The constructor
 		*
 		*/

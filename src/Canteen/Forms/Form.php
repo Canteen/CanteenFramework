@@ -15,10 +15,10 @@ namespace Canteen\Forms
 	/**
 	*  All forms inherit this class which allows for some error logging
 	*  as well ass access to the CanteenBase methods.  Located in the namespace __Canteen\Forms__.
-	*  @class FormBase
+	*  @class Form
 	*  @extends CanteenBase
 	*/
-	abstract class FormBase extends CanteenBase
+	abstract class Form extends CanteenBase
 	{		
 		/**
 		*  You can run to make sure a process requires a particular privilege

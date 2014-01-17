@@ -10,10 +10,10 @@ namespace Canteen\Forms
 	
 	/**
 	*  The form to handle configuration updating or adding.  Located in the namespace __Canteen\Forms__.
-	*  @class ConfigUpdate
+	*  @class Config
 	*  @extends ObjectForm
 	*/
-	class ConfigUpdate extends ObjectForm
+	class ConfigForm extends ObjectForm
 	{
 		/**
 		*  Process the form and handle the $_POST data.

@@ -9,10 +9,10 @@ namespace Canteen\Forms
 	
 	/**
 	*  Update the database to the latest version.  Located in the namespace __Canteen\Forms__.
-	*  @class DatabaseUpdate
-	*  @extends FormBase
+	*  @class DatabaseForm
+	*  @extends Form
 	*/
-	class DatabaseUpdate extends FormBase
+	class DatabaseForm extends Form
 	{	
 		/**
 		*  Process the form and handle the $_POST data.

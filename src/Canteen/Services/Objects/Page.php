@@ -88,7 +88,7 @@ namespace Canteen\Services\Objects
 		*  Boolean if the page should be cached 
 		*  @property {Boolean} cache
 		*/
-		public $cache;
+		public $cache = true;
 		
 		/** 
 		*  The minimum privilege required to view this page 

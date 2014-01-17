@@ -12,10 +12,10 @@ namespace Canteen\Forms
 	
 	/**
 	*  Update or add a user.  Located in the namespace __Canteen\Forms__.
-	*  @class UserUpdate
+	*  @class UserForm
 	*  @extends ObjectForm
 	*/
-	class UserUpdate extends ObjectForm
+	class UserForm extends ObjectForm
 	{
 		/**
 		*  The minimum characters needed for a password

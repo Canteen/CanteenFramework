@@ -5,19 +5,19 @@
 */
 namespace Canteen\Forms
 {
-	use Canteen\Forms\FormBase;
+	use Canteen\Forms\Form;
 	use Canteen\Events\ObjectFormEvent;
 	use Canteen\Services\ObjectServiceItem;
 
 	/**
 	*  Generalized form for processing ObjectServiceItem objects
 	*  @class ObjectForm
-	*  @extends FormBase
+	*  @extends Form
 	*  @constructor
 	*  @param {ObjectServiceItem} item The reference to a valid service object
 	*  @param {String} redirect The redirect URI on success
 	*/
-	abstract class ObjectForm extends FormBase
+	abstract class ObjectForm extends Form
 	{
 		/**
 		*  The object service item reference

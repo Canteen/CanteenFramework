@@ -39,7 +39,16 @@ namespace Canteen\Events
 		const ADDED_ELEMENT = 'addedElement';
 
 		/**
-		*  When all of the fields have been added, before the closing
+		*  Page rendering has begun
+		*  @event start
+		*  @property {String} START
+		*  @final
+		*  @static
+		*/
+		const START = 'start';
+
+		/**
+		*  When all of the fields and footer have been added
 		*  @event completed
 		*  @property {String} COMPLETED
 		*  @final
@@ -49,12 +58,21 @@ namespace Canteen\Events
 
 		/**
 		*  Before element are being added
-		*  @event beginAdding
-		*  @property {String} BEING_ADDING
+		*  @event startElements
+		*  @property {String} START_ELEMENTS
 		*  @final
 		*  @static
 		*/
-		const BEING_ADDING = 'beginAdding';
+		const START_ELEMENTS = 'startElements';
+
+		/**
+		*  All the dynamic elements have been added
+		*  @event doneElements
+		*  @property {String} DONE_ELEMENTS
+		*  @final
+		*  @static
+		*/
+		const DONE_ELEMENTS = 'doneElements';
 
 		/**
 		*  Constructor

@@ -28,24 +28,24 @@ namespace Canteen\Services
 				[
 					$this->field('page_id', Validate::NUMERIC, 'id')
 						->setDefault(),
+					$this->field('title', Validate::FULL_TEXT),
 					$this->field('uri', Validate::URI)
 						->setIndex(),
-					$this->field('title', Validate::FULL_TEXT),
-					$this->field('description'),
 					$this->field('keywords', Validate::FULL_TEXT),
-					$this->field('redirect_id', Validate::NUMERIC),
+					$this->field('description'),
+					$this->field('privilege', Validate::NUMERIC),
+					$this->field('is_dynamic', Validate::BOOLEAN),
+					$this->field('cache', Validate::BOOLEAN),
 					$this->field('parent_id', Validate::NUMERIC)
 						->setIndex()
 						->setSelect('IF(`parent_id` is NULL || `parent_id`=0, `page_id`, `parent_id`) as `parentId`'),
-					$this->field('is_dynamic', Validate::BOOLEAN),
-					$this->field('privilege', Validate::NUMERIC),
-					$this->field('cache', Validate::BOOLEAN)
+					$this->field('redirect_id', Validate::NUMERIC)
 				]
 			);
 
 			$form = [
 				Privilege::ADMINISTRATOR, 
-				'Canteen\Forms\PageUpdate'
+				'Canteen\Forms\PageForm'
 			];
 
 			$this->restrict(
@@ -54,8 +54,8 @@ namespace Canteen\Services
 						'Canteen\Parser\PageBuilder', 
 						'Canteen\Controllers\AdminPagesController'
 					],
-					'setup' => 'Canteen\Forms\Installer',
-					'getPageByUri' => 'Canteen\Forms\ConfigUpdate',
+					'setup' => 'Canteen\Forms\InstallerForm',
+					'getPageByUri' => 'Canteen\Forms\ConfigForm',
 					'getPagesByParentId' => 'Canteen\Controllers\AdminController',
 					'getPages' => [
 						'Canteen\Parser\PageBuilder', 

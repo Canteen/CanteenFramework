@@ -14,10 +14,10 @@ namespace Canteen\Forms
 	
 	/**
 	*  Update the database to the latest version.  Located in the namespace __Canteen\Forms__.
-	*  @class Installer
-	*  @extends FormBase
+	*  @class InstallerForm
+	*  @extends Form
 	*/
-	class Installer extends FormBase
+	class InstallerForm extends Form
 	{		
 		/**
 		*  Process the form and handle the $_POST data.

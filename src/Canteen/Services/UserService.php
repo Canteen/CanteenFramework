@@ -76,14 +76,14 @@ namespace Canteen\Services
 
 			$this->restrict(
 				[
-					'setup' => 'Canteen\Forms\Installer',
+					'setup' => 'Canteen\Forms\InstallerForm',
 					'freezeUsername' => 'Canteen\Authorization\Authorization',
 					'reportAttempt' => 'Canteen\Authorization\Authorization',
 					'createSession' => 'Canteen\Authorization\Authorization',
 					'refresh' => 'Canteen\Authorization\Authorization',
 					'checkLogin' => 'Canteen\Authorization\Authorization',
 					'checkCookieLogin' => 'Canteen\Authorization\Authorization',
-					'verifyResetPassword' => 'Canteen\Forms\ForgotPassword',
+					'verifyResetPassword' => 'Canteen\Forms\ForgotPasswordForm',
 					'checkSession' => 'Canteen\Authorization\Authorization',
 					'getUser' => Privilege::GUEST,
 					'getUserByLogin' => 'Canteen\Authorization\Authorization',

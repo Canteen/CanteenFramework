@@ -9,10 +9,10 @@ namespace Canteen\Forms
 	
 	/**
 	*  Form to login the user.  Located in the namespace __Canteen\Forms__.
-	*  @class Login
-	*  @extends FormBase
+	*  @class LoginForm
+	*  @extends Form
 	*/
-	class Login extends FormBase
+	class LoginForm extends Form
 	{	
 		/**
 		*  Process the form and handle the $_POST data.

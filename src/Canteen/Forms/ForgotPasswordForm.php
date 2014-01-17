@@ -16,10 +16,10 @@ namespace Canteen\Forms
 	*  <li>Get temporary password</li>
 	*  </ol>
 	*  Located in the namespace __Canteen\Forms__.
-	*  @class ForgotPassword
-	*  @extends FormBase
+	*  @class ForgotPasswordForm
+	*  @extends Form
 	*/
-	class ForgotPassword extends FormBase
+	class ForgotPasswordForm extends Form
 	{
 		/**
 		*  The number of seconds between reset requests

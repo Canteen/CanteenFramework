@@ -12,10 +12,10 @@ namespace Canteen\Controllers
 	*  Controller to manage the user management form.
 	*  Located in the namespace __Canteen\Controllers__.
 	*  
-	*  @class AdminUsersController
+	*  @class AdminUserController
 	*  @extends AdminObjectController
 	*/
-	class AdminUsersController extends AdminObjectController
+	class AdminUserController extends AdminObjectController
 	{
 		/**
 		*  The constructor
@@ -24,26 +24,17 @@ namespace Canteen\Controllers
 		{
 			parent::__construct(
 				$this->service('user')->item,
-				'Canteen\Forms\UserUpdate',
+				'Canteen\Forms\UserForm',
 				'fullname'
 			);
 
 			// These fields aren't editable
-			array_push($this->ignoreFields, 
-				'frozen', 
-				'login', 
-				'forgotString', 
-				'attempts'
-			);
-
-			array_push($this->optionalFields,
-				'password'
-			);
+			$this->ignoreFields('frozen', 'login', 'forgotString', 'attempts');
+			$this->optionalFields('password');
 
 			$this->on(ObjectControllerEvent::ADD_ELEMENT, [$this, 'onElementAdd'])
 				->on(ObjectControllerEvent::ADDED_ELEMENT, [$this, 'onElementAdded']);
 		}
-
 
 		/**
 		*  Handle specific elements

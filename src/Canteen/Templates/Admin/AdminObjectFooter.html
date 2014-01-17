@@ -10,14 +10,16 @@
 						<span class="buttonIcon icon-edit"></span>
 						<span class="buttonLabel">Update</span>
 					</button>
-					<a href="{{cancelUri}}" class="button" data-refresh="soft">
+					<a href="{{cancelUri}}" class="button" {{cancelRefresh}}>
 						<span class="buttonIcon icon-cancel"></span>
 						<span class="buttonLabel">Cancel</span>
 					</a>
+					{{if:removeEnabled}}
 					<button type="submit" value="remove" class="submit confirm" name="action" id="{{objectType}}_remove">
 						<span class="buttonIcon icon-remove"></span>
 						<span class="buttonLabel">Delete</span>
 					</button>
+					{{/if:removeEnabled}}
 				{{/if:hasObject}}
 				<input type="hidden" name="refresh" value="true">
 				<input type="hidden" name="{{defaultName}}" value="{{objectDefaultValue}}">

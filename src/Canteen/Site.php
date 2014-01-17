@@ -310,7 +310,7 @@ namespace Canteen
 			// Check that the settings exists
 			if (is_string($settings) && !file_exists($settings))
 			{
-				$this->_formFactory->startup('Canteen\Forms\Setup');
+				$this->_formFactory->startup('Canteen\Forms\SetupForm');
 				die($this->_parser->template('Setup',
 					[
 						'formFeedback' => $this->_formFactory->getFeedback(),
@@ -382,7 +382,7 @@ namespace Canteen
 			// If the database is connected
 			if ($this->_db && $this->_db->isConnected())
 			{
-				$this->_formFactory->startup('Canteen\Forms\Installer');
+				$this->_formFactory->startup('Canteen\Forms\InstallerForm');
 				
 				// Check for the installation process make it 
 				// easier to start Canteen for the  first time
@@ -415,7 +415,7 @@ namespace Canteen
 					$this->settings->callerPath . $this->_settings->templatePath);
 				
 				// Process database changes here
-				$this->_formFactory->startup('Canteen\Forms\DatabaseUpdate');
+				$this->_formFactory->startup('Canteen\Forms\DatabaseForm');
 				
 				// Check for database updates
 				$this->isDatabaseUpdated('dbVersion', self::DB_VERSION, __DIR__.'/Upgrades/');
@@ -442,8 +442,8 @@ namespace Canteen
 			// Set the globals
 			$this->_controllers = [];
 			$this->addController('admin', 'Canteen\Controllers\AdminController');
-			$this->addController('admin/users', 'Canteen\Controllers\AdminUsersController');
-			$this->addController('admin/pages', 'Canteen\Controllers\AdminPagesController');
+			$this->addController('admin/users', 'Canteen\Controllers\AdminUserController');
+			$this->addController('admin/pages', 'Canteen\Controllers\AdminPageController');
 			$this->addController('admin/password', 'Canteen\Controllers\AdminPasswordController');
 			$this->addController('admin/config', 'Canteen\Controllers\AdminConfigController');
 			$this->addController('forgot-password', 'Canteen\Controllers\ForgotPasswordController');
