@@ -42,16 +42,16 @@ namespace Canteen\Controllers
 		/**
 		*  The collection of field names which are optional to input
 		*  @property {Array} optionalFields
-		*  @protected
+		*  @private
 		*/
-		protected $optionalFields = [];
+		private $_optionalFields = [];
 
 		/**
 		*  The collection of field names which we should ignore render for
 		*  @property {Array} ignoreFields
-		*  @protected
+		*  @private
 		*/
-		protected $ignoreFields = [];
+		private $_ignoreFields = [];
 
 		/**
 		*  The method name on the item service to get the object by id
@@ -75,9 +75,29 @@ namespace Canteen\Controllers
 			$this->item = $item;
 			$this->formName = $formName;
 			$this->titleName = $titleName;
-			$this->ignoreFields[] = $this->item->defaultField->name;
 			$this->getObject =  'get'.$this->item->itemName;
 			$this->getObjects = 'get'.$this->item->itemsName;
+			$this->ignoreFields($this->item->defaultField->name);
+		}
+
+		/**
+		*  Ignore field names 
+		*  @method ignoreFields
+		*  @param {String} fields* The field name as separate arguments
+		*/
+		public function ignoreFields($fields)
+		{
+			$this->_ignoreFields = array_merge($this->_ignoreFields, func_get_args());
+		}
+
+		/**
+		*  Don't add the required class to these fields
+		*  @method optionalFields
+		*  @param {String} fields* The field name as separate arguments
+		*/
+		public function optionalFields($fields)
+		{
+			$this->_optionalFields = array_merge($this->_optionalFields, func_get_args());
 		}
 
 		/**
@@ -115,6 +135,7 @@ namespace Canteen\Controllers
 				'objectType' => strtolower($this->item->itemName),
 				'objectLabel' => $this->item->itemName,
 				'cancelUri' => $this->page->uri,
+				'cancelRefresh' => !$this->dynamicUri ? 'data-refresh="soft"' : '',
 				'objects' => '',
 				'object' => $object
 			];
@@ -148,7 +169,7 @@ namespace Canteen\Controllers
 			foreach($this->item->fieldsByName as $name=>$field)
 			{
 				// Ignore the id
-				if (in_array($name, $this->ignoreFields)) continue;
+				if (in_array($name, $this->_ignoreFields)) continue;
 
 				// Create a new form element
 				$element = new ObjectFormElement(
@@ -159,7 +180,7 @@ namespace Canteen\Controllers
 
 				$element->objectType = $data['objectType'];
 
-				if (!in_array($name, $this->optionalFields))
+				if (!in_array($name, $this->_optionalFields))
 				{
 					$element->classes .= 'required ';
 				}

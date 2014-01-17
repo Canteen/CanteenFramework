@@ -28,17 +28,8 @@ namespace Canteen\Controllers
 				'fullname'
 			);
 
-			// These fields aren't editable
-			array_push($this->ignoreFields, 
-				'frozen', 
-				'login', 
-				'forgotString', 
-				'attempts'
-			);
-
-			array_push($this->optionalFields,
-				'password'
-			);
+			$this->ignoreFields('frozen', 'login', 'forgotString', 'attempts');
+			$this->optionalFields('password');
 
 			$this->on(ObjectControllerEvent::ADD_ELEMENT, [$this, 'onElementAdd'])
 				->on(ObjectControllerEvent::ADDED_ELEMENT, [$this, 'onElementAdded']);
