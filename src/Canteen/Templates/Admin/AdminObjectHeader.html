@@ -6,10 +6,12 @@
 		<form action="{{fullPath}}{{queryString}}" method="post" id="{{objectType}}UpdateSelect">
 			<fieldset>
 				<legend class="hidden">Edit {{objectLabel}}</legend>
-				<select name="{{defaultName}}" require>
-					<option value="0">Select a {{objectLabel}}</option>
-					{{objects}}
-				</select>
+				<div class="formRow">
+					<select name="{{defaultName}}" require>
+						<option value="0">Select a {{objectLabel}}</option>
+						{{objects}}
+					</select>
+				</div>
 				<button type="submit" value="edit" id="editButton" class="submit">
 					<span class="buttonIcon icon-edit"></span>
 					<span class="buttonLabel">Edit</span>
