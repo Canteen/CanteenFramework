@@ -178,6 +178,8 @@ namespace Canteen\Utilities
 		*/
 		public static function asBoolean($str)
 		{
+			if (is_array($str)) return (boolean)$str;
+			
 			$str = (string)$str;
 			return (strtolower(trim(ifsetor($str, 'false'))) === 'false') ? false : (boolean)$str;
 		}
