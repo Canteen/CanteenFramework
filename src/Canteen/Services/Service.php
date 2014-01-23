@@ -164,13 +164,12 @@ namespace Canteen\Services
 		* 	$this->access();
 		* 
 		*  @method restrict
-		*  @protected
 		*  @param {String|Dictionary} [mapOrMethod] Either the method string 
 		*	or a map of methods to an collection of controls.
 		*  @param {Array|String|int} [controls=null] The collection of controls
 		*  @return {Service} Return the instance of this for chaining
 		*/
-		protected function restrict($mapOrMethod, $controls=null)
+		public function restrict($mapOrMethod, $controls=null)
 		{
 			// Process the map of controls
 			if (is_array($mapOrMethod))
@@ -188,7 +187,11 @@ namespace Canteen\Services
 					$controls = func_get_args();
 					array_shift($controls); //remove the method name
 				}
-				$this->_accessControls[$mapOrMethod] = new AccessControl($mapOrMethod, $controls);
+				if (!isset($this->_accessControls[$mapOrMethod]))
+				{
+					$this->_accessControls[$mapOrMethod] = new AccessControl($mapOrMethod);
+				}
+				$this->_accessControls[$mapOrMethod]->add($controls);				
 			}
 			return $this;
 		}
@@ -222,7 +225,7 @@ namespace Canteen\Services
 				// 0 is Service Class, 1 is caller, 2-3 is the internal caller
 				// If the stack track is greater than for then we should bail
 				// we are only concernd with the 2-3 level of depth
-				$trace = $this->getSimpleStack(3);
+				$trace = $this->getSimpleStack(4);
 
 				// Check if the class is in the trace stack
 				foreach($trace as $i=>$stack)
@@ -492,10 +495,17 @@ namespace Canteen\Services
 		*  @param {String} name The name of the control
 		*  @param {Array|String|int} controls The collection of controls
 		*/
-		public function __construct($name, $controls)
+		public function __construct($name)
 		{
 			$this->name = $name;
+		}
 
+		/**
+		*  Add controls
+		*  @param {Array|String|int} controls The collection of controls
+		*/
+		public function add($controls)
+		{
 			if (!is_array($controls)) $controls = [$controls];
 
 			foreach($controls as $c)

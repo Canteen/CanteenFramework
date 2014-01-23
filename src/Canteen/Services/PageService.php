@@ -52,7 +52,7 @@ namespace Canteen\Services
 				[
 					'getPage' => [
 						'Canteen\Parser\PageBuilder', 
-						'Canteen\Controllers\AdminPagesController'
+						'Canteen\Controllers\AdminObjectController'
 					],
 					'setup' => 'Canteen\Forms\InstallerForm',
 					'getPageByUri' => 'Canteen\Forms\ConfigForm',
