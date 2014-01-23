@@ -48,6 +48,14 @@ namespace Canteen\Errors
 		*  @final
 		*/
 		const INCORRECT_PARAMETERS = 403;
+
+		/** 
+		*  Method can't be access by the client
+		*  @property {int} PERMISSION_DENIED
+		*  @static
+		*  @final
+		*/
+		const PERMISSION_DENIED = 404;
 		
 		/**
 		*  The collection of messages
@@ -60,7 +68,8 @@ namespace Canteen\Errors
 			self::INVALID_SERVICE => 'No valid service found',
 			self::SERVICE_ERROR => 'Invalid service',
 			self::INVALID_METHOD => 'No valid method found',
-			self::INCORRECT_PARAMETERS => 'Incorrect parameter count'
+			self::INCORRECT_PARAMETERS => 'Incorrect parameter count',
+			self::PERMISSION_DENIED => 'The method \'%s\' cannot be accessed by the client'
 		];
 		
 		/**

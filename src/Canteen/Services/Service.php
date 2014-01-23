@@ -61,10 +61,19 @@ namespace Canteen\Services
 
 		/**
 		*  The map of access controls by function name
-		*  @property {Dictionary}
+		*  @property {Dictionary} _accessControls
 		*  @private
 		*/
 		private $_accessControls = [];
+
+
+		/**
+		*  The class name who gives client access
+		*  @property {String} CLIENT_ACCESS
+		*  @final
+		*  @static
+		*/
+		const CLIENT_ACCESS = 'Canteen\Server\JSONServer';
 		
 		/**
 		*  Create the service
@@ -142,6 +151,54 @@ namespace Canteen\Services
 				throw new CanteenError(CanteenError::TAKEN_SERVICE_ALIAS, $alias);
 			}
 			self::$_registeredAliases[$alias] = $className;
+		}
+
+		/**
+		*  Add for use on the JSONServer, these methods can be 
+		*  called from javascript. For an example see the
+		*  `TimeService` class.
+		*  @method restrictClient
+		*  @param {String} methods* N-number of method names
+		*  @return {Service} Return the instance of this for chaining
+		*/
+		public function restrictClient($methods)
+		{
+			$methods = func_get_args();
+			foreach ($methods as $m)
+			{
+				$this->restrict($m, self::CLIENT_ACCESS);
+			}
+			return $this;
+		}
+
+		/**
+		*  Check to see if the client has access to this method
+		*  @method accessClient
+		*  @param {String} method The name of the method to check
+		*  @return {Boolean} If the client has access to this method
+		*/
+		public function accessClient($method)
+		{
+			$control = ifsetor($this->_accessControls[$method]);
+
+			// Check for explicit access to the json server
+			if (!$control || !in_array(self::CLIENT_ACCESS, $control->internals))
+			{
+				return false;
+			}
+
+			// Check for the privilege
+			if ($control->privilege)
+			{
+				$loggedIn = ifconstor('LOGGED_IN', false);
+				$privilege = ifconstor('USER_PRIVILEGE', 0);
+
+				if (!$loggedIn || $privilege < $control->privilege)
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 		
 		/**
@@ -257,7 +314,6 @@ namespace Canteen\Services
 					throw new UserError(UserError::INSUFFICIENT_PRIVILEGE);
 				}
 			}
-			
 			return $this;
 		}
 

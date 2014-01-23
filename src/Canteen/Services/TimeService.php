@@ -19,6 +19,8 @@ namespace Canteen\Services
 		public function __construct()
 		{
 			parent::__construct('time');
+
+			$this->restrictClient('getServerTime');
 		}
 		
 		/**

@@ -124,8 +124,11 @@ namespace Canteen\Server
 			if (!($service instanceof Service)) 
 				throw new JSONServerError(JSONServerError::SERVICE_ERROR);
 		
+			if (!$service->accessClient($callName))
+				throw new JSONServerError(JSONServerError::PERMISSION_DENIED, $callName);
+
 			$call = [$service, $callName];
-		
+			
 			// Get the arguments (optional)
 			$args = isset($scope['args']) && $scope['args'] ? $scope['args'] : '';
 		
@@ -139,10 +142,8 @@ namespace Canteen\Server
 			// Get the number of parameters
 			if (($args && ($numArgs < $requiredParams || $numArgs > $totalParams)) 
 				|| (!$args && $requiredParams))
-			{
-				throw new JSONServerError(JSONServerError::INCORRECT_PARAMETERS);
-			}
-			
+					throw new JSONServerError(JSONServerError::INCORRECT_PARAMETERS);
+				
 			// Finally make the call
 			return $args ? 
 				call_user_func_array($call, $args) : 
