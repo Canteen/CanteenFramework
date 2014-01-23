@@ -86,7 +86,10 @@ namespace Canteen\Services
 					'verifyResetPassword' => 'Canteen\Forms\ForgotPasswordForm',
 					'checkSession' => 'Canteen\Authorization\Authorization',
 					'getUser' => Privilege::GUEST,
-					'getUserByLogin' => 'Canteen\Authorization\Authorization',
+					'getUserByLogin' => [
+						'Canteen\Authorization\Authorization',
+						'Canteen\Forms\UserForm'
+					],
 					'getUsers' => Privilege::GUEST,
 					'removeUser' => Privilege::ADMINISTRATOR,
 					'addUser' => Privilege::ADMINISTRATOR,
