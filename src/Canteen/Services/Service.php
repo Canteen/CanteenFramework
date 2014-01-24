@@ -191,7 +191,7 @@ namespace Canteen\Services
 			if ($control->privilege)
 			{
 				$loggedIn = ifconstor('LOGGED_IN', false);
-				$privilege = ifconstor('USER_PRIVILEGE', 0);
+				$privilege = ifconstor('USER_PRIVILEGE', Privilege::ANONYMOUS);
 
 				if (!$loggedIn || $privilege < $control->privilege)
 				{
@@ -540,7 +540,7 @@ namespace Canteen\Services
 		public $name;
 
 		/** The privilege required to run this method, default is all */
-		public $privilege = Privilege::GUEST;
+		public $privilege = Privilege::ANONYMOUS;
 
 		/** The collection of methods that can call this function */
 		public $internals = [];

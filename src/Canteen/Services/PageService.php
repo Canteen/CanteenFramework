@@ -57,14 +57,9 @@ namespace Canteen\Services
 					'setup' => 'Canteen\Forms\InstallerForm',
 					'getPageByUri' => 'Canteen\Forms\ConfigForm',
 					'getPagesByParentId' => 'Canteen\Controllers\AdminController',
-					'getPages' => [
-						'Canteen\Parser\PageBuilder', 
-						'Canteen\Controllers\AdminPagesController'
-					],
 					'removePage' => $form,
 					'addPage' => $form,
-					'updatePage' => $form,
-					'getPages' => Privilege::ANONYMOUS
+					'updatePage' => $form
 				]
 			)
 			->setProperties(

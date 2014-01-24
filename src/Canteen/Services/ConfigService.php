@@ -44,8 +44,7 @@ namespace Canteen\Services
 					'updateValue' => 'Canteen\Site',
 					'registerSettings' => 'Canteen\Site',
 					'updateConfig' => Privilege::ADMINISTRATOR,
-					'removeConfig' => Privilege::ADMINISTRATOR,
-					'registerSettings' => Privilege::ANONYMOUS
+					'removeConfig' => Privilege::ADMINISTRATOR
 				]
 			);
 		}
