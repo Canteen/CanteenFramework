@@ -171,10 +171,7 @@ namespace Canteen\Forms
 
 			$properties = [];
 
-			// Get the object variables
-			$fields = $this->item->fieldsByName;
-
-			foreach($fields as $name=>$field)
+			foreach($this->item->fieldsByName as $name=>$field)
 			{
 				if (isset($_POST[$name]) && $_POST[$name] != $object->$name)
 				{
@@ -197,6 +194,12 @@ namespace Canteen\Forms
 				$this->error('Unable to update ' . $this->item->itemName);
 				$this->failed($object);
 				return;
+			}
+
+			// Update the object with new properties
+			foreach($properties as $prop=>$value)
+			{
+				$object->$prop = $value;
 			}
 
 			$this->trigger(new ObjectFormEvent(ObjectFormEvent::UPDATED, $object));
