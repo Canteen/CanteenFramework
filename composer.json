@@ -25,7 +25,7 @@
 		]
     },
 	"require": {
-		"php": ">=5.3.0",
+		"php": ">=5.4.0",
 		"canteen/logger": "~1.0",
 		"canteen/database": "~1.0",
 		"canteen/html5": "~1.0"

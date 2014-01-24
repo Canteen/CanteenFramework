@@ -134,36 +134,12 @@ namespace Canteen\Errors
 		const INVALID_INDEX = 113;
 		
 		/** 
-		*  The settings file is invalid 
-		*  @property {int} JSON_INVALID
-		*  @static
-		*  @final
-		*/
-		const JSON_INVALID = 114;
-		
-		/** 
 		*  There was a problem decoding the JSON 
 		*  @property {int} JSON_DECODE
 		*  @static
 		*  @final
 		*/
 		const JSON_DECODE = 115;
-		
-		/** 
-		*  Couldn't make the cache folder 
-		*  @property {int} CACHE_FOLDER
-		*  @static
-		*  @final
-		*/
-		const CACHE_FOLDER = 116;
-		
-		/** 
-		*  The error if the cache dir isn't writable 
-		*  @property {int} CACHE_FOLDER_WRITEABLE
-		*  @static
-		*  @final
-		*/
-		const CACHE_FOLDER_WRITEABLE = 117;
 		
 		/** 
 		*  Duplicate named autoload class 
@@ -246,7 +222,6 @@ namespace Canteen\Errors
 			self::OVERRIDE_CONTROLLER_PROCESS => "Controller must override 'process' method",
 			self::FORM_INHERITANCE => 'Form is not an instance of the Form class',
 			self::INVALID_FORM => 'Form does not exist',
-			self::JSON_INVALID => 'File must be a valid JSON file',
 			self::JSON_DECODE => 'Failure decoding JSON',
 			self::SETTINGS_REQUIRED => 'Setup file must contain an array of dictionary objects.',
 			self::NO_SETTINGS => 'No settings were found for this domain (%s) please update your config file',
@@ -256,8 +231,6 @@ namespace Canteen\Errors
 			self::INSUFFICIENT_VERSION => 'The installed version of Canteen Site (%s) is insufficient to run site (%s)',
 			self::INSUFFICIENT_PHP => 'The current version of PHP (%s) is insufficient to run site (%s)',
 			self::INVALID_INDEX => 'The index page for the site does not exist',
-			self::CACHE_FOLDER => 'Could not create the cache folder',
-			self::CACHE_FOLDER_WRITEABLE => 'Cache folder is not writable. Change file permissions',
 			self::AUTOLOAD_CLASS => 'Class has already been loaded',
 			self::AUTOLOAD_TEMPLATE => 'Template has already been loaded',
 			self::TAKEN_SERVICE_ALIAS => 'The custom service alias is already taken',

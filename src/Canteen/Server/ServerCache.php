@@ -5,7 +5,7 @@
 */
 namespace Canteen\Server
 {
-	use Canteen\Errors\CanteenError;
+	use Canteen\Errors\FileError;
 	use Canteen\Database\IDatabaseCache;
 	use Canteen\Utilities\StringUtils;
 	use \Memcache;
@@ -111,26 +111,25 @@ namespace Canteen\Server
 			if ($enabled && $this->_memcache == null && $this->_cacheDirectory != null)
 			{
 				// Make sure the folder exists
-				if (!file_exists($this->_cacheDirectory))
+				if (!is_dir($this->_cacheDirectory))
 				{
 					// Try to make the directory
 					if (!@mkdir($this->_cacheDirectory))
 					{
-						throw new CanteenError(CanteenError::CACHE_FOLDER, $this->_cacheDirectory);
+						throw new FileError(FileError::FOLDER_CREATE, $this->_cacheDirectory);
 					}					
 				}
-				else if (!is_writable($this->_cacheDirectory))
+				
+				if (!is_writable($this->_cacheDirectory))
 				{
 					if (!@chmod($this->_cacheDirectory, 0777))
 					{
-						throw new CanteenError(CanteenError::CACHE_FOLDER_WRITEABLE, $this->_cacheDirectory);
+						throw new FileError(FileError::FOLDER_WRITEABLE, $this->_cacheDirectory);
 					}
 				}
-				else
-				{
-					// Make sure the cache exists and that it's writeable
-					$this->_useFileSystem = is_dir($this->_cacheDirectory);
-				}
+
+				// Make sure the cache exists and that it's writeable
+				$this->_useFileSystem = is_dir($this->_cacheDirectory);
 			}
 						
 			// constant is set by the deployment settings

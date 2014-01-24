@@ -10,6 +10,7 @@ namespace Canteen\Parser
 	use Canteen\Errors\CanteenError;
 	use Canteen\Utilities\StringUtils;
 	use Canteen\Utilities\CanteenBase;
+	use Canteen\Errors\FileError;
 	
 	/**
 	*  Simple string parser to use for doing html subs. Located in the namespace __Canteen\Utilities__.
@@ -172,7 +173,7 @@ namespace Canteen\Parser
 		{
 			if (!fnmatch('*.json', $path) || !file_exists($path))
 			{
-				throw new CanteenError(CanteenError::JSON_INVALID, $path);
+				throw new FileError(FileError::FILE_EXISTS, $path);
 			}
 			
 			$json = json_decode(file_get_contents($path), $asAssociative);

@@ -283,13 +283,24 @@ namespace Canteen
 			{
 				$this->setup($settings);
 			}
-			catch(CanteenError $e)
-			{
-				self::$_fatalError = $e->getResult();
-			}
 			catch(Exception $e)
 			{
-				self::$_fatalError = CanteenError::convertToResult($e);
+				$this->fatalError($e);
+			}
+		}
+
+		/**
+		*  Create a fatalError
+		*  @method fatalError
+		*  @param {Exception} e The caught exception
+		*/
+		public function fatalError(Exception $e)
+		{
+			if (!self::$_fatalError)
+			{
+				self::$_fatalError = ($e instanceof CanteenError) ? 
+					$e->getResult():
+					CanteenError::convertToResult($e);
 			}
 		}
 		
@@ -583,7 +594,7 @@ namespace Canteen
 			}
 			catch(CanteenError $e)
 			{
-				self::$_fatalError = $e->getResult();
+				$this->fatalError($e);
 			}
 		}
 		
@@ -600,14 +611,9 @@ namespace Canteen
 					$builder = new PageBuilder();
 					$result = $builder->handle();
 				}
-				catch(CanteenError $e)
-				{
-					self::$_fatalError = $e->getResult();
-					$result = $this->readyToProceed();
-				}
 				catch(Exception $e)
 				{
-					self::$_fatalError = CanteenError::convertToResult($e);
+					$this->fatalError($e);
 					$result = $this->readyToProceed();
 				}
 			}
