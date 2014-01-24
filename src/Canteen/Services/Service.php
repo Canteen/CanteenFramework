@@ -264,7 +264,7 @@ namespace Canteen\Services
 		protected function access($method=null)
 		{
 			// Ignore access controls if we're local
-			if (!count($this->_accessControls) || $this->settings->local) return $this;
+			if (!count($this->_accessControls)) return $this;
 			
 			// Get the method that called this function
 			if ($method === null) $method = $this->getCaller();
