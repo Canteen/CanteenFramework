@@ -5,6 +5,8 @@
 */
 namespace Canteen\Services
 {	
+	use Canteen\Authorization\Privilege;
+
 	/**
 	*  Service for getting the time off the server.  Located in the namespace __Canteen\Services__.
 	*  
@@ -20,6 +22,8 @@ namespace Canteen\Services
 		{
 			parent::__construct('time');
 
+			$this->restrict('getServerTime', Privilege::ANONYMOUS);
+			
 			$this->restrictClient('getServerTime');
 		}
 		
