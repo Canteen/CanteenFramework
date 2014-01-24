@@ -77,11 +77,27 @@ namespace Canteen\Forms
 			if (!$action || !method_exists($this, $action))
 			{
 				$this->error("No valid action matching '$action'");
+				$this->failed();
 			}
 			else
 			{
 				$this->$action();
 			}
+		}
+
+		/**
+		*  Check to see if we've failed
+		*  @param {Object} object The object, optional
+		*  @return {Boolean} True if we failed
+		*/
+		private function failed($object=null)
+		{
+			if ($this->ifError)
+			{
+				$this->trigger(new ObjectFormEvent(ObjectFormEvent::FAILED, $object));
+				return true;
+			}
+			return false;
 		}
 
 		/**
@@ -97,24 +113,26 @@ namespace Canteen\Forms
 			if (!$object)
 			{
 				$this->error('No valid '.$this->item->itemName.' found');
+				$this->failed();
 				return;
 			}
 
 			$this->trigger(new ObjectFormEvent(ObjectFormEvent::BEFORE_REMOVE, $object));
 			
-			if ($this->ifError) return;
+			if ($this->failed($object)) return;
 
 			$method = 'remove'.$this->item->itemName;
 			if (!$this->item->service->$method($id))
 			{
 				$this->error('Unable to remove '.$this->item->itemName);
+				$this->failed($object);
 				return;
 			}
 			
 			$this->trigger(new ObjectFormEvent(ObjectFormEvent::REMOVED, $object));
 
 			// Always redirect if the update was successful
-			if ($this->ifError) return;
+			if ($this->failed($object)) return;
 			
 			if ($this->redirect !== null && $this->removeRedirect)
 			{
@@ -139,16 +157,17 @@ namespace Canteen\Forms
 			if (!$object)
 			{
 				$this->error("No valid {$this->item->itemName} matching id '$id'");
+				$this->failed();
 				return;
 			}
 
 			$this->trigger(new ObjectFormEvent(ObjectFormEvent::VALIDATE, $object));
 
-			if ($this->ifError) return;
+			if ($this->failed($object)) return;
 
 			$this->trigger(new ObjectFormEvent(ObjectFormEvent::BEFORE_UPDATE, $object));
 
-			if ($this->ifError) return;
+			if ($this->failed($object)) return;
 
 			$properties = [];
 
@@ -165,8 +184,10 @@ namespace Canteen\Forms
 
 			if (!count($properties))
 			{
-				if ($this->updateNothingError)
+				if ($this->updateNothingError) 
 					$this->error('Nothing to update');
+
+				$this->failed($object);
 				return;
 			}
 
@@ -174,6 +195,7 @@ namespace Canteen\Forms
 			if (!$this->item->service->$method($id, $properties))
 			{
 				$this->error('Unable to update ' . $this->item->itemName);
+				$this->failed($object);
 				return;
 			}
 
@@ -181,7 +203,7 @@ namespace Canteen\Forms
 
 			// if the update was successful, optionally we can redirect
 			// to a page of choice or just stay here and report the success
-			if ($this->ifError) return;
+			if ($this->failed($object)) return;
 
 			if ($this->redirect !== null && $this->updateRedirect)
 			{
@@ -202,11 +224,11 @@ namespace Canteen\Forms
 		{
 			$this->trigger(new ObjectFormEvent(ObjectFormEvent::VALIDATE));
 
-			if ($this->ifError) return;
+			if ($this->failed()) return;
 
 			$this->trigger(new ObjectFormEvent(ObjectFormEvent::BEFORE_ADD));
 
-			if ($this->ifError) return;
+			if ($this->failed()) return;
 
 			$properties = [];
 
@@ -221,6 +243,7 @@ namespace Canteen\Forms
 			if (!count($properties))
 			{
 				$this->error('Nothing to add');
+				$this->failed();
 				return;
 			}
 
@@ -230,6 +253,7 @@ namespace Canteen\Forms
 			if (!$id)
 			{
 				$this->error('Unable to add new '.$this->item->itemName);
+				$this->failed();
 				return;
 			}
 
@@ -257,6 +281,7 @@ namespace Canteen\Forms
 			if (!$id)
 			{
 				$this->error('ID is required');
+				$this->failed();
 				return;
 			}
 			$method = 'get'.$this->item->itemName;

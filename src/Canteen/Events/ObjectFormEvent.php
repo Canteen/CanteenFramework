@@ -85,6 +85,15 @@ namespace Canteen\Events
 		const VALIDATE = 'validate';
 
 		/**
+		*  Event whenever the form fails
+		*  @event failed
+		*  @property {String} FAILED
+		*  @final
+		*  @static
+		*/
+		const FAILED = 'failed';
+
+		/**
 		*  Constructor
 		*/
 		public function __construct($type, $object=null)
