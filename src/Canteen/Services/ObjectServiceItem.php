@@ -187,6 +187,34 @@ namespace Canteen\Services
 		}
 
 		/**
+		*  A simple orderBy method to set the order of query
+		*  @method setOrderBy
+		*  @param {String} fieldName The valid name of a field on this item
+		*  @param {String} [direction='asc'] The order by direction
+		*  @return {ObjectService} The instance of this class, for chaining
+		*/
+		public function setOrderBy($fieldName, $direction='asc')
+		{
+			if (!isset($this->fieldsByName[$fieldName]))
+				throw new ObjectServiceError(ObjectServiceError::INVALID_FIELD_NAME, $fieldName);
+
+			foreach($this->fields as $field)
+			{
+				// Set the order by on the field
+				if ($field->name == $fieldName)
+				{
+					$field->setOrderBy($direction);
+				}
+				// Clear all other orders
+				else
+				{
+					$field->setOrderBy(null);
+				}
+			}
+			return $this;
+		}
+
+		/**
 		*  Convience method for the field validation wrapper for verify
 		*  but call by name.
 		*  @method verify
