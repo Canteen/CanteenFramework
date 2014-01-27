@@ -74,7 +74,7 @@ namespace Canteen\Services
 		*/
 		protected function installItem(ObjectServiceItem $item)
 		{
-			return (Boolean) $this->db->execute($item->getInstallQuery());
+			return $item->install($this->db->create($item->table));
 		}
 
 		/**

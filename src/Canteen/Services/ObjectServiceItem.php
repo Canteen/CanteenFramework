@@ -5,6 +5,7 @@ namespace Canteen\Services
 	use Canteen\Utilities\Validate;
 	use Canteen\Database\SelectQuery;
 	use Canteen\Errors\ObjectServiceError;
+	use Canteen\Database\CreateQuery;
 
 	class ObjectServiceItem
 	{
@@ -246,63 +247,57 @@ namespace Canteen\Services
 		/**
 		*  Experimental install feature to take the fields
 		*  and convert them into a MySQL create table query.
-		*  @method getInstallQuery
+		*  @method install
+		*  @param {CreateQuery} query The query to install with
 		*  @return {String} The sql query to install the table
 		*/
-		public function getInstallQuery()
+		public function install(CreateQuery $query)
 		{
-			$keys = [];
-			$fields = [];
-
 			foreach($this->fields as $f)
 			{
-				$field = "`{$f->id}` ";
+				$isNull = false;
+				$default = null;
+
 				if (is_array($f->type))
 				{
- 					$field .= "set('".implode("','",$f->type)."') CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL";
+					$query->set($f->id, $f->type, $isNull, $default);
 				}
 				else
 				{
+					$properties = '';
 					switch($f->type)
 					{
 						case Validate::NUMERIC :
-							$field .= 'int(10) unsigned NOT NULL';
+							$properties = 'int(10) unsigned';
 							break;
 						case Validate::BOOLEAN :
-							$field .= 'tinyint(1) unsigned NOT NULL DEFAULT \'0\'';
+							$properties = 'tinyint(1) unsigned';
+							$default = 0;
 							break;
 						case Validate::MYSQL_DATE :
-							$field .= 'datetime NOT NULL';
+							$properties = 'datetime';
 							break;
 						case null :
-							$field .= 'text COLLATE latin1_general_ci NOT NULL';
+							$properties = 'text';
+							$isNull = true;
 							break;
 						default :
 						case Validate::FULL_TEXT :
-							$field .= 'varchar(255) COLLATE latin1_general_ci NOT NULL';
+							$properties = 'varchar(255)';
+							$isNull = true;
 							break;
 					}
+					if ($properties)
+					{
+						$query->field($f->id, $properties, $isNull, $default, $f->isDefault);
+					}
 				}
-				// Add the keys
-				if ($f->isDefault)
+				if ($f->isIndex)
 				{
-					$field .= ' AUTO_INCREMENT';
-					$keys[] = "PRIMARY KEY (`{$f->id}`)";
+					$query->key($f->id);
 				}
-				else if ($f->isIndex)
-				{
-					$keys[] = "KEY `{$f->id}` (`{$f->id}`)";
-				}
-
-				// Add to fields list
-				$fields[] = $field;
 			}
-
-			$sql = "CREATE TABLE IF NOT EXISTS `{$this->table}` (";
-			$sql .= implode(', ', $fields) . ', ' . implode(', ', $keys);
-			$sql .= ') ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;';
-			
-			return $sql;
+			return $query->result();
 		}
 
 		/**

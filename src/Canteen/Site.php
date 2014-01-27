@@ -34,7 +34,7 @@ namespace Canteen
 		*  @static
 		*  @final
 		*/
-		const VERSION = '1.0.1';
+		const VERSION = '1.1.0';
 		
 		/** 
 		*  The current database version 
@@ -408,7 +408,7 @@ namespace Canteen
 				
 				// Check for the installation process make it 
 				// easier to start Canteen for the  first time
-				$installed = ifsetor($_SESSION['installed'], false);
+				$installed = ifsetor($_COOKIE['installed'], false);
 				
 				// Check to see if we're installed already
 				if (!$installed)
@@ -422,7 +422,7 @@ namespace Canteen
 					else
 					{
 						// Table already exists, don't need to keep checking
-						$_SESSION['installed'] = true;
+						$_COOKIE['installed'] = true;
 					}
 				}
 				

@@ -92,7 +92,10 @@ namespace Canteen\Services
 					],
 					'getUsers' => Privilege::GUEST,
 					'removeUser' => Privilege::ADMINISTRATOR,
-					'addUser' => Privilege::ADMINISTRATOR,
+					'addUser' => [
+						__CLASS__,
+						Privilege::ADMINISTRATOR
+					],
 					'updateUser' => Privilege::ADMINISTRATOR
 				]
 			)
@@ -115,41 +118,38 @@ namespace Canteen\Services
 			$this->access();
 
 			if (!$this->db->tableExists($this->table))
-			{
-				$sql = [];
+			{				
+				$sql = [
+					"CREATE TABLE IF NOT EXISTS `{$this->table}` (
+					  `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+					  `is_active` tinyint(1) unsigned NOT NULL DEFAULT '1',
+					  `username` varchar(32) NOT NULL DEFAULT '',
+					  `email` varchar(128) NOT NULL,
+					  `password` varchar(128) NOT NULL,
+					  `first_name` varchar(100) NOT NULL,
+					  `last_name` varchar(100) NOT NULL,
+					  `privilege` tinyint(1) NOT NULL DEFAULT '0',
+					  `attempts` tinyint(1) unsigned NOT NULL DEFAULT '0',
+					  `frozen` datetime NOT NULL,
+					  `forgot_string` varchar(32) DEFAULT NULL,
+					  `login` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+					  PRIMARY KEY (`user_id`),
+					  UNIQUE KEY `email` (`email`),
+					  UNIQUE KEY `username` (`username`),
+					  KEY `privilege` (`privilege`),
+					  KEY `is_active` (`is_active`)
+					) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1",
+					"CREATE TABLE IF NOT EXISTS `{$this->sessionsTable}` (
+					  `user_id` int(10) unsigned NOT NULL,
+					  `ip_address` varchar(45) NOT NULL,
+					  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+					  `session_id` varchar(32) NOT NULL,
+					  PRIMARY KEY (`session_id`),
+					  KEY `user_id` (`user_id`)
+					) ENGINE=MyISAM DEFAULT CHARSET=latin1"
+				];
 				
-				$sql[] = "CREATE TABLE IF NOT EXISTS `{$this->table}` (
-				  `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-				  `is_active` tinyint(1) unsigned NOT NULL DEFAULT '1',
-				  `username` varchar(32) NOT NULL DEFAULT '',
-				  `email` varchar(128) NOT NULL,
-				  `password` varchar(128) NOT NULL,
-				  `first_name` varchar(100) NOT NULL,
-				  `last_name` varchar(100) NOT NULL,
-				  `privilege` tinyint(1) NOT NULL DEFAULT '0',
-				  `attempts` tinyint(1) unsigned NOT NULL DEFAULT '0',
-				  `frozen` datetime NOT NULL,
-				  `forgot_string` varchar(32) DEFAULT NULL,
-				  `login` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				  PRIMARY KEY (`user_id`),
-				  UNIQUE KEY `email` (`email`),
-				  UNIQUE KEY `username` (`username`),
-				  KEY `privilege` (`privilege`),
-				  KEY `is_active` (`is_active`)
-				) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3";
-				
-				$sql[] = "CREATE TABLE IF NOT EXISTS `{$this->sessionsTable}` (
-				  `user_id` int(10) unsigned NOT NULL,
-				  `ip_address` varchar(45) NOT NULL,
-				  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-				  `session_id` varchar(32) NOT NULL,
-				  PRIMARY KEY (`session_id`),
-				  KEY `user_id` (`user_id`)
-				) ENGINE=MyISAM DEFAULT CHARSET=latin1";
-				
-				$success = $this->db->execute($sql);
-			
-				print_r($success);
+				$success = (bool)$this->db->execute($sql);
 
 				$added = $this->addUser(
 					$username,

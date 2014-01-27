@@ -23,7 +23,7 @@ namespace Canteen\Forms
 		*  Process the form and handle the $_POST data.
 		*/
 		public function __construct()
-		{			
+		{
 			$email = $this->verify(ifsetor($_POST['email']), Validate::EMAIL);
 			$username = $this->verify(ifsetor($_POST['username']), Validate::FILE_NAME);
 			$password = ifsetor($_POST['password']);
@@ -56,20 +56,20 @@ namespace Canteen\Forms
 			
 			if ($this->ifError) return;
 							
-			new ConfigService;
-			new PageService;
-			new UserService;
+			$config = new ConfigService;
+			$page = new PageService;
+			$user = new UserService;
 			
-			$this->service('config')->setup($siteTitle, $contentPath, $templatePath);
-			$this->service('user')->setup($username, $email, $password, $firstName, $lastName);
-			$this->service('page')->setup();
+			$config->setup($siteTitle, $contentPath, $templatePath);
+			$user->setup($username, $email, $password, $firstName, $lastName);
+			$page->setup();
 
 			// Trigger the site event for being installed
 			$this->site->trigger(CanteenEvent::INSTALLED);
 
 			// We're already installed, no need to keep checking
 			// for the rest of this session
-			$_SESSION['installed'] = true;
+			$_COOKIE['installed'] = true;
 
 			// redirect to the home page
 			redirect();
