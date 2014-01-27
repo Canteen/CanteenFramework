@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
     <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
     <script src="http://yui.yahooapis.com/3.10.1/build/yui/yui-min.js"></script>
-	<title>Canteen Database API v1.1.0 API Documentation : ConfigService</title>  
+	<title>Canteen Database API v1.1.0 API Documentation : SimpleObjectService</title>  
 </head>
 <body class="yui3-skin-sam">
 
@@ -212,13 +212,13 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>ConfigService Class</h1>
+                        <h1>SimpleObjectService Class</h1>
 <div class="box meta">
     
 
     
         <div class="extends">
-            Extends <a href="../classes/SimpleObjectService.html" class="crosslink">SimpleObjectService</a>
+            Extends <a href="../classes/ObjectService.html" class="crosslink">ObjectService</a>
         </div>
     
 
@@ -236,10 +236,212 @@
 
 
 <div class="box intro">
-    <p>Interacts with the config data table from the database. Located in the namespace <strong>Canteen\Services</strong>.</p>
+    <p>This is like the ObjectService but provides some convience methods if only
+dealing with one object type. This include custom verify* methods for checking
+different field types (e.g. <code>$this-&gt;verifyName($name)</code>). Located in the namespace <strong>Canteen\Services</strong>.</p>
 
 </div>
 
+
+    <div class="constructor">
+        <h2>Constructor</h2>
+        <div id="method_SimpleObjectService" class="method item">
+    <h3 class="name"><code>SimpleObjectService</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>alias</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>className</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>table</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>field</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[itemName]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[itemsName]</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">alias</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The name of the service alias and the name of the table</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">className</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>Class to bind database result to</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">table</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The table that the objects are on</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">field</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The collection of ObjectServiceField objects</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[itemName]</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The optional item name to specify, defaults to 
+    unqalified class name (without the full namespace)</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[itemsName]</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The optional items name (plural) of itemName</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+    </div>
 
 
 <div id="classdocs" class="tabview">
@@ -266,7 +468,7 @@
 
                     <ul class="index-list methods extends">
                         
-                            <li class="index-item method inherited inherited">
+                            <li class="index-item method inherited">
                                 <a href="#method___call">__call</a>
 
                                 
@@ -294,13 +496,6 @@
                                 
                             </li>
                         
-                            <li class="index-item method">
-                                <a href="#method_addConfig">addConfig</a>
-
-                                
-                                
-                            </li>
-                        
                             <li class="index-item method private inherited">
                                 <a href="#method_autoDetectItem">autoDetectItem</a>
 
@@ -322,7 +517,7 @@
                                 
                             </li>
                         
-                            <li class="index-item method protected inherited inherited">
+                            <li class="index-item method protected inherited">
                                 <a href="#method_call">call</a>
 
                                 
@@ -350,20 +545,6 @@
                                 
                             </li>
                         
-                            <li class="index-item method">
-                                <a href="#method_getConfig">getConfig</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method">
-                                <a href="#method_getConfigs">getConfigs</a>
-
-                                
-                                
-                            </li>
-                        
                             <li class="index-item method protected inherited">
                                 <a href="#method_getStack">getStack</a>
 
@@ -371,28 +552,7 @@
                                 
                             </li>
                         
-                            <li class="index-item method">
-                                <a href="#method_getValidationByType">getValidationByType</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method">
-                                <a href="#method_getValueByName">getValueByName</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method">
-                                <a href="#method_getValueTypes">getValueTypes</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method protected inherited">
+                            <li class="index-item method protected">
                                 <a href="#method_install">install</a>
 
                                 
@@ -476,20 +636,6 @@
                                 
                             </li>
                         
-                            <li class="index-item method">
-                                <a href="#method_registerSettings">registerSettings</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method">
-                                <a href="#method_removeConfig">removeConfig</a>
-
-                                
-                                
-                            </li>
-                        
                             <li class="index-item method inherited">
                                 <a href="#method_restrict">restrict</a>
 
@@ -511,28 +657,21 @@
                                 
                             </li>
                         
-                            <li class="index-item method protected inherited">
+                            <li class="index-item method protected">
                                 <a href="#method_setPrepends">setPrepends</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method protected inherited">
+                            <li class="index-item method protected">
                                 <a href="#method_setProperties">setProperties</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method">
-                                <a href="#method_setup">setup</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method protected inherited">
+                            <li class="index-item method protected">
                                 <a href="#method_setWhere">setWhere</a>
 
                                 
@@ -541,13 +680,6 @@
                         
                             <li class="index-item method protected inherited">
                                 <a href="#method_template">template</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method">
-                                <a href="#method_updateConfig">updateConfig</a>
 
                                 
                                 
@@ -605,7 +737,7 @@
                                 
                             </li>
                         
-                            <li class="index-item property inherited">
+                            <li class="index-item property">
                                 <a href="#property_className">className</a>
 
                                 
@@ -619,7 +751,14 @@
                                 
                             </li>
                         
-                            <li class="index-item property protected inherited inherited">
+                            <li class="index-item property protected">
+                                <a href="#property_item">item</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
                                 <a href="#property_item">item</a>
 
                                 
@@ -647,7 +786,7 @@
                                 
                             </li>
                         
-                            <li class="index-item property inherited">
+                            <li class="index-item property">
                                 <a href="#property_prepends">prepends</a>
 
                                 
@@ -661,7 +800,7 @@
                                 
                             </li>
                         
-                            <li class="index-item property inherited">
+                            <li class="index-item property">
                                 <a href="#property_properties">properties</a>
 
                                 
@@ -682,7 +821,7 @@
                                 
                             </li>
                         
-                            <li class="index-item property inherited">
+                            <li class="index-item property">
                                 <a href="#property_table">table</a>
 
                                 
@@ -710,7 +849,7 @@
                 <h2 class="off-left">Methods</h2>
 
                 
-                    <div id="method___call" class="method item inherited">
+                    <div id="method___call" class="method item">
     <h3 class="name"><code>__call</code></h3>
 
     
@@ -1105,178 +1244,6 @@ method.</p>
         </div>
     
 
-    
-
-    
-</div>
-
-                
-                    <div id="method_addConfig" class="method item">
-    <h3 class="name"><code>addConfig</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>propertiesOrName</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code class="optional">[value=&#x27;&#x27;]</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code class="optional">[type=&#x27;string&#x27;]</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code class="optional">[access=0]</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type">Int | <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Add a key to the config</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">propertiesOrName</code>
-                        <span class="type">Dictionary | <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The collection of properties or name</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[value=&#x27;&#x27;]</code>
-                        <span class="type">Mixed</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The value of the config</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[type=&#x27;string&#x27;]</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The value type</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[access=0]</code>
-                        <span class="type">Int</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The access type</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type">Int | <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>:
-                    
-                    <p>The new ID if successful, false if not</p>
-
-                
-            </div>
-        </div>
     
 
     
@@ -1711,7 +1678,7 @@ method.</p>
 </div>
 
                 
-                    <div id="method_call" class="method item protected inherited">
+                    <div id="method_call" class="method item protected">
     <h3 class="name"><code>call</code></h3>
 
     
@@ -2206,178 +2173,6 @@ removeItemBy[IndexName], updateItemBy[IndexName].</p>
 </div>
 
                 
-                    <div id="method_getConfig" class="method item">
-    <h3 class="name"><code>getConfig</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>id</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="../classes/Config.html" class="crosslink">Config</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Get a config variable by id</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">id</code>
-                        <span class="type">Int</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The ID of the config Option</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="../classes/Config.html" class="crosslink">Config</a></span>:
-                    
-                    <p>The config object</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_getConfigs" class="method item">
-    <h3 class="name"><code>getConfigs</code></h3>
-
-    
-        <span class="paren">()</span>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Get all the the config for the site</p>
-
-    </div>
-
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>:
-                    
-                    <p>The collection of Config objects</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
                     <div id="method_getStack" class="method item protected inherited">
     <h3 class="name"><code>getStack</code></h3>
 
@@ -2507,282 +2302,7 @@ removeItemBy[IndexName], updateItemBy[IndexName].</p>
 </div>
 
                 
-                    <div id="method_getValidationByType" class="method item">
-    <h3 class="name"><code>getValidationByType</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>type</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/RegExp" class="crosslink external" target="_blank">RegExp</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Get the validator by the current type</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">type</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The type of config (path, page, boolean, integer, string)</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/RegExp" class="crosslink external" target="_blank">RegExp</a></span>:
-                    
-                    <p>The regular expression for validating</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_getValueByName" class="method item">
-    <h3 class="name"><code>getValueByName</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>name</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type">Mixed</span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Get a config variable by name</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">name</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The name of the config property</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type">Mixed</span>:
-                    
-                    <p>The value of the config property</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_getValueTypes" class="method item">
-    <h3 class="name"><code>getValueTypes</code></h3>
-
-    
-        <span class="paren">()</span>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Get the collection of values types</p>
-
-    </div>
-
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>:
-                    
-                    <p>A collection of value type strings</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_install" class="method item protected inherited">
+                    <div id="method_install" class="method item protected">
     <h3 class="name"><code>install</code></h3>
 
     
@@ -2812,8 +2332,9 @@ removeItemBy[IndexName], updateItemBy[IndexName].</p>
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/SimpleObjectService.html#method_install">SimpleObjectService</a>:
+                
+                <p>
+                
             
         
         
@@ -4493,178 +4014,6 @@ any of the methods for updating, getting, removing. Located in the namespace <st
 </div>
 
                 
-                    <div id="method_registerSettings" class="method item">
-    <h3 class="name"><code>registerSettings</code></h3>
-
-    
-        <span class="paren">()</span>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type">Dictionary</span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Get all the the config for the site and add them to the settings</p>
-
-    </div>
-
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type">Dictionary</span>:
-                    
-                    <p>The collection of all config items</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_removeConfig" class="method item">
-    <h3 class="name"><code>removeConfig</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>id</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Delete a config key</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">id</code>
-                        <span class="type">Id | <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The config ID or collection of IDs to delete</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>:
-                    
-                    <p>If delete was successful</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
                     <div id="method_restrict" class="method item inherited">
     <h3 class="name"><code>restrict</code></h3>
 
@@ -5017,7 +4366,7 @@ called from javascript. For an example see the
 </div>
 
                 
-                    <div id="method_setPrepends" class="method item protected inherited">
+                    <div id="method_setPrepends" class="method item protected">
     <h3 class="name"><code>setPrepends</code></h3>
 
     
@@ -5063,8 +4412,9 @@ called from javascript. For an example see the
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/SimpleObjectService.html#method_setPrepends">SimpleObjectService</a>:
+                
+                <p>
+                
             
         
         
@@ -5144,7 +4494,7 @@ called from javascript. For an example see the
 </div>
 
                 
-                    <div id="method_setProperties" class="method item protected inherited">
+                    <div id="method_setProperties" class="method item protected">
     <h3 class="name"><code>setProperties</code></h3>
 
     
@@ -5184,8 +4534,9 @@ called from javascript. For an example see the
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/SimpleObjectService.html#method_setProperties">SimpleObjectService</a>:
+                
+                <p>
+                
             
         
         
@@ -5250,154 +4601,7 @@ called from javascript. For an example see the
 </div>
 
                 
-                    <div id="method_setup" class="method item">
-    <h3 class="name"><code>setup</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>siteTitle</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code>contentPath</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code>templatePath</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Install the config table</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">siteTitle</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The name of the site title</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name">contentPath</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The local path to the page HTML content</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name">templatePath</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The local path to the HTML main template</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>:
-                    
-                    <p>If the table was installed</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_setWhere" class="method item protected inherited">
+                    <div id="method_setWhere" class="method item protected">
     <h3 class="name"><code>setWhere</code></h3>
 
     
@@ -5437,8 +4641,9 @@ called from javascript. For an example see the
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/SimpleObjectService.html#method_setWhere">SimpleObjectService</a>:
+                
+                <p>
+                
             
         
         
@@ -5619,154 +4824,6 @@ called from javascript. For an example see the
                         <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>:
                     
                     <p>The parsed string</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_updateConfig" class="method item">
-    <h3 class="name"><code>updateConfig</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>id</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code>prop</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code class="optional">[value=null]</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Update a config&#39;s property or properties</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">id</code>
-                        <span class="type">Int</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The config id</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name">prop</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a> | Dictionary</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The property name or an array of property =&gt; value</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[value=null]</code>
-                        <span class="type">Mixed</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The value to update to if we&#39;re updating a single item</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>:
-                    
-                    <p>If successfully updated</p>
 
                 
             </div>
@@ -6333,7 +5390,7 @@ called from javascript. For an example see the
 </div>
 
                 
-                    <div id="property_className" class="property item inherited">
+                    <div id="property_className" class="property item">
     <h3 class="name"><code>className</code></h3>
     <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
 
@@ -6348,8 +5405,9 @@ called from javascript. For an example see the
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/SimpleObjectService.html#property_className">SimpleObjectService</a>:
+                
+                <p>
+                
             
         
         
@@ -6413,7 +5471,7 @@ called from javascript. For an example see the
 </div>
 
                 
-                    <div id="property_item" class="property item protected inherited">
+                    <div id="property_item" class="property item protected">
     <h3 class="name"><code>item</code></h3>
     <span class="type"><a href="../classes/ObjectServiceItem.html" class="crosslink">ObjectServiceItem</a></span>
 
@@ -6429,10 +5487,10 @@ called from javascript. For an example see the
 
     <div class="meta">
         
-            <p>Inherited from
-            <a href="../classes/SimpleObjectService.html#property_item">
-                SimpleObjectService
-            </a>
+            
+                
+                <p>
+                
             
         
         
@@ -6445,6 +5503,47 @@ called from javascript. For an example see the
 
     <div class="description">
         <p>The item definition</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_item" class="property item">
+    <h3 class="name"><code>item</code></h3>
+    <span class="type"><a href="../classes/ObjectServiceItem.html" class="crosslink">ObjectServiceItem</a></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The reference to the object</p>
 
     </div>
 
@@ -6578,7 +5677,7 @@ called from javascript. For an example see the
 </div>
 
                 
-                    <div id="property_prepends" class="property item inherited">
+                    <div id="property_prepends" class="property item">
     <h3 class="name"><code>prepends</code></h3>
     <span class="type">Dictionary</span>
 
@@ -6593,8 +5692,9 @@ called from javascript. For an example see the
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/SimpleObjectService.html#property_prepends">SimpleObjectService</a>:
+                
+                <p>
+                
             
         
         
@@ -6658,7 +5758,7 @@ called from javascript. For an example see the
 </div>
 
                 
-                    <div id="property_properties" class="property item inherited">
+                    <div id="property_properties" class="property item">
     <h3 class="name"><code>properties</code></h3>
     <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
 
@@ -6673,8 +5773,9 @@ called from javascript. For an example see the
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/SimpleObjectService.html#property_properties">SimpleObjectService</a>:
+                
+                <p>
+                
             
         
         
@@ -6778,7 +5879,7 @@ called from javascript. For an example see the
 </div>
 
                 
-                    <div id="property_table" class="property item inherited">
+                    <div id="property_table" class="property item">
     <h3 class="name"><code>table</code></h3>
     <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
 
@@ -6793,8 +5894,9 @@ called from javascript. For an example see the
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/SimpleObjectService.html#property_table">SimpleObjectService</a>:
+                
+                <p>
+                
             
         
         

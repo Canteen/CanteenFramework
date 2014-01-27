@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
     <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
     <script src="http://yui.yahooapis.com/3.10.1/build/yui/yui-min.js"></script>
-	<title>Canteen Database API v1.1.0 API Documentation : DeploymentStatus</title>  
+	<title>Canteen Database API v1.1.0 API Documentation : ObjectServiceError</title>  
 </head>
 <body class="yui3-skin-sam">
 
@@ -212,17 +212,21 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>DeploymentStatus Class</h1>
+                        <h1>ObjectServiceError Class</h1>
 <div class="box meta">
     
 
+    
+        <div class="extends">
+            Extends <a href="../classes/CanteenError.html" class="crosslink">CanteenError</a>
+        </div>
     
 
     
 
     
         
-            Namespace: <a href="../modules/Canteen\Server.html">Canteen\Server</a>
+            Namespace: <a href="../modules/Canteen\Errors.html">Canteen\Errors</a>
         
     
 
@@ -232,16 +236,15 @@
 
 
 <div class="box intro">
-    <p>Does a check on the server host to see what server
-settings we should be using. Located in the namespace <strong>Canteen\Server</strong>.</p>
+    <p>Exceptions specific to the ObjectService API.<br>Located in the namespace <strong>Canteen\Errors</strong>.</p>
 
 </div>
 
 
     <div class="constructor">
         <h2>Constructor</h2>
-        <div id="method_DeploymentStatus" class="method item">
-    <h3 class="name"><code>DeploymentStatus</code></h3>
+        <div id="method_ObjectServiceError" class="method item">
+    <h3 class="name"><code>ObjectServiceError</code></h3>
 
     
         <div class="args">
@@ -249,13 +252,13 @@ settings we should be using. Located in the namespace <strong>Canteen\Server</st
             
                 <li class="arg">
                     
-                        <code>settingsPath</code>
+                        <code>code</code>
                     
                 </li>
             
                 <li class="arg">
                     
-                        <code class="optional">[domain=null]</code>
+                        <code class="optional">[data=&#x27;&#x27;]</code>
                     
                 </li>
             
@@ -306,14 +309,14 @@ settings we should be using. Located in the namespace <strong>Canteen\Server</st
             
                 <li class="param">
                     
-                        <code class="param-name">settingsPath</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a> | <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+                        <code class="param-name">code</code>
+                        <span class="type">Int</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>The path to the settings PHP file or an Array</p>
+                        <p>The error code</p>
 
                     </div>
 
@@ -322,16 +325,15 @@ settings we should be using. Located in the namespace <strong>Canteen\Server</st
             
                 <li class="param">
                     
-                        <code class="param-name optional">[domain=null]</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                        <code class="param-name optional">[data=&#x27;&#x27;]</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a> | <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>The domain to specific where we&#39;re coming from (optional)
-         checks the server constants if domain is not supplied</p>
+                        <p>The optional data associated with this error</p>
 
                     </div>
 
@@ -372,17 +374,10 @@ settings we should be using. Located in the namespace <strong>Canteen\Server</st
                 <div class="index-section methods">
                     <h3>Methods</h3>
 
-                    <ul class="index-list methods">
+                    <ul class="index-list methods extends">
                         
-                            <li class="index-item method private">
-                                <a href="#method_isAssoc">isAssoc</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method private">
-                                <a href="#method_processURI">processURI</a>
+                            <li class="index-item method inherited">
+                                <a href="#method_getResult">getResult</a>
 
                                 
                                 
@@ -396,73 +391,10 @@ settings we should be using. Located in the namespace <strong>Canteen\Server</st
                 <div class="index-section properties">
                     <h3>Properties</h3>
 
-                    <ul class="index-list properties">
-                        
-                            <li class="index-item property private">
-                                <a href="#property_defaultSettings">defaultSettings</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item property private">
-                                <a href="#property_defaultSettings.cacheDirectory">defaultSettings.cacheDirectory</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item property private">
-                                <a href="#property_defaultSettings.cacheEnabled">defaultSettings.cacheEnabled</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item property private">
-                                <a href="#property_defaultSettings.compress">defaultSettings.compress</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item property private">
-                                <a href="#property_defaultSettings.dbHost">defaultSettings.dbHost</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item property private">
-                                <a href="#property_defaultSettings.debug">defaultSettings.debug</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item property private">
-                                <a href="#property_defaultSettings.domain">defaultSettings.domain</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item property private">
-                                <a href="#property_defaultSettings.level">defaultSettings.level</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item property private">
-                                <a href="#property_defaultSettings.minify">defaultSettings.minify</a>
-
-                                
-                                
-                            </li>
+                    <ul class="index-list properties extends">
                         
                             <li class="index-item property">
-                                <a href="#property_DEVELOPMENT">DEVELOPMENT</a>
+                                <a href="#property_INVALID_FIELD_NAME">INVALID_FIELD_NAME</a>
 
                                 
                                     <span class="flag static">static</span>
@@ -471,7 +403,7 @@ settings we should be using. Located in the namespace <strong>Canteen\Server</st
                             </li>
                         
                             <li class="index-item property">
-                                <a href="#property_LIVE">LIVE</a>
+                                <a href="#property_INVALID_INDEX">INVALID_INDEX</a>
 
                                 
                                     <span class="flag static">static</span>
@@ -480,7 +412,7 @@ settings we should be using. Located in the namespace <strong>Canteen\Server</st
                             </li>
                         
                             <li class="index-item property">
-                                <a href="#property_LOCAL">LOCAL</a>
+                                <a href="#property_INVALID_METHOD">INVALID_METHOD</a>
 
                                 
                                     <span class="flag static">static</span>
@@ -488,15 +420,44 @@ settings we should be using. Located in the namespace <strong>Canteen\Server</st
                                 
                             </li>
                         
-                            <li class="index-item property public">
-                                <a href="#property_properties">properties</a>
+                            <li class="index-item property">
+                                <a href="#property_INVALID_PROPERTY">INVALID_PROPERTY</a>
 
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property private">
+                                <a href="#property_messages">messages</a>
+
+                                
+                                    <span class="flag static">static</span>
                                 
                                 
                             </li>
                         
                             <li class="index-item property">
-                                <a href="#property_STAGING">STAGING</a>
+                                <a href="#property_NO_DEFAULT_INDEX">NO_DEFAULT_INDEX</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_UNREGISTERED_ITEM">UNREGISTERED_ITEM</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_WRONG_ARG_COUNT">WRONG_ARG_COUNT</a>
 
                                 
                                     <span class="flag static">static</span>
@@ -518,33 +479,21 @@ settings we should be using. Located in the namespace <strong>Canteen\Server</st
                 <h2 class="off-left">Methods</h2>
 
                 
-                    <div id="method_isAssoc" class="method item private">
-    <h3 class="name"><code>isAssoc</code></h3>
+                    <div id="method_getResult" class="method item inherited">
+    <h3 class="name"><code>getResult</code></h3>
 
     
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>arr</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
+        <span class="paren">()</span>
     
 
     
         <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
+            <span class="type">Dictionary</span>
         </span>
     
 
     
 
-    
-        <span class="flag private">private</span>
     
 
     
@@ -558,9 +507,8 @@ settings we should be using. Located in the namespace <strong>Canteen\Server</st
     <div class="meta">
         
             
-                
-                <p>
-                
+                <p>Inherited from
+                <a href="../classes/CanteenError.html#method_getResult">CanteenError</a>:
             
         
         
@@ -573,34 +521,10 @@ settings we should be using. Located in the namespace <strong>Canteen\Server</st
     </div>
 
     <div class="description">
-        <p>Check to see if an array is associative</p>
+        <p>Get the result object</p>
 
     </div>
 
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">arr</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The array to check</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
     
 
     
@@ -610,100 +534,13 @@ settings we should be using. Located in the namespace <strong>Canteen\Server</st
             <div class="returns-description">
                 
                     
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>:
+                        <span class="type">Dictionary</span>:
                     
-                    <p>if the array is associative</p>
+                    <p>The result Exception object formatted nicely</p>
 
                 
             </div>
         </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_processURI" class="method item private">
-    <h3 class="name"><code>processURI</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>basePath</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-
-    
-
-    
-        <span class="flag private">private</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Process the site URI</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">basePath</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The base path of the site, if any</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
     
 
     
@@ -718,412 +555,8 @@ settings we should be using. Located in the namespace <strong>Canteen\Server</st
                 <h2 class="off-left">Properties</h2>
 
                 
-                    <div id="property_defaultSettings" class="property item private">
-    <h3 class="name"><code>defaultSettings</code></h3>
-    <span class="type">Dictionary</span>
-
-    
-
-    
-        <span class="flag private">private</span>
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>The default settings</p>
-
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_defaultSettings.cacheDirectory" class="property item private">
-    <h3 class="name"><code>defaultSettings.cacheDirectory</code></h3>
-    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-
-    
-
-    
-        <span class="flag private">private</span>
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>The location of the write-able cache directory if using cache
-and memcache isn&#39;t enabled.</p>
-
-    </div>
-
-    
-        <p><strong>Default:</strong> null</p>
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_defaultSettings.cacheEnabled" class="property item private">
-    <h3 class="name"><code>defaultSettings.cacheEnabled</code></h3>
-    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
-
-    
-
-    
-        <span class="flag private">private</span>
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>The default deployment setting if cache is enabled</p>
-
-    </div>
-
-    
-        <p><strong>Default:</strong> false</p>
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_defaultSettings.compress" class="property item private">
-    <h3 class="name"><code>defaultSettings.compress</code></h3>
-    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
-
-    
-
-    
-        <span class="flag private">private</span>
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>The default deployment setting if gzip compression is on</p>
-
-    </div>
-
-    
-        <p><strong>Default:</strong> false</p>
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_defaultSettings.dbHost" class="property item private">
-    <h3 class="name"><code>defaultSettings.dbHost</code></h3>
-    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
-
-    
-
-    
-        <span class="flag private">private</span>
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>The default deployment database host name</p>
-
-    </div>
-
-    
-        <p><strong>Default:</strong> &#x27;localhost&#x27;</p>
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_defaultSettings.debug" class="property item private">
-    <h3 class="name"><code>defaultSettings.debug</code></h3>
-    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
-
-    
-
-    
-        <span class="flag private">private</span>
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>The default deployment setting if debug mode is enabled</p>
-
-    </div>
-
-    
-        <p><strong>Default:</strong> false</p>
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_defaultSettings.domain" class="property item private">
-    <h3 class="name"><code>defaultSettings.domain</code></h3>
-    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
-
-    
-
-    
-        <span class="flag private">private</span>
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>The default deployment level</p>
-
-    </div>
-
-    
-        <p><strong>Default:</strong> &#x27;*&#x27;</p>
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_defaultSettings.level" class="property item private">
-    <h3 class="name"><code>defaultSettings.level</code></h3>
-    <span class="type">Int</span>
-
-    
-
-    
-        <span class="flag private">private</span>
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>The default deployment leve</p>
-
-    </div>
-
-    
-        <p><strong>Default:</strong> DeployementStatus::LIVE</p>
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_defaultSettings.minify" class="property item private">
-    <h3 class="name"><code>defaultSettings.minify</code></h3>
-    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-
-    
-
-    
-        <span class="flag private">private</span>
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>The default deployment setting if cache is enabled</p>
-
-    </div>
-
-    
-        <p><strong>Default:</strong> false</p>
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_DEVELOPMENT" class="property item">
-    <h3 class="name"><code>DEVELOPMENT</code></h3>
+                    <div id="property_INVALID_FIELD_NAME" class="property item">
+    <h3 class="name"><code>INVALID_FIELD_NAME</code></h3>
     <span class="type">Int</span>
 
     
@@ -1155,8 +588,7 @@ and memcache isn&#39;t enabled.</p>
     </div>
 
     <div class="description">
-        <p>The deployment level for a development site, typically development 
-sites change nightly or very frequently.</p>
+        <p>There is no field matching the supplied name</p>
 
     </div>
 
@@ -1168,8 +600,8 @@ sites change nightly or very frequently.</p>
 </div>
 
                 
-                    <div id="property_LIVE" class="property item">
-    <h3 class="name"><code>LIVE</code></h3>
+                    <div id="property_INVALID_INDEX" class="property item">
+    <h3 class="name"><code>INVALID_INDEX</code></h3>
     <span class="type">Int</span>
 
     
@@ -1201,7 +633,7 @@ sites change nightly or very frequently.</p>
     </div>
 
     <div class="description">
-        <p>The deployment level for a live site.</p>
+        <p>There is not a valid dynamic method matching this name</p>
 
     </div>
 
@@ -1213,8 +645,8 @@ sites change nightly or very frequently.</p>
 </div>
 
                 
-                    <div id="property_LOCAL" class="property item">
-    <h3 class="name"><code>LOCAL</code></h3>
+                    <div id="property_INVALID_METHOD" class="property item">
+    <h3 class="name"><code>INVALID_METHOD</code></h3>
     <span class="type">Int</span>
 
     
@@ -1246,8 +678,7 @@ sites change nightly or very frequently.</p>
     </div>
 
     <div class="description">
-        <p>The deployment level for a local site which us usually only for local
-development and is not typically viewable anyone but the developer.</p>
+        <p>The dynamic method name is invalid for the service</p>
 
     </div>
 
@@ -1259,51 +690,8 @@ development and is not typically viewable anyone but the developer.</p>
 </div>
 
                 
-                    <div id="property_properties" class="property item public">
-    <h3 class="name"><code>properties</code></h3>
-    <span class="type">Dictionary</span>
-
-    
-
-    
-        <span class="flag public">public</span>
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Save the collection of deployable configuration variables</p>
-
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_STAGING" class="property item">
-    <h3 class="name"><code>STAGING</code></h3>
+                    <div id="property_INVALID_PROPERTY" class="property item">
+    <h3 class="name"><code>INVALID_PROPERTY</code></h3>
     <span class="type">Int</span>
 
     
@@ -1335,8 +723,189 @@ development and is not typically viewable anyone but the developer.</p>
     </div>
 
     <div class="description">
-        <p>The deployment level for a staging site, typically a place where
-a site lives before it&#39;s ready to go live. Changes infrequently.</p>
+        <p>The dynamic method name is invalid for the service</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_messages" class="property item private">
+    <h3 class="name"><code>messages</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+        <span class="flag final">final</span>
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The collection of messages</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_NO_DEFAULT_INDEX" class="property item">
+    <h3 class="name"><code>NO_DEFAULT_INDEX</code></h3>
+    <span class="type">Int</span>
+
+    
+
+    
+
+    
+        <span class="flag final">final</span>
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Custom service does not have a default index</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_UNREGISTERED_ITEM" class="property item">
+    <h3 class="name"><code>UNREGISTERED_ITEM</code></h3>
+    <span class="type">Int</span>
+
+    
+
+    
+
+    
+        <span class="flag final">final</span>
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The definition name is invalid</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_WRONG_ARG_COUNT" class="property item">
+    <h3 class="name"><code>WRONG_ARG_COUNT</code></h3>
+    <span class="type">Int</span>
+
+    
+
+    
+
+    
+        <span class="flag final">final</span>
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Wrong number of arguments for dynamic method</p>
 
     </div>
 

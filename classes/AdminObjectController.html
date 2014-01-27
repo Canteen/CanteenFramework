@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
     <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
     <script src="http://yui.yahooapis.com/3.10.1/build/yui/yui-min.js"></script>
-	<title>Canteen Database API v1.0.0 API Documentation : AdminPagesController</title>  
+	<title>Canteen Database API v1.1.0 API Documentation : AdminObjectController</title>  
 </head>
 <body class="yui3-skin-sam">
 
@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Documentation for: 1.0.0</em>
+            <em>API Documentation for: 1.1.0</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -43,11 +43,13 @@
             
                 <li><a href="../classes/AdminController.html">AdminController</a></li>
             
-                <li><a href="../classes/AdminPagesController.html">AdminPagesController</a></li>
+                <li><a href="../classes/AdminObjectController.html">AdminObjectController</a></li>
+            
+                <li><a href="../classes/AdminPageController.html">AdminPageController</a></li>
             
                 <li><a href="../classes/AdminPasswordController.html">AdminPasswordController</a></li>
             
-                <li><a href="../classes/AdminUsersController.html">AdminUsersController</a></li>
+                <li><a href="../classes/AdminUserController.html">AdminUserController</a></li>
             
                 <li><a href="../classes/Authorization.html">Authorization</a></li>
             
@@ -59,19 +61,23 @@
             
                 <li><a href="../classes/ConfigService.html">ConfigService</a></li>
             
-                <li><a href="../classes/ConfigUpdate.html">ConfigUpdate</a></li>
-            
                 <li><a href="../classes/Controller.html">Controller</a></li>
             
-                <li><a href="../classes/DatabaseUpdate.html">DatabaseUpdate</a></li>
+                <li><a href="../classes/DatabaseForm.html">DatabaseForm</a></li>
+            
+                <li><a href="../classes/DateUtils.html">DateUtils</a></li>
             
                 <li><a href="../classes/DeploymentStatus.html">DeploymentStatus</a></li>
             
-                <li><a href="../classes/ForgotPassword.html">ForgotPassword</a></li>
+                <li><a href="../classes/Event.html">Event</a></li>
+            
+                <li><a href="../classes/FileError.html">FileError</a></li>
             
                 <li><a href="../classes/ForgotPasswordController.html">ForgotPasswordController</a></li>
             
-                <li><a href="../classes/FormBase.html">FormBase</a></li>
+                <li><a href="../classes/ForgotPasswordForm.html">ForgotPasswordForm</a></li>
+            
+                <li><a href="../classes/Form.html">Form</a></li>
             
                 <li><a href="../classes/FormFactory.html">FormFactory</a></li>
             
@@ -79,39 +85,45 @@
             
                 <li><a href="../classes/ifsetor.html">ifsetor</a></li>
             
-                <li><a href="../classes/Installer.html">Installer</a></li>
+                <li><a href="../classes/InstallerForm.html">InstallerForm</a></li>
             
                 <li><a href="../classes/JSONServer.html">JSONServer</a></li>
             
                 <li><a href="../classes/JSONServerError.html">JSONServerError</a></li>
             
-                <li><a href="../classes/Login.html">Login</a></li>
+                <li><a href="../classes/LoginForm.html">LoginForm</a></li>
+            
+                <li><a href="../classes/ObjectControllerEvent.html">ObjectControllerEvent</a></li>
+            
+                <li><a href="../classes/ObjectForm.html">ObjectForm</a></li>
+            
+                <li><a href="../classes/ObjectFormElement.html">ObjectFormElement</a></li>
+            
+                <li><a href="../classes/ObjectFormEvent.html">ObjectFormEvent</a></li>
+            
+                <li><a href="../classes/ObjectService.html">ObjectService</a></li>
+            
+                <li><a href="../classes/ObjectServiceError.html">ObjectServiceError</a></li>
+            
+                <li><a href="../classes/ObjectServiceField.html">ObjectServiceField</a></li>
+            
+                <li><a href="../classes/ObjectServiceItem.html">ObjectServiceItem</a></li>
+            
+                <li><a href="../classes/ObjectUtils.html">ObjectUtils</a></li>
             
                 <li><a href="../classes/Page.html">Page</a></li>
             
                 <li><a href="../classes/PageBuilder.html">PageBuilder</a></li>
             
+                <li><a href="../classes/PageForm.html">PageForm</a></li>
+            
                 <li><a href="../classes/PageService.html">PageService</a></li>
             
-                <li><a href="../classes/PageUpdate.html">PageUpdate</a></li>
-            
-                <li><a href="../classes/Parser.html">Parser</a></li>
-            
-                <li><a href="../classes/PasswordUpdate.html">PasswordUpdate</a></li>
+                <li><a href="../classes/PasswordForm.html">PasswordForm</a></li>
             
                 <li><a href="../classes/PasswordUtils.html">PasswordUtils</a></li>
             
                 <li><a href="../classes/Privilege.html">Privilege</a></li>
-            
-                <li><a href="../classes/Profiler.html">Profiler</a></li>
-            
-                <li><a href="../classes/ProfilerGhostNode.html">ProfilerGhostNode</a></li>
-            
-                <li><a href="../classes/ProfilerNode.html">ProfilerNode</a></li>
-            
-                <li><a href="../classes/ProfilerRenderer.html">ProfilerRenderer</a></li>
-            
-                <li><a href="../classes/ProfilerSQLNode.html">ProfilerSQLNode</a></li>
             
                 <li><a href="../classes/redirect.html">redirect</a></li>
             
@@ -119,9 +131,11 @@
             
                 <li><a href="../classes/Service.html">Service</a></li>
             
-                <li><a href="../classes/ServiceBrowser.html">ServiceBrowser</a></li>
-            
                 <li><a href="../classes/SettingsManager.html">SettingsManager</a></li>
+            
+                <li><a href="../classes/SetupForm.html">SetupForm</a></li>
+            
+                <li><a href="../classes/SimpleObjectService.html">SimpleObjectService</a></li>
             
                 <li><a href="../classes/Site.html">Site</a></li>
             
@@ -133,9 +147,9 @@
             
                 <li><a href="../classes/UserError.html">UserError</a></li>
             
-                <li><a href="../classes/UserService.html">UserService</a></li>
+                <li><a href="../classes/UserForm.html">UserForm</a></li>
             
-                <li><a href="../classes/UserUpdate.html">UserUpdate</a></li>
+                <li><a href="../classes/UserService.html">UserService</a></li>
             
                 <li><a href="../classes/Validate.html">Validate</a></li>
             
@@ -154,8 +168,6 @@
                 <li><a href="../modules/Canteen_Forms.html">Canteen\Forms</a></li>
             
                 <li><a href="../modules/Canteen_Parser.html">Canteen\Parser</a></li>
-            
-                <li><a href="../modules/Canteen_Profiler.html">Canteen\Profiler</a></li>
             
                 <li><a href="../modules/Canteen_Server.html">Canteen\Server</a></li>
             
@@ -200,7 +212,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>AdminPagesController Class</h1>
+                        <h1>AdminObjectController Class</h1>
 <div class="box meta">
     
 
@@ -224,11 +236,143 @@
 
 
 <div class="box intro">
-    <p>Controller to manage the page management form.
+    <p>Admin controller for standard object editing
 Located in the namespace <strong>Canteen\Controllers</strong>.</p>
 
 </div>
 
+
+    <div class="constructor">
+        <h2>Constructor</h2>
+        <div id="method_AdminObjectController" class="method item">
+    <h3 class="name"><code>AdminObjectController</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>item</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>formName</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[titleName=&#x27;title&#x27;]</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">item</code>
+                        <span class="type"><a href="../classes/ObjectServiceItem.html" class="crosslink">ObjectServiceItem</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The item render with controller</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">formName</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The full class name of the form</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[titleName=&#x27;title&#x27;]</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The name of the object field to use as select title</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+    </div>
 
 
 <div id="classdocs" class="tabview">
@@ -262,6 +406,20 @@ Located in the namespace <strong>Canteen\Controllers</strong>.</p>
                                 
                             </li>
                         
+                            <li class="index-item method protected">
+                                <a href="#method_addElement">addElement</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method protected">
+                                <a href="#method_addNotice">addNotice</a>
+
+                                
+                                
+                            </li>
+                        
                             <li class="index-item method protected inherited">
                                 <a href="#method_addTemplate">addTemplate</a>
 
@@ -271,13 +429,6 @@ Located in the namespace <strong>Canteen\Controllers</strong>.</p>
                         
                             <li class="index-item method inherited">
                                 <a href="#method_addTitle">addTitle</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method private">
-                                <a href="#method_getContents">getContents</a>
 
                                 
                                 
@@ -297,8 +448,15 @@ Located in the namespace <strong>Canteen\Controllers</strong>.</p>
                                 
                             </li>
                         
-                            <li class="index-item method private">
-                                <a href="#method_getPages">getPages</a>
+                            <li class="index-item method">
+                                <a href="#method_ignoreFields">ignoreFields</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_optionalFields">optionalFields</a>
 
                                 
                                 
@@ -332,6 +490,13 @@ Located in the namespace <strong>Canteen\Controllers</strong>.</p>
                                 
                             </li>
                         
+                            <li class="index-item method inherited">
+                                <a href="#method_setPage">setPage</a>
+
+                                
+                                
+                            </li>
+                        
                             <li class="index-item method protected inherited">
                                 <a href="#method_template">template</a>
 
@@ -356,8 +521,8 @@ Located in the namespace <strong>Canteen\Controllers</strong>.</p>
                                 
                             </li>
                         
-                            <li class="index-item property private">
-                                <a href="#property_allPages">allPages</a>
+                            <li class="index-item property protected">
+                                <a href="#property_allObjects">allObjects</a>
 
                                 
                                 
@@ -384,6 +549,48 @@ Located in the namespace <strong>Canteen\Controllers</strong>.</p>
                                 
                             </li>
                         
+                            <li class="index-item property protected">
+                                <a href="#property_formName">formName</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property protected">
+                                <a href="#property_getObject">getObject</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property protected">
+                                <a href="#property_getObjects">getObjects</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property private">
+                                <a href="#property_ignoreFields">ignoreFields</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property protected">
+                                <a href="#property_object">object</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property private">
+                                <a href="#property_optionalFields">optionalFields</a>
+
+                                
+                                
+                            </li>
+                        
                             <li class="index-item property protected inherited">
                                 <a href="#property_page">page</a>
 
@@ -405,6 +612,13 @@ Located in the namespace <strong>Canteen\Controllers</strong>.</p>
                                 
                             </li>
                         
+                            <li class="index-item property protected">
+                                <a href="#property_removeEnabled">removeEnabled</a>
+
+                                
+                                
+                            </li>
+                        
                             <li class="index-item property inherited">
                                 <a href="#property_settings">settings</a>
 
@@ -414,6 +628,13 @@ Located in the namespace <strong>Canteen\Controllers</strong>.</p>
                         
                             <li class="index-item property inherited">
                                 <a href="#property_site">site</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property protected">
+                                <a href="#property_titleName">titleName</a>
 
                                 
                                 
@@ -546,6 +767,180 @@ Located in the namespace <strong>Canteen\Controllers</strong>.</p>
 </div>
 
                 
+                    <div id="method_addElement" class="method item protected">
+    <h3 class="name"><code>addElement</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>element</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Add a custom form element</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">element</code>
+                        <span class="type"><a href="../classes/ObjectFormElement.html" class="crosslink">ObjectFormElement</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The form element to add</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_addNotice" class="method item protected">
+    <h3 class="name"><code>addNotice</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>message</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Add a notice to the buffer output</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">message</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The message to output</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="method_addTemplate" class="method item protected inherited">
     <h3 class="name"><code>addTemplate</code></h3>
 
@@ -561,7 +956,7 @@ Located in the namespace <strong>Canteen\Controllers</strong>.</p>
             
                 <li class="arg">
                     
-                        <code class="optional">[data=array()]</code>
+                        <code class="optional">[data=[]</code>
                     
                 </li>
             
@@ -631,7 +1026,7 @@ use the default prerender() method</p>
             
                 <li class="param">
                     
-                        <code class="param-name optional">[data=array()]</code>
+                        <code class="param-name optional">[data=[]</code>
                         <span class="type">Dictionary</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
@@ -757,111 +1152,6 @@ use the default prerender() method</p>
         </div>
     
 
-    
-
-    
-</div>
-
-                
-                    <div id="method_getContents" class="method item private">
-    <h3 class="name"><code>getContents</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>path</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-        </span>
-    
-
-    
-
-    
-        <span class="flag private">private</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Get the page contents from the path</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">path</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The path to the content</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>:
-                    
-                    <p>The string for the page</p>
-
-                
-            </div>
-        </div>
     
 
     
@@ -1006,8 +1296,8 @@ before returning the page, we render the navigation</p>
 </div>
 
                 
-                    <div id="method_getPages" class="method item private">
-    <h3 class="name"><code>getPages</code></h3>
+                    <div id="method_ignoreFields" class="method item">
+    <h3 class="name"><code>ignoreFields</code></h3>
 
     
         <div class="args">
@@ -1015,13 +1305,7 @@ before returning the page, we render the navigation</p>
             
                 <li class="arg">
                     
-                        <code class="optional">[selectId=null]</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code class="optional">[ignoreId=null]</code>
+                        <code>fields</code>
                     
                 </li>
             
@@ -1033,8 +1317,6 @@ before returning the page, we render the navigation</p>
 
     
 
-    
-        <span class="flag private">private</span>
     
 
     
@@ -1063,7 +1345,7 @@ before returning the page, we render the navigation</p>
     </div>
 
     <div class="description">
-        <p>Get the users as options</p>
+        <p>Ignore field names</p>
 
     </div>
 
@@ -1075,32 +1357,103 @@ before returning the page, we render the navigation</p>
             
                 <li class="param">
                     
-                        <code class="param-name optional">[selectId=null]</code>
-                        <span class="type">Int</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                        <code class="param-name">fields</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
                     
 
+                    
+                        <span class="flag multiple" title="This argument may occur one or more times.">multiple</span>
                     
 
                     <div class="param-description">
-                        <p>Select this optional page ID</p>
+                        <p>The field name as separate arguments</p>
 
                     </div>
 
                     
                 </li>
             
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_optionalFields" class="method item">
+    <h3 class="name"><code>optionalFields</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>fields</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Don&#39;t add the required class to these fields</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
                 <li class="param">
                     
-                        <code class="param-name optional">[ignoreId=null]</code>
-                        <span class="type">Int</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                        <code class="param-name">fields</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
                     
 
+                    
+                        <span class="flag multiple" title="This argument may occur one or more times.">multiple</span>
                     
 
                     <div class="param-description">
-                        <p>Ignore optional page ID</p>
+                        <p>The field name as separate arguments</p>
 
                     </div>
 
@@ -1335,7 +1688,8 @@ before returning the page, we render the navigation</p>
     </div>
 
     <div class="description">
-        <p>Process the controller and build the view</p>
+        <p>The process method contains nothing
+navigation is created when renderNavigation is called.</p>
 
     </div>
 
@@ -1451,6 +1805,90 @@ before returning the page, we render the navigation</p>
 </div>
 
                 
+                    <div id="method_setPage" class="method item inherited">
+    <h3 class="name"><code>setPage</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>page</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/Controller.html#method_setPage">Controller</a>:
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Set the current page</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">page</code>
+                        <span class="type"><a href="../classes/Page.html" class="crosslink">Page</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The page to build with this Controller</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="method_template" class="method item protected inherited">
     <h3 class="name"><code>template</code></h3>
 
@@ -1466,7 +1904,7 @@ before returning the page, we render the navigation</p>
             
                 <li class="arg">
                     
-                        <code class="optional">[substitutions=array()]</code>
+                        <code class="optional">[substitutions=[]</code>
                     
                 </li>
             
@@ -1539,7 +1977,7 @@ before returning the page, we render the navigation</p>
             
                 <li class="param">
                     
-                        <code class="param-name optional">[substitutions=array()]</code>
+                        <code class="param-name optional">[substitutions=[]</code>
                         <span class="type">Dictionary</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
@@ -1628,14 +2066,14 @@ before returning the page, we render the navigation</p>
 </div>
 
                 
-                    <div id="property_allPages" class="property item private">
-    <h3 class="name"><code>allPages</code></h3>
+                    <div id="property_allObjects" class="property item protected">
+    <h3 class="name"><code>allObjects</code></h3>
     <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
 
     
 
     
-        <span class="flag private">private</span>
+        <span class="flag protected">protected</span>
     
 
     
@@ -1659,7 +2097,8 @@ before returning the page, we render the navigation</p>
     </div>
 
     <div class="description">
-        <p>Process the controller and build the view</p>
+        <p>The collection of all object, this can be used to eliminate an additional
+database request for all the pages.</p>
 
     </div>
 
@@ -1795,6 +2234,264 @@ before returning the page, we render the navigation</p>
 </div>
 
                 
+                    <div id="property_formName" class="property item protected">
+    <h3 class="name"><code>formName</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The name of the full form</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_getObject" class="property item protected">
+    <h3 class="name"><code>getObject</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The method name on the item service to get the object by id</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_getObjects" class="property item protected">
+    <h3 class="name"><code>getObjects</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The method name on the item service to get all objects</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_ignoreFields" class="property item private">
+    <h3 class="name"><code>ignoreFields</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The collection of field names which we should ignore render for</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_object" class="property item protected">
+    <h3 class="name"><code>object</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The selected object</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_optionalFields" class="property item private">
+    <h3 class="name"><code>optionalFields</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The collection of field names which are optional to input</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="property_page" class="property item protected inherited">
     <h3 class="name"><code>page</code></h3>
     <span class="type"><a href="../classes/Page.html" class="crosslink">Page</a></span>
@@ -1839,7 +2536,7 @@ before returning the page, we render the navigation</p>
                 
                     <div id="property_parser" class="property item inherited">
     <h3 class="name"><code>parser</code></h3>
-    <span class="type"><a href="../classes/Parser.html" class="crosslink">Parser</a></span>
+    <span class="type">Parser</span>
 
     
 
@@ -1879,7 +2576,7 @@ before returning the page, we render the navigation</p>
                 
                     <div id="property_profiler" class="property item inherited">
     <h3 class="name"><code>profiler</code></h3>
-    <span class="type"><a href="../classes/Profiler.html" class="crosslink">Profiler</a></span>
+    <span class="type">Profiler</span>
 
     
 
@@ -1909,6 +2606,51 @@ before returning the page, we render the navigation</p>
 
     </div>
 
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_removeEnabled" class="property item protected">
+    <h3 class="name"><code>removeEnabled</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>If the delete button is enabled</p>
+
+    </div>
+
+    
+        <p><strong>Default:</strong> true</p>
     
 
     
@@ -1989,6 +2731,51 @@ before returning the page, we render the navigation</p>
 
     </div>
 
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_titleName" class="property item protected">
+    <h3 class="name"><code>titleName</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The name of the item field for use in the select form list</p>
+
+    </div>
+
+    
+        <p><strong>Default:</strong> &#x27;title&#x27;</p>
     
 
     

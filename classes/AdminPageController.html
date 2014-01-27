@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
     <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
     <script src="http://yui.yahooapis.com/3.10.1/build/yui/yui-min.js"></script>
-	<title>Canteen Database API v1.1.0 API Documentation : Config</title>  
+	<title>Canteen Database API v1.1.0 API Documentation : AdminPageController</title>  
 </head>
 <body class="yui3-skin-sam">
 
@@ -212,13 +212,13 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>Config Class</h1>
+                        <h1>AdminPageController Class</h1>
 <div class="box meta">
     
 
     
         <div class="extends">
-            Extends <a href="../classes/ObjectForm.html" class="crosslink">ObjectForm</a>
+            Extends <a href="../classes/AdminObjectController.html" class="crosslink">AdminObjectController</a>
         </div>
     
 
@@ -226,7 +226,7 @@
 
     
         
-            Namespace: <a href="../modules/Canteen\Services\Objects.html">Canteen\Services\Objects</a>
+            Namespace: <a href="../modules/Canteen\Controllers.html">Canteen\Controllers</a>
         
     
 
@@ -236,7 +236,8 @@
 
 
 <div class="box intro">
-    <p>Data class which represents a single config property.  Located in the namespace <strong>Canteen\Services\Objects</strong>.</p>
+    <p>Controller to manage the page management form.
+Located in the namespace <strong>Canteen\Controllers</strong>.</p>
 
 </div>
 
@@ -266,57 +267,106 @@
 
                     <ul class="index-list methods extends">
                         
+                            <li class="index-item method inherited">
+                                <a href="#method_addData">addData</a>
+
+                                
+                                
+                            </li>
+                        
                             <li class="index-item method protected inherited">
-                                <a href="#method_add">add</a>
+                                <a href="#method_addElement">addElement</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method protected inherited">
+                                <a href="#method_addNotice">addNotice</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method protected inherited">
+                                <a href="#method_addTemplate">addTemplate</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method inherited">
+                                <a href="#method_addTitle">addTitle</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method private">
-                                <a href="#method_autoDetectType">autoDetectType</a>
+                                <a href="#method_getContents">getContents</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method protected inherited">
-                                <a href="#method_error">error</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method protected inherited">
+                            <li class="index-item method inherited">
                                 <a href="#method_getData">getData</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method private inherited">
-                                <a href="#method_getObject">getObject</a>
+                            <li class="index-item method inherited inherited">
+                                <a href="#method_getPage">getPage</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method private">
+                                <a href="#method_getPageOptions">getPageOptions</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method inherited">
+                                <a href="#method_ignoreFields">ignoreFields</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_onBeforeAdd">onBeforeAdd</a>
+                                <a href="#method_onElementAdd">onElementAdd</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_onBeforeRemove">onBeforeRemove</a>
+                                <a href="#method_onElementAdded">onElementAdded</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_onBeforeUpdate">onBeforeUpdate</a>
+                                <a href="#method_onStart">onStart</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_onStartElements">onStartElements</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method inherited">
+                                <a href="#method_optionalFields">optionalFields</a>
 
                                 
                                 
@@ -329,15 +379,15 @@
                                 
                             </li>
                         
-                            <li class="index-item method protected inherited">
-                                <a href="#method_privilege">privilege</a>
+                            <li class="index-item method private inherited">
+                                <a href="#method_pre-render">pre-render</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method protected inherited">
-                                <a href="#method_remove">remove</a>
+                            <li class="index-item method inherited inherited">
+                                <a href="#method_process">process</a>
 
                                 
                                 
@@ -350,8 +400,8 @@
                                 
                             </li>
                         
-                            <li class="index-item method protected inherited">
-                                <a href="#method_success">success</a>
+                            <li class="index-item method inherited">
+                                <a href="#method_setPage">setPage</a>
 
                                 
                                 
@@ -359,20 +409,6 @@
                         
                             <li class="index-item method protected inherited">
                                 <a href="#method_template">template</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method protected inherited">
-                                <a href="#method_update">update</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method protected inherited">
-                                <a href="#method_verify">verify</a>
 
                                 
                                 
@@ -388,15 +424,15 @@
 
                     <ul class="index-list properties extends">
                         
-                            <li class="index-item property">
-                                <a href="#property_access">access</a>
+                            <li class="index-item property private inherited">
+                                <a href="#property__isPrerendered">_isPrerendered</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item property protected inherited">
-                                <a href="#property_addRedirect">addRedirect</a>
+                                <a href="#property_allObjects">allObjects</a>
 
                                 
                                 
@@ -409,29 +445,78 @@
                                 
                             </li>
                         
-                            <li class="index-item property">
-                                <a href="#property_id">id</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item property inherited">
-                                <a href="#property_ifError">ifError</a>
+                            <li class="index-item property protected inherited">
+                                <a href="#property_data">data</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item property protected inherited">
-                                <a href="#property_item">item</a>
+                                <a href="#property_dynamicUri">dynamicUri</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item property">
-                                <a href="#property_name">name</a>
+                            <li class="index-item property protected inherited">
+                                <a href="#property_formName">formName</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property protected inherited">
+                                <a href="#property_getObject">getObject</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property protected inherited">
+                                <a href="#property_getObjects">getObjects</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property private inherited">
+                                <a href="#property_ignoreFields">ignoreFields</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property private">
+                                <a href="#property_isProtected">isProtected</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property private">
+                                <a href="#property_isWriteable">isWriteable</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property protected inherited">
+                                <a href="#property_object">object</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property private inherited">
+                                <a href="#property_optionalFields">optionalFields</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property protected inherited">
+                                <a href="#property_page">page</a>
 
                                 
                                 
@@ -451,15 +536,15 @@
                                 
                             </li>
                         
-                            <li class="index-item property protected inherited">
-                                <a href="#property_redirect">redirect</a>
+                            <li class="index-item property private">
+                                <a href="#property_readOnly">readOnly</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item property protected inherited">
-                                <a href="#property_removeRedirect">removeRedirect</a>
+                                <a href="#property_removeEnabled">removeEnabled</a>
 
                                 
                                 
@@ -479,22 +564,8 @@
                                 
                             </li>
                         
-                            <li class="index-item property">
-                                <a href="#property_type">type</a>
-
-                                
-                                
-                            </li>
-                        
                             <li class="index-item property protected inherited">
-                                <a href="#property_updateNothingError">updateNothingError</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item property protected inherited">
-                                <a href="#property_updateRedirect">updateRedirect</a>
+                                <a href="#property_titleName">titleName</a>
 
                                 
                                 
@@ -502,13 +573,6 @@
                         
                             <li class="index-item property inherited">
                                 <a href="#property_user">user</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item property">
-                                <a href="#property_value">value</a>
 
                                 
                                 
@@ -528,11 +592,127 @@
                 <h2 class="off-left">Methods</h2>
 
                 
-                    <div id="method_add" class="method item protected inherited">
-    <h3 class="name"><code>add</code></h3>
+                    <div id="method_addData" class="method item inherited">
+    <h3 class="name"><code>addData</code></h3>
 
     
-        <span class="paren">()</span>
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>name</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>value</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/Controller.html#method_addData">Controller</a>:
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Add a data substitution variable</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">name</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a> | Dictionary | <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The name of the data variable or an array of (name=&gt;value, name=&gt;value)</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">value</code>
+                        <span class="type">Mixed</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The string of the value (optional if setting one data property)</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_addElement" class="method item protected inherited">
+    <h3 class="name"><code>addElement</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>element</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
     
 
     
@@ -555,7 +735,7 @@
         
             
                 <p>Inherited from
-                <a href="../classes/ObjectForm.html#method_add">ObjectForm</a>:
+                <a href="../classes/AdminObjectController.html#method_addElement">AdminObjectController</a>:
             
         
         
@@ -568,76 +748,7 @@
     </div>
 
     <div class="description">
-        <p>Add a new object</p>
-
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="method_autoDetectType" class="method item private">
-    <h3 class="name"><code>autoDetectType</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>value</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-        </span>
-    
-
-    
-
-    
-        <span class="flag private">private</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                    <p>Provided by the <a href="../modules/Canteen\Forms.html">Canteen\Forms</a> module.</p>
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Auto detect the value type</p>
+        <p>Add a custom form element</p>
 
     </div>
 
@@ -649,14 +760,14 @@
             
                 <li class="param">
                     
-                        <code class="param-name">value</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                        <code class="param-name">element</code>
+                        <span class="type"><a href="../classes/ObjectFormElement.html" class="crosslink">ObjectFormElement</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>The value to check</p>
+                        <p>The form element to add</p>
 
                     </div>
 
@@ -668,27 +779,13 @@
     
 
     
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>:
-                    
-                    <p>The value type (boolean, string, integer)</p>
-
-                
-            </div>
-        </div>
-    
 
     
 </div>
 
                 
-                    <div id="method_error" class="method item protected inherited">
-    <h3 class="name"><code>error</code></h3>
+                    <div id="method_addNotice" class="method item protected inherited">
+    <h3 class="name"><code>addNotice</code></h3>
 
     
         <div class="args">
@@ -724,7 +821,7 @@
         
             
                 <p>Inherited from
-                <a href="../classes/Form.html#method_error">Form</a>:
+                <a href="../classes/AdminObjectController.html#method_addNotice">AdminObjectController</a>:
             
         
         
@@ -737,7 +834,7 @@
     </div>
 
     <div class="description">
-        <p>Convenience function for passing an error to the form factory</p>
+        <p>Add a notice to the buffer output</p>
 
     </div>
 
@@ -756,7 +853,7 @@
                     
 
                     <div class="param-description">
-                        <p>The str error to pass</p>
+                        <p>The message to output</p>
 
                     </div>
 
@@ -773,8 +870,8 @@
 </div>
 
                 
-                    <div id="method_getData" class="method item protected inherited">
-    <h3 class="name"><code>getData</code></h3>
+                    <div id="method_addTemplate" class="method item protected inherited">
+    <h3 class="name"><code>addTemplate</code></h3>
 
     
         <div class="args">
@@ -782,13 +879,13 @@
             
                 <li class="arg">
                     
-                        <code>name</code>
+                        <code>template</code>
                     
                 </li>
             
                 <li class="arg">
                     
-                        <code>value</code>
+                        <code class="optional">[data=[]</code>
                     
                 </li>
             
@@ -816,7 +913,7 @@
         
             
                 <p>Inherited from
-                <a href="../classes/Form.html#method_getData">Form</a>:
+                <a href="../classes/AdminController.html#method_addTemplate">AdminController</a>:
             
         
         
@@ -829,7 +926,8 @@
     </div>
 
     <div class="description">
-        <p>Save the form data to the form factory</p>
+        <p>Add the admin page by template, if there is no template
+use the default prerender() method</p>
 
     </div>
 
@@ -841,14 +939,14 @@
             
                 <li class="param">
                     
-                        <code class="param-name">name</code>
+                        <code class="param-name">template</code>
                         <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>The name of the variable to save</p>
+                        <p>The template name</p>
 
                     </div>
 
@@ -857,14 +955,15 @@
             
                 <li class="param">
                     
-                        <code class="param-name">value</code>
-                        <span class="type">Mixed</span>
+                        <code class="param-name optional">[data=[]</code>
+                        <span class="type">Dictionary</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>The value of the variable to save</p>
+                        <p>The optional substitution variables</p>
 
                     </div>
 
@@ -881,8 +980,8 @@
 </div>
 
                 
-                    <div id="method_getObject" class="method item private inherited">
-    <h3 class="name"><code>getObject</code></h3>
+                    <div id="method_addTitle" class="method item inherited">
+    <h3 class="name"><code>addTitle</code></h3>
 
     
         <div class="args">
@@ -890,7 +989,13 @@
             
                 <li class="arg">
                     
-                        <code>id</code>
+                        <code>title</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[separator=.]</code>
                     
                 </li>
             
@@ -899,8 +1004,99 @@
     
 
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/Controller.html#method_addTitle">Controller</a>:
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Prepend to the page title</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">title</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The title string to prepend</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[separator=.]</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The title separator, default is a period</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_getContents" class="method item private">
+    <h3 class="name"><code>getContents</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
         <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
         </span>
     
 
@@ -921,8 +1117,9 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/ObjectForm.html#method_getObject">ObjectForm</a>:
+                
+                <p>
+                
             
         
         
@@ -935,7 +1132,244 @@
     </div>
 
     <div class="description">
-        <p>Generalized get object by ID</p>
+        <p>Get the page contents from the path</p>
+
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>:
+                    
+                    <p>The string for the page</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_getData" class="method item inherited">
+    <h3 class="name"><code>getData</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Dictionary</span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/Controller.html#method_getData">Controller</a>:
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Get the data variables</p>
+
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Dictionary</span>:
+                    
+                    <p>Data variables for substitution</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_getPage" class="method item inherited">
+    <h3 class="name"><code>getPage</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="../classes/Page.html" class="crosslink">Page</a></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            <p>Inherited from
+            <a href="../classes/Controller.html#method_getPage">
+                Controller
+            </a>
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Get the current page object, this is an override
+before returning the page, we render the navigation</p>
+
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="../classes/Page.html" class="crosslink">Page</a></span>:
+                    
+                    <p>The updated page object</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_getPageOptions" class="method item private">
+    <h3 class="name"><code>getPageOptions</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code class="optional">[selectId=null]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[ignoreId=null]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[showProtected=true]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>initOption</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+        </span>
+    
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Get the users as options</p>
 
     </div>
 
@@ -947,14 +1381,65 @@
             
                 <li class="param">
                     
-                        <code class="param-name">id</code>
+                        <code class="param-name optional">[selectId=null]</code>
                         <span class="type">Int</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>The unique object id</p>
+                        <p>Select this optional page ID</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[ignoreId=null]</code>
+                        <span class="type">Int</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>Ignore optional page ID</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[showProtected=true]</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>If we should show the error pages in the options</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">initOption</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The initial zero option</p>
 
                     </div>
 
@@ -972,9 +1457,9 @@
             <div class="returns-description">
                 
                     
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>:
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>:
                     
-                    <p>The object, or null</p>
+                    <p>The html options for the select element</p>
 
                 
             </div>
@@ -985,8 +1470,8 @@
 </div>
 
                 
-                    <div id="method_onBeforeAdd" class="method item">
-    <h3 class="name"><code>onBeforeAdd</code></h3>
+                    <div id="method_ignoreFields" class="method item inherited">
+    <h3 class="name"><code>ignoreFields</code></h3>
 
     
         <div class="args">
@@ -994,7 +1479,7 @@
             
                 <li class="arg">
                     
-                        <code>event</code>
+                        <code>fields</code>
                     
                 </li>
             
@@ -1019,11 +1504,8 @@
     <div class="meta">
         
             
-                
-                    <p>Provided by the <a href="../modules/Canteen\Forms.html">Canteen\Forms</a> module.</p>
-                
-                <p>
-                
+                <p>Inherited from
+                <a href="../classes/AdminObjectController.html#method_ignoreFields">AdminObjectController</a>:
             
         
         
@@ -1036,7 +1518,7 @@
     </div>
 
     <div class="description">
-        <p>Delete a config variable</p>
+        <p>Ignore field names</p>
 
     </div>
 
@@ -1048,14 +1530,16 @@
             
                 <li class="param">
                     
-                        <code class="param-name">event</code>
-                        <span class="type"><a href="../classes/ObjectFormEvent.html" class="crosslink">ObjectFormEvent</a></span>
+                        <code class="param-name">fields</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
                     
 
+                    
+                        <span class="flag multiple" title="This argument may occur one or more times.">multiple</span>
                     
 
                     <div class="param-description">
-                        <p>The before add event</p>
+                        <p>The field name as separate arguments</p>
 
                     </div>
 
@@ -1072,8 +1556,8 @@
 </div>
 
                 
-                    <div id="method_onBeforeRemove" class="method item">
-    <h3 class="name"><code>onBeforeRemove</code></h3>
+                    <div id="method_onElementAdd" class="method item">
+    <h3 class="name"><code>onElementAdd</code></h3>
 
     
         <div class="args">
@@ -1107,8 +1591,6 @@
         
             
                 
-                    <p>Provided by the <a href="../modules/Canteen\Forms.html">Canteen\Forms</a> module.</p>
-                
                 <p>
                 
             
@@ -1123,7 +1605,7 @@
     </div>
 
     <div class="description">
-        <p>Delete a config variable</p>
+        <p>Modify existing elements beign added</p>
 
     </div>
 
@@ -1136,13 +1618,13 @@
                 <li class="param">
                     
                         <code class="param-name">event</code>
-                        <span class="type"><a href="../classes/ObjectFormEvent.html" class="crosslink">ObjectFormEvent</a></span>
+                        <span class="type"><a href="../classes/ObjectControllerEvent.html" class="crosslink">ObjectControllerEvent</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>The before remove event</p>
+                        <p>The element addd event</p>
 
                     </div>
 
@@ -1159,8 +1641,8 @@
 </div>
 
                 
-                    <div id="method_onBeforeUpdate" class="method item">
-    <h3 class="name"><code>onBeforeUpdate</code></h3>
+                    <div id="method_onElementAdded" class="method item">
+    <h3 class="name"><code>onElementAdded</code></h3>
 
     
         <div class="args">
@@ -1194,7 +1676,90 @@
         
             
                 
-                    <p>Provided by the <a href="../modules/Canteen\Forms.html">Canteen\Forms</a> module.</p>
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>When an element is added, inject the content</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">event</code>
+                        <span class="type"><a href="../classes/ObjectControllerEvent.html" class="crosslink">ObjectControllerEvent</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The element addded event</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_onStart" class="method item">
+    <h3 class="name"><code>onStart</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>event</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
                 
                 <p>
                 
@@ -1210,7 +1775,7 @@
     </div>
 
     <div class="description">
-        <p>Do some checking before updating</p>
+        <p>Do some setup before we start adding anything</p>
 
     </div>
 
@@ -1223,13 +1788,184 @@
                 <li class="param">
                     
                         <code class="param-name">event</code>
-                        <span class="type"><a href="../classes/ObjectFormEvent.html" class="crosslink">ObjectFormEvent</a></span>
+                        <span class="type"><a href="../classes/ObjectControllerEvent.html" class="crosslink">ObjectControllerEvent</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>The before update event</p>
+                        <p>The start event</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_onStartElements" class="method item">
+    <h3 class="name"><code>onStartElements</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>event</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Before any elements are added</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">event</code>
+                        <span class="type"><a href="../classes/ObjectControllerEvent.html" class="crosslink">ObjectControllerEvent</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The start elements event</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_optionalFields" class="method item inherited">
+    <h3 class="name"><code>optionalFields</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>fields</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/AdminObjectController.html#method_optionalFields">AdminObjectController</a>:
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Don&#39;t add the required class to these fields</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">fields</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+                        <span class="flag multiple" title="This argument may occur one or more times.">multiple</span>
+                    
+
+                    <div class="param-description">
+                        <p>The field name as separate arguments</p>
 
                     </div>
 
@@ -1373,95 +2109,8 @@
 </div>
 
                 
-                    <div id="method_privilege" class="method item protected inherited">
-    <h3 class="name"><code>privilege</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code class="optional">[required=Privilege::GUEST]</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-
-    
-
-    
-        <span class="flag protected">protected</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/Form.html#method_privilege">Form</a>:
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>You can run to make sure a process requires a particular privilege</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[required=Privilege::GUEST]</code>
-                        <span class="type">Int</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The privilege level required, default is anonymous</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="method_remove" class="method item protected inherited">
-    <h3 class="name"><code>remove</code></h3>
+                    <div id="method_pre-render" class="method item private inherited">
+    <h3 class="name"><code>pre-render</code></h3>
 
     
         <span class="paren">()</span>
@@ -1472,7 +2121,7 @@
     
 
     
-        <span class="flag protected">protected</span>
+        <span class="flag private">private</span>
     
 
     
@@ -1487,7 +2136,7 @@
         
             
                 <p>Inherited from
-                <a href="../classes/ObjectForm.html#method_remove">ObjectForm</a>:
+                <a href="../classes/AdminController.html#method_pre-render">AdminController</a>:
             
         
         
@@ -1500,7 +2149,59 @@
     </div>
 
     <div class="description">
-        <p>Generalized remove function</p>
+        <p>Pre-render the admin page with the navigation</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_process" class="method item inherited">
+    <h3 class="name"><code>process</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            <p>Inherited from
+            <a href="../classes/Controller.html#method_process">
+                Controller
+            </a>
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The process method contains nothing
+navigation is created when renderNavigation is called.</p>
 
     </div>
 
@@ -1616,8 +2317,8 @@
 </div>
 
                 
-                    <div id="method_success" class="method item protected inherited">
-    <h3 class="name"><code>success</code></h3>
+                    <div id="method_setPage" class="method item inherited">
+    <h3 class="name"><code>setPage</code></h3>
 
     
         <div class="args">
@@ -1625,7 +2326,7 @@
             
                 <li class="arg">
                     
-                        <code>message</code>
+                        <code>page</code>
                     
                 </li>
             
@@ -1637,8 +2338,6 @@
 
     
 
-    
-        <span class="flag protected">protected</span>
     
 
     
@@ -1653,7 +2352,7 @@
         
             
                 <p>Inherited from
-                <a href="../classes/Form.html#method_success">Form</a>:
+                <a href="../classes/Controller.html#method_setPage">Controller</a>:
             
         
         
@@ -1666,7 +2365,7 @@
     </div>
 
     <div class="description">
-        <p>Convenience function for passing a success message to the form factory</p>
+        <p>Set the current page</p>
 
     </div>
 
@@ -1678,14 +2377,14 @@
             
                 <li class="param">
                     
-                        <code class="param-name">message</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                        <code class="param-name">page</code>
+                        <span class="type"><a href="../classes/Page.html" class="crosslink">Page</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>The str success message to pass</p>
+                        <p>The page to build with this Controller</p>
 
                     </div>
 
@@ -1829,208 +2528,6 @@
 </div>
 
                 
-                    <div id="method_update" class="method item protected inherited">
-    <h3 class="name"><code>update</code></h3>
-
-    
-        <span class="paren">()</span>
-    
-
-    
-
-    
-
-    
-        <span class="flag protected">protected</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/ObjectForm.html#method_update">ObjectForm</a>:
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Update the object</p>
-
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="method_verify" class="method item protected inherited">
-    <h3 class="name"><code>verify</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>data</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code class="optional">[type=null]</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code class="optional">[suppressErrors=false]</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type">Mixed</span>
-        </span>
-    
-
-    
-
-    
-        <span class="flag protected">protected</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/Form.html#method_verify">Form</a>:
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Sanitize input data using the validation types above</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">data</code>
-                        <span class="type">Mixed</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The data to be validated, can be an array of items</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[type=null]</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/RegExp" class="crosslink external" target="_blank">RegExp</a></span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The type of validation, defaults to Numeric. Can also be an array set of items</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[suppressErrors=false]</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>If we should suppress throwing errors</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type">Mixed</span>:
-                    
-                    <p>If we don&#39;t verify and suppress errors, returns false, else returns the data</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
             </div>
         
 
@@ -2039,12 +2536,14 @@
                 <h2 class="off-left">Properties</h2>
 
                 
-                    <div id="property_access" class="property item">
-    <h3 class="name"><code>access</code></h3>
-    <span class="type">Int</span>
+                    <div id="property__isPrerendered" class="property item private inherited">
+    <h3 class="name"><code>_isPrerendered</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
 
     
 
+    
+        <span class="flag private">private</span>
     
 
     
@@ -2054,9 +2553,8 @@
     <div class="meta">
         
             
-                
-                <p>
-                
+                <p>Inherited from
+                <a href="../classes/AdminController.html#property__isPrerendered">AdminController</a>:
             
         
         
@@ -2068,7 +2566,7 @@
     </div>
 
     <div class="description">
-        <p>The settings manager access option</p>
+        <p>Check to see if we&#39;ve already been pre-rendered</p>
 
     </div>
 
@@ -2080,9 +2578,9 @@
 </div>
 
                 
-                    <div id="property_addRedirect" class="property item protected inherited">
-    <h3 class="name"><code>addRedirect</code></h3>
-    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
+                    <div id="property_allObjects" class="property item protected inherited">
+    <h3 class="name"><code>allObjects</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
 
     
 
@@ -2098,7 +2596,7 @@
         
             
                 <p>Inherited from
-                <a href="../classes/ObjectForm.html#property_addRedirect">ObjectForm</a>:
+                <a href="../classes/AdminObjectController.html#property_allObjects">AdminObjectController</a>:
             
         
         
@@ -2110,12 +2608,11 @@
     </div>
 
     <div class="description">
-        <p>If we should redirect after an add</p>
+        <p>The collection of all object, this can be used to eliminate an additional
+database request for all the pages.</p>
 
     </div>
 
-    
-        <p><strong>Default:</strong> true</p>
     
 
     
@@ -2164,90 +2661,9 @@
 </div>
 
                 
-                    <div id="property_id" class="property item">
-    <h3 class="name"><code>id</code></h3>
-    <span class="type">Int</span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>The unique config id</p>
-
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_ifError" class="property item inherited">
-    <h3 class="name"><code>ifError</code></h3>
-    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/Form.html#property_ifError">Form</a>:
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>If we&#39;ve reported errors</p>
-
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_item" class="property item protected inherited">
-    <h3 class="name"><code>item</code></h3>
-    <span class="type"><a href="../classes/ObjectServiceItem.html" class="crosslink">ObjectServiceItem</a></span>
+                    <div id="property_data" class="property item protected inherited">
+    <h3 class="name"><code>data</code></h3>
+    <span class="type">Dictionary</span>
 
     
 
@@ -2263,7 +2679,7 @@
         
             
                 <p>Inherited from
-                <a href="../classes/ObjectForm.html#property_item">ObjectForm</a>:
+                <a href="../classes/Controller.html#property_data">Controller</a>:
             
         
         
@@ -2275,7 +2691,7 @@
     </div>
 
     <div class="description">
-        <p>The object service item reference</p>
+        <p>Any custom substitutions for the parser</p>
 
     </div>
 
@@ -2287,12 +2703,224 @@
 </div>
 
                 
-                    <div id="property_name" class="property item">
-    <h3 class="name"><code>name</code></h3>
+                    <div id="property_dynamicUri" class="property item protected inherited">
+    <h3 class="name"><code>dynamicUri</code></h3>
     <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
 
     
 
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/Controller.html#property_dynamicUri">Controller</a>:
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>For dynamic pages, the extra stuff after the page URI</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_formName" class="property item protected inherited">
+    <h3 class="name"><code>formName</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/AdminObjectController.html#property_formName">AdminObjectController</a>:
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The name of the full form</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_getObject" class="property item protected inherited">
+    <h3 class="name"><code>getObject</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/AdminObjectController.html#property_getObject">AdminObjectController</a>:
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The method name on the item service to get the object by id</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_getObjects" class="property item protected inherited">
+    <h3 class="name"><code>getObjects</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/AdminObjectController.html#property_getObjects">AdminObjectController</a>:
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The method name on the item service to get all objects</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_ignoreFields" class="property item private inherited">
+    <h3 class="name"><code>ignoreFields</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/AdminObjectController.html#property_ignoreFields">AdminObjectController</a>:
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The collection of field names which we should ignore render for</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_isProtected" class="property item private">
+    <h3 class="name"><code>isProtected</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
+
+    
+
+    
+        <span class="flag private">private</span>
     
 
     
@@ -2316,7 +2944,176 @@
     </div>
 
     <div class="description">
-        <p>The config name</p>
+        <p>Certain properties are protected on certain build-in pages</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_isWriteable" class="property item private">
+    <h3 class="name"><code>isWriteable</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>If the page is writeable</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_object" class="property item protected inherited">
+    <h3 class="name"><code>object</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/AdminObjectController.html#property_object">AdminObjectController</a>:
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The selected object</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_optionalFields" class="property item private inherited">
+    <h3 class="name"><code>optionalFields</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/AdminObjectController.html#property_optionalFields">AdminObjectController</a>:
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The collection of field names which are optional to input</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_page" class="property item protected inherited">
+    <h3 class="name"><code>page</code></h3>
+    <span class="type"><a href="../classes/Page.html" class="crosslink">Page</a></span>
+
+    
+
+    
+        <span class="flag protected">protected</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/Controller.html#property_page">Controller</a>:
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The the current page</p>
 
     </div>
 
@@ -2408,14 +3205,14 @@
 </div>
 
                 
-                    <div id="property_redirect" class="property item protected inherited">
-    <h3 class="name"><code>redirect</code></h3>
+                    <div id="property_readOnly" class="property item private">
+    <h3 class="name"><code>readOnly</code></h3>
     <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
 
     
 
     
-        <span class="flag protected">protected</span>
+        <span class="flag private">private</span>
     
 
     
@@ -2425,8 +3222,9 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/ObjectForm.html#property_redirect">ObjectForm</a>:
+                
+                <p>
+                
             
         
         
@@ -2438,7 +3236,7 @@
     </div>
 
     <div class="description">
-        <p>The redirect uri after remove or add</p>
+        <p>If we are a readOnly page</p>
 
     </div>
 
@@ -2450,8 +3248,8 @@
 </div>
 
                 
-                    <div id="property_removeRedirect" class="property item protected inherited">
-    <h3 class="name"><code>removeRedirect</code></h3>
+                    <div id="property_removeEnabled" class="property item protected inherited">
+    <h3 class="name"><code>removeEnabled</code></h3>
     <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
 
     
@@ -2468,7 +3266,7 @@
         
             
                 <p>Inherited from
-                <a href="../classes/ObjectForm.html#property_removeRedirect">ObjectForm</a>:
+                <a href="../classes/AdminObjectController.html#property_removeEnabled">AdminObjectController</a>:
             
         
         
@@ -2480,7 +3278,7 @@
     </div>
 
     <div class="description">
-        <p>If we should redirect after a remove</p>
+        <p>If the delete button is enabled</p>
 
     </div>
 
@@ -2574,50 +3372,9 @@
 </div>
 
                 
-                    <div id="property_type" class="property item">
-    <h3 class="name"><code>type</code></h3>
-    <span class="type">Sring</span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Either string, integer, boolean, page, or path</p>
-
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_updateNothingError" class="property item protected inherited">
-    <h3 class="name"><code>updateNothingError</code></h3>
-    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
+                    <div id="property_titleName" class="property item protected inherited">
+    <h3 class="name"><code>titleName</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
 
     
 
@@ -2633,7 +3390,7 @@
         
             
                 <p>Inherited from
-                <a href="../classes/ObjectForm.html#property_updateNothingError">ObjectForm</a>:
+                <a href="../classes/AdminObjectController.html#property_titleName">AdminObjectController</a>:
             
         
         
@@ -2645,56 +3402,12 @@
     </div>
 
     <div class="description">
-        <p>If we should do the update nothing error</p>
+        <p>The name of the item field for use in the select form list</p>
 
     </div>
 
     
-        <p><strong>Default:</strong> true</p>
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_updateRedirect" class="property item protected inherited">
-    <h3 class="name"><code>updateRedirect</code></h3>
-    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
-
-    
-
-    
-        <span class="flag protected">protected</span>
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/ObjectForm.html#property_updateRedirect">ObjectForm</a>:
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>If we should redirect after an update</p>
-
-    </div>
-
-    
-        <p><strong>Default:</strong> true</p>
+        <p><strong>Default:</strong> &#x27;title&#x27;</p>
     
 
     
@@ -2732,47 +3445,6 @@
 
     <div class="description">
         <p>Get the Authorization class to handle things like login, password change</p>
-
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_value" class="property item">
-    <h3 class="name"><code>value</code></h3>
-    <span class="type">Mixed</span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>The value of the config</p>
 
     </div>
 

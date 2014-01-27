@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
     <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
     <script src="http://yui.yahooapis.com/3.10.1/build/yui/yui-min.js"></script>
-	<title>Canteen Database API v1.1.0 API Documentation : ifsetor</title>  
+	<title>Canteen Database API v1.1.0 API Documentation : ObjectControllerEvent</title>  
 </head>
 <body class="yui3-skin-sam">
 
@@ -212,17 +212,21 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>ifsetor Class</h1>
+                        <h1>ObjectControllerEvent Class</h1>
 <div class="box meta">
     
 
+    
+        <div class="extends">
+            Extends <a href="../classes/Event.html" class="crosslink">Event</a>
+        </div>
     
 
     
 
     
         
-            Namespace: <a href="../modules/global.html">global</a>
+            Namespace: <a href="../modules/Canteen\Errors.html">Canteen\Errors</a>
         
     
 
@@ -232,17 +236,15 @@
 
 
 <div class="box intro">
-    <p>Global function to evaluate if a variable is set, or else use  a default value.
- <strong>This is a global function.</strong></p>
-<pre class="code prettyprint"><code>$someValue = ifsetor($_POST[&#39;someValue&#39;], 10);</code></pre>
+    <p>Events for the form object</p>
 
 </div>
 
 
     <div class="constructor">
         <h2>Constructor</h2>
-        <div id="method_ifsetor" class="method item">
-    <h3 class="name"><code>ifsetor</code></h3>
+        <div id="method_ObjectControllerEvent" class="method item">
+    <h3 class="name"><code>ObjectControllerEvent</code></h3>
 
     
         <div class="args">
@@ -250,13 +252,13 @@
             
                 <li class="arg">
                     
-                        <code>val</code>
+                        <code>type</code>
                     
                 </li>
             
                 <li class="arg">
                     
-                        <code>{mixed]</code>
+                        <code class="optional">[element=null]</code>
                     
                 </li>
             
@@ -264,10 +266,6 @@
         </div>
     
 
-    
-        <span class="returns-inline">
-            <span class="type">Mixed</span>
-        </span>
     
 
     
@@ -311,14 +309,14 @@
             
                 <li class="param">
                     
-                        <code class="param-name">val</code>
-                        <span class="type">Mixed</span>
+                        <code class="param-name">type</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>The variable to check if isset</p>
+                        <p>The type of event</p>
 
                     </div>
 
@@ -327,14 +325,15 @@
             
                 <li class="param">
                     
-                        <code class="param-name">{mixed]</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+                        <code class="param-name optional">[element=null]</code>
+                        <span class="type"><a href="../classes/ObjectFormElement.html" class="crosslink">ObjectFormElement</a></span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>[default=null] The default value if the variable isn&#39;t set</p>
+                        <p>The element reference</p>
 
                     </div>
 
@@ -345,20 +344,6 @@
         </div>
     
 
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type">Mixed</span>:
-                    
-                    <p>The value of the variable or the default</p>
-
-                
-            </div>
-        </div>
     
 
     
@@ -373,6 +358,8 @@
 
         
         
+            <li class="api-class-tab properties"><a href="#properties">Properties</a></li>
+        
         
         
     </ul>
@@ -384,6 +371,75 @@
             
 
             
+                <div class="index-section properties">
+                    <h3>Properties</h3>
+
+                    <ul class="index-list properties extends">
+                        
+                            <li class="index-item property">
+                                <a href="#property_ADD_ELEMENT">ADD_ELEMENT</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_ADDED_ELEMENT">ADDED_ELEMENT</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_COMPLETED">COMPLETED</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_DONE_ELEMENTS">DONE_ELEMENTS</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_element">element</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_START">START</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_START_ELEMENTS">START_ELEMENTS</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                    </ul>
+                </div>
+            
 
             
 
@@ -392,6 +448,323 @@
 
         
 
+        
+            <div id="properties" class="api-class-tabpanel">
+                <h2 class="off-left">Properties</h2>
+
+                
+                    <div id="property_ADD_ELEMENT" class="property item">
+    <h3 class="name"><code>ADD_ELEMENT</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+    
+
+    
+
+    
+        <span class="flag final">final</span>
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Add an element to the admin controller form</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_ADDED_ELEMENT" class="property item">
+    <h3 class="name"><code>ADDED_ELEMENT</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+    
+
+    
+
+    
+        <span class="flag final">final</span>
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Element was added to the admin controller form</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_COMPLETED" class="property item">
+    <h3 class="name"><code>COMPLETED</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+    
+
+    
+
+    
+        <span class="flag final">final</span>
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>When all of the fields and footer have been added</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_DONE_ELEMENTS" class="property item">
+    <h3 class="name"><code>DONE_ELEMENTS</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+    
+
+    
+
+    
+        <span class="flag final">final</span>
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>All the dynamic elements have been added</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_element" class="property item">
+    <h3 class="name"><code>element</code></h3>
+    <span class="type"><a href="../classes/ObjectFormElement.html" class="crosslink">ObjectFormElement</a></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The reference to the object</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_START" class="property item">
+    <h3 class="name"><code>START</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+    
+
+    
+
+    
+        <span class="flag final">final</span>
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Page rendering has begun</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_START_ELEMENTS" class="property item">
+    <h3 class="name"><code>START_ELEMENTS</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+    
+
+    
+
+    
+        <span class="flag final">final</span>
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Before element are being added</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+            </div>
         
 
         
