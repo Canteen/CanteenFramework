@@ -80,10 +80,6 @@ namespace Canteen\Services
 		*/
 		public function __construct($alias)
 		{
-			if (isset(self::$_registered[$alias]))
-			{
-				warning("The service ('$alias') already exists, overwriting.");
-			}
 			$this->alias = $alias;
 			self::$_registered[$alias] = $this;
 			self::$_registeredMaps[get_class($this)] = $this;

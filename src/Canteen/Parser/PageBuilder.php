@@ -171,7 +171,7 @@ namespace Canteen\Parser
 				$browser = new ServiceBrowser(
 					Service::getAliases(),
 					$this->settings->basePath,
-					$this->settings->browserUri,
+					$this->site->browserUri,
 					$this->settings->uriRequest,
 					$this->parser
 				);
