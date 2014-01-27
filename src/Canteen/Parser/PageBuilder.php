@@ -464,7 +464,7 @@ namespace Canteen\Parser
 			{
 				$result .= $this->profiler->render();
 			}
-			if ($this->settings->debug)
+			if ($this->settings->debug && class_exists('Canteen\Logger\Logger'))
 			{
 				$result .= Logger::instance()->render();
 			}

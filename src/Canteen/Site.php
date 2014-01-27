@@ -74,13 +74,6 @@ namespace Canteen
 		public $logoutUri = 'logout';
 		
 		/** 
-		*  The site configuration an associative array in key => value pairs 
-		*  @property {SettingsManager} settings
-		*  @readOnly
-		*/
-		private $_settings;
-		
-		/** 
 		*  The dynamic page controllers with keys 'uri' and 'controller'
 		*  @property {Array} _controllers
 		*  @private
@@ -101,6 +94,13 @@ namespace Canteen
 		*/
 		private $_formFactory;
 		
+		/** 
+		*  The site configuration an associative array in key => value pairs 
+		*  @property {SettingsManager} settings
+		*  @readOnly
+		*/
+		private $_settings;
+
 		/** 
 		*  The Profiler is use for debugging performance issues, SQL speed
 		*  @property {Profiler} profiler
@@ -277,7 +277,10 @@ namespace Canteen
 			$this->_parser->addManifest(__DIR__.'/Templates/templates.json');
 			
 			// Initialize the logger
-			Logger::init();
+			if (class_exists('Canteen\Logger\Logger'))
+			{
+				Logger::init();
+			}
 			
 			try
 			{
@@ -357,7 +360,10 @@ namespace Canteen
 			error_reporting($this->_settings->debug ? E_ALL : 0);
 			
 			// Turn on or off the logger
-			Logger::instance()->enabled = $this->_settings->debug;	
+			if (class_exists('Canteen\Logger\Logger'))
+			{
+				Logger::instance()->enabled = $this->_settings->debug;	
+			}
 			
 			// Setup the cache
 			$this->_cache = new ServerCache(
@@ -687,46 +693,11 @@ namespace Canteen
 			$default = '_'.$name;
 			switch($name)
 			{
-				/**
-				*  The instance of the parser
-				*  @property {Parser} parser
-				*  @readOnly
-				*/
 				case 'parser' :
-
-				/**
-				*  The instance of the Form Factory handler
-				*  @property {FormFactory} formFactory
-				*  @readOnly
-				*/
-				case 'formFactory' :
-
-				/**
-				*  The instance of the Database
-				*  @property {Database} db
-				*  @readOnly
-				*/			
+				case 'formFactory' :		
 				case 'db' :
-
-				/**
-				*  The instance of the server cache
-				*  @property {ServerCache} cache
-				*  @readOnly
-				*/
 				case 'cache' :
-
-				/**
-				*  The instance of the user authorization object
-				*  @property {Authorization} user
-				*  @readOnly
-				*/
 				case 'user' :
-
-				/**
-				*  The instance of settings manager
-				*  @property {SettingsManager} settings
-				*  @readOnly
-				*/
 				case 'settings' :
 
 				/**

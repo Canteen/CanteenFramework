@@ -177,15 +177,22 @@ namespace Canteen\Services
 			);
 			$link->class = 'gateway';
 			
+			$data = [
+				'output' => $output,
+				'services' => $this->getServicesList(),
+				'methods' => $this->getMethodsList($serviceName, $serviceAlias),
+				'logger' => '',
+				'gatewayLink' => (string)$link
+			];
+
+			if (class_exists('Canteen\Logger\Logger'))
+			{
+				$data['logger'] = (string)Logger::instance()->render();
+			}
+
 			return $this->template(
 				'ServiceBrowser',
-				[
-					'output' => $output,
-					'services' => $this->getServicesList(),
-					'methods' => $this->getMethodsList($serviceName, $serviceAlias),
-					'logger' => (string)Logger::instance()->render(),
-					'gatewayLink' => (string)$link
-				]
+				
 			);
 		}
 		

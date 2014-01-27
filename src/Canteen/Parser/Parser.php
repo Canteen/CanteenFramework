@@ -5,12 +5,10 @@
 */
 namespace Canteen\Parser
 {
-	use Canteen\Site;
 	use Canteen\Profiler\Profiler;
 	use Canteen\Errors\CanteenError;
 	use Canteen\Utilities\StringUtils;
 	use Canteen\Utilities\CanteenBase;
-	use Canteen\Errors\FileError;
 	
 	/**
 	*  Simple string parser to use for doing html subs. Located in the namespace __Canteen\Utilities__.
