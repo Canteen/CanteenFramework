@@ -349,11 +349,16 @@ namespace Canteen
 			
 			// Debug mode most be on in order to profile
 			$profiler = false;
-			if ($this->_settings->debug && ifsetor($_GET['profiler']) == 'true')
+			if (class_exists('Canteen\Profiler\Profiler') 
+				&& $this->_settings->debug 
+				&& ifsetor($_GET['profiler']) == 'true')
 			{
-				$this->_profiler = new Profiler();	
+				$this->_profiler = new Profiler($this->_parser);	
 				$profiler = $this->_profiler;
 				$profiler->start('Canteen Setup');
+
+				// Assign the profiler to the parser
+				$this->_parser->setProfiler($profiler);
 			}
 			
 			// Set the error reporting if we're set to debug

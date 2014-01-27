@@ -102,14 +102,6 @@ namespace Canteen\Errors
 		const WRONG_DOMAIN = 109;
 		
 		/** 
-		*  The parse template can't be found 
-		*  @property {int} TEMPLATE_NOT_FOUND
-		*  @static
-		*  @final
-		*/
-		const TEMPLATE_NOT_FOUND = 110;
-		
-		/** 
 		*  Canteen version is unsufficient 
 		*  @property {int} INSUFFICIENT_VERSION
 		*  @static
@@ -134,14 +126,6 @@ namespace Canteen\Errors
 		const INVALID_INDEX = 113;
 		
 		/** 
-		*  There was a problem decoding the JSON 
-		*  @property {int} JSON_DECODE
-		*  @static
-		*  @final
-		*/
-		const JSON_DECODE = 115;
-		
-		/** 
 		*  Duplicate named autoload class 
 		*  @property {int} AUTOLOAD_CLASS
 		*  @static
@@ -150,28 +134,12 @@ namespace Canteen\Errors
 		const AUTOLOAD_CLASS = 118;
 		
 		/** 
-		*  Duplicate named autoload template 
-		*  @property {int} AUTOLOAD_TEMPLATE
-		*  @static
-		*  @final
-		*/
-		const AUTOLOAD_TEMPLATE = 119;
-		
-		/** 
 		*  Duplicate named service alias
 		*  @property {int} TAKEN_SERVICE_ALIAS
 		*  @static
 		*  @final
 		*/
 		const TAKEN_SERVICE_ALIAS = 120;
-		
-		/** 
-		*  The template alias is wrong
-		*  @property {int} TEMPLATE_UNKNOWN
-		*  @static
-		*  @final
-		*/
-		const TEMPLATE_UNKNOWN = 121;
 		
 		/** 
 		*  Unable to change the setting
@@ -196,14 +164,6 @@ namespace Canteen\Errors
 		*  @final
 		*/
 		const SETTING_NAME_TAKEN = 124;
-
-		/** 
-		*  The parse substitution is invalid
-		*  @property {int} PARSE_ARRAY
-		*  @static
-		*  @final
-		*/
-		const PARSE_ARRAY = 125;
 		
 		/**
 		*  The collection of messages
@@ -222,19 +182,14 @@ namespace Canteen\Errors
 			self::OVERRIDE_CONTROLLER_PROCESS => "Controller must override 'process' method",
 			self::FORM_INHERITANCE => 'Form is not an instance of the Form class',
 			self::INVALID_FORM => 'Form does not exist',
-			self::JSON_DECODE => 'Failure decoding JSON',
 			self::SETTINGS_REQUIRED => 'Setup file must contain an array of dictionary objects.',
 			self::NO_SETTINGS => 'No settings were found for this domain (%s) please update your config file',
 			self::WRONG_DOMAIN => 'Form submitted from the wrong domain',
-			self::TEMPLATE_NOT_FOUND => 'Cannot load template file',
-			self::TEMPLATE_UNKNOWN => 'Template not registered',
 			self::INSUFFICIENT_VERSION => 'The installed version of Canteen Site (%s) is insufficient to run site (%s)',
 			self::INSUFFICIENT_PHP => 'The current version of PHP (%s) is insufficient to run site (%s)',
 			self::INVALID_INDEX => 'The index page for the site does not exist',
 			self::AUTOLOAD_CLASS => 'Class has already been loaded',
-			self::AUTOLOAD_TEMPLATE => 'Template has already been loaded',
-			self::TAKEN_SERVICE_ALIAS => 'The custom service alias is already taken',
-			self::PARSE_ARRAY => 'The parse substitution value \'%s\' cannot be an array \'%s\''
+			self::TAKEN_SERVICE_ALIAS => 'The custom service alias is already taken'
 		];
 		
 		/** 

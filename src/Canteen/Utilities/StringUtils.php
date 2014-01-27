@@ -35,18 +35,6 @@ namespace Canteen\Utilities
 		}
 		
 		/**
-		*  Convert a method call (getAllUsers) to a URI stub (get-all-users)
-		*  @method methodCallToUri
-		*  @static
-		*  @param {String} methodCall The name of the method
-		*  @return {String} The method call as a URI stub
-		*/
-		public static function methodCallToUri($methodCall)
-		{
-			return strtolower(preg_replace('/([a-z])([A-Z])/', '$1-$2', $methodCall));
-		}
-		
-		/**
 		*  Convert a property name (myProperty) to a readable name (My Property)
 		*  @method propertyToReadable
 		*  @static
@@ -83,65 +71,6 @@ namespace Canteen\Utilities
 		}
 		
 		/**
-		*  Process the URI as an array with different pieces
-		*  @method processURI
-		*  @static
-		*  @param {String} uriRequest The URI request being made
-		*  @param {int} [ignore=1] The number of elements to exclude from the beginning
-		*  @return {Array} The URI request where each stub is an element
-		*/
-		public static function processURI($uriRequest, $ignore=1)
-		{			
-			$uri = explode('/', $uriRequest);
-			$base = array_slice($uri, 0, $ignore);
-			$uri = array_slice($uri, $ignore); // don't use the name of the page
-			
-			// Sanitize the result to remove non charaters
-			for($i = 0; $i < count($uri); $i++)
-			{
-				$uri[$i] = preg_replace('/[^a-zA-Z0-9\_\-\,%]/', '', $uri[$i]);
-			}
-			
-			function cleanArg($arg)
-			{
-				if (is_array($arg))
-				{
-					foreach($arg as $i=>$a)
-					{
-						$arg[$i] = cleanArg($a);
-					}
-					return $arg;
-				}
-				else
-				{
-					return trim(urldecode($arg));
-				}
-			}
-			
-			// Grab the rest of the uri arguments
-			$args = count($uri) > 2 ? array_slice($uri, 2) : '';
-			
-			// Check to see if we should make an array of any of the arguments
-			if ($args)
-			{				
-				foreach($args as $i => $arg)
-				{
-					$args[$i] = (strpos($arg, ',') !== false) ?
-						cleanArg(explode(',', $arg)) : // Split into an array
-						cleanArg($arg);  // Decode the arrray
-				}
-			}
-			
-			// Turn into a result
-			return [
-				'base' => implode('/', $base),
-				'service' => ifsetor($uri[0], ''),
-				'call' => ifsetor($uri[1], ''),
-				'args' => $args
-			];
-		}
-		
-		/**
 		*  Get a random string of characters (readable-ish format)
 		*  @method generateRandomString
 		*  @static
@@ -167,21 +96,6 @@ namespace Canteen\Utilities
 				$password .= $cons [ rand ( 0, $num_cons - 1 ) ] . $vowels [ rand ( 0, $num_vowels - 1 ) ]; 
 			}
 			return substr($password, 0, $length); 
-		}
-	
-		/**
-		*  Global functions to check for a string-based boolean
-		*  @method asBoolean
-		*  @static
-		*  @param {String} str The value to check as Boolean
-		*  @return {Boolean} A boolean value
-		*/
-		public static function asBoolean($str)
-		{
-			if (is_array($str)) return (boolean)$str;
-			
-			$str = (string)$str;
-			return (strtolower(trim(ifsetor($str, 'false'))) === 'false') ? false : (boolean)$str;
 		}
 		
 		/**

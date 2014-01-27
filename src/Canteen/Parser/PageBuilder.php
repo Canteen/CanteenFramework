@@ -15,6 +15,7 @@ namespace Canteen\Parser
 	use Canteen\Utilities\CanteenBase;
 	use Canteen\Utilities\StringUtils;
 	use Canteen\Server\JSONServer;
+	use Canteen\Services\Service;
 	
 	/**
 	*  Responsible for building the pages and handling page requests.
@@ -163,10 +164,17 @@ namespace Canteen\Parser
 			// Only local deployments or administrators can use the 
 			// service browser
 			if (($this->settings->local || USER_PRIVILEGE == Privilege::ADMINISTRATOR) 
+				&& class_exists('Canteen\Services\ServiceBrowser')
 				&& $this->settings->debug 
 				&& strpos($this->settings->uriRequest, $this->site->browserUri) === 0)
 			{
-				$browser = new ServiceBrowser();
+				$browser = new ServiceBrowser(
+					Service::getAliases(),
+					$this->settings->basePath,
+					$this->settings->browserUri,
+					$this->settings->uriRequest,
+					$this->parser
+				);
 				$result = $browser->handle();
 				if ($profiler) $profiler->end('Build Page');
 				return $result;
