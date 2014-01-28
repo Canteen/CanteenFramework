@@ -81,15 +81,17 @@
             
                 <li><a href="../classes/FormFactory.html">FormFactory</a></li>
             
+                <li><a href="../classes/Gateway.html">Gateway</a></li>
+            
+                <li><a href="../classes/GatewayControl.html">GatewayControl</a></li>
+            
+                <li><a href="../classes/GatewayError.html">GatewayError</a></li>
+            
                 <li><a href="../classes/ifconstor.html">ifconstor</a></li>
             
                 <li><a href="../classes/ifsetor.html">ifsetor</a></li>
             
                 <li><a href="../classes/InstallerForm.html">InstallerForm</a></li>
-            
-                <li><a href="../classes/JSONServer.html">JSONServer</a></li>
-            
-                <li><a href="../classes/JSONServerError.html">JSONServerError</a></li>
             
                 <li><a href="../classes/LoginForm.html">LoginForm</a></li>
             
@@ -267,20 +269,6 @@
                     <ul class="index-list methods extends">
                         
                             <li class="index-item method protected inherited">
-                                <a href="#method_access">access</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method inherited">
-                                <a href="#method_accessClient">accessClient</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method protected inherited">
                                 <a href="#method_bindObject">bindObject</a>
 
                                 
@@ -289,6 +277,13 @@
                         
                             <li class="index-item method protected inherited">
                                 <a href="#method_bindObjects">bindObjects</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method inherited">
+                                <a href="#method_gateway">gateway</a>
 
                                 
                                 
@@ -317,20 +312,6 @@
                         
                             <li class="index-item method protected inherited inherited">
                                 <a href="#method_parse">parse</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method inherited">
-                                <a href="#method_restrict">restrict</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method inherited">
-                                <a href="#method_restrictClient">restrictClient</a>
 
                                 
                                 
@@ -373,13 +354,6 @@
                     <h3>Properties</h3>
 
                     <ul class="index-list properties extends">
-                        
-                            <li class="index-item property private inherited">
-                                <a href="#property__accessControls">_accessControls</a>
-
-                                
-                                
-                            </li>
                         
                             <li class="index-item property inherited">
                                 <a href="#property_alias">alias</a>
@@ -456,213 +430,6 @@
         
             <div id="methods" class="api-class-tabpanel">
                 <h2 class="off-left">Methods</h2>
-
-                
-                    <div id="method_access" class="method item protected inherited">
-    <h3 class="name"><code>access</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>method</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="../classes/Service.html" class="crosslink">Service</a></span>
-        </span>
-    
-
-    
-
-    
-        <span class="flag protected">protected</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/Service.html#method_access">Service</a>:
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Check for restricted access. Access can be initialized with the restrict()
-method.</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">method</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The name of the method to check the access for</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="../classes/Service.html" class="crosslink">Service</a></span>:
-                    
-                    <p>Return the instance of this for chaining</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_accessClient" class="method item inherited">
-    <h3 class="name"><code>accessClient</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>method</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/Service.html#method_accessClient">Service</a>:
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Check to see if the client has access to this method</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">method</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The name of the method to check</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>:
-                    
-                    <p>If the client has access to this method</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
 
                 
                     <div id="method_bindObject" class="method item protected inherited">
@@ -979,6 +746,156 @@ method.</p>
                         <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>:
                     
                     <p>The data object</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_gateway" class="method item inherited">
+    <h3 class="name"><code>gateway</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>uri</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>method</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[privilege=Privilege::ANONYMOUS]</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="../classes/Service.html" class="crosslink">Service</a></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="../classes/Service.html#method_gateway">Service</a>:
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Add for use on the Gateway, these methods can be 
+called from javascript. For an example see the
+<code>TimeService</code> class.</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">uri</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The URI path to call from the gateway</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">method</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The name of the method</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[privilege=Privilege::ANONYMOUS]</code>
+                        <span class="type">Int</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The minimum privilege needed
+   for the client to access this method.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="../classes/Service.html" class="crosslink">Service</a></span>:
+                    
+                    <p>Return the instance of this for chaining</p>
 
                 
             </div>
@@ -1421,254 +1338,6 @@ reliable time is needed than the client time</p>
 </div>
 
                 
-                    <div id="method_restrict" class="method item inherited">
-    <h3 class="name"><code>restrict</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code class="optional">[mapOrMethod]</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code class="optional">[controls=null]</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="../classes/Service.html" class="crosslink">Service</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/Service.html#method_restrict">Service</a>:
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Set and check the access control for a method this is important for preventing
-access to these methods that is undesirable, like someone using
-the JSON to edit/add/remove database entries.</p>
-<pre class="code prettyprint"><code>// To set access controls
- $this-&gt;restrict(&#39;removeContent&#39;, Privilege::ADMINISTRATOR);</code></pre>
-<p> $this-&gt;restrict(&#39;updateContent&#39;, Privilege::GUEST, &#39;Site\Form\ContentUpdate&#39;);
- // or
-     $this-&gt;restrict(array(
-        &#39;removeContent&#39; =&gt; Privilege::ADMINISTRATOR,
-        &#39;updateContent&#39; =&gt; [
-            Privilege::GUEST, 
-            &#39;Site\Form\ContentUpdate&#39;
-        ]
-    ));
-     // To check for access control within a method
-     $this-&gt;access();</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[mapOrMethod]</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a> | Dictionary</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>Either the method string 
-    or a map of methods to an collection of controls.</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[controls=null]</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a> | <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a> | Int</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The collection of controls</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="../classes/Service.html" class="crosslink">Service</a></span>:
-                    
-                    <p>Return the instance of this for chaining</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_restrictClient" class="method item inherited">
-    <h3 class="name"><code>restrictClient</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>methods</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="../classes/Service.html" class="crosslink">Service</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/Service.html#method_restrictClient">Service</a>:
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Add for use on the JSONServer, these methods can be 
-called from javascript. For an example see the
-<code>TimeService</code> class.</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">methods</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-                        <span class="flag multiple" title="This argument may occur one or more times.">multiple</span>
-                    
-
-                    <div class="param-description">
-                        <p>N-number of method names</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="../classes/Service.html" class="crosslink">Service</a></span>:
-                    
-                    <p>Return the instance of this for chaining</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
                     <div id="method_service" class="method item protected inherited">
     <h3 class="name"><code>service</code></h3>
 
@@ -1678,7 +1347,7 @@ called from javascript. For an example see the
             
                 <li class="arg">
                     
-                        <code>aliasOrClassName</code>
+                        <code>alias</code>
                     
                 </li>
             
@@ -1723,7 +1392,7 @@ called from javascript. For an example see the
     </div>
 
     <div class="description">
-        <p>Get a service by alias or classname</p>
+        <p>Get a service by alias</p>
 
     </div>
 
@@ -1735,14 +1404,14 @@ called from javascript. For an example see the
             
                 <li class="param">
                     
-                        <code class="param-name">aliasOrClassName</code>
+                        <code class="param-name">alias</code>
                         <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>The alias or classname</p>
+                        <p>The alias</p>
 
                     </div>
 
@@ -2183,48 +1852,6 @@ called from javascript. For an example see the
         
             <div id="properties" class="api-class-tabpanel">
                 <h2 class="off-left">Properties</h2>
-
-                
-                    <div id="property__accessControls" class="property item private inherited">
-    <h3 class="name"><code>_accessControls</code></h3>
-    <span class="type">Dictionary</span>
-
-    
-
-    
-        <span class="flag private">private</span>
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/Service.html#property__accessControls">Service</a>:
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>The map of access controls by function name</p>
-
-    </div>
-
-    
-
-    
-
-    
-</div>
 
                 
                     <div id="property_alias" class="property item inherited">

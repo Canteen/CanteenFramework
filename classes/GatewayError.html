@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
     <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
     <script src="http://yui.yahooapis.com/3.10.1/build/yui/yui-min.js"></script>
-	<title>Canteen Database API v1.1.0 API Documentation : JSONServerError</title>  
+	<title>Canteen Database API v1.1.0 API Documentation : GatewayError</title>  
 </head>
 <body class="yui3-skin-sam">
 
@@ -81,15 +81,17 @@
             
                 <li><a href="../classes/FormFactory.html">FormFactory</a></li>
             
+                <li><a href="../classes/Gateway.html">Gateway</a></li>
+            
+                <li><a href="../classes/GatewayControl.html">GatewayControl</a></li>
+            
+                <li><a href="../classes/GatewayError.html">GatewayError</a></li>
+            
                 <li><a href="../classes/ifconstor.html">ifconstor</a></li>
             
                 <li><a href="../classes/ifsetor.html">ifsetor</a></li>
             
                 <li><a href="../classes/InstallerForm.html">InstallerForm</a></li>
-            
-                <li><a href="../classes/JSONServer.html">JSONServer</a></li>
-            
-                <li><a href="../classes/JSONServerError.html">JSONServerError</a></li>
             
                 <li><a href="../classes/LoginForm.html">LoginForm</a></li>
             
@@ -212,7 +214,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>JSONServerError Class</h1>
+                        <h1>GatewayError Class</h1>
 <div class="box meta">
     
 
@@ -243,8 +245,8 @@
 
     <div class="constructor">
         <h2>Constructor</h2>
-        <div id="method_JSONServerError" class="method item">
-    <h3 class="name"><code>JSONServerError</code></h3>
+        <div id="method_GatewayError" class="method item">
+    <h3 class="name"><code>GatewayError</code></h3>
 
     
         <div class="args">
@@ -394,6 +396,15 @@
                     <ul class="index-list properties extends">
                         
                             <li class="index-item property">
+                                <a href="#property_BAD_URI_REQUEST">BAD_URI_REQUEST</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
                                 <a href="#property_INCORRECT_PARAMETERS">INCORRECT_PARAMETERS</a>
 
                                 
@@ -403,16 +414,7 @@
                             </li>
                         
                             <li class="index-item property">
-                                <a href="#property_INVALID_METHOD">INVALID_METHOD</a>
-
-                                
-                                    <span class="flag static">static</span>
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item property">
-                                <a href="#property_INVALID_SERVICE">INVALID_SERVICE</a>
+                                <a href="#property_INSUFFICIENT_PRIVILEGE">INSUFFICIENT_PRIVILEGE</a>
 
                                 
                                     <span class="flag static">static</span>
@@ -430,7 +432,7 @@
                             </li>
                         
                             <li class="index-item property">
-                                <a href="#property_PERMISSION_DENIED">PERMISSION_DENIED</a>
+                                <a href="#property_NO_CONTROL_FOUND">NO_CONTROL_FOUND</a>
 
                                 
                                     <span class="flag static">static</span>
@@ -439,7 +441,16 @@
                             </li>
                         
                             <li class="index-item property">
-                                <a href="#property_SERVICE_ERROR">SERVICE_ERROR</a>
+                                <a href="#property_NO_INPUT">NO_INPUT</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property">
+                                <a href="#property_REGISTERED_URI">REGISTERED_URI</a>
 
                                 
                                     <span class="flag static">static</span>
@@ -537,6 +548,51 @@
                 <h2 class="off-left">Properties</h2>
 
                 
+                    <div id="property_BAD_URI_REQUEST" class="property item">
+    <h3 class="name"><code>BAD_URI_REQUEST</code></h3>
+    <span class="type">Int</span>
+
+    
+
+    
+
+    
+        <span class="flag final">final</span>
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Bad URI request was made with the gateway</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="property_INCORRECT_PARAMETERS" class="property item">
     <h3 class="name"><code>INCORRECT_PARAMETERS</code></h3>
     <span class="type">Int</span>
@@ -582,8 +638,8 @@
 </div>
 
                 
-                    <div id="property_INVALID_METHOD" class="property item">
-    <h3 class="name"><code>INVALID_METHOD</code></h3>
+                    <div id="property_INSUFFICIENT_PRIVILEGE" class="property item">
+    <h3 class="name"><code>INSUFFICIENT_PRIVILEGE</code></h3>
     <span class="type">Int</span>
 
     
@@ -615,52 +671,7 @@
     </div>
 
     <div class="description">
-        <p>The method name is invalid</p>
-
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_INVALID_SERVICE" class="property item">
-    <h3 class="name"><code>INVALID_SERVICE</code></h3>
-    <span class="type">Int</span>
-
-    
-
-    
-
-    
-        <span class="flag final">final</span>
-    
-
-    
-        <span class="flag static">static</span>
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Error service couldn&#39;t be located</p>
+        <p>Method can&#39;t be access by the client</p>
 
     </div>
 
@@ -719,8 +730,8 @@
 </div>
 
                 
-                    <div id="property_PERMISSION_DENIED" class="property item">
-    <h3 class="name"><code>PERMISSION_DENIED</code></h3>
+                    <div id="property_NO_CONTROL_FOUND" class="property item">
+    <h3 class="name"><code>NO_CONTROL_FOUND</code></h3>
     <span class="type">Int</span>
 
     
@@ -752,7 +763,7 @@
     </div>
 
     <div class="description">
-        <p>Method can&#39;t be access by the client</p>
+        <p>No control was found matching the URI request</p>
 
     </div>
 
@@ -764,8 +775,8 @@
 </div>
 
                 
-                    <div id="property_SERVICE_ERROR" class="property item">
-    <h3 class="name"><code>SERVICE_ERROR</code></h3>
+                    <div id="property_NO_INPUT" class="property item">
+    <h3 class="name"><code>NO_INPUT</code></h3>
     <span class="type">Int</span>
 
     
@@ -797,7 +808,52 @@
     </div>
 
     <div class="description">
-        <p>Service doesn&#39;t extend Service class</p>
+        <p>No input provided</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_REGISTERED_URI" class="property item">
+    <h3 class="name"><code>REGISTERED_URI</code></h3>
+    <span class="type">Int</span>
+
+    
+
+    
+
+    
+        <span class="flag final">final</span>
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The alias is already registerd</p>
 
     </div>
 

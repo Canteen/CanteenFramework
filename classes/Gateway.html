@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
     <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
     <script src="http://yui.yahooapis.com/3.10.1/build/yui/yui-min.js"></script>
-	<title>Canteen Database API v1.1.0 API Documentation : JSONServer</title>  
+	<title>Canteen Database API v1.1.0 API Documentation : Gateway</title>  
 </head>
 <body class="yui3-skin-sam">
 
@@ -81,15 +81,17 @@
             
                 <li><a href="../classes/FormFactory.html">FormFactory</a></li>
             
+                <li><a href="../classes/Gateway.html">Gateway</a></li>
+            
+                <li><a href="../classes/GatewayControl.html">GatewayControl</a></li>
+            
+                <li><a href="../classes/GatewayError.html">GatewayError</a></li>
+            
                 <li><a href="../classes/ifconstor.html">ifconstor</a></li>
             
                 <li><a href="../classes/ifsetor.html">ifsetor</a></li>
             
                 <li><a href="../classes/InstallerForm.html">InstallerForm</a></li>
-            
-                <li><a href="../classes/JSONServer.html">JSONServer</a></li>
-            
-                <li><a href="../classes/JSONServerError.html">JSONServerError</a></li>
             
                 <li><a href="../classes/LoginForm.html">LoginForm</a></li>
             
@@ -212,14 +214,10 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>JSONServer Class</h1>
+                        <h1>Gateway Class</h1>
 <div class="box meta">
     
 
-    
-        <div class="extends">
-            Extends <a href="../classes/CanteenBase.html" class="crosslink">CanteenBase</a>
-        </div>
     
 
     
@@ -236,7 +234,7 @@
 
 
 <div class="box intro">
-    <p>This server handles requests made through the gateway and returns JSON data.  Located in the namespace <strong>Canteen\Server</strong>.</p>
+    <p>This server handles requests made through the gateway and returns JSON data.<br>Located in the namespace <strong>Canteen\Server</strong>.</p>
 
 </div>
 
@@ -264,7 +262,7 @@
                 <div class="index-section methods">
                     <h3>Methods</h3>
 
-                    <ul class="index-list methods extends">
+                    <ul class="index-list methods">
                         
                             <li class="index-item method">
                                 <a href="#method_handle">handle</a>
@@ -280,29 +278,8 @@
                                 
                             </li>
                         
-                            <li class="index-item method protected inherited inherited">
-                                <a href="#method_parse">parse</a>
-
-                                
-                                
-                            </li>
-                        
                             <li class="index-item method">
-                                <a href="#method_processURI">processURI</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method protected inherited">
-                                <a href="#method_service">service</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method protected inherited">
-                                <a href="#method_template">template</a>
+                                <a href="#method_register">register</a>
 
                                 
                                 
@@ -316,10 +293,10 @@
                 <div class="index-section properties">
                     <h3>Properties</h3>
 
-                    <ul class="index-list properties extends">
+                    <ul class="index-list properties">
                         
-                            <li class="index-item property inherited">
-                                <a href="#property_cache">cache</a>
+                            <li class="index-item property private">
+                                <a href="#property__controls">_controls</a>
 
                                 
                                 
@@ -334,34 +311,6 @@
                                 
                             </li>
                         
-                            <li class="index-item property inherited">
-                                <a href="#property_parser">parser</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item property inherited">
-                                <a href="#property_profiler">profiler</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item property inherited">
-                                <a href="#property_settings">settings</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item property inherited">
-                                <a href="#property_site">site</a>
-
-                                
-                                
-                            </li>
-                        
                             <li class="index-item property">
                                 <a href="#property_SUCCESS">SUCCESS</a>
 
@@ -371,8 +320,8 @@
                                 
                             </li>
                         
-                            <li class="index-item property inherited">
-                                <a href="#property_user">user</a>
+                            <li class="index-item property">
+                                <a href="#property_uri">uri</a>
 
                                 
                                 
@@ -396,7 +345,17 @@
     <h3 class="name"><code>handle</code></h3>
 
     
-        <span class="paren">()</span>
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>uriRequest</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
     
 
     
@@ -440,6 +399,30 @@
     </div>
 
     
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">uriRequest</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The entire URI being requested</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
 
     
         <div class="returns">
@@ -465,7 +448,17 @@
     <h3 class="name"><code>internalHandle</code></h3>
 
     
-        <span class="paren">()</span>
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>uriRequest</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
     
 
     
@@ -511,6 +504,30 @@
     </div>
 
     
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">uriRequest</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The URI request being made</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
 
     
         <div class="returns">
@@ -532,8 +549,8 @@
 </div>
 
                 
-                    <div id="method_parse" class="method item protected inherited">
-    <h3 class="name"><code>parse</code></h3>
+                    <div id="method_register" class="method item">
+    <h3 class="name"><code>register</code></h3>
 
     
         <div class="args">
@@ -541,13 +558,19 @@
             
                 <li class="arg">
                     
-                        <code>content</code>
+                        <code>uri</code>
                     
                 </li>
             
                 <li class="arg">
                     
-                        <code>substitutions</code>
+                        <code>call</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[privilege=Privilege::ANONYMOUS]</code>
                     
                 </li>
             
@@ -555,121 +578,6 @@
         </div>
     
 
-    
-        <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-        </span>
-    
-
-    
-
-    
-        <span class="flag protected">protected</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            <p>Inherited from
-            <a href="../classes/CanteenBase.html#method_parse">
-                CanteenBase
-            </a>
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Convenience method for parsing content</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">content</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The string to parse</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name">substitutions</code>
-                        <span class="type">Dictionary</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The dictionary of tags to replace</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>:
-                    
-                    <p>The parsed string</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_processURI" class="method item">
-    <h3 class="name"><code>processURI</code></h3>
-
-    
-        <span class="paren">()</span>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
-        </span>
     
 
     
@@ -702,87 +610,7 @@
     </div>
 
     <div class="description">
-        <p>Process the URI as an array with different pieces</p>
-
-    </div>
-
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>:
-                    
-                    <p>The URI where each stub part is a different element in the Array</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_service" class="method item protected inherited">
-    <h3 class="name"><code>service</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>aliasOrClassName</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="../classes/Service.html" class="crosslink">Service</a></span>
-        </span>
-    
-
-    
-
-    
-        <span class="flag protected">protected</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/CanteenBase.html#method_service">CanteenBase</a>:
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Get a service by alias or classname</p>
+        <p>Create a new gateway</p>
 
     </div>
 
@@ -794,124 +622,14 @@
             
                 <li class="param">
                     
-                        <code class="param-name">aliasOrClassName</code>
+                        <code class="param-name">uri</code>
                         <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>The alias or classname</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="../classes/Service.html" class="crosslink">Service</a></span>:
-                    
-                    <p>The service matching the alias</p>
-
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_template" class="method item protected inherited">
-    <h3 class="name"><code>template</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>name</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code class="optional">[substitutions=[]</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-        </span>
-    
-
-    
-
-    
-        <span class="flag protected">protected</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/CanteenBase.html#method_template">CanteenBase</a>:
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Convenience method for parsing content</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">name</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The name of the template to parse</p>
+                        <p>The path to the call</p>
 
                     </div>
 
@@ -920,15 +638,31 @@
             
                 <li class="param">
                     
-                        <code class="param-name optional">[substitutions=[]</code>
-                        <span class="type">Dictionary</span>
+                        <code class="param-name">call</code>
+                        <span class="type">Callable</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The callback for the uri request</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[privilege=Privilege::ANONYMOUS]</code>
+                        <span class="type">Int</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>The dictionary of tags to replace</p>
+                        <p>The minimum privilege needed to call</p>
 
                     </div>
 
@@ -939,20 +673,6 @@
         </div>
     
 
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>:
-                    
-                    <p>The parsed string</p>
-
-                
-            </div>
-        </div>
     
 
     
@@ -967,12 +687,14 @@
                 <h2 class="off-left">Properties</h2>
 
                 
-                    <div id="property_cache" class="property item inherited">
-    <h3 class="name"><code>cache</code></h3>
-    <span class="type"><a href="../classes/ServerCache.html" class="crosslink">ServerCache</a></span>
+                    <div id="property__controls" class="property item private">
+    <h3 class="name"><code>_controls</code></h3>
+    <span class="type">Dictionary</span>
 
     
 
+    
+        <span class="flag private">private</span>
     
 
     
@@ -982,8 +704,9 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/CanteenBase.html#property_cache">CanteenBase</a>:
+                
+                <p>
+                
             
         
         
@@ -995,7 +718,7 @@
     </div>
 
     <div class="description">
-        <p>Get the instance of the site cache</p>
+        <p>The map of controls by uri alias</p>
 
     </div>
 
@@ -1052,166 +775,6 @@
 </div>
 
                 
-                    <div id="property_parser" class="property item inherited">
-    <h3 class="name"><code>parser</code></h3>
-    <span class="type">Parser</span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/CanteenBase.html#property_parser">CanteenBase</a>:
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>The parser is responsible for rendering templates</p>
-
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_profiler" class="property item inherited">
-    <h3 class="name"><code>profiler</code></h3>
-    <span class="type">Profiler</span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/CanteenBase.html#property_profiler">CanteenBase</a>:
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>The instance of the profiler for debugging performance</p>
-
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_settings" class="property item inherited">
-    <h3 class="name"><code>settings</code></h3>
-    <span class="type"><a href="../classes/SettingsManager.html" class="crosslink">SettingsManager</a></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/CanteenBase.html#property_settings">CanteenBase</a>:
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Get the instance of the settings manager</p>
-
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="property_site" class="property item inherited">
-    <h3 class="name"><code>site</code></h3>
-    <span class="type"><a href="../classes/Site.html" class="crosslink">Site</a></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="../classes/CanteenBase.html#property_site">CanteenBase</a>:
-            
-        
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Convenience getter for the site</p>
-
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-                
                     <div id="property_SUCCESS" class="property item">
     <h3 class="name"><code>SUCCESS</code></h3>
     <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
@@ -1257,9 +820,9 @@
 </div>
 
                 
-                    <div id="property_user" class="property item inherited">
-    <h3 class="name"><code>user</code></h3>
-    <span class="type"><a href="../classes/Authorization.html" class="crosslink">Authorization</a></span>
+                    <div id="property_uri" class="property item">
+    <h3 class="name"><code>uri</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
 
     
 
@@ -1272,8 +835,9 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="../classes/CanteenBase.html#property_user">CanteenBase</a>:
+                
+                <p>
+                
             
         
         
@@ -1285,10 +849,12 @@
     </div>
 
     <div class="description">
-        <p>Get the Authorization class to handle things like login, password change</p>
+        <p>The path to this gateway server</p>
 
     </div>
 
+    
+        <p><strong>Default:</strong> &#x27;gateway&#x27;;</p>
     
 
     

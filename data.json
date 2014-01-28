@@ -129,11 +129,11 @@
             "fors": {},
             "namespaces": {}
         },
-        "src/Canteen/Errors/JSONServerError.php": {
-            "name": "src/Canteen/Errors/JSONServerError.php",
+        "src/Canteen/Errors/GatewayError.php": {
+            "name": "src/Canteen/Errors/GatewayError.php",
             "modules": {},
             "classes": {
-                "JSONServerError": 1
+                "GatewayError": 1
             },
             "fors": {},
             "namespaces": {}
@@ -313,11 +313,20 @@
             "fors": {},
             "namespaces": {}
         },
-        "src/Canteen/Server/JSONServer.php": {
-            "name": "src/Canteen/Server/JSONServer.php",
+        "src/Canteen/Server/Gateway.php": {
+            "name": "src/Canteen/Server/Gateway.php",
             "modules": {},
             "classes": {
-                "JSONServer": 1
+                "Gateway": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/Canteen/Server/GatewayControl.php": {
+            "name": "src/Canteen/Server/GatewayControl.php",
+            "modules": {},
+            "classes": {
+                "GatewayControl": 1
             },
             "fors": {},
             "namespaces": {}
@@ -617,7 +626,7 @@
             "classes": {
                 "CanteenError": 1,
                 "FileError": 1,
-                "JSONServerError": 1,
+                "GatewayError": 1,
                 "ObjectServiceError": 1,
                 "UserError": 1,
                 "Event": 1,
@@ -669,7 +678,8 @@
             "submodules": {},
             "classes": {
                 "DeploymentStatus": 1,
-                "JSONServer": 1,
+                "Gateway": 1,
+                "GatewayControl": 1,
                 "ServerCache": 1
             },
             "fors": {},
@@ -740,7 +750,7 @@
             "namespaces": {},
             "tag": "module",
             "file": "src/Canteen/Site.php",
-            "line": 179
+            "line": 180
         },
         "global": {
             "name": "global",
@@ -1042,9 +1052,9 @@
                 }
             ]
         },
-        "JSONServerError": {
-            "name": "JSONServerError",
-            "shortname": "JSONServerError",
+        "GatewayError": {
+            "name": "GatewayError",
+            "shortname": "GatewayError",
             "classitems": [],
             "plugins": [],
             "extensions": [],
@@ -1052,7 +1062,7 @@
             "extension_for": [],
             "module": "Canteen\\Errors",
             "namespace": "",
-            "file": "src/Canteen/Errors/JSONServerError.php",
+            "file": "src/Canteen/Errors/GatewayError.php",
             "line": 8,
             "description": "Exceptions specific to the JSON server.  \nLocated in the namespace __Canteen\\Errors__.",
             "extends": "CanteenError",
@@ -1300,7 +1310,7 @@
             "module": "Canteen\\Forms",
             "namespace": "",
             "file": "src/Canteen/Forms/InstallerForm.php",
-            "line": 15,
+            "line": 16,
             "description": "Update the database to the latest version.  Located in the namespace __Canteen\\Forms__.",
             "extends": "Form"
         },
@@ -1451,9 +1461,9 @@
                 }
             ]
         },
-        "JSONServer": {
-            "name": "JSONServer",
-            "shortname": "JSONServer",
+        "Gateway": {
+            "name": "Gateway",
+            "shortname": "Gateway",
             "classitems": [],
             "plugins": [],
             "extensions": [],
@@ -1461,10 +1471,41 @@
             "extension_for": [],
             "module": "Canteen\\Server",
             "namespace": "",
-            "file": "src/Canteen/Server/JSONServer.php",
-            "line": 16,
-            "description": "This server handles requests made through the gateway and returns JSON data.  Located in the namespace __Canteen\\Server__.",
-            "extends": "CanteenBase"
+            "file": "src/Canteen/Server/Gateway.php",
+            "line": 12,
+            "description": "This server handles requests made through the gateway and returns JSON data.  \nLocated in the namespace __Canteen\\Server__."
+        },
+        "GatewayControl": {
+            "name": "GatewayControl",
+            "shortname": "GatewayControl",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Canteen\\Server",
+            "namespace": "",
+            "file": "src/Canteen/Server/GatewayControl.php",
+            "line": 42,
+            "description": "Gateway access control point. These are created internally by\nthe Gateway class and shouldn't be created directly.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "uri",
+                    "description": "The URI path",
+                    "type": "String"
+                },
+                {
+                    "name": "call",
+                    "description": "The callback method",
+                    "type": "Callable"
+                },
+                {
+                    "name": "privilege",
+                    "description": "The name of the privilege",
+                    "type": "Int"
+                }
+            ]
         },
         "ServerCache": {
             "name": "ServerCache",
@@ -1565,16 +1606,9 @@
             "module": "Canteen\\Services",
             "namespace": "",
             "file": "src/Canteen/Services/ObjectService.php",
-            "line": 15,
+            "line": 7,
             "description": "Service provides basic methods for getting, updating, remove multiple objects \non multiple tables.",
-            "extends": "Service",
-            "params": [
-                {
-                    "name": "alias",
-                    "description": "The name to get by reference within the Canteen Site",
-                    "type": "String"
-                }
-            ]
+            "extends": "Service"
         },
         "ObjectServiceField": {
             "name": "ObjectServiceField",
@@ -1623,7 +1657,7 @@
             "module": "Canteen\\Services",
             "namespace": "",
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 94,
+            "line": 95,
             "description": "The encapsulation of a single data type, requires a predefined\ndata class and a table name and field definitions.",
             "is_constructor": 1,
             "params": [
@@ -1708,11 +1742,6 @@
             "extends": "ObjectService",
             "is_constructor": 1,
             "params": [
-                {
-                    "name": "alias",
-                    "description": "The name of the service alias and the name of the table",
-                    "type": "String"
-                },
                 {
                     "name": "className",
                     "description": "Class to bind database result to",
@@ -1881,7 +1910,7 @@
             "module": "Canteen",
             "namespace": "",
             "file": "src/Canteen/Site.php",
-            "line": 179,
+            "line": 180,
             "description": "This is the main class of the framework that needs to be implemented in order to use. Canteen\nis a backend which provides a JSON server, Database connect, template engine, User authentication\nand many other features for building very dynamic data-driven websites. \n\t\n\t// Externally load the deployment settings from a PHP file (default)\n\t$site = new Canteen\\Site('config.php');\n\n\t// Or set the single deployment settings directly\n\t$site = new Canteen\\Site([\n\t\t'dbUsername' => 'user',\n\t\t'dbPassword' => 'pass1234',\n\t\t'dbName' => 'my_settingsbase',\n\t]);\n\t\n \t// Or create different deployments of the site\n\t// for different domains where the site is hosted\n\t$site = new Canteen\\Site([\n\t\t// our local site accessible from http://localhost\n\t\t[\n\t\t\t'level' => DeploymentStatus::LOCAL,\n\t\t\t'domain' => 'localhost',\n\t\t\t'dbUsername' => 'root',\n\t\t\t'dbPassword' => '',\n\t\t\t'dbName' => 'my_settingsbase',\n\t\t\t'debug' => true\n\t\t],\n\t\t// Our dev site accessible from http://dev.example.com\n\t\t[\n\t\t\t'level' => DeploymentStatus::DEV,\n\t\t\t'domain' => 'dev.example.com',\n\t\t\t'dbUsername' => 'user',\n\t\t\t'dbPassword' => 'pass1234',\n\t\t\t'dbName' => 'my_dev_settingsbase',\n\t\t\t'debug' => true\n\t\t],\n\t\t// Our live site accessible from http://example.com\n\t\t[\n\t\t\t'level' => DeploymentStatus::LIVE,\n\t\t\t'domain' => 'example.com',\n\t\t\t'dbUsername' => 'user',\n\t\t\t'dbPassword' => 'pass1234',\n\t\t\t'dbName' => 'my_settingsbase',\n\t\t\t'minify' => true,\n\t\t\t'compress' => true,\n\t\t\t'cacheEnabled' => true\n\t\t]\n \t]);\n\t\t\n\t// Echo out the page result\n\t$site->render();",
             "is_constructor": 1,
             "params": [
@@ -2891,7 +2920,7 @@
         },
         {
             "file": "src/Canteen/Controllers/AdminPageController.php",
-            "line": 177,
+            "line": 178,
             "description": "When an element is added, inject the content",
             "itemtype": "method",
             "name": "onElementAdded",
@@ -2907,14 +2936,14 @@
         },
         {
             "file": "src/Canteen/Controllers/AdminPageController.php",
-            "line": 199,
+            "line": 200,
             "description": "Get the form select of privileges",
             "class": "AdminPageController",
             "module": "Canteen\\Controllers"
         },
         {
             "file": "src/Canteen/Controllers/AdminPageController.php",
-            "line": 218,
+            "line": 219,
             "description": "Get the page contents from the path",
             "itemtype": "method",
             "name": "getContents",
@@ -2929,7 +2958,7 @@
         },
         {
             "file": "src/Canteen/Controllers/AdminPageController.php",
-            "line": 243,
+            "line": 244,
             "description": "Get the users as options",
             "itemtype": "method",
             "name": "getPageOptions",
@@ -3648,68 +3677,80 @@
             "module": "Canteen\\Errors"
         },
         {
-            "file": "src/Canteen/Errors/JSONServerError.php",
+            "file": "src/Canteen/Errors/GatewayError.php",
             "line": 20,
-            "description": "Error service couldn't be located",
+            "description": "No input provided",
             "itemtype": "property",
-            "name": "INVALID_SERVICE",
+            "name": "NO_INPUT",
             "type": "Int",
             "static": 1,
             "final": 1,
-            "class": "JSONServerError",
+            "class": "GatewayError",
             "module": "Canteen\\Errors"
         },
         {
-            "file": "src/Canteen/Errors/JSONServerError.php",
+            "file": "src/Canteen/Errors/GatewayError.php",
             "line": 28,
-            "description": "Service doesn't extend Service class",
-            "itemtype": "property",
-            "name": "SERVICE_ERROR",
-            "type": "Int",
-            "static": 1,
-            "final": 1,
-            "class": "JSONServerError",
-            "module": "Canteen\\Errors"
-        },
-        {
-            "file": "src/Canteen/Errors/JSONServerError.php",
-            "line": 36,
-            "description": "The method name is invalid",
-            "itemtype": "property",
-            "name": "INVALID_METHOD",
-            "type": "Int",
-            "static": 1,
-            "final": 1,
-            "class": "JSONServerError",
-            "module": "Canteen\\Errors"
-        },
-        {
-            "file": "src/Canteen/Errors/JSONServerError.php",
-            "line": 44,
             "description": "The wrong number of parameters",
             "itemtype": "property",
             "name": "INCORRECT_PARAMETERS",
             "type": "Int",
             "static": 1,
             "final": 1,
-            "class": "JSONServerError",
+            "class": "GatewayError",
             "module": "Canteen\\Errors"
         },
         {
-            "file": "src/Canteen/Errors/JSONServerError.php",
-            "line": 52,
+            "file": "src/Canteen/Errors/GatewayError.php",
+            "line": 36,
             "description": "Method can't be access by the client",
             "itemtype": "property",
-            "name": "PERMISSION_DENIED",
+            "name": "INSUFFICIENT_PRIVILEGE",
             "type": "Int",
             "static": 1,
             "final": 1,
-            "class": "JSONServerError",
+            "class": "GatewayError",
             "module": "Canteen\\Errors"
         },
         {
-            "file": "src/Canteen/Errors/JSONServerError.php",
+            "file": "src/Canteen/Errors/GatewayError.php",
+            "line": 44,
+            "description": "The alias is already registerd",
+            "itemtype": "property",
+            "name": "REGISTERED_URI",
+            "type": "Int",
+            "static": 1,
+            "final": 1,
+            "class": "GatewayError",
+            "module": "Canteen\\Errors"
+        },
+        {
+            "file": "src/Canteen/Errors/GatewayError.php",
+            "line": 52,
+            "description": "Bad URI request was made with the gateway",
+            "itemtype": "property",
+            "name": "BAD_URI_REQUEST",
+            "type": "Int",
+            "static": 1,
+            "final": 1,
+            "class": "GatewayError",
+            "module": "Canteen\\Errors"
+        },
+        {
+            "file": "src/Canteen/Errors/GatewayError.php",
             "line": 60,
+            "description": "No control was found matching the URI request",
+            "itemtype": "property",
+            "name": "NO_CONTROL_FOUND",
+            "type": "Int",
+            "static": 1,
+            "final": 1,
+            "class": "GatewayError",
+            "module": "Canteen\\Errors"
+        },
+        {
+            "file": "src/Canteen/Errors/GatewayError.php",
+            "line": 68,
             "description": "The collection of messages",
             "itemtype": "property",
             "name": "messages",
@@ -3718,14 +3759,14 @@
             "tagname": "",
             "static": 1,
             "final": 1,
-            "class": "JSONServerError",
+            "class": "GatewayError",
             "module": "Canteen\\Errors"
         },
         {
-            "file": "src/Canteen/Errors/JSONServerError.php",
-            "line": 75,
+            "file": "src/Canteen/Errors/GatewayError.php",
+            "line": 84,
             "description": "Create a user error",
-            "class": "JSONServerError",
+            "class": "GatewayError",
             "module": "Canteen\\Errors"
         },
         {
@@ -4591,7 +4632,7 @@
         },
         {
             "file": "src/Canteen/Forms/InstallerForm.php",
-            "line": 22,
+            "line": 23,
             "description": "Process the form and handle the $_POST data.",
             "class": "InstallerForm",
             "module": "Canteen\\Forms"
@@ -4816,7 +4857,7 @@
         },
         {
             "file": "src/Canteen/Forms/PageForm.php",
-            "line": 96,
+            "line": 127,
             "description": "Handler to do some extra privilege checking before we update",
             "itemtype": "method",
             "name": "onBeforeUpdate",
@@ -4832,7 +4873,7 @@
         },
         {
             "file": "src/Canteen/Forms/PageForm.php",
-            "line": 170,
+            "line": 201,
             "description": "Handler write the content file after we added",
             "itemtype": "method",
             "name": "onAdded",
@@ -5479,68 +5520,210 @@
             "module": "Canteen\\Server"
         },
         {
-            "file": "src/Canteen/Server/JSONServer.php",
-            "line": 24,
+            "file": "src/Canteen/Server/Gateway.php",
+            "line": 20,
             "description": "If the output produced an error",
             "itemtype": "property",
             "name": "ERROR",
             "type": "String",
             "static": 1,
             "final": 1,
-            "class": "JSONServer",
+            "class": "Gateway",
             "module": "Canteen\\Server"
         },
         {
-            "file": "src/Canteen/Server/JSONServer.php",
-            "line": 32,
+            "file": "src/Canteen/Server/Gateway.php",
+            "line": 28,
             "description": "If the output was successful",
             "itemtype": "property",
             "name": "SUCCESS",
             "type": "String",
             "static": 1,
             "final": 1,
-            "class": "JSONServer",
+            "class": "Gateway",
             "module": "Canteen\\Server"
         },
         {
-            "file": "src/Canteen/Server/JSONServer.php",
-            "line": 40,
+            "file": "src/Canteen/Server/Gateway.php",
+            "line": 36,
+            "description": "The map of controls by uri alias",
+            "itemtype": "property",
+            "name": "_controls",
+            "type": "Dictionary",
+            "access": "private",
+            "tagname": "",
+            "class": "Gateway",
+            "module": "Canteen\\Server"
+        },
+        {
+            "file": "src/Canteen/Server/Gateway.php",
+            "line": 43,
+            "description": "The path to this gateway server",
+            "itemtype": "property",
+            "name": "uri",
+            "type": "String",
+            "default": "'gateway';",
+            "class": "Gateway",
+            "module": "Canteen\\Server"
+        },
+        {
+            "file": "src/Canteen/Server/Gateway.php",
+            "line": 50,
+            "description": "Create a new gateway",
+            "itemtype": "method",
+            "name": "register",
+            "params": [
+                {
+                    "name": "uri",
+                    "description": "The path to the call",
+                    "type": "String"
+                },
+                {
+                    "name": "call",
+                    "description": "The callback for the uri request",
+                    "type": "Callable"
+                },
+                {
+                    "name": "privilege",
+                    "description": "The minimum privilege needed to call",
+                    "type": "Int",
+                    "optional": true,
+                    "optdefault": "Privilege::ANONYMOUS"
+                }
+            ],
+            "class": "Gateway",
+            "module": "Canteen\\Server"
+        },
+        {
+            "file": "src/Canteen/Server/Gateway.php",
+            "line": 66,
             "description": "The main server handler",
             "itemtype": "method",
             "name": "handle",
+            "params": [
+                {
+                    "name": "uriRequest",
+                    "description": "The entire URI being requested",
+                    "type": "String"
+                }
+            ],
             "return": {
                 "description": "The JSON object",
                 "type": "Object"
             },
-            "class": "JSONServer",
+            "class": "Gateway",
             "module": "Canteen\\Server"
         },
         {
-            "file": "src/Canteen/Server/JSONServer.php",
-            "line": 77,
+            "file": "src/Canteen/Server/Gateway.php",
+            "line": 104,
             "description": "The internal JSON handle request",
             "itemtype": "method",
             "name": "internalHandle",
             "access": "private",
             "tagname": "",
+            "params": [
+                {
+                    "name": "uriRequest",
+                    "description": "The URI request being made",
+                    "type": "String"
+                }
+            ],
             "return": {
                 "description": "The result of the service call",
                 "type": "Mixed"
             },
-            "class": "JSONServer",
+            "class": "Gateway",
             "module": "Canteen\\Server"
         },
         {
-            "file": "src/Canteen/Server/JSONServer.php",
-            "line": 153,
-            "description": "Process the URI as an array with different pieces",
+            "file": "src/Canteen/Server/GatewayControl.php",
+            "line": 12,
+            "description": "The local path on the gateway to access this callable",
+            "itemtype": "property",
+            "name": "uri",
+            "type": "String",
+            "class": "GatewayControl",
+            "module": "Canteen\\Server"
+        },
+        {
+            "file": "src/Canteen/Server/GatewayControl.php",
+            "line": 18,
+            "description": "The privilege needed to call this method",
+            "itemtype": "property",
+            "name": "privilege",
+            "type": "Int",
+            "class": "GatewayControl",
+            "module": "Canteen\\Server"
+        },
+        {
+            "file": "src/Canteen/Server/GatewayControl.php",
+            "line": 24,
+            "description": "The callable method when gateway access this",
+            "itemtype": "property",
+            "name": "call",
+            "type": "Callable",
+            "class": "GatewayControl",
+            "module": "Canteen\\Server"
+        },
+        {
+            "file": "src/Canteen/Server/GatewayControl.php",
+            "line": 30,
+            "description": "The total possible number of parameters for this call",
+            "itemtype": "property",
+            "name": "total",
+            "type": "Int",
+            "class": "GatewayControl",
+            "module": "Canteen\\Server"
+        },
+        {
+            "file": "src/Canteen/Server/GatewayControl.php",
+            "line": 36,
+            "description": "The required number of parameters for this call",
+            "itemtype": "property",
+            "name": "required",
+            "type": "Int",
+            "class": "GatewayControl",
+            "module": "Canteen\\Server"
+        },
+        {
+            "file": "src/Canteen/Server/GatewayControl.php",
+            "line": 63,
+            "description": "Check if the request being made belongs to this request",
             "itemtype": "method",
-            "name": "processURI",
+            "name": "match",
+            "params": [
+                {
+                    "name": "request",
+                    "description": "The URI being requested from the gateway",
+                    "type": "String"
+                }
+            ],
             "return": {
-                "description": "The URI where each stub part is a different element in the Array",
+                "description": "If the request is matched",
+                "type": "Boolean"
+            },
+            "class": "GatewayControl",
+            "module": "Canteen\\Server"
+        },
+        {
+            "file": "src/Canteen/Server/GatewayControl.php",
+            "line": 74,
+            "description": "Get the additional arguments from the URI",
+            "itemtype": "method",
+            "name": "getArguments",
+            "params": [
+                {
+                    "name": "request",
+                    "description": "The URI being requested from the gateway",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The arguments from the request",
                 "type": "Array"
             },
-            "class": "JSONServer",
+            "class": "GatewayControl",
             "module": "Canteen\\Server"
         },
         {
@@ -6150,7 +6333,7 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 52,
+            "line": 40,
             "description": "Install the config table",
             "itemtype": "method",
             "name": "setup",
@@ -6180,7 +6363,7 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 94,
+            "line": 80,
             "description": "Get the collection of values types",
             "itemtype": "method",
             "name": "getValueTypes",
@@ -6193,7 +6376,7 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 110,
+            "line": 96,
             "description": "Get all the the config for the site and add them to the settings",
             "itemtype": "method",
             "name": "registerSettings",
@@ -6206,7 +6389,7 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 142,
+            "line": 126,
             "description": "Add a key to the config",
             "itemtype": "method",
             "name": "addConfig",
@@ -6247,7 +6430,7 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 173,
+            "line": 157,
             "description": "Get the validator by the current type",
             "itemtype": "method",
             "name": "getValidationByType",
@@ -6267,7 +6450,7 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 191,
+            "line": 175,
             "description": "Get a config variable by name",
             "itemtype": "method",
             "name": "getValueByName",
@@ -6287,7 +6470,7 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 214,
+            "line": 198,
             "description": "Get all the the config for the site",
             "itemtype": "method",
             "name": "getConfigs",
@@ -6300,7 +6483,7 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 224,
+            "line": 208,
             "description": "Get a config variable by id",
             "itemtype": "method",
             "name": "getConfig",
@@ -6320,7 +6503,7 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 235,
+            "line": 219,
             "description": "Update a config's property or properties",
             "itemtype": "method",
             "name": "updateConfig",
@@ -6352,7 +6535,7 @@
         },
         {
             "file": "src/Canteen/Services/ConfigService.php",
-            "line": 248,
+            "line": 232,
             "description": "Delete a config key",
             "itemtype": "method",
             "name": "removeConfig",
@@ -6372,7 +6555,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectService.php",
-            "line": 9,
+            "line": 15,
             "description": "The dictionary of item names to ObjectServiceItem objects",
             "itemtype": "property",
             "name": "items",
@@ -6382,7 +6565,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectService.php",
-            "line": 27,
+            "line": 21,
             "description": "Add a new Item definition to the service. This is required before using\nany of the methods for updating, getting, removing. Located in the namespace __Canteen\\Services__.",
             "itemtype": "method",
             "name": "registerItem",
@@ -6424,7 +6607,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectService.php",
-            "line": 53,
+            "line": 47,
             "description": "The more manual method for verifying a field value.",
             "itemtype": "method",
             "name": "verifyField",
@@ -6458,7 +6641,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectService.php",
-            "line": 68,
+            "line": 62,
             "description": "Auto install the service item",
             "itemtype": "method",
             "name": "installItem",
@@ -6480,7 +6663,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectService.php",
-            "line": 80,
+            "line": 74,
             "description": "Auto install multiple service items",
             "itemtype": "method",
             "name": "installItems",
@@ -6502,7 +6685,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectService.php",
-            "line": 102,
+            "line": 96,
             "description": "Override of the dynamic call method to call install* methods, for instance\nif we're install an item name Object it would be `$this->installObject()`",
             "itemtype": "method",
             "name": "__call",
@@ -6527,7 +6710,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectService.php",
-            "line": 126,
+            "line": 120,
             "description": "Convenience function for creating a new field",
             "itemtype": "method",
             "name": "field",
@@ -6563,7 +6746,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectService.php",
-            "line": 140,
+            "line": 134,
             "description": "This allows for the internal dynamic calling of methods, the methods supported \ninclude getItems, getItem, updateItem, removeItem, \ngetTotalItems, getTotalItem, getItemBy[IndexName], getTotalItemBy[IndexName],\nremoveItemBy[IndexName], updateItemBy[IndexName].",
             "itemtype": "method",
             "name": "call",
@@ -6586,7 +6769,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectService.php",
-            "line": 157,
+            "line": 151,
             "description": "Auto detect the item name based on the name of the method that called it",
             "itemtype": "method",
             "name": "autoDetectItem",
@@ -6608,7 +6791,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectService.php",
-            "line": 188,
+            "line": 182,
             "description": "Generally called for calling the item methods",
             "itemtype": "method",
             "name": "callByItem",
@@ -6640,10 +6823,10 @@
         },
         {
             "file": "src/Canteen/Services/ObjectService.php",
-            "line": 302,
+            "line": 293,
             "description": "Get the default part of the property name",
             "itemtype": "method",
-            "name": "accessDefault",
+            "name": "hasDefaultField",
             "access": "private",
             "tagname": "",
             "params": [
@@ -6658,7 +6841,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectService.php",
-            "line": 316,
+            "line": 305,
             "description": "Internal method for getting result by an index",
             "itemtype": "method",
             "name": "internalGetByIndex",
@@ -6709,7 +6892,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectService.php",
-            "line": 364,
+            "line": 353,
             "description": "Internal method for getting result by an index",
             "itemtype": "method",
             "name": "internalGetTotalByIndex",
@@ -6746,7 +6929,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectService.php",
-            "line": 389,
+            "line": 378,
             "description": "Internal getting a collection of items",
             "itemtype": "method",
             "name": "internalGetAll",
@@ -6782,7 +6965,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectService.php",
-            "line": 426,
+            "line": 415,
             "description": "Internal getting a total number of items",
             "itemtype": "method",
             "name": "internalGetTotalAll",
@@ -6804,7 +6987,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectService.php",
-            "line": 446,
+            "line": 435,
             "description": "The internal remove of items by index",
             "itemtype": "method",
             "name": "internalRemoveByIndex",
@@ -6836,7 +7019,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectService.php",
-            "line": 462,
+            "line": 451,
             "description": "The internal remove of items by index",
             "itemtype": "method",
             "name": "internalUpdateByIndex",
@@ -6880,7 +7063,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectService.php",
-            "line": 503,
+            "line": 492,
             "description": "Conviencence method to inserting a new row into a table, this does\nall the field validation and insert.",
             "itemtype": "method",
             "name": "internalAdd",
@@ -7157,7 +7340,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 11,
+            "line": 12,
             "description": "The name of the table of the custom type",
             "itemtype": "property",
             "name": "table",
@@ -7168,7 +7351,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 18,
+            "line": 19,
             "description": "The name of the class to bind with",
             "itemtype": "property",
             "name": "className",
@@ -7179,7 +7362,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 25,
+            "line": 26,
             "description": "The collection of ObjectServiceField objects",
             "itemtype": "property",
             "name": "_fields",
@@ -7190,7 +7373,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 32,
+            "line": 33,
             "description": "The name of the single item to use for dynamic method calls",
             "itemtype": "property",
             "name": "itemName",
@@ -7201,7 +7384,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 39,
+            "line": 40,
             "description": "The name of multiple items to use for dynamic class",
             "itemtype": "property",
             "name": "itemsName",
@@ -7212,7 +7395,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 46,
+            "line": 47,
             "description": "The main field, default",
             "itemtype": "property",
             "name": "defaultField",
@@ -7223,7 +7406,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 53,
+            "line": 54,
             "description": "The map of ObjectServiceField objects to their names",
             "itemtype": "property",
             "name": "fieldsByName",
@@ -7234,7 +7417,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 60,
+            "line": 61,
             "description": "The property prepend prepends",
             "itemtype": "property",
             "name": "prepends",
@@ -7244,7 +7427,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 66,
+            "line": 67,
             "description": "The collection of mysql select properties",
             "itemtype": "property",
             "name": "properties",
@@ -7255,7 +7438,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 73,
+            "line": 74,
             "description": "The map of field names that can be indexed",
             "itemtype": "property",
             "name": "indexes",
@@ -7266,7 +7449,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 80,
+            "line": 81,
             "description": "Additional get where properties",
             "itemtype": "property",
             "name": "where",
@@ -7277,7 +7460,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 87,
+            "line": 88,
             "description": "The reference to the service this originates on",
             "itemtype": "property",
             "name": "service",
@@ -7288,7 +7471,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 129,
+            "line": 130,
             "description": "Register additional where clauses for the SQL select on get methods",
             "itemtype": "method",
             "name": "setWhere",
@@ -7308,7 +7491,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 143,
+            "line": 144,
             "description": "Add order by fields to the select query",
             "itemtype": "method",
             "name": "orderByQuery",
@@ -7328,7 +7511,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 161,
+            "line": 162,
             "description": "Get the select properties",
             "itemtype": "method",
             "name": "setProperties",
@@ -7345,7 +7528,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 173,
+            "line": 174,
             "description": "Get or set the collection of prepend prepends",
             "itemtype": "method",
             "name": "setPrepends",
@@ -7372,7 +7555,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 189,
+            "line": 190,
             "description": "A simple orderBy method to set the order of query",
             "itemtype": "method",
             "name": "setOrderBy",
@@ -7399,7 +7582,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 217,
+            "line": 218,
             "description": "Convience method for the field validation wrapper for verify\nbut call by name.",
             "itemtype": "method",
             "name": "verify",
@@ -7424,10 +7607,17 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 246,
+            "line": 247,
             "description": "Experimental install feature to take the fields\nand convert them into a MySQL create table query.",
             "itemtype": "method",
-            "name": "getInstallQuery",
+            "name": "install",
+            "params": [
+                {
+                    "name": "query",
+                    "description": "The query to install with",
+                    "type": "CreateQuery"
+                }
+            ],
             "return": {
                 "description": "The sql query to install the table",
                 "type": "String"
@@ -7437,7 +7627,7 @@
         },
         {
             "file": "src/Canteen/Services/ObjectServiceItem.php",
-            "line": 308,
+            "line": 303,
             "description": "Get the default single name",
             "itemtype": "method",
             "name": "defaultSingleName",
@@ -7459,7 +7649,7 @@
         },
         {
             "file": "src/Canteen/Services/PageService.php",
-            "line": 75,
+            "line": 60,
             "description": "Install the pages table into the database",
             "itemtype": "method",
             "name": "setup",
@@ -7468,7 +7658,7 @@
         },
         {
             "file": "src/Canteen/Services/PageService.php",
-            "line": 124,
+            "line": 107,
             "description": "Get the collection of protected pages that are required by Canteen",
             "itemtype": "method",
             "name": "getProtectedUris",
@@ -7481,7 +7671,7 @@
         },
         {
             "file": "src/Canteen/Services/PageService.php",
-            "line": 146,
+            "line": 129,
             "description": "Add a new page to the site",
             "itemtype": "method",
             "name": "addPage",
@@ -7557,7 +7747,7 @@
         },
         {
             "file": "src/Canteen/Services/PageService.php",
-            "line": 181,
+            "line": 164,
             "description": "Get a current page by ID",
             "itemtype": "method",
             "name": "getPage",
@@ -7577,7 +7767,7 @@
         },
         {
             "file": "src/Canteen/Services/PageService.php",
-            "line": 192,
+            "line": 175,
             "description": "Get a current page by the URI stub",
             "itemtype": "method",
             "name": "getPageByUri",
@@ -7597,7 +7787,7 @@
         },
         {
             "file": "src/Canteen/Services/PageService.php",
-            "line": 203,
+            "line": 186,
             "description": "Get all of the children pages nested within a page",
             "itemtype": "method",
             "name": "getPagesByParentId",
@@ -7617,7 +7807,7 @@
         },
         {
             "file": "src/Canteen/Services/PageService.php",
-            "line": 214,
+            "line": 197,
             "description": "Get all of the pages",
             "itemtype": "method",
             "name": "getPages",
@@ -7630,7 +7820,7 @@
         },
         {
             "file": "src/Canteen/Services/PageService.php",
-            "line": 224,
+            "line": 207,
             "description": "Remove a page",
             "itemtype": "method",
             "name": "removePage",
@@ -7650,7 +7840,7 @@
         },
         {
             "file": "src/Canteen/Services/PageService.php",
-            "line": 235,
+            "line": 218,
             "description": "Update a user property or properties",
             "itemtype": "method",
             "name": "updatePage",
@@ -7693,10 +7883,10 @@
         {
             "file": "src/Canteen/Services/Service.php",
             "line": 31,
-            "description": "The registered list of services",
+            "description": "The registered list of services by alias",
             "itemtype": "property",
             "name": "registerd",
-            "type": "Array",
+            "type": "Dictionary",
             "access": "private",
             "tagname": "",
             "static": 1,
@@ -7706,32 +7896,6 @@
         {
             "file": "src/Canteen/Services/Service.php",
             "line": 39,
-            "description": "A map of the class name to registered alias",
-            "itemtype": "property",
-            "name": "_registeredMaps",
-            "type": "Array",
-            "access": "private",
-            "tagname": "",
-            "static": 1,
-            "class": "Service",
-            "module": "Canteen\\Services"
-        },
-        {
-            "file": "src/Canteen/Services/Service.php",
-            "line": 47,
-            "description": "A map of the class name to registered alias to class name",
-            "itemtype": "property",
-            "name": "_registeredAliases",
-            "type": "Array",
-            "access": "private",
-            "tagname": "",
-            "static": 1,
-            "class": "Service",
-            "module": "Canteen\\Services"
-        },
-        {
-            "file": "src/Canteen/Services/Service.php",
-            "line": 55,
             "description": "The mappings used to prepend the data object paths",
             "itemtype": "property",
             "name": "mappings",
@@ -7743,45 +7907,14 @@
         },
         {
             "file": "src/Canteen/Services/Service.php",
-            "line": 62,
-            "description": "The map of access controls by function name",
-            "itemtype": "property",
-            "name": "_accessControls",
-            "type": "Dictionary",
-            "access": "private",
-            "tagname": "",
-            "class": "Service",
-            "module": "Canteen\\Services"
-        },
-        {
-            "file": "src/Canteen/Services/Service.php",
-            "line": 70,
-            "description": "The class name who gives client access",
-            "itemtype": "property",
-            "name": "CLIENT_ACCESS",
-            "type": "String",
-            "final": 1,
-            "static": 1,
-            "class": "Service",
-            "module": "Canteen\\Services"
-        },
-        {
-            "file": "src/Canteen/Services/Service.php",
-            "line": 78,
-            "description": "Create the service",
-            "class": "Service",
-            "module": "Canteen\\Services"
-        },
-        {
-            "file": "src/Canteen/Services/Service.php",
-            "line": 89,
+            "line": 46,
             "description": "Get a particular service by alias",
             "itemtype": "method",
             "name": "get",
             "static": 1,
             "params": [
                 {
-                    "name": "aliasOrClassName",
+                    "name": "alias",
                     "description": "The _registered alias or class name",
                     "type": "String"
                 }
@@ -7795,13 +7928,13 @@
         },
         {
             "file": "src/Canteen/Services/Service.php",
-            "line": 125,
+            "line": 62,
             "description": "Get all the service aliases",
             "itemtype": "method",
             "name": "getAliases",
             "static": 1,
             "return": {
-                "description": "The aliases to className map",
+                "description": "The collection of string aliases",
                 "type": "Array"
             },
             "class": "Service",
@@ -7809,10 +7942,10 @@
         },
         {
             "file": "src/Canteen/Services/Service.php",
-            "line": 136,
+            "line": 73,
             "description": "Add a single service alias",
             "itemtype": "method",
-            "name": "addAlias",
+            "name": "register",
             "static": 1,
             "params": [
                 {
@@ -7821,96 +7954,37 @@
                     "type": "String"
                 },
                 {
-                    "name": "className",
-                    "description": "The full namespace and package class name",
+                    "name": "service",
+                    "description": "The Service object",
+                    "type": "Service"
+                }
+            ],
+            "class": "Service",
+            "module": "Canteen\\Services"
+        },
+        {
+            "file": "src/Canteen/Services/Service.php",
+            "line": 91,
+            "description": "Add for use on the Gateway, these methods can be \ncalled from javascript. For an example see the\n`TimeService` class.",
+            "itemtype": "method",
+            "name": "gateway",
+            "params": [
+                {
+                    "name": "uri",
+                    "description": "The URI path to call from the gateway",
                     "type": "String"
-                }
-            ],
-            "class": "Service",
-            "module": "Canteen\\Services"
-        },
-        {
-            "file": "src/Canteen/Services/Service.php",
-            "line": 152,
-            "description": "Add for use on the JSONServer, these methods can be \ncalled from javascript. For an example see the\n`TimeService` class.",
-            "itemtype": "method",
-            "name": "restrictClient",
-            "params": [
-                {
-                    "name": "methods",
-                    "description": "N-number of method names",
-                    "type": "String",
-                    "multiple": true
-                }
-            ],
-            "return": {
-                "description": "Return the instance of this for chaining",
-                "type": "Service"
-            },
-            "class": "Service",
-            "module": "Canteen\\Services"
-        },
-        {
-            "file": "src/Canteen/Services/Service.php",
-            "line": 170,
-            "description": "Check to see if the client has access to this method",
-            "itemtype": "method",
-            "name": "accessClient",
-            "params": [
-                {
-                    "name": "method",
-                    "description": "The name of the method to check",
-                    "type": "String"
-                }
-            ],
-            "return": {
-                "description": "If the client has access to this method",
-                "type": "Boolean"
-            },
-            "class": "Service",
-            "module": "Canteen\\Services"
-        },
-        {
-            "file": "src/Canteen/Services/Service.php",
-            "line": 200,
-            "description": "Set and check the access control for a method this is important for preventing\naccess to these methods that is undesirable, like someone using\nthe JSON to edit/add/remove database entries.\n\n\t// To set access controls\n \t$this->restrict('removeContent', Privilege::ADMINISTRATOR);\n $this->restrict('updateContent', Privilege::GUEST, 'Site\\Form\\ContentUpdate');\n // or\n \t$this->restrict(array(\n\t\t'removeContent' => Privilege::ADMINISTRATOR,\n\t\t'updateContent' => [\n\t\t\tPrivilege::GUEST, \n\t\t\t'Site\\Form\\ContentUpdate'\n\t\t]\n\t));\n \t// To check for access control within a method\n \t$this->access();",
-            "itemtype": "method",
-            "name": "restrict",
-            "params": [
-                {
-                    "name": "mapOrMethod",
-                    "description": "Either the method string \n\tor a map of methods to an collection of controls.",
-                    "type": "String|Dictionary",
-                    "optional": true
                 },
                 {
-                    "name": "controls",
-                    "description": "The collection of controls",
-                    "type": "Array|String|int",
-                    "optional": true,
-                    "optdefault": "null"
-                }
-            ],
-            "return": {
-                "description": "Return the instance of this for chaining",
-                "type": "Service"
-            },
-            "class": "Service",
-            "module": "Canteen\\Services"
-        },
-        {
-            "file": "src/Canteen/Services/Service.php",
-            "line": 252,
-            "description": "Check for restricted access. Access can be initialized with the restrict()\nmethod.",
-            "itemtype": "method",
-            "name": "access",
-            "access": "protected",
-            "tagname": "",
-            "params": [
-                {
                     "name": "method",
-                    "description": "The name of the method to check the access for",
+                    "description": "The name of the method",
                     "type": "String"
+                },
+                {
+                    "name": "privilege",
+                    "description": "The minimum privilege needed\n   for the client to access this method.",
+                    "type": "Int",
+                    "optional": true,
+                    "optdefault": "Privilege::ANONYMOUS"
                 }
             ],
             "return": {
@@ -7922,7 +7996,7 @@
         },
         {
             "file": "src/Canteen/Services/Service.php",
-            "line": 316,
+            "line": 108,
             "description": "Get the method/function name of the caller function",
             "itemtype": "method",
             "name": "getCaller",
@@ -7946,7 +8020,7 @@
         },
         {
             "file": "src/Canteen/Services/Service.php",
-            "line": 331,
+            "line": 123,
             "description": "Get the method/function name of the caller function",
             "itemtype": "method",
             "name": "getStack",
@@ -7977,14 +8051,14 @@
         },
         {
             "file": "src/Canteen/Services/Service.php",
-            "line": 372,
+            "line": 164,
             "description": "The public getter",
             "class": "Service",
             "module": "Canteen\\Services"
         },
         {
             "file": "src/Canteen/Services/Service.php",
-            "line": 377,
+            "line": 169,
             "description": "Convenience getter for the database connection",
             "itemtype": "property",
             "name": "db",
@@ -7995,7 +8069,7 @@
         },
         {
             "file": "src/Canteen/Services/Service.php",
-            "line": 389,
+            "line": 181,
             "description": "Sanitize input data using the validation types above",
             "itemtype": "method",
             "name": "verify",
@@ -8031,7 +8105,7 @@
         },
         {
             "file": "src/Canteen/Services/Service.php",
-            "line": 403,
+            "line": 195,
             "description": "Get a set of ids",
             "itemtype": "method",
             "name": "valueSet",
@@ -8060,7 +8134,7 @@
         },
         {
             "file": "src/Canteen/Services/Service.php",
-            "line": 418,
+            "line": 210,
             "description": "Same as bindObject but done on a whole collection",
             "itemtype": "method",
             "name": "bindObjects",
@@ -8094,7 +8168,7 @@
         },
         {
             "file": "src/Canteen/Services/Service.php",
-            "line": 449,
+            "line": 241,
             "description": "Bind an associate array to a data object",
             "itemtype": "method",
             "name": "bindObject",
@@ -8135,7 +8209,7 @@
         },
         {
             "file": "src/Canteen/Services/Service.php",
-            "line": 492,
+            "line": 284,
             "description": "Turn a collection of objects into a dictionary by a property name.",
             "itemtype": "method",
             "name": "dataMap",
@@ -8162,65 +8236,6 @@
             "module": "Canteen\\Services"
         },
         {
-            "file": "src/Canteen/Services/Service.php",
-            "line": 529,
-            "description": "Used for internal purpose to keep track of method access controls\nsuch as requiring a privilege or being only called by another class",
-            "class": "Service",
-            "module": "Canteen\\Services"
-        },
-        {
-            "file": "src/Canteen/Services/Service.php",
-            "line": 535,
-            "class": "Service",
-            "module": "Canteen\\Services"
-        },
-        {
-            "file": "src/Canteen/Services/Service.php",
-            "line": 538,
-            "class": "Service",
-            "module": "Canteen\\Services"
-        },
-        {
-            "file": "src/Canteen/Services/Service.php",
-            "line": 541,
-            "class": "Service",
-            "module": "Canteen\\Services"
-        },
-        {
-            "file": "src/Canteen/Services/Service.php",
-            "line": 544,
-            "description": "Create the control",
-            "is_constructor": 1,
-            "params": [
-                {
-                    "name": "name",
-                    "description": "The name of the control",
-                    "type": "String"
-                },
-                {
-                    "name": "controls",
-                    "description": "The collection of controls",
-                    "type": "Array|String|int"
-                }
-            ],
-            "class": "Service",
-            "module": "Canteen\\Services"
-        },
-        {
-            "file": "src/Canteen/Services/Service.php",
-            "line": 555,
-            "description": "Add controls",
-            "params": [
-                {
-                    "name": "controls",
-                    "description": "The collection of controls",
-                    "type": "Array|String|int"
-                }
-            ],
-            "class": "Service",
-            "module": "Canteen\\Services"
-        },
-        {
             "file": "src/Canteen/Services/SimpleObjectService.php",
             "line": 10,
             "description": "The item definition",
@@ -8234,14 +8249,14 @@
         },
         {
             "file": "src/Canteen/Services/SimpleObjectService.php",
-            "line": 45,
+            "line": 42,
             "description": "General magic getter to get pass-though methods",
             "class": "SimpleObjectService",
             "module": "Canteen\\Services"
         },
         {
             "file": "src/Canteen/Services/SimpleObjectService.php",
-            "line": 52,
+            "line": 49,
             "description": "The list of select properties",
             "itemtype": "property",
             "name": "properties",
@@ -8252,7 +8267,7 @@
         },
         {
             "file": "src/Canteen/Services/SimpleObjectService.php",
-            "line": 59,
+            "line": 56,
             "description": "The list of prepend map",
             "itemtype": "property",
             "name": "prepends",
@@ -8263,7 +8278,7 @@
         },
         {
             "file": "src/Canteen/Services/SimpleObjectService.php",
-            "line": 66,
+            "line": 63,
             "description": "The name of the class to bind with",
             "itemtype": "property",
             "name": "className",
@@ -8274,7 +8289,7 @@
         },
         {
             "file": "src/Canteen/Services/SimpleObjectService.php",
-            "line": 73,
+            "line": 70,
             "description": "The name of the table of the custom type",
             "itemtype": "property",
             "name": "table",
@@ -8285,7 +8300,7 @@
         },
         {
             "file": "src/Canteen/Services/SimpleObjectService.php",
-            "line": 82,
+            "line": 79,
             "description": "The reference to the object",
             "itemtype": "property",
             "name": "item",
@@ -8296,7 +8311,7 @@
         },
         {
             "file": "src/Canteen/Services/SimpleObjectService.php",
-            "line": 95,
+            "line": 92,
             "description": "Use the install method that comes built-in, this is experimental\nand may not set the best default data type on the table. It's encouraged\nthat manual adjustments are made afterwards.",
             "itemtype": "method",
             "name": "install",
@@ -8311,7 +8326,7 @@
         },
         {
             "file": "src/Canteen/Services/SimpleObjectService.php",
-            "line": 109,
+            "line": 105,
             "description": "Override of the dynamic call method to call verify* methods, for instance\nif we're validating Name it would be $this->verifyName($value)",
             "itemtype": "method",
             "name": "__call",
@@ -8332,7 +8347,7 @@
         },
         {
             "file": "src/Canteen/Services/SimpleObjectService.php",
-            "line": 121,
+            "line": 117,
             "description": "Register additional where clauses for the SQL select on get methods",
             "itemtype": "method",
             "name": "setWhere",
@@ -8354,7 +8369,7 @@
         },
         {
             "file": "src/Canteen/Services/SimpleObjectService.php",
-            "line": 131,
+            "line": 127,
             "description": "Set additional selection properties not part of the field set",
             "itemtype": "method",
             "name": "setProperties",
@@ -8378,7 +8393,7 @@
         },
         {
             "file": "src/Canteen/Services/SimpleObjectService.php",
-            "line": 141,
+            "line": 137,
             "description": "Set the collection or single prepend the field value",
             "itemtype": "method",
             "name": "setPrepends",
@@ -8407,7 +8422,7 @@
         },
         {
             "file": "src/Canteen/Services/SimpleObjectService.php",
-            "line": 180,
+            "line": 176,
             "description": "This allows for the internal dynamic calling of methods, the methods supported \ninclude getItems, getItem, updateItem, removeItem, \ngetTotalItems, getTotalItem, getItemBy[IndexName], getTotalItemBy[IndexName],\nremoveItemBy[IndexName], updateItemBy[IndexName].",
             "itemtype": "method",
             "name": "call",
@@ -8433,7 +8448,7 @@
         },
         {
             "file": "src/Canteen/Services/TimeService.php",
-            "line": 30,
+            "line": 26,
             "description": "Get the local server time when a more\nreliable time is needed than the client time",
             "itemtype": "method",
             "name": "getServerTime",
@@ -8477,7 +8492,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 103,
+            "line": 79,
             "description": "Install the table for the first time.",
             "itemtype": "method",
             "name": "setup",
@@ -8517,7 +8532,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 167,
+            "line": 138,
             "description": "Clear all expired sessions",
             "itemtype": "method",
             "name": "clearExpiredSessions",
@@ -8542,7 +8557,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 185,
+            "line": 156,
             "description": "Freeze the username after the user has failed-out the max number of login attempts",
             "itemtype": "method",
             "name": "freezeUsername",
@@ -8567,7 +8582,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 206,
+            "line": 175,
             "description": "The user attempted another failed try to login",
             "itemtype": "method",
             "name": "reportAttempt",
@@ -8587,7 +8602,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 222,
+            "line": 189,
             "description": "Clear the status",
             "itemtype": "method",
             "name": "createSession",
@@ -8617,7 +8632,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 262,
+            "line": 227,
             "description": "Update the last login point on the user's table",
             "itemtype": "method",
             "name": "refresh",
@@ -8637,7 +8652,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 278,
+            "line": 241,
             "description": "Check the user's session",
             "itemtype": "method",
             "name": "checkSession",
@@ -8672,7 +8687,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 309,
+            "line": 270,
             "description": "Check the cookie for authentication",
             "itemtype": "method",
             "name": "checkCookieLogin",
@@ -8697,7 +8712,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 336,
+            "line": 295,
             "description": "Check the user login",
             "itemtype": "method",
             "name": "checkLogin",
@@ -8729,7 +8744,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 371,
+            "line": 328,
             "description": "Verify that the password has been reset",
             "itemtype": "method",
             "name": "verifyResetPassword",
@@ -8754,7 +8769,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 395,
+            "line": 350,
             "description": "Get a user or users by email addresses or usernames",
             "itemtype": "method",
             "name": "getUser",
@@ -8774,7 +8789,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 418,
+            "line": 371,
             "description": "Add a user to the data base",
             "itemtype": "method",
             "name": "adduser",
@@ -8832,7 +8847,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 449,
+            "line": 402,
             "description": "Update a user property or properties",
             "itemtype": "method",
             "name": "updateUser",
@@ -8864,7 +8879,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 462,
+            "line": 415,
             "description": "Get all of the current users",
             "itemtype": "method",
             "name": "getUsers",
@@ -8877,7 +8892,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 472,
+            "line": 425,
             "description": "Remove a user by an id",
             "itemtype": "method",
             "name": "removeUser",
@@ -8897,7 +8912,7 @@
         },
         {
             "file": "src/Canteen/Services/UserService.php",
-            "line": 483,
+            "line": 436,
             "description": "Get a user or user by id",
             "itemtype": "method",
             "name": "getUser",
@@ -8946,15 +8961,15 @@
         {
             "file": "src/Canteen/Utilities/CanteenBase.php",
             "line": 20,
-            "description": "Get a service by alias or classname",
+            "description": "Get a service by alias",
             "itemtype": "method",
             "name": "service",
             "access": "protected",
             "tagname": "",
             "params": [
                 {
-                    "name": "aliasOrClassName",
-                    "description": "The alias or classname",
+                    "name": "alias",
+                    "description": "The alias",
                     "type": "String"
                 }
             ],
@@ -10161,7 +10176,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 31,
+            "line": 32,
             "description": "The current version of the Canteen site",
             "itemtype": "property",
             "name": "VERSION",
@@ -10173,7 +10188,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 39,
+            "line": 40,
             "description": "The current database version",
             "itemtype": "property",
             "name": "DB_VERSION",
@@ -10185,7 +10200,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 47,
+            "line": 48,
             "description": "The name of the main site template alias",
             "itemtype": "property",
             "name": "MAIN_TEMPLATE",
@@ -10197,18 +10212,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 55,
-            "description": "The name of the gateway page",
-            "itemtype": "property",
-            "name": "gatewayUri",
-            "type": "String",
-            "default": "gateway",
-            "class": "Site",
-            "module": "Canteen"
-        },
-        {
-            "file": "src/Canteen/Site.php",
-            "line": 62,
+            "line": 56,
             "description": "The uri name for the service browser",
             "itemtype": "property",
             "name": "browserUri",
@@ -10219,7 +10223,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 69,
+            "line": 63,
             "description": "The logout uri",
             "itemtype": "property",
             "name": "logoutUri",
@@ -10230,7 +10234,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 76,
+            "line": 70,
             "description": "The dynamic page controllers with keys 'uri' and 'controller'",
             "itemtype": "property",
             "name": "_controllers",
@@ -10242,7 +10246,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 83,
+            "line": 77,
             "description": "The user authorization object, deals with login and session",
             "itemtype": "property",
             "name": "user",
@@ -10253,7 +10257,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 90,
+            "line": 84,
             "description": "The form factory handles the processing of form POST requests",
             "itemtype": "property",
             "name": "formFactory",
@@ -10264,7 +10268,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 97,
+            "line": 91,
             "description": "The site configuration an associative array in key => value pairs",
             "itemtype": "property",
             "name": "settings",
@@ -10275,7 +10279,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 104,
+            "line": 98,
             "description": "The Profiler is use for debugging performance issues, SQL speed",
             "itemtype": "property",
             "name": "profiler",
@@ -10286,7 +10290,18 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 111,
+            "line": 105,
+            "description": "The Gateway is used for client connection to services or other data",
+            "itemtype": "property",
+            "name": "gateway",
+            "type": "Gateway",
+            "readonly": "",
+            "class": "Site",
+            "module": "Canteen"
+        },
+        {
+            "file": "src/Canteen/Site.php",
+            "line": 112,
             "description": "The template parser\n\n\t// Add a template to the site\n\t$site->parser->addTemplate('Footer', 'Templates/Footer.html');\n\t\n\t// Or add a JSON manifest with an array of template files\n \t$site->parser->addManifest('templates.json');",
             "itemtype": "property",
             "name": "parser",
@@ -10297,7 +10312,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 125,
+            "line": 126,
             "description": "The instance of the server cache",
             "itemtype": "property",
             "name": "cache",
@@ -10308,7 +10323,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 132,
+            "line": 133,
             "description": "The instance of the database for fetching data using SQL",
             "itemtype": "property",
             "name": "db",
@@ -10319,7 +10334,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 139,
+            "line": 140,
             "description": "The fatal error",
             "itemtype": "property",
             "name": "_fatalError",
@@ -10331,7 +10346,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 146,
+            "line": 147,
             "description": "The singleton instance",
             "itemtype": "property",
             "name": "_instance",
@@ -10344,7 +10359,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 154,
+            "line": 155,
             "description": "The minimum PHP version required to run termite",
             "itemtype": "property",
             "name": "MIN_PHP_VERSION",
@@ -10356,7 +10371,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 162,
+            "line": 163,
             "description": "The starting time to keep track of buildtime",
             "itemtype": "property",
             "name": "startTime",
@@ -10366,7 +10381,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 168,
+            "line": 169,
             "description": "Get the singleton instance",
             "itemtype": "method",
             "name": "instance",
@@ -10380,7 +10395,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 295,
+            "line": 299,
             "description": "Create a fatalError",
             "itemtype": "method",
             "name": "fatalError",
@@ -10396,7 +10411,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 310,
+            "line": 314,
             "description": "Finish setting up the site",
             "itemtype": "method",
             "name": "setup",
@@ -10414,7 +10429,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 489,
+            "line": 493,
             "description": "Store a page user function call for dynamic pages",
             "itemtype": "method",
             "name": "addController",
@@ -10435,7 +10450,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 520,
+            "line": 524,
             "description": "Check to make sure the database is up-to-date",
             "itemtype": "method",
             "name": "isDatabaseUpdated",
@@ -10461,7 +10476,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 556,
+            "line": 560,
             "description": "Get a page controller by uri",
             "itemtype": "method",
             "name": "getController",
@@ -10481,44 +10496,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 581,
-            "description": "Add a collection of custom services",
-            "itemtype": "method",
-            "name": "addServices",
-            "params": [
-                {
-                    "name": "aliases",
-                    "description": "The dictionary of service aliases to class names",
-                    "type": "Dictionary"
-                }
-            ],
-            "class": "Site",
-            "module": "Canteen"
-        },
-        {
-            "file": "src/Canteen/Site.php",
-            "line": 594,
-            "description": "Register a single custom service.",
-            "itemtype": "method",
-            "name": "addService",
-            "params": [
-                {
-                    "name": "alias",
-                    "description": "The service alias",
-                    "type": "String"
-                },
-                {
-                    "name": "className",
-                    "description": "The full namespace and package class name. Must extend Canteen\\Service\\Service class.",
-                    "type": "String"
-                }
-            ],
-            "class": "Site",
-            "module": "Canteen"
-        },
-        {
-            "file": "src/Canteen/Site.php",
-            "line": 612,
+            "line": 585,
             "description": "Get the current page markup, echoes on the page",
             "itemtype": "method",
             "name": "render",
@@ -10527,7 +10505,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 634,
+            "line": 607,
             "description": "See if there are any errors or warnings\nbail out if we need to",
             "itemtype": "method",
             "name": "readyToProceed",
@@ -10542,7 +10520,7 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 680,
+            "line": 653,
             "description": "Set the configuration setting",
             "itemtype": "method",
             "name": "addSetting",
@@ -10577,25 +10555,14 @@
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 693,
+            "line": 666,
             "description": "Private getters",
             "class": "Site",
             "module": "Canteen"
         },
         {
             "file": "src/Canteen/Site.php",
-            "line": 708,
-            "description": "The instance of PHP performance profiler",
-            "itemtype": "property",
-            "name": "profiler",
-            "type": "Profiler",
-            "readonly": "",
-            "class": "Site",
-            "module": "Canteen"
-        },
-        {
-            "file": "src/Canteen/Site.php",
-            "line": 718,
+            "line": 686,
             "description": "Check that a version of Canteen is required to run",
             "itemtype": "method",
             "name": "requiresVersion",
@@ -10642,7 +10609,7 @@
         },
         {
             "message": "Missing item type\nGet the form select of privileges",
-            "line": " src/Canteen/Controllers/AdminPageController.php:199"
+            "line": " src/Canteen/Controllers/AdminPageController.php:200"
         },
         {
             "message": "Missing item type\nThe constructor",
@@ -10662,7 +10629,7 @@
         },
         {
             "message": "Missing item type\nCreate a user error",
-            "line": " src/Canteen/Errors/JSONServerError.php:75"
+            "line": " src/Canteen/Errors/GatewayError.php:84"
         },
         {
             "message": "Missing item type\nCreate a user error",
@@ -10702,7 +10669,7 @@
         },
         {
             "message": "Missing item type\nProcess the form and handle the $_POST data.",
-            "line": " src/Canteen/Forms/InstallerForm.php:22"
+            "line": " src/Canteen/Forms/InstallerForm.php:23"
         },
         {
             "message": "Missing item type\nProcess the form and handle the $_POST data.",
@@ -10745,40 +10712,12 @@
             "line": " src/Canteen/Services/PageService.php:19"
         },
         {
-            "message": "Missing item type\nCreate the service",
-            "line": " src/Canteen/Services/Service.php:78"
-        },
-        {
             "message": "Missing item type\nThe public getter",
-            "line": " src/Canteen/Services/Service.php:372"
-        },
-        {
-            "message": "Missing item type\nUsed for internal purpose to keep track of method access controls\nsuch as requiring a privilege or being only called by another class",
-            "line": " src/Canteen/Services/Service.php:529"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src/Canteen/Services/Service.php:535"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src/Canteen/Services/Service.php:538"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src/Canteen/Services/Service.php:541"
-        },
-        {
-            "message": "Missing item type\nCreate the control",
-            "line": " src/Canteen/Services/Service.php:544"
-        },
-        {
-            "message": "Missing item type\nAdd controls",
-            "line": " src/Canteen/Services/Service.php:555"
+            "line": " src/Canteen/Services/Service.php:164"
         },
         {
             "message": "Missing item type\nGeneral magic getter to get pass-though methods",
-            "line": " src/Canteen/Services/SimpleObjectService.php:45"
+            "line": " src/Canteen/Services/SimpleObjectService.php:42"
         },
         {
             "message": "Missing item type\nCreate the service",
@@ -10846,7 +10785,7 @@
         },
         {
             "message": "Missing item type\nPrivate getters",
-            "line": " src/Canteen/Site.php:693"
+            "line": " src/Canteen/Site.php:666"
         }
     ]
 }
