@@ -22,7 +22,6 @@ namespace Canteen\Services
 		public function __construct()
 		{
 			parent::__construct(
-				'page',
 				'Canteen\Services\Objects\Page',
 				'pages',
 				[
@@ -48,21 +47,7 @@ namespace Canteen\Services
 				'Canteen\Forms\PageForm'
 			];
 
-			$this->restrict(
-				[
-					'getPage' => [
-						'Canteen\Parser\PageBuilder', 
-						'Canteen\Controllers\AdminObjectController'
-					],
-					'setup' => 'Canteen\Forms\InstallerForm',
-					'getPageByUri' => 'Canteen\Forms\ConfigForm',
-					'getPagesByParentId' => 'Canteen\Controllers\AdminController',
-					'removePage' => $form,
-					'addPage' => $form,
-					'updatePage' => $form
-				]
-			)
-			->setProperties(
+			$this->setProperties(
 				'CONCAT(`uri`,\'.html\') as `contentUrl`',
 				"REPLACE(`uri`, '/', '-') as `pageId`"
 			)
@@ -77,9 +62,7 @@ namespace Canteen\Services
 		*  @method setup
 		*/
 		public function setup()
-		{		
-			$this->access();
-			
+		{			
 			if (!$this->db->tableExists($this->table))
 			{
 				$sql = "CREATE TABLE IF NOT EXISTS `pages` (

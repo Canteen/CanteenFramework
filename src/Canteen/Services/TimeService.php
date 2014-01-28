@@ -20,11 +20,7 @@ namespace Canteen\Services
 		*/
 		public function __construct()
 		{
-			parent::__construct('time');
-
-			$this->restrict('getServerTime', Privilege::ANONYMOUS);
-			
-			$this->restrictClient('getServerTime');
+			$this->gateway('time/get-server-time', 'getServerTime');
 		}
 		
 		/**

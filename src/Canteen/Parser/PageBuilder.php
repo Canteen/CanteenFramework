@@ -70,7 +70,7 @@ namespace Canteen\Parser
 			if ($this->profiler) $this->profiler->start('Build Page');
 			
 			// Check to see if this is a gateway request
-			$this->_isGateway = strpos($this->settings->uriRequest, $this->site->gatewayUri) === 0;
+			$this->_isGateway = strpos($this->settings->uriRequest, $this->site->gateway->uri) === 0;
 			
 			// Check to see if this is an ajax request
 			define('ASYNC_REQUEST', ifsetor($_POST['async']) == 'true' || $this->_isGateway);
@@ -85,7 +85,7 @@ namespace Canteen\Parser
 				SETTING_RENDER
 			)
 			->addSetting('version', Site::VERSION, SETTING_CLIENT)
-			->addSetting('gatewayPath', $this->settings->basePath . $this->site->gatewayUri, SETTING_CLIENT);
+			->addSetting('gatewayPath', $this->settings->basePath . $this->site->gateway->uri, SETTING_CLIENT);
 			
 			// Check for the compression setting
 			if ($this->settings->compress && extension_loaded('zlib')) 
@@ -115,7 +115,8 @@ namespace Canteen\Parser
 		public function handle()
 		{
 			$profiler = $this->profiler;
-			
+			$uriRequest = $this->settings->uriRequest;
+
 			// Grab the default index page
 			$this->_indexPage = $this->getPageByUri($this->settings->siteIndex);
 			
@@ -152,7 +153,7 @@ namespace Canteen\Parser
 			
 			// Log out the current user if request
 			// redirects home
-			if ($this->settings->uriRequest === $this->site->logoutUri)
+			if ($uriRequest === $this->site->logoutUri)
 			{
 				$this->flush();
 				$this->user->logout();
@@ -182,15 +183,14 @@ namespace Canteen\Parser
 			// Setup the gateway
 			else if ($this->_isGateway)
 			{				
-				$server = new JSONServer();
-				$result = $server->handle();
+				$result = $this->site->gateway->handle($uriRequest);
 				if ($profiler) $profiler->end('Build Page');
 				return $result;
 			}
 			// Handle the current page request based on the current URI
 			else
 			{
-				return $this->handlePage($this->settings->uriRequest, ASYNC_REQUEST);
+				return $this->handlePage($uriRequest, ASYNC_REQUEST);
 			}
 		}
 		

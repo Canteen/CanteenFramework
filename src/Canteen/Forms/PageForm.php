@@ -71,25 +71,56 @@ namespace Canteen\Forms
 		public function onValidate(ObjectFormEvent $event)
 		{
 			// Set checkbox defaults
-			ifsetor($_POST['redirectId'], 0);
-			ifsetor($_POST['parentId'], 0);
+			$redirectId = ifsetor($_POST['redirectId'], 0);
+			$parentId = ifsetor($_POST['parentId'], 0);
 
 			// Check for required fields
 			$uri = ifsetor($_POST['uri']);
 			$title = ifsetor($_POST['title']);
 			$privilege = ifsetor($_POST['privilege']);
 
-			if (!$uri) $this->error('URI is a required field');
-			if (!$title) $this->error('Title is a required field');
-			if ($privilege < Privilege::ANONYMOUS || $privilege > Privilege::ADMINISTRATOR)
-				$this->error('Not a valid privilege');
-
-			if ($uri && $event->object)
+			if (!$uri)
 			{
-				// Update the page contents
-				$event->object->content = @file_get_contents(
-					$this->settings->contentPath . $uri . '.html'
-				);
+				$this->error('URI is a required field');
+			}
+			else if (preg_match('/[^a-zA-Z0-9\-\_]/', $uri))
+			{
+				$uri = null;
+				$this->error('URI can only contain letters, numbers, hypens and underscores');
+			}
+			if (!$title) 
+			{
+				$this->error('Title is a required field');
+			}
+
+			if ($privilege < Privilege::ANONYMOUS || $privilege > Privilege::ADMINISTRATOR)
+			{
+				$this->error('Not a valid privilege');
+			}
+
+			if ($uri)
+			{
+				// Append the parent to the URI
+				if ($parentId)
+				{
+					if ($parent = $this->item->service->getPage($parentId))
+					{
+						$uri = $_POST['uri'] = $parent->uri . '/' . $uri;
+					}
+					else
+					{
+						$this->error('The parent ID is invalid.');
+					}
+				}
+
+				// Page is already selected
+				if ($event->object)
+				{
+					// Update the page contents
+					$event->object->content = @file_get_contents(
+						$this->settings->contentPath . $uri . '.html'
+					);
+				}
 			}
 		}
 

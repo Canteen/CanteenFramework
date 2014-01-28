@@ -127,6 +127,7 @@ namespace Canteen\Controllers
 					$e->label = strtoupper($e->label);
 					$e->classes .= $this->readOnly;
 					$e->attributes = $this->readOnly;
+					$e->value = basename($e->value);
 					break;
 				}
 				case 'redirectId':

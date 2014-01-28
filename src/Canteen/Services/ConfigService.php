@@ -23,7 +23,6 @@ namespace Canteen\Services
 		public function __construct()
 		{
 			parent::__construct(
-				'config', 
 				'Canteen\Services\Objects\Config',
 				'config',
 				[
@@ -34,17 +33,6 @@ namespace Canteen\Services
 					$this->field('value', Validate::FULL_TEXT),
 					$this->field('value_type', $this->getValueTypes(), 'type'),
 					$this->field('access', Validate::NUMERIC)
-				]
-			);
-			
-			$this->restrict(
-				[
-					'addConfig' => Privilege::ADMINISTRATOR,
-					'setup' => 'Canteen\Forms\InstallerForm',
-					'updateValue' => 'Canteen\Site',
-					'registerSettings' => 'Canteen\Site',
-					'updateConfig' => Privilege::ADMINISTRATOR,
-					'removeConfig' => Privilege::ADMINISTRATOR
 				]
 			);
 		}
@@ -58,9 +46,7 @@ namespace Canteen\Services
 		*  @return {Boolean} If the table was installed
 		*/
 		public function setup($siteTitle, $contentPath, $templatePath)
-		{
-			$this->access();
-			
+		{			
 			if (!$this->db->tableExists($this->table))
 			{
 				$sql = "CREATE TABLE IF NOT EXISTS `config` (
@@ -114,8 +100,6 @@ namespace Canteen\Services
 		*/
 		public function registerSettings()
 		{
-			$this->access();
-
 			$result = $this->db->select($this->properties)
 				->from($this->table)
 				->results(true); // cache

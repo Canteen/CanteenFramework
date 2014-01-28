@@ -4,6 +4,12 @@ namespace Canteen\Services
 {
 	use Canteen\Errors\ObjectServiceError;
 	
+	/**
+	*  Service provides basic methods for getting, updating, remove multiple objects 
+	*  on multiple tables.
+	*  @class ObjectService
+	*  @extends Service
+	*/
 	abstract class ObjectService extends Service
 	{
 		/** 
@@ -11,18 +17,6 @@ namespace Canteen\Services
 		*  @property {Dictionary} items 
 		*/
 		public $items = [];
-
-		/**
-		*  Service provides basic methods for getting, updating, remove multiple objects 
-		*  on multiple tables.
-		*  @class ObjectService
-		*  @extends Service
-		*  @param {String} alias The name to get by reference within the Canteen Site
-		*/
-		public function __construct($alias)
-		{
-			parent::__construct($alias);
-		}
 
 		/**
 		*  Add a new Item definition to the service. This is required before using
@@ -196,9 +190,6 @@ namespace Canteen\Services
 		*/
 		protected function callByItem(ObjectServiceItem $item, $method, array $args)
 		{
-			// See if we can access this method
-			$this->access($method);
-
 			// The the single and plural name
 			$s = $item->itemName;
 			$p = $item->itemsName;
@@ -258,7 +249,7 @@ namespace Canteen\Services
 				// getTotalItem
 				case 'getTotal'.$s:
 				{
-					$this->accessDefault($item, 'getTotal'.$s);
+					$this->hasDefaultField($item);
 					$internal = 'internalGetTotalByIndex';
 					array_unshift($args, true);
 					array_unshift($args, $item->defaultField);
@@ -267,7 +258,7 @@ namespace Canteen\Services
 				// getItem
 				case 'get'.$s:
 				{
-					$this->accessDefault($item, 'get'.$s);
+					$this->hasDefaultField($item);
 					$internal = 'internalGetByIndex';
 					array_unshift($args, true);
 					array_unshift($args, $item->defaultField);
@@ -276,7 +267,7 @@ namespace Canteen\Services
 				// removeItem
 				case 'remove'.$s:
 				{
-					$this->accessDefault($item, 'remove'.$s);
+					$this->hasDefaultField($item);
 					$internal = 'internalRemoveByIndex';
 					array_unshift($args, $item->defaultField);
 					break;
@@ -284,7 +275,7 @@ namespace Canteen\Services
 				// updateItem
 				case 'update'.$s:
 				{
-					$this->accessDefault($item, 'update'.$s);
+					$this->hasDefaultField($item);
 					$internal = 'internalUpdateByIndex';
 					array_unshift($args, $item->defaultField);
 					break;
@@ -301,16 +292,14 @@ namespace Canteen\Services
 
 		/**
 		*  Get the default part of the property name
-		*  @method accessDefault
+		*  @method hasDefaultField
 		*  @private
 		*  @param {String} method The name of the default method (without "ByField")
 		*/
-		private function accessDefault($item, $method)
+		private function hasDefaultField($item)
 		{
 			if (!$item->defaultField) 
 				throw new ObjectServiceError(ObjectServiceError::NO_DEFAULT_INDEX);
-			
-			$this->access($method.'By'.ucfirst($item->defaultField->name));
 		}
 
 		/**
@@ -511,9 +500,6 @@ namespace Canteen\Services
 		*/
 		protected function internalAdd(ObjectServiceItem $item, $properties)
 		{
-			// Check the access on the calling method
-			$this->access($this->getCaller());
-
 			// Check for object
 			if (is_object($properties))
 			{

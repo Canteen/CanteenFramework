@@ -21,7 +21,6 @@ namespace Canteen\Services
 		*  @class SimpleObjectService
 		*  @extends ObjectService
 		*  @constructor
-		*  @param {String} alias The name of the service alias and the name of the table
 		*  @param {String} className Class to bind database result to
 		*  @param {String} table The table that the objects are on
 		*  @param {Array} field The collection of ObjectServiceField objects
@@ -29,10 +28,8 @@ namespace Canteen\Services
 		*	unqalified class name (without the full namespace)
 		*  @param {String} [itemsName] The optional items name (plural) of itemName 
 		*/
-		public function __construct($alias, $className, $table, $fields, $itemName=null, $itemsName=null)
+		public function __construct($className, $table, $fields, $itemName=null, $itemsName=null)
 		{
-			parent::__construct($alias);
-
 			$this->item = $this->registerItem(
 				$className, 
 				$table, 
@@ -102,7 +99,6 @@ namespace Canteen\Services
 		*/
 		protected function install()
 		{
-			$this->access(__METHOD__);
 			return $this->installItem($this->item);
 		}
 

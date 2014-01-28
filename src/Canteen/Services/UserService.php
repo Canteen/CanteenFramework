@@ -51,7 +51,6 @@ namespace Canteen\Services
 		public function __construct()
 		{
 			parent::__construct(
-				'user',
 				'Canteen\Services\Objects\User',
 				'users',
 				[
@@ -74,33 +73,7 @@ namespace Canteen\Services
 				]
 			);
 
-			$this->restrict(
-				[
-					'setup' => 'Canteen\Forms\InstallerForm',
-					'freezeUsername' => 'Canteen\Authorization\Authorization',
-					'reportAttempt' => 'Canteen\Authorization\Authorization',
-					'createSession' => 'Canteen\Authorization\Authorization',
-					'refresh' => 'Canteen\Authorization\Authorization',
-					'checkLogin' => 'Canteen\Authorization\Authorization',
-					'checkCookieLogin' => 'Canteen\Authorization\Authorization',
-					'verifyResetPassword' => 'Canteen\Forms\ForgotPasswordForm',
-					'checkSession' => 'Canteen\Authorization\Authorization',
-					'getUser' => Privilege::GUEST,
-					'getUserByLogin' => [
-						'Canteen\Authorization\Authorization',
-						'Canteen\Forms\UserForm'
-					],
-					'getUsers' => Privilege::GUEST,
-					'removeUser' => Privilege::ADMINISTRATOR,
-					'addUser' => [
-						__CLASS__,
-						Privilege::ADMINISTRATOR
-					],
-					'updateUser' => Privilege::ADMINISTRATOR
-				]
-			)
-			// Add additional selection options
-			->setProperties('CONCAT(`first_name`,\' \',`last_name`) as `fullname`');
+			$this->setProperties('CONCAT(`first_name`,\' \',`last_name`) as `fullname`');
 		}
 		
 		/**
@@ -115,8 +88,6 @@ namespace Canteen\Services
 		*/
 		public function setup($username, $email, $password, $firstName, $lastName)
 		{
-			$this->access();
-
 			if (!$this->db->tableExists($this->table))
 			{				
 				$sql = [
@@ -191,8 +162,6 @@ namespace Canteen\Services
 		*/
 		public function freezeUsername($username, $frozenMins)
 		{
-			$this->access();
-
 			$this->verify($frozenMins);
 			$this->verify($username, Validate::ALPHA);
 			
@@ -211,8 +180,6 @@ namespace Canteen\Services
 		*/
 		public function reportAttempt($username)
 		{
-			$this->access();
-
 			return $this->db->update($this->table)
 				->set('attempts', '`attempts`+1')
 				->where("`username`='$username'")
@@ -229,8 +196,6 @@ namespace Canteen\Services
 		*/
 		public function createSession($id, $sessionId, $ipAddress)
 		{
-			$this->access();
-			
 			$now = date(DATE_FORMAT_MYSQL);
 
 			// set all attempts to zero, updated frozen time
@@ -267,8 +232,6 @@ namespace Canteen\Services
 		*/
 		public function refresh($id)
 		{
-			$this->access();
-
 			return $this->db->update($this->table)
 				->set('login', date(DATE_FORMAT_MYSQL))
 				->where("`user_id`='$id'")
@@ -286,8 +249,6 @@ namespace Canteen\Services
 		*/
 		public function checkSession($username, $passwordHash, $sessionId, $ipAddress)
 		{
-			$this->access();
-			
 			$results = $this->db->select($this->propertiesJoined)
 				->from(
 					$this->sessionsTable.' s', 
@@ -315,8 +276,6 @@ namespace Canteen\Services
 		*/
 		public function checkCookieLogin($userId, $sessionId)
 		{
-			$this->access();
-			
 			$result = $this->db->select($this->propertiesJoined)
 				->from(
 					$this->sessionsTable.' s', 
@@ -343,8 +302,6 @@ namespace Canteen\Services
 		*/
 		public function checkLogin($usernameOrEmail, $password, $isPasswordHashed=false)
 		{
-			$this->access();
-
 			$this->verify($usernameOrEmail, Validate::EMAIL);
 			
 			$result = $this->db->select($this->properties)
@@ -377,8 +334,6 @@ namespace Canteen\Services
 		*/
 		public function verifyResetPassword($username, $forgotString)
 		{
-			$this->access();
-
 			$this->verify($username, Validate::EMAIL);
 			$this->verify($forgotString, Validate::URI);
 			
@@ -400,8 +355,6 @@ namespace Canteen\Services
 		*/
 		public function getUserByLogin($usernameOrEmail)
 		{
-			$this->access();
-
 			$usernameOrEmail = $this->valueSet($usernameOrEmail, Validate::EMAIL);
 			
 			$result = $this->db->select($this->properties)

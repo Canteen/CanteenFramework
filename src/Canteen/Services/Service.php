@@ -29,28 +29,12 @@ namespace Canteen\Services
 		public $alias;
 
 		/** 
-		*  The registered list of services 
-		*  @property {Array} registerd
+		*  The registered list of services by alias
+		*  @property {Dictionary} registerd
 		*  @private
 		*  @static
 		*/
 		private static $_registered = [];
-		
-		/** 
-		*  A map of the class name to registered alias 
-		*  @property {Array} _registeredMaps
-		*  @private
-		*  @static
-		*/
-		private static $_registeredMaps = [];
-		
-		/** 
-		*  A map of the class name to registered alias to class name 
-		*  @property {Array} _registeredAliases
-		*  @private
-		*  @static
-		*/
-		private static $_registeredAliases = [];
 		
 		/**
 		*  The mappings used to prepend the data object paths
@@ -58,258 +42,66 @@ namespace Canteen\Services
 		*  @private
 		*/
 		private $mappings = [];
-
-		/**
-		*  The map of access controls by function name
-		*  @property {Dictionary} _accessControls
-		*  @private
-		*/
-		private $_accessControls = [];
-
-
-		/**
-		*  The class name who gives client access
-		*  @property {String} CLIENT_ACCESS
-		*  @final
-		*  @static
-		*/
-		const CLIENT_ACCESS = 'Canteen\Server\JSONServer';
-		
-		/**
-		*  Create the service
-		*/
-		public function __construct($alias)
-		{
-			$this->alias = $alias;
-			self::$_registered[$alias] = $this;
-			self::$_registeredMaps[get_class($this)] = $this;
-			self::$_registeredAliases[$alias] = get_class($this);
-		}
 		
 		/**
 		*  Get a particular service by alias
 		*  @method get
 		*  @static
-		*  @param {String} aliasOrClassName The _registered alias or class name
+		*  @param {String} alias The _registered alias or class name
 		*  @return {Service} The instance of the service
 		*/
-		public static function get($aliasOrClassName)
-		{			
-			$aliases = self::$_registeredAliases;
-			
-			// Check if the alias is _registered
-			if (isset(self::$_registered[$aliasOrClassName]))
+		public static function get($alias)
+		{		
+			if (!isset(self::$_registered[$alias]))
 			{
-				return self::$_registered[$aliasOrClassName];
+				throw new CanteenError(CanteenError::INVALID_SERVICE_ALIAS, $alias);
 			}
-			// Check if the class is _registered
-			else if (isset(self::$_registeredMaps[$aliasOrClassName]))
-			{
-				return self::$_registeredMaps[$aliasOrClassName];
-			}
-			// See if the alias is valid
-			else if (isset($aliases[$aliasOrClassName]))
-			{
-				return new $aliases[$aliasOrClassName];
-			}
-			else if (in_array($aliasOrClassName, $aliases))
-			{
-				return new $aliasOrClassName;
-			}
-			else
-			{
-				throw new CanteenError(CanteenError::INVALID_SERVICE_ALIAS, $aliasOrClassName);
-			}
+			return self::$_registered[$alias];
 		}
 		
 		/**
 		*  Get all the service aliases
 		*  @method getAliases
 		*  @static
-		*  @return {Array} The aliases to className map
+		*  @return {Array} The collection of string aliases
 		*/
 		public static function getAliases()
 		{
-			return self::$_registeredAliases;
+			return array_keys(self::$_registered);
 		}
 		
 		/**
 		*  Add a single service alias
-		*  @method addAlias
+		*  @method register
 		*  @static
 		*  @param {String} alias The service alias
-		*  @param {String} className The full namespace and package class name
+		*  @param {Service} service The Service object
 		*/
-		public static function addService($alias, $className)
+		public static function register($alias, Service $service)
 		{
-			if (isset(self::$_registeredAliases[$alias]))
+			if (isset(self::$_registered[$alias]))
 			{
 				throw new CanteenError(CanteenError::TAKEN_SERVICE_ALIAS, $alias);
 			}
-			self::$_registeredAliases[$alias] = $className;
+			self::$_registered[$alias] = $service;
+			$service->alias = $alias;
+			return $service;
 		}
 
 		/**
-		*  Add for use on the JSONServer, these methods can be 
+		*  Add for use on the Gateway, these methods can be 
 		*  called from javascript. For an example see the
 		*  `TimeService` class.
-		*  @method restrictClient
-		*  @param {String} methods* N-number of method names
+		*  @method gateway
+		*  @param {String} uri The URI path to call from the gateway
+		*  @param {String} method The name of the method
+		*  @param {int} [privilege=Privilege::ANONYMOUS] The minimum privilege needed
+		*     for the client to access this method.
 		*  @return {Service} Return the instance of this for chaining
 		*/
-		public function restrictClient($methods)
+		public function gateway($uri, $method, $privilege=Privilege::ANONYMOUS)
 		{
-			$methods = func_get_args();
-			foreach ($methods as $m)
-			{
-				$this->restrict($m, self::CLIENT_ACCESS);
-			}
-			return $this;
-		}
-
-		/**
-		*  Check to see if the client has access to this method
-		*  @method accessClient
-		*  @param {String} method The name of the method to check
-		*  @return {Boolean} If the client has access to this method
-		*/
-		public function accessClient($method)
-		{
-			$control = ifsetor($this->_accessControls[$method]);
-
-			// Check for explicit access to the json server
-			if (!$control || !in_array(self::CLIENT_ACCESS, $control->internals))
-			{
-				return false;
-			}
-
-			// Check for the privilege
-			if ($control->privilege)
-			{
-				$loggedIn = ifconstor('LOGGED_IN', false);
-				$privilege = ifconstor('USER_PRIVILEGE', Privilege::ANONYMOUS);
-
-				if (!$loggedIn || $privilege < $control->privilege)
-				{
-					return false;
-				}
-			}
-			return true;
-		}
-		
-		/**
-		*  Set and check the access control for a method this is important for preventing
-		*  access to these methods that is undesirable, like someone using
-		*  the JSON to edit/add/remove database entries.
-		*
-		*	// To set access controls
-		* 	$this->restrict('removeContent', Privilege::ADMINISTRATOR);
-		*   $this->restrict('updateContent', Privilege::GUEST, 'Site\Form\ContentUpdate');
-		*   // or
-		* 	$this->restrict(array(
-		*		'removeContent' => Privilege::ADMINISTRATOR,
-		*		'updateContent' => [
-		*			Privilege::GUEST, 
-		*			'Site\Form\ContentUpdate'
-		*		]
-		*	));
-		* 	// To check for access control within a method
-		* 	$this->access();
-		* 
-		*  @method restrict
-		*  @param {String|Dictionary} [mapOrMethod] Either the method string 
-		*	or a map of methods to an collection of controls.
-		*  @param {Array|String|int} [controls=null] The collection of controls
-		*  @return {Service} Return the instance of this for chaining
-		*/
-		public function restrict($mapOrMethod, $controls=null)
-		{
-			// Process the map of controls
-			if (is_array($mapOrMethod))
-			{
-				foreach ($mapOrMethod as $m => $c)
-				{
-					$this->restrict($m, $c);
-				}
-			}
-			else if ($controls !== null)
-			{
-				// If the controls is an array or a series of items
-				if (!is_array($controls))
-				{
-					$controls = func_get_args();
-					array_shift($controls); //remove the method name
-				}
-				if (!isset($this->_accessControls[$mapOrMethod]))
-				{
-					$this->_accessControls[$mapOrMethod] = new AccessControl($mapOrMethod);
-				}
-				$this->_accessControls[$mapOrMethod]->add($controls);				
-			}
-			return $this;
-		}
-
-		/**
-		*  Check for restricted access. Access can be initialized with the restrict()
-		*  method. 
-		*  @method access
-		*  @protected
-		*  @param {String} method The name of the method to check the access for
-		*  @return {Service} Return the instance of this for chaining
-		*/
-		protected function access($method=null)
-		{
-			// Ignore access controls if we're local
-			if (!count($this->_accessControls)) return $this;
-			
-			// Get the method that called this function
-			if ($method === null) $method = $this->getCaller();
-
-			// Bail out if there isn't an access control
-			if (!isset($this->_accessControls[$method])) return $this;
-
-			$control = $this->_accessControls[$method];
-			
-			// Check the internal calls
-			// this will override any privilege that's need
-			// and is the more restrictive of the controls
-			if (count($control->internals))
-			{
-				// 0 is Service Class, 1 is caller, 2-3 is the internal caller
-				// If the stack track is greater than for then we should bail
-				// we are only concernd with the 2-3 level of depth
-				$trace = $this->getSimpleStack(4);
-
-				// Check if the class is in the trace stack
-				foreach($trace as $i=>$stack)
-				{
-					if (isset($stack['class']) && in_array($stack['class'], $control->internals))
-					{
-						// bail out, proceed as normal
-						return $this;
-					}
-				}
-				throw new CanteenError(
-					CanteenError::INTERNAL_ONLY, 
-					[$method, implode(', ', $control->internals)]
-				);
-			}
-
-			// Check for adequate privilege
-			if ($control->privilege)
-			{
-				$loggedIn = ifconstor('LOGGED_IN', false);
-				$privilege = ifconstor('USER_PRIVILEGE', 0);
-
-				if (!$loggedIn)
-				{
-					throw new UserError(UserError::LOGGIN_REQUIRED);
-				}
-				else if ($privilege < $control->privilege)
-				{
-					throw new UserError(UserError::INSUFFICIENT_PRIVILEGE);
-				}
-			}
+			$this->site->gateway->register($uri, [$this, $method], $privilege);
 			return $this;
 		}
 
@@ -523,54 +315,6 @@ namespace Canteen\Services
 				}
 			}
 			return $map;
-		}
-	}
-
-	/**
-	*  Used for internal purpose to keep track of method access controls
-	*  such as requiring a privilege or being only called by another class
-	*/
-	class AccessControl
-	{
-		/** The name of the method */
-		public $name;
-
-		/** The privilege required to run this method, default is all */
-		public $privilege = Privilege::ANONYMOUS;
-
-		/** The collection of methods that can call this function */
-		public $internals = [];
-
-		/**
-		*  Create the control
-		*  @constructor
-		*  @param {String} name The name of the control
-		*  @param {Array|String|int} controls The collection of controls
-		*/
-		public function __construct($name)
-		{
-			$this->name = $name;
-		}
-
-		/**
-		*  Add controls
-		*  @param {Array|String|int} controls The collection of controls
-		*/
-		public function add($controls)
-		{
-			if (!is_array($controls)) $controls = [$controls];
-
-			foreach($controls as $c)
-			{
-				if (is_string($c))
-				{
-					$this->internals[] = $c;
-				}
-				else if(is_numeric($c))
-				{
-					$this->privilege = $c;
-				}
-			}
 		}
 	}
 }

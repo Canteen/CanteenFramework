@@ -9,6 +9,7 @@ namespace Canteen
 	use Canteen\Errors\CanteenError;
 	use Canteen\Logger\Logger;
 	use Canteen\Server\DeploymentStatus;
+	use Canteen\Server\Gateway;
 	use Canteen\Profiler\Profiler;
 	use Canteen\Server\ServerCache;
 	use Canteen\Forms\FormFactory;
@@ -51,13 +52,6 @@ namespace Canteen
 		*  @final
 		*/
 		const MAIN_TEMPLATE = 'CanteenTemplate';
-		
-		/** 
-		*  The name of the gateway page 
-		*  @property {String} gatewayUri
-		*  @default gateway
-		*/
-		public $gatewayUri = 'gateway';
 		
 		/** 
 		*  The uri name for the service browser
@@ -107,6 +101,13 @@ namespace Canteen
 		*  @readOnly
 		*/
 		private $_profiler;
+
+		/** 
+		*  The Gateway is used for client connection to services or other data
+		*  @property {Gateway} gateway
+		*  @readOnly
+		*/
+		private $_gateway;
 		
 		/**
 		*  The template parser
@@ -269,6 +270,9 @@ namespace Canteen
 			
 			// Setup the settings manager
 			$this->_settings = new SettingsManager();
+
+			// Create the new gateway
+			$this->_gateway = new Gateway();
 			
 			// Register is the caller path, internal path 
 			$this->_settings->addSetting('callerPath', $callerPath);
@@ -426,7 +430,7 @@ namespace Canteen
 					}
 				}
 				
-				$service = new ConfigService;
+				$service = Service::register('config', new ConfigService);
 				
 				// Add the configuration db assets
 				// Give all settings global render access and changability
@@ -443,8 +447,8 @@ namespace Canteen
 				$this->isDatabaseUpdated('dbVersion', self::DB_VERSION, __DIR__.'/Upgrades/');
 				
 				// Create the services that require the database
-				new PageService;
-				new UserService;
+				Service::register('page', new PageService);
+				Service::register('user', new UserService);
 			}
 			
 			if ($profiler) $profiler->end('Database Connect');
@@ -579,37 +583,6 @@ namespace Canteen
 		}
 		
 		/**
-		*  Add a collection of custom services
-		*  @method addServices
-		*  @param {Dictionary} aliases The dictionary of service aliases to class names
-		*/
-		public function addServices($aliases)
-		{
-			foreach($aliases as $alias=>$className)
-			{
-				$this->addService($alias, $className);
-			}
-		}
-		
-		/**
-		*  Register a single custom service.
-		*  @method addService
-		*  @param {String} alias The service alias
-		*  @param {String} className The full namespace and package class name. Must extend Canteen\Service\Service class.
-		*/
-		public function addService($alias, $className)
-		{
-			try
-			{
-				Service::addService($alias, $className);
-			}
-			catch(CanteenError $e)
-			{
-				$this->fatalError($e);
-			}
-		}
-		
-		/**
 		*  Get the current page markup, echoes on the page
 		*  @method render
 		*/
@@ -704,12 +677,7 @@ namespace Canteen
 				case 'cache' :
 				case 'user' :
 				case 'settings' :
-
-				/**
-				*  The instance of PHP performance profiler
-				*  @property {Profiler} profiler
-				*  @readOnly
-				*/
+				case 'gateway' :
 				case 'profiler' : 
 					return $this->$default;
 			}

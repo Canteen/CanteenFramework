@@ -18,15 +18,15 @@ namespace Canteen\Utilities
 	abstract class CanteenBase extends EventDispatcher
 	{		
 		/**
-		*  Get a service by alias or classname
+		*  Get a service by alias
 		*  @method service
 		*  @protected
-		*  @param {String} aliasOrClassName The alias or classname
+		*  @param {String} alias The alias
 		*  @return {Service} The service matching the alias
 		*/
-		protected function service($aliasOrClassName)
+		protected function service($alias)
 		{
-			return Service::get($aliasOrClassName);
+			return Service::get($alias);
 		}
 		
 		/**

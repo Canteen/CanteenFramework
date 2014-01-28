@@ -9,6 +9,7 @@ namespace Canteen\Forms
 	use Canteen\Services\ConfigService;
 	use Canteen\Services\PageService;
 	use Canteen\Services\UserService;
+	use Canteen\Services\Service;
 	use Canteen\Events\CanteenEvent;
 	use \Exception;
 	
@@ -55,10 +56,10 @@ namespace Canteen\Forms
 				$this->error('Site Title is required');
 			
 			if ($this->ifError) return;
-							
-			$config = new ConfigService;
-			$page = new PageService;
-			$user = new UserService;
+			
+			$config = Service::register('config', new ConfigService);
+			$page = Service::register('page', new PageService);
+			$user = Service::register('user', new UserService);
 			
 			$config->setup($siteTitle, $contentPath, $templatePath);
 			$user->setup($username, $email, $password, $firstName, $lastName);
