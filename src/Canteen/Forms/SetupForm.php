@@ -44,7 +44,7 @@ namespace Canteen\Forms
 			
 			if (!count($dbName))
 				$this->error('Database name is required');
-			
+
 			if (!$this->ifError)
 			{
 				$configPath = $this->settings->callerPath . $configFile;

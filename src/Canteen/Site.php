@@ -332,7 +332,7 @@ namespace Canteen
 				die($this->_parser->template('Setup',
 					[
 						'formFeedback' => $this->_formFactory->getFeedback(),
-						'configFile' => $settings
+						'configFile' => basename($settings)
 					]
 				));
 			}
