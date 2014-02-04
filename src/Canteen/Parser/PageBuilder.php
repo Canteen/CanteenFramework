@@ -170,7 +170,7 @@ namespace Canteen\Parser
 				&& strpos($this->settings->uriRequest, $this->site->browserUri) === 0)
 			{
 				$browser = new ServiceBrowser(
-					Service::getAliases(),
+					Service::getAll(),
 					$this->settings->basePath,
 					$this->site->browserUri,
 					$this->settings->uriRequest,

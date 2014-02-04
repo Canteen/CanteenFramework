@@ -61,13 +61,13 @@ namespace Canteen\Services
 		
 		/**
 		*  Get all the service aliases
-		*  @method getAliases
+		*  @method getAll
 		*  @static
 		*  @return {Array} The collection of string aliases
 		*/
-		public static function getAliases()
+		public static function getAll()
 		{
-			return array_keys(self::$_registered);
+			return self::$_registered;
 		}
 		
 		/**

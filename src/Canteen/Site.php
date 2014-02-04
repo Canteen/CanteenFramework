@@ -381,7 +381,7 @@ namespace Canteen
 			);
 			
 			// Create the non-database services
-			new TimeService;
+			Service::register('time', new TimeService);
 			
 			if ($profiler) $profiler->start('Database Connect');
 			
