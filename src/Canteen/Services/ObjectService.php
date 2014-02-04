@@ -41,6 +41,12 @@ namespace Canteen\Services
 			);
 			$item->service = $this;
 			$this->items[$item->itemName] = $item;
+
+			// Make's sure that the items are sorted by name
+			// this helps prevent similarly named objects like Object and ObjectColor
+			// when autodetecting based on the method name
+			krsort($this->items);
+
 			return $item;
 		}
 
@@ -225,6 +231,8 @@ namespace Canteen\Services
 					$args
 				);
 			}
+			
+			$internal = null;
 
 			// The default methods
 			switch($method)
