@@ -106,6 +106,20 @@ namespace Canteen\Services
 		}
 
 		/**
+		*  You can run to make sure a process requires a particular privilege
+		*  @method privilege
+		*  @protected
+		*  @param {int} [required=Privilege::GUEST] The privilege level required, default is anonymous
+		*/
+		protected function privilege($required=Privilege::GUEST)
+		{
+			if (USER_PRIVILEGE < $required)
+			{
+				throw new UserError(UserError::INSUFFICIENT_PRIVILEGE);
+			}
+		}
+
+		/**
 		*  Get the method/function name of the caller function
 		*  @method getCaller
 		*  @protected

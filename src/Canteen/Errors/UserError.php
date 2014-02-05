@@ -16,15 +16,7 @@ namespace Canteen\Errors
 	*  @param {String|Array} [data=''] The optional data associated with this error
 	*/
 	class UserError extends CanteenError
-	{
-		/** 
-		*  The user is logged out 
-		*  @property {int} LOGGIN_REQUIRED
-		*  @static
-		*  @final
-		*/
-		const LOGGIN_REQUIRED = 200;
-		
+	{		
 		/** 
 		*  The user doesn't have sufficient privileges to perform action 
 		*  @property {int} INSUFFICIENT_PRIVILEGE
@@ -65,7 +57,6 @@ namespace Canteen\Errors
 		*  @final
 		*/
 		private static $messages = [
-			self::LOGGIN_REQUIRED => 'Login required',
 			self::INSUFFICIENT_PRIVILEGE => 'Insufficient privilege required',
 			self::INVALID_DATA_SET => '\'%s\' is not in the set [%s]',
 			self::INVALID_DATA => '\'%s\' cannot contain [%s], only [%s]',
