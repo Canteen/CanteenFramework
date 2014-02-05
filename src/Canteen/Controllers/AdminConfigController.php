@@ -58,6 +58,10 @@ namespace Canteen\Controllers
 				{
 					$config->value = $config->value ? 'checked' : '';
 				}
+				if ($config->isNormal)
+				{
+					$config->value = htmlentities($config->value);
+				}
 				$config->disabled = (SETTING_DELETE & $config->access) ? '' : 'disabled';
 			}
 			
