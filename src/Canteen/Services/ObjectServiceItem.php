@@ -153,7 +153,7 @@ namespace Canteen\Services
 			{
 				if ($field->orderBy !== null)
 				{
-					$query->orderBy('`'.$field->id.'`', $field->orderBy);
+					$query->orderBy($field->id, $field->orderBy);
 				}
 			}
 			return $query;
