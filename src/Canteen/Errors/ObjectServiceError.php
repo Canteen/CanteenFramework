@@ -81,8 +81,8 @@ namespace Canteen\Errors
 		*  @final
 		*/
 		private static $messages = [
-			self::INVALID_INDEX => 'There is no custom field index with the name "%s", set this field to be isIndex=true',
-			self::NO_DEFAULT_INDEX => 'The custom service does not have a default index field, set isDefault=true on a field',
+			self::INVALID_INDEX => 'There is no custom field index with the name "%s", call setIndex() on this field',
+			self::NO_DEFAULT_INDEX => 'The custom service does not have a default index field, call setDefault() on this field',
 			self::INVALID_METHOD => 'The dynamic method call "%s" is not valid on this custom service',
 			self::INVALID_FIELD_NAME => 'The field name "%s" is not valid',
 			self::WRONG_ARG_COUNT => 'The method call "%s" got %s arguments and was expecting %s',
