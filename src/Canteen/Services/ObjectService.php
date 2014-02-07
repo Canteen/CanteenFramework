@@ -169,7 +169,7 @@ namespace Canteen\Services
 			foreach($this->items as $name=>$item)
 			{
 				// Compare against the single and plural name
-				if (preg_match('/^(get|update|remove|getTotal)('.$name.'|'.$item->itemsName.')/', $method))
+				if (preg_match('/^(add|get|update|remove|getTotal)('.$name.'|'.$item->itemsName.')/', $method))
 				{
 					$itemName = $name;
 					break;
