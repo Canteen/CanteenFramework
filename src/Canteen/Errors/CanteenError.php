@@ -171,7 +171,15 @@ namespace Canteen\Errors
 		*  @static
 		*  @final
 		*/
-		const INVALID_CLASS = 125;
+		const INVALID_CLASS = 127;
+
+		/** 
+		*  Property doesn't exist on the class
+		*  @property {int} INVALID_PROPERTY
+		*  @static
+		*  @final
+		*/
+		const INVALID_PROPERTY = 126;
 		
 		/**
 		*  The collection of messages
@@ -198,7 +206,8 @@ namespace Canteen\Errors
 			self::INVALID_INDEX => 'The index page for the site does not exist',
 			self::AUTOLOAD_CLASS => 'Class has already been loaded',
 			self::TAKEN_SERVICE_ALIAS => 'The custom service alias is already taken',
-			self::INVALID_CLASS => 'The class \'%s\' doesn\'t exist'
+			self::INVALID_CLASS => 'The class \'%s\' doesn\'t exist',
+			self::INVALID_PROPERTY => 'The property "%s" doest not exist on this class %s'
 		];
 		
 		/** 

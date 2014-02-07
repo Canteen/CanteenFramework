@@ -9,6 +9,7 @@ namespace Canteen\Controllers
 	use Canteen\Services\ObjectServiceItem;
 	use Canteen\Utilities\Validate;
 	use Canteen\Events\ObjectControllerEvent as Event;
+	use Canteen\Errors\CanteenError;
 
 	/**
 	*  Admin controller for standard object editing
@@ -204,6 +205,11 @@ namespace Canteen\Controllers
 			{
 				// Ignore the id
 				if (in_array($name, $this->_ignoreFields)) continue;
+
+				if (!property_exists($this->object, $name))
+				{
+					throw new CanteenError(CanteenError::INVALID_PROPERTY, [$name, get_class($this->object)]);
+				}
 
 				// Create a new form element
 				$element = new ObjectFormElement(

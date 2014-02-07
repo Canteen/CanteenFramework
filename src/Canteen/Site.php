@@ -355,7 +355,7 @@ namespace Canteen
 					$debugger .= $this->profiler->render();
 				}
 				// The logger
-				if ($this->settings->debug && class_exists('Canteen\Logger\Logger'))
+				if ($debug && class_exists('Canteen\Logger\Logger'))
 				{
 					$debugger .= Logger::instance()->render();
 				}
