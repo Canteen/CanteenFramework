@@ -164,6 +164,14 @@ namespace Canteen\Errors
 		*  @final
 		*/
 		const SETTING_NAME_TAKEN = 124;
+
+		/** 
+		*  The class doesn't exist
+		*  @property {int} INVALID_CLASS
+		*  @static
+		*  @final
+		*/
+		const INVALID_CLASS = 125;
 		
 		/**
 		*  The collection of messages
@@ -189,7 +197,8 @@ namespace Canteen\Errors
 			self::INSUFFICIENT_PHP => 'The current version of PHP (%s) is insufficient to run site (%s)',
 			self::INVALID_INDEX => 'The index page for the site does not exist',
 			self::AUTOLOAD_CLASS => 'Class has already been loaded',
-			self::TAKEN_SERVICE_ALIAS => 'The custom service alias is already taken'
+			self::TAKEN_SERVICE_ALIAS => 'The custom service alias is already taken',
+			self::INVALID_CLASS => 'The class \'%s\' doesn\'t exist'
 		];
 		
 		/** 

@@ -138,13 +138,6 @@ namespace Canteen
 		private $_db;
 		
 		/** 
-		*  The fatal error
-		*  @property {Dictionary} _fatalError
-		*  @private
-		*/
-		private static $_fatalError = null;
-		
-		/** 
 		*  The singleton instance 
 		*  @property {Canteen} _instance
 		*  @private
@@ -303,12 +296,58 @@ namespace Canteen
 		*/
 		public function fatalError(Exception $e)
 		{
-			if (!self::$_fatalError)
+			$fatalError = ($e instanceof CanteenError) ? 
+				$e->getResult():
+				CanteenError::convertToResult($e);
+
+			$debug = ifconstor('DEBUG', true);
+			$async = ifconstor('ASYNC_REQUEST', false);
+			
+			$data = [
+				'type' => 'fatalError',
+				'debug' => $debug
+			];
+			
+			$data = array_merge($fatalError, $data);
+			
+			if (!$debug) 
 			{
-				self::$_fatalError = ($e instanceof CanteenError) ? 
-					$e->getResult():
-					CanteenError::convertToResult($e);
+				unset($data['stackTrace']);
+				unset($data['file']);
 			}
+			
+			if ($async)
+			{
+				$result = json_encode($data);
+			}
+			else
+			{
+				if ($debug)
+				{
+					$data['stackTrace'] = new SimpleList($data['stackTrace'], null, 'ol');
+				}
+				$result = $this->_parser->template('FatalError', $data);
+				$this->_parser->removeEmpties($result);
+
+				$debugger = '';
+			
+				// The profiler
+				if ($this->profiler)
+				{
+					$debugger .= $this->profiler->render();
+				}
+				// The logger
+				if ($this->settings->debug && class_exists('Canteen\Logger\Logger'))
+				{
+					$debugger .= Logger::instance()->render();
+				}
+				// If there are any debug trace or profiler
+				if ($debugger)
+				{
+					$result = str_replace('</body>', $debugger . '</body>', $result);
+				}
+			}
+			die($result);
 		}
 		
 		/**
@@ -498,6 +537,10 @@ namespace Canteen
 		*/
 		public function addController($pageUri, $controllerClassName)
 		{
+			if (!class_exists($controllerClassName))
+			{
+				$this->fatalError(new CanteenError(CanteenError::INVALID_CLASS, [$controllerClassName]));
+			}
 			if (is_array($pageUri))
 			{
 				foreach($pageUri as $p)
@@ -585,69 +628,28 @@ namespace Canteen
 		/**
 		*  Get the current page markup, echoes on the page
 		*  @method render
+		*  @param {Boolean} [capture=false] If we should return the page render (false) or echo (true)
+		*  @return {String} If capture is true, return the page render as a string
 		*/
-		public function render()
+		public function render($capture=false)
 		{
-			if (!($result = $this->readyToProceed()))
+			try
 			{
-				try
-				{
-					$builder = new PageBuilder();
-					$result = $builder->handle();
-				}
-				catch(Exception $e)
-				{
-					$this->fatalError($e);
-					$result = $this->readyToProceed();
-				}
+				$builder = new PageBuilder;
+				$result = $builder->handle();
 			}
-			echo $result;
-		}
-		
-		/**
-		*  See if there are any errors or warnings
-		*  bail out if we need to
-		*  @method readyToProceed
-		*  @private
-		*  @return {String} Assemble any fatal errors into a template, return null if no errors
-		*/
-		private function readyToProceed()
-		{
-			$result = null;
-			
-			if (self::$_fatalError != null)
+			catch(Exception $e)
 			{
-				$debug = ifconstor('DEBUG', true);
-				$async = ifconstor('ASYNC_REQUEST', false);
-				
-				$data = [
-					'type' => 'fatalError',
-					'debug' => $debug
-				];
-				
-				$data = array_merge(self::$_fatalError, $data);
-				
-				if (!$debug) 
-				{
-					unset($data['stackTrace']);
-					unset($data['file']);
-				}
-				
-				if ($async)
-				{
-					$result = json_encode($data);
-				}
-				else
-				{
-					if ($debug)
-					{
-						$data['stackTrace'] = new SimpleList($data['stackTrace'], null, 'ol');
-					}
-					$result = $this->_parser->template('FatalError', $data);
-					$this->_parser->removeEmpties($result);
-				}
+				$this->fatalError($e);
 			}
-			return $result;
+			if ($capture)
+			{
+				return $result;
+			}
+			else
+			{
+				echo $result;
+			}
 		}
 		
 		/**
@@ -686,18 +688,16 @@ namespace Canteen
 		/**
 		*  Check that a version of Canteen is required to run
 		*  @method requiresVersion
-		*  @static
 		*  @param {String} required The least required version to run
 		*/
-		public static function requiresVersion($required)
+		public function requiresVersion($required)
 		{
 			if (version_compare(self::VERSION, $required) < 0)
 			{
-				$e =  new CanteenError(
+				$this->fatalError(new CanteenError(
 					CanteenError::INSUFFICIENT_VERSION, 
 					[self::VERSION, $required]
-				);
-				self::$_fatalError = $e->getResult();
+				));
 			}
 		}
 	}
