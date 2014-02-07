@@ -109,11 +109,12 @@ namespace Canteen\Utilities
 		*  @method toDatabase
 		*  @static
 		*  @param {String} time The input date format
+		*  @param {Boolean} [short=false] If we should do the date format only, default is datetime
 		*  @return {String} The format suitable for database
 		*/
-		static public function toDatabase($time)
+		static public function toDatabase($time, $short=false)
 		{
-			return date('Y-m-d H:i:s', strtotime($time));
+			return date('Y-m-d'.(!$short ? ' H:i:s' : ''), strtotime($time));
 		}
 	}
 }

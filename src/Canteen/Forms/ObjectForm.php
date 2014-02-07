@@ -8,6 +8,8 @@ namespace Canteen\Forms
 	use Canteen\Forms\Form;
 	use Canteen\Events\ObjectFormEvent;
 	use Canteen\Services\ObjectServiceItem;
+	use Canteen\Utilities\Validate;
+	use Canteen\Utilities\DateUtils;
 
 	/**
 	*  Generalized form for processing ObjectServiceItem objects
@@ -145,6 +147,35 @@ namespace Canteen\Forms
 		}
 
 		/**
+		*  Do some initial sanitize
+		*  @method validate
+		*  @private
+		*/
+		private function sanitize()
+		{
+			foreach($this->item->fieldsByName as $name=>$field)
+			{
+				$value = ifsetor($_POST[$name], null);
+
+				// Convert the date or datetime-local input into
+				// a database format
+				if ($field->type == Validate::MYSQL_DATE && $value != 'NOW()')
+				{
+					$value = DateUtils::toDatabase($value);
+				}
+				if ($field->type == Validate::BOOLEAN)
+				{
+					$value = !isset($_POST[$name]) ? 0 : intval($_POST[$name]);
+				}
+
+				if ($value !== null)
+				{
+					$_POST[$name] = $value;
+				}	
+			}
+		}
+
+		/**
 		*  Update the object
 		*  @method update
 		*  @protected
@@ -160,6 +191,8 @@ namespace Canteen\Forms
 				$this->failed();
 				return;
 			}
+
+			$this->sanitize();
 
 			$this->trigger(new ObjectFormEvent(ObjectFormEvent::VALIDATE, $object));
 
@@ -225,6 +258,8 @@ namespace Canteen\Forms
 		*/
 		protected function add()
 		{
+			$this->sanitize();
+
 			$this->trigger(new ObjectFormEvent(ObjectFormEvent::VALIDATE));
 
 			if ($this->failed()) return;
