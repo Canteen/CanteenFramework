@@ -26,6 +26,7 @@ namespace Canteen
 	use Canteen\Utilities\SettingsManager;
 	use Canteen\Events\EventDispatcher;
 	use \Exception;
+	use \ErrorException;
 	
 	class Site extends EventDispatcher
 	{	
@@ -252,6 +253,9 @@ namespace Canteen
 			// Save singleton
 			self::$_instance = $this;
 			
+			// Setup the error handler
+			set_error_handler([$this, 'errorHandler']);
+
 			// Microseconds of start
 			$this->startTime = microtime(true);
 			
@@ -287,6 +291,20 @@ namespace Canteen
 			{
 				$this->fatalError($e);
 			}
+		}
+
+		/**
+		*  Handle PHP errors, like wrong argument counts
+		*  @method errorHandler
+		*  @param {Exception} e The caught exception
+		*/
+		public function errorHandler($errno, $errstr, $errfile, $errline) 
+		{
+			if (E_RECOVERABLE_ERROR === $errno)
+			{
+				$this->fatalError(new ErrorException($errstr, $errno, 0, $errfile, $errline));
+			}
+			return false;
 		}
 
 		/**
