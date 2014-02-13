@@ -8,7 +8,7 @@ namespace Canteen\Parser
 	use Canteen\Site;
 	use Canteen\Authorization\Privilege;
 	use Canteen\Errors\CanteenError;
-	use Canteen\Services\ServiceBrowser;
+	use Canteen\ServiceBrowser\ServiceBrowser;
 	use Canteen\Profiler\Profiler;
 	use Canteen\Logger\Logger;
 	use Canteen\Services\Objects\Page;
@@ -165,7 +165,7 @@ namespace Canteen\Parser
 			// Only local deployments or administrators can use the 
 			// service browser
 			if (($this->settings->local || USER_PRIVILEGE == Privilege::ADMINISTRATOR) 
-				&& class_exists('Canteen\Services\ServiceBrowser')
+				&& class_exists('Canteen\ServiceBrowser\ServiceBrowser')
 				&& $this->settings->debug 
 				&& strpos($this->settings->uriRequest, $this->site->browserUri) === 0)
 			{
