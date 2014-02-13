@@ -1,9 +1,9 @@
 <?php
 
 /**
-*  @module Canteen\Parser
+*  @module Canteen\PageBuilder
 */
-namespace Canteen\Parser
+namespace Canteen\PageBuilder
 {
 	use Canteen\Site;
 	use Canteen\Authorization\Privilege;
@@ -19,7 +19,7 @@ namespace Canteen\Parser
 	
 	/**
 	*  Responsible for building the pages and handling page requests.
-	*  Located in the namespace __PageBuilder__.
+	*  Located in the namespace __Canteen\PageBuilder__.
 	*  @class PageBuilder
 	*  @extends CanteenBase
 	*/

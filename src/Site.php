@@ -18,7 +18,7 @@ namespace Canteen
 	use Canteen\Services\PageService;
 	use Canteen\Services\UserService;
 	use Canteen\Services\Service;
-	use Canteen\Parser\PageBuilder;
+	use Canteen\PageBuilder\PageBuilder;
 	use Canteen\Parser\Parser;
 	use Canteen\Utilities\StringUtils;
 	use Canteen\Database\Database;
