@@ -26,10 +26,10 @@
     },
 	"require": {
 		"php": ">=5.4.0",
-		"canteen/database" : "*",
-		"canteen/html5" : "*",
-		"canteen/events" : "*",
-		"canteen/parser" : "*"
+		"canteen/database" : "dev-master",
+		"canteen/html5" : "dev-master",
+		"canteen/events" : "dev-master",
+		"canteen/parser" : "dev-master"
 	},
 	"minimum-stability": "dev",
 	"repositories": [
