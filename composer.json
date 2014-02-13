@@ -31,7 +31,11 @@
 		"canteen/events" : "*",
 		"canteen/parser" : "*"
 	},
-	
+	"require-dev": {
+		"canteen/logger" : "*",
+		"canteen/profiler" : "*",
+		"canteen/service-browser" : "*"
+	},
 	"minimum-stability": "dev",
 	"repositories": [
 		{
