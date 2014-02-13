@@ -9,7 +9,12 @@ namespace Canteen
 	use flight\Engine;
 	use Canteen\Errors\CanteenError;
 	use Canteen\HTML5\SimpleList;
+	use Canteen\Server\DeploymentStatus;
+	use Canteen\Logger\Logger;
 
+	// We need to initalize flight before we can extend Engine
+	// kind of hacky but it's the best solution
+	// because Flight doesn't support prs-* loading with Composer
 	\Flight::init();
 	
 	class Site extends Engine
@@ -28,7 +33,9 @@ namespace Canteen
 		*  @final
 		*  @static
 		*/
-		const MIN_PHP_VERSION = '5.7.0';
+		const MIN_PHP_VERSION = '5.4.0';
+
+		private $_settings;
 		
 		/**
 		*  Get the singleton instance
@@ -55,6 +62,8 @@ namespace Canteen
 			// Save singleton
 			self::$_instance = $this;
 
+			$this->_settings = $settings;
+
 			// Handle any errors before Flight begins
 			$this->handleErrors($this->get('flight.handle_errors'));
 
@@ -72,6 +81,12 @@ namespace Canteen
 
 			// Setup to run before the site renders
 			$this->before('start', [$this, 'setup']);
+
+			// Initialize the logger
+			if (class_exists('Canteen\Logger\Logger'))
+			{
+				Logger::init();
+			}
 		}
 
 		/**
@@ -80,10 +95,23 @@ namespace Canteen
 		*  @param {String} name The name of the item to set
 		*  @param {String} value The value to set
 		*  @param {Boolean} [access=0] The variable access
+		*  @return {SettingsManager} The manager for chaining
 		*/
 		public function addSetting($name, $value, $access=0)
 		{
-			$this->settings()->addSetting($name, $value, $access);
+			return $this->settings()->addSetting($name, $value, $access);
+		}
+
+		/**
+		*  Set the configuration setting
+		*  @method addSettings
+		*  @param {Dictionary} settings The collection of settings
+		*  @param {Boolean} [access=0] The variable access
+		*  @return {SettingsManager} The manager for chaining
+		*/
+		public function addSettings(array $settings, $access=0)
+		{
+			return $this->settings()->addSettings($settings, $access);
 		}	
 
 		/**
@@ -127,13 +155,53 @@ namespace Canteen
 		*  Before the page starts rendering, we should do some checking
 		*  @method setup
 		*/
-		public function setup($settings)
+		public function setup()
 		{
 			// Check for the version of PHP required to do the autoloading/namespacing
 			if (version_compare(self::MIN_PHP_VERSION, PHP_VERSION) >= 0) 
 			{
 				throw new CanteenError(CanteenError::INSUFFICIENT_PHP, [PHP_VERSION, self::MIN_PHP_VERSION]);
 			}
+
+			$settings = $this->_settings;
+
+			// Check that the settings exists
+			if (is_string($settings) && !file_exists($settings))
+			{
+				$this->_formFactory->startup('Canteen\Forms\SetupForm');
+				die($this->_parser->template('Setup',
+					[
+						'formFeedback' => $this->_formFactory->getFeedback(),
+						'configFile' => basename($settings)
+					]
+				));
+			}
+
+			// Check the domain for the current deployment level 
+			$status = new DeploymentStatus($settings);
+
+			// client, renderable, deletable, writeable
+			$this->addSettings($status->settings)
+				->access('fullPath', SETTING_RENDER)
+				->access('local', SETTING_CLIENT | SETTING_RENDER)
+				->access('host', SETTING_CLIENT | SETTING_RENDER)
+				->access('basePath', SETTING_CLIENT | SETTING_RENDER)
+				->access('baseUrl', SETTING_CLIENT)
+				->access('uriRequest', SETTING_CLIENT)
+				->access('queryString', SETTING_CLIENT | SETTING_RENDER)
+				->access('debug', SETTING_CLIENT | SETTING_RENDER);
+
+			$debug = $this->settings()->debug;
+
+			// Set the error reporting if we're set to debug
+			error_reporting($debug ? E_ALL : 0);
+			
+			// Turn on or off the logger
+			if (class_exists('Canteen\Logger\Logger'))
+			{
+				Logger::instance()->enabled = $debug;
+			}
+			
 		}
 		
 		/**
