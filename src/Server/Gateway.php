@@ -50,30 +50,30 @@ namespace Canteen\Server
 		/**
 		*  Create a new gateway
 		*  @method register
-		*  @param {String} uri The path to the call
-		*  @param {callable} call The callback for the uri request
+		*  @param {String} call The path to the call
+		*  @param {callable} handler The callback for the uri request
 		*  @param {int} [privilege=Privilege::ANONYMOUS] The minimum privilege needed to call
 		*/
-		public function register($uri, $call, $privilege=Privilege::ANONYMOUS)
+		public function register($call, $handler, $privilege=Privilege::ANONYMOUS)
 		{
-			if (isset($this->_controls[$uri]))
+			if (isset($this->_controls[$call]))
 			{
-				throw new GatewayError(GatewayError::REGISTERED_URI, $uri);
+				throw new GatewayError(GatewayError::REGISTERED_URI, $call);
 			}
-			$this->_controls[$uri] = new GatewayControl($uri, $call, $privilege);
+			$this->_controls[$call] = new GatewayControl($call, $handler, $privilege);
 		}
 
 		/**
 		*  The main server handler
 		*  @method handle
-		*  @param {String} uriRequest The entire URI being requested
+		*  @param {String} call The name of the method alias
 		*  @return {Object} The JSON object
 		*/
-		public function handle($uriRequest)
+		public function handle($call)
 		{
 			try
 			{
-				$result = $this->internalHandle($uriRequest);
+				$result = $this->internalHandle($call);
 				$errorCode = null;
 				$type = self::SUCCESS;
 			}
@@ -98,39 +98,23 @@ namespace Canteen\Server
 			// See if there's an error code
 			if ($errorCode !== null) $output['errorCode'] = $errorCode;
 			
-			return json_encode($output);
+			echo json_encode($output);
 		}
 		
 		/**
 		*  The internal JSON handle request
 		*  @method internalHandle
 		*  @private
-		*  @param {String} uriRequest The URI request being made
+		*  @param {String} call The name of the method alias
 		*  @return {mixed} The result of the service call  
 		*/	
-		private function internalHandle($uriRequest)
+		private function internalHandle($call)
 		{
-			if ($uriRequest == $this->uri.'/' || $uriRequest == $this->uri)
-			{
-				throw new GatewayError(GatewayError::NO_INPUT); 
-			}
-
-			if (strpos($uriRequest, $this->uri.'/') !== 0)
-			{
-				throw new GatewayError(GatewayError::BAD_URI_REQUEST, [$uriRequest, $this->uri]);
-			}
-
-			$request = str_replace($this->uri.'/', '', $uriRequest);
-
-			foreach($this->_controls as $control)
-			{
-				if ($control->match($request)) break;
-				$control = null;
-			}
+			$control = ifsetor($this->_controls[$call]);
 
 			if (!$control)
 			{
-				throw new GatewayError(GatewayError::NO_CONTROL_FOUND, $request);
+				throw new GatewayError(GatewayError::NO_CONTROL_FOUND, $call);
 			}
 			else if ($control->privilege > USER_PRIVILEGE)
 			{
@@ -138,7 +122,7 @@ namespace Canteen\Server
 			}
 
 			// Get the arguments
-			$args = $control->getArguments($request);
+			$args = $control->getArguments($call);
 
 			// Check for valid number of parameters
 			$numArgs = count($args);
@@ -149,8 +133,8 @@ namespace Canteen\Server
 					throw new GatewayError(GatewayError::INCORRECT_PARAMETERS);
 
 			return $args ? 
-				call_user_func_array($control->call, $args) : 
-				call_user_func($control->call);
+				call_user_func_array($control->handler, $args) : 
+				call_user_func($control->handler);
 		}
 	}
 }
