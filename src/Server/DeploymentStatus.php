@@ -8,8 +8,9 @@ namespace Canteen\Server
 	use Canteen\Utilities\ArrayUtils;
 	use Canteen\Utilities\StringUtils;
 	use Canteen\Errors\CanteenError;
-	
-	class DeploymentStatus
+	use Canteen\Utilities\CanteenBase;
+
+	class DeploymentStatus extends CanteenBase
 	{
 		/** 
 		*  The deployment level for a live site.
@@ -47,11 +48,11 @@ namespace Canteen\Server
 		const LOCAL = 1;
 		
 		/** 
-		*  Save the collection of deployable configuration variables 
-		*  @property {Dictionary} properties
-		*  @public
+		*  The URL query string
+		*  @property {String} queryString
+		*  @private
 		*/
-		public $settings;
+		private $queryString;
 		
 		/** 
 		*  The default settings
@@ -142,21 +143,21 @@ namespace Canteen\Server
 			error_reporting(E_ALL);
 			
 			// Settings is either an external PHP file or an array 
-			$settings = (is_string($settingsPath) && fnmatch('*.php', $settingsPath)) ? 
+			$deployments = (is_string($settingsPath) && fnmatch('*.php', $settingsPath)) ? 
 				require $settingsPath:
 				$settingsPath;
 			
 			// Check for null settings here
-			if (empty($settings) || !isset($settings) || !is_array($settings) || !count($settings))
+			if (empty($deployments) || !isset($deployments) || !is_array($deployments) || !count($deployments))
 			{
 				throw new CanteenError(CanteenError::SETTINGS_REQUIRED);
 			}
 			
 			// If the settings is a single deployment
 			// then we'll add it a collection of deployments
-			if ($this->isAssoc($settings))
+			if ($this->isAssoc($deployments))
 			{
-				$settings = [$settings];
+				$deployments = [$deployments];
 			}
 			
 			// If no domain is specified then we'll use the current domain
@@ -172,8 +173,8 @@ namespace Canteen\Server
 			$uriRequest = $this->processURI($basePath);
 			
 			// Setup the data
-			$this->settings = [
-				'queryString' => $this->settings['queryString'],
+			$settings = [
+				'queryString' => $this->queryString,
 				'domain' => $domain,
 				'host' => '//'.$domain,
 				'uriRequest' => $uriRequest,
@@ -183,11 +184,11 @@ namespace Canteen\Server
 			];
 			
 			// Loop through each of the settings levels
-			foreach($settings as $deploy)
+			foreach($deployments as $deploy)
 			{
 				$deploy = array_merge($this->defaultSettings, $deploy);
-				
 				$domains = ifsetor($deploy['domain']);
+
 				$l = ifsetor($deploy['level']);
 				
 				if (is_string($domains)) $domains = [$domains];				
@@ -203,11 +204,11 @@ namespace Canteen\Server
 					
 					// If we're local
 					$deploy['local'] = DEPLOYMENT_LEVEL == self::LOCAL;
-					$this->settings = array_merge($this->settings, $deploy);
+					$settings = array_merge($settings, $deploy);
 					break;
 				}
 			}
-			
+
 			// Define some global constants that we can use anywhere
 			$globals = [
 				'basePath', 
@@ -227,9 +228,19 @@ namespace Canteen\Server
 			{
 				define(
 					StringUtils::convertPropertyToConst($property),
-					$this->settings[$property]
+					$settings[$property]
 				);
 			}
+
+			$this->settings->addSettings($settings)
+				->access('fullPath', SETTING_RENDER)
+				->access('local', SETTING_CLIENT | SETTING_RENDER)
+				->access('host', SETTING_CLIENT | SETTING_RENDER)
+				->access('basePath', SETTING_CLIENT | SETTING_RENDER)
+				->access('baseUrl', SETTING_CLIENT)
+				->access('uriRequest', SETTING_CLIENT)
+				->access('queryString', SETTING_CLIENT | SETTING_RENDER)
+				->access('debug', SETTING_CLIENT | SETTING_RENDER);
 		}
 		
 		/**
@@ -271,7 +282,8 @@ namespace Canteen\Server
 					$request = substr($request, 0, $query_pos);
 				}
 
-				$this->settings['queryString'] = $query;
+				$this->queryString = $query;
+
 		 		$uri = explode('/', $request);
 				return implode('/', array_filter($uri, function($var)
 				{

@@ -7,6 +7,7 @@ namespace Canteen\Authorization
 {
 	use Canteen\Utilities\PasswordUtils;
 	use Canteen\Utilities\CanteenBase;
+	use Canteen\Utilities\StringUtils;
 	use Canteen\Services\Objects\User;
 	
 	/**
@@ -158,40 +159,28 @@ namespace Canteen\Authorization
 				$this->checkRemembered($cookie);
 			}
 			
-			// Define all of the user constants
-			define('LOGGED_IN', $this->_loggedin);
-			define('USER_FULLNAME', $this->_user->fullname);
-			define('USER_EMAIL', $this->_user->email);
-			define('USER_ID', $this->_user->id);
-			define('USER_USERNAME', $this->_user->username);
-			define('USER_PRIVILEGE', $this->_user->privilege);
-			define('USER_LOGIN', $this->_user->login);
-			define('USER_HASH', $this->_user->password);
-		}
-		
-		/**
-		*  Override getter 
-		*/
-		public function __get($name)
-		{
-			/**
-			*  Get the user data properties
-			*  @property {Dictionary} settings
-			*  @readOnly
-			*/
-			if ($name == 'settings')
+			$settings = [
+				'loggedIn' => $this->_loggedin,
+				'userFullname' => $this->_user->fullname,
+				'userEmail' => $this->_user->email,
+				'userId' => $this->_user->id,
+				'userUsername' => $this->_user->username,
+				'userPrivilege' => $this->_user->privilege,
+				'userLogin' => $this->_user->login,
+				'userHash' => $this->_user->password
+			];
+
+			foreach($settings as $property=>$value)
 			{
-				return [
-					'loggedIn' => $this->_loggedin,
-					'userFullname' => $this->_user->fullname,
-					'userEmail' => $this->_user->email,
-					'userId' => $this->_user->id,
-					'userUsername' => $this->_user->username,
-					'userPrivilege' => $this->_user->privilege,
-					'userLogin' => $this->_user->login
-				];
+				define(
+					StringUtils::convertPropertyToConst($property),
+					$settings[$property]
+				);
 			}
-			return parent::__get($name);
+
+			$this->settings->addSettings($settings)
+				->access('loggedIn', SETTING_RENDER)
+				->access('userFullname', SETTING_RENDER);		
 		}
 	
 		/**

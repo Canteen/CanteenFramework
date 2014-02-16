@@ -8,17 +8,18 @@ namespace Canteen
 	use \Exception;
 	use flight\Engine;
 	use Canteen\Errors\CanteenError;
-	use Canteen\HTML5\SimpleList;
 	use Canteen\Server\DeploymentStatus;
 	use Canteen\Logger\Logger;
 	use Canteen\Services\TimeService;
 	use Canteen\Services\ConfigService;
 	use Canteen\Services\PageService;
 	use Canteen\Services\UserService;
+	use Canteen\Controllers\ErrorController;
+	use Canteen\Utilities\StringUtils;
 
 	// We need to initalize flight before we can extend Engine
 	// kind of hacky but it's the best solution
-	// because Flight doesn't support prs-* loading with Composer
+	// because Flight doesn't support psr-0 or psr-4 loading with Composer
 	\Flight::init();
 	
 	class Site extends Engine
@@ -29,7 +30,7 @@ namespace Canteen
 		*  @static
 		*  @final
 		*/
-		const VERSION = '1.1.0';
+		const VERSION = '1.2.0';
 		
 		/** 
 		*  The current database version 
@@ -64,24 +65,17 @@ namespace Canteen
 		const MIN_PHP_VERSION = '5.4.0';
 
 		/** 
-		*  The dynamic page controllers with keys 'uri' and 'controller'
-		*  @property {Array} _controllers
-		*  @private
-		*/
-		private $_controllers;
-
-		/** 
 		*  The starting time to keep track of buildtime
 		*  @property {int} startTime
 		*/
 		public $startTime;
 
-		/**
-		*  The configuration option or file
-		*  @property {Array|String} _config
+		/** 
+		*  The dynamic page controllers with keys 'uri' and 'controller'
+		*  @property {Array} _controllers
 		*  @private
 		*/
-		private $_config;
+		private $_controllers;
 		
 		/**
 		*  Get the singleton instance
@@ -167,13 +161,6 @@ namespace Canteen
 		public function __construct($config='config.php', $callerPath=null)
 		{
 			parent::__construct();
-
-			if ($callerPath === null)
-			{
-				$bt = debug_backtrace();
-				$callerPath = dirname($bt[0]['file']).'/';
-				unset($bt);
-			}
 			
 			// Save singleton
 			self::$_instance = $this;
@@ -181,143 +168,54 @@ namespace Canteen
 			// Microseconds of start
 			$this->startTime = microtime(true);
 
-			// Save the configuration
-			$this->_config = $config;
-
 			// Handle any errors before Flight begins
 			$this->handleErrors($this->get('flight.handle_errors'));
 
 			// Error handler method
-			$this->map('error', [$this, 'fatalError']);
+			$this->map('error', [new ErrorController, 'display']);
 
-			// Register required components
+			// Setup the parser
 			$this->register('parser', 'Canteen\Parser\Parser');
-			$this->register('settings', 'Canteen\Utilities\SettingsManager');
-			$this->register('formFactory', 'Canteen\Forms\FormFactory');
-			$this->register('gateway', 'Canteen\Server\Gateway');
-			$this->register('user', 'Canteen\Authorization\Authorization');
-
-			$this->map('registerService', ['Canteen\Services\Service','register']);
-
-			// Load the Canteen templates
+			$this->set('_parser', 1);
 			$this->parser->addManifest(__DIR__.'/Templates/templates.json');
 
-			// Register is the caller path, internal path 
-			$this->settings->addSetting('callerPath', $callerPath);
+			// The settings manager setup
+			$this->register('settings', 'Canteen\Utilities\SettingsManager');
+			$this->set('_settings', 1);
 
-			// Setup to run before the site renders
-			$this->before('start', [$this, 'setup']);
+			// Setup the form factory interception
+			$this->register('formFactory', 'Canteen\Forms\FormFactory');
+			$this->set('_formFactory', 1);
 
-			// Handle the gateway
-			$this->route('/gateway/@call:*', [$this->gateway, 'handle']);
+			// Register the JSON gateway
+			$this->register('gateway', 'Canteen\Server\Gateway');
+			$this->set('_gateway', 1);
 
-			// Initialize the logger
-			if (class_exists('Canteen\Logger\Logger'))
-			{
-				Logger::init();
-			}
-		}
+			// Register the user class
+			$this->register('user', 'Canteen\Authorization\Authorization');
+			$this->set('_user', 1);
 
-		/**
-		*  Set the configuration setting
-		*  @method addSetting
-		*  @param {String} name The name of the item to set
-		*  @param {String} value The value to set
-		*  @param {Boolean} [access=0] The variable access
-		*  @return {SettingsManager} The manager for chaining
-		*/
-		public function addSetting($name, $value, $access=0)
-		{
-			return $this->settings->addSetting($name, $value, $access);
-		}
+			/**
+			*  Register a service to the site
+			*  @method registerService
+			*  @param {String} name The name of the service
+			*  @param {Service} service The service instance
+			*/
+			$this->map('registerService', ['Canteen\Services\Service','register']);
 
-		/**
-		*  Set the configuration setting
-		*  @method addSettings
-		*  @param {Dictionary} settings The collection of settings
-		*  @param {Boolean} [access=0] The variable access
-		*  @return {SettingsManager} The manager for chaining
-		*/
-		public function addSettings(array $settings, $access=0)
-		{
-			return $this->settings->addSettings($settings, $access);
-		}
-
-		/**
-		*  Create a fatalError
-		*  @method fatalError
-		*  @param {Exception} e The caught exception
-		*/
-		public function fatalError(Exception $e)
-		{
-			$fatalError = ($e instanceof CanteenError) ? 
-				$e->getResult():
-				CanteenError::convertToResult($e);
-
-			$debug = ifconstor('DEBUG', true);
-			$async = ifconstor('ASYNC_REQUEST', false);
-			
-			$data = [
-				'type' => 'fatalError',
-				'debug' => $debug
-			];
-			
-			$data = array_merge($fatalError, $data);
-			
-			if (!$debug) 
-			{
-				unset($data['stackTrace']);
-				unset($data['file']);
-			}
-
-			if ($async)
-			{
-				echo json_encode($data);
-			}
-			else
-			{
-				if ($debug)
-				{
-					$data['stackTrace'] = new SimpleList($data['stackTrace'], null, 'ol');
-				}
-				$result = $this->parser->template('FatalError', $data);
-				$this->parser->removeEmpties($result);
-
-				$debugger = '';
-			
-				// The profiler
-				if ($this->profiler)
-				{
-					$debugger .= $this->profiler->render();
-				}
-				// The logger
-				if ($debug && class_exists('Canteen\Logger\Logger'))
-				{
-					$debugger .= Logger::instance()->render();
-				}
-				// If there are any debug trace or profiler
-				if ($debugger)
-				{
-					$result = str_replace('</body>', $debugger . '</body>', $result);
-				}
-				echo $result;
-			}
-			return;
-		}
-
-		/**
-		*  Before the page starts rendering, we should do some checking
-		*  @method setup
-		*/
-		public function setup()
-		{
 			// Check for the version of PHP required to do the autoloading/namespacing
 			if (version_compare(self::MIN_PHP_VERSION, PHP_VERSION) >= 0) 
 			{
 				throw new CanteenError(CanteenError::INSUFFICIENT_PHP, [PHP_VERSION, self::MIN_PHP_VERSION]);
 			}
 
-			$config = $this->_config;
+			if ($callerPath === null)
+			{
+				$bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
+				$callerPath = dirname($bt[0]['file']).'/';
+				unset($bt);
+			}
+			$this->addSetting('callerPath', $callerPath);
 
 			// Check that the settings exists
 			if (is_string($config) && !file_exists($config))
@@ -333,54 +231,71 @@ namespace Canteen
 
 			// Check the domain for the current deployment level 
 			$status = new DeploymentStatus($config);
-
-			// client, renderable, deletable, writeable
-			$this->addSettings($status->settings)
-				->access('fullPath', SETTING_RENDER)
-				->access('local', SETTING_CLIENT | SETTING_RENDER)
-				->access('host', SETTING_CLIENT | SETTING_RENDER)
-				->access('basePath', SETTING_CLIENT | SETTING_RENDER)
-				->access('baseUrl', SETTING_CLIENT)
-				->access('uriRequest', SETTING_CLIENT)
-				->access('queryString', SETTING_CLIENT | SETTING_RENDER)
-				->access('debug', SETTING_CLIENT | SETTING_RENDER);
-
+			
+			// Get the debug status
 			$debug = $this->settings->debug;
 
 			// Set the error reporting if we're set to debug
 			error_reporting($debug ? E_ALL : 0);
 
-			// Debug mode most be on in order to profile
-			$profiler = false;
+			$profiler = ($debug && class_exists('Canteen\Profiler\Profiler') 
+				&& ifsetor($_GET['profiler']) == 'true') ?
+					'Canteen\Profiler\Profiler' :
+					'Canteen\Utilities\EmptyProfiler';
 
-			if (class_exists('Canteen\Profiler\Profiler') 
-				&& $debug && ifsetor($_GET['profiler']) == 'true')
-			{
-				$this->register('profiler', 'Canteen\Profiler\Profiler', [$this->parser]);
-				$profiler = $this->profiler();
-				
-				// Assign the profiler to the parser
-				$this->parser->setProfiler($profiler);
-			}
-
-			if ($profiler) $profiler->start('Canteen Setup');
+			$this->register('profiler', $profiler, [$this->parser]);
+			$this->set('_profiler', 1);
 			
-			// Turn on or off the logger
+			// Pass the profiler to the parser
+			// to measure the page parsing time
+			$this->parser->setProfiler($this->profiler);
+
+			$this->profiler->start('Canteen Setup');
+
+			// Initialize the logger
 			if (class_exists('Canteen\Logger\Logger'))
 			{
+				Logger::init();
 				Logger::instance()->enabled = $debug;
 			}
-			
+		
 			// Setup the cache
 			$this->register('cache', 'Canteen\Server\ServerCache', [
 				$this->settings->cacheEnabled, 
 				$this->settings->cacheDirectory
 			]);
+			$this->set('_cache', 1);
 
-			// Create the non-database services
 			$this->registerService('time', new TimeService);
+			$this->bootstrapDatabase();
+			
+			// Create the new user
+			$this->profiler->start('Authorization');
+			$this->user();
+			$this->profiler->end('Authorization');
 
-			if ($profiler) $profiler->start('Database Connect');
+			if ($debug)
+			{
+				// URL clear for the cache
+				if (ifsetor($_GET['flush']) == 'all')
+				{
+					$this->cache->flush();
+				}
+				else if ($this->db && ifsetor($_GET['flush']) == 'database')
+				{
+					$this->db->flush();
+				}
+			}
+			$this->profiler->end('Canteen Setup');
+		}
+		
+		/**
+		*  Bootstrap the database connection
+		*  @method bootstrapDatabase
+		*/
+		private function bootstrapDatabase()
+		{
+			$this->profiler->start('Database Connect');
 
 			if ($this->settings->existsThrow('dbHost', 'dbUsername', 'dbPassword', 'dbName'))
 			{
@@ -390,16 +305,14 @@ namespace Canteen
 					$this->settings->dbPassword,
 					$this->settings->dbName
 				]);
+				$this->set('_db', 1);
 					
 				// Assign the server cache to the database
-				$this->db()->setCache($this->cache);
+				$this->db->setCache($this->cache);
 				
 				// Setup the database profiler calls
-				if ($profiler)
-				{
-					$this->db->profilerStart = [$profiler, 'sqlStart'];
-					$this->db->profilerStop = [$profiler, 'sqlEnd'];
-				}
+				$this->db->profilerStart = [$this->profiler, 'sqlStart'];
+				$this->db->profilerStop = [$this->profiler, 'sqlEnd'];
 			}
 
 			// If the database is connected
@@ -428,10 +341,6 @@ namespace Canteen
 				}
 				
 				$service = $this->registerService('config', new ConfigService);
-				
-				// Add the configuration db assets
-				// Give all settings global render access and changability
-				$service->registerSettings();
 
 				// Add the main site template
 				$this->parser->addTemplate(
@@ -449,48 +358,9 @@ namespace Canteen
 				$this->registerService('page', new PageService);
 				$this->registerService('user', new UserService);
 			}
-			
-			if ($profiler) $profiler->end('Database Connect');
-			
-			if ($profiler) $profiler->start('Authorization');
-
-			// Create the new user
-			$this->user();
-
-			// Add to the manager and allow render access for loggedIn and user name
-			$this->settings->addSettings($this->user->settings)
-				->access('loggedIn', SETTING_RENDER)
-				->access('userFullname', SETTING_RENDER);
-
-			if ($profiler) $profiler->end('Authorization');
-
-			// Set the globals
-			$this->_controllers = [];
-			/*
-			$this->addController('admin', 'Canteen\Controllers\AdminController');
-			$this->addController('admin/users', 'Canteen\Controllers\AdminUserController');
-			$this->addController('admin/pages', 'Canteen\Controllers\AdminPageController');
-			$this->addController('admin/password', 'Canteen\Controllers\AdminPasswordController');
-			$this->addController('admin/config', 'Canteen\Controllers\AdminConfigController');
-			$this->addController('forgot-password', 'Canteen\Controllers\ForgotPasswordController');
-			*/
-
-			if ($debug)
-			{
-				// URL clear for the cache
-				if (ifsetor($_GET['flush']) == 'all')
-				{
-					$this->cache->flush();
-				}
-				else if (ifsetor($_GET['flush']) == 'database')
-				{
-					if ($this->db) $this->db->flush();
-				}
-			}
-			
-			if ($profiler) $profiler->end('Canteen Setup');
+			$this->profiler->end('Database Connect');
 		}
-		
+
 		/**
 		*  Check to make sure the database is up-to-date
 		*  @method isDatabaseUpdated
@@ -538,7 +408,107 @@ namespace Canteen
 		*/
 		public function render()
 		{
+			// Handle the gateway
+			$this->route('/gateway/@call:*', [$this->gateway, 'handle']);
+
+			$this->addController('admin', 'Canteen\Controllers\AdminController');
+			$this->addController('admin/users', 'Canteen\Controllers\AdminUserController');
+			$this->addController('admin/pages', 'Canteen\Controllers\AdminPageController');
+			$this->addController('admin/password', 'Canteen\Controllers\AdminPasswordController');
+			$this->addController('admin/config', 'Canteen\Controllers\AdminConfigController');
+			$this->addController('forgot-password', 'Canteen\Controllers\ForgotPasswordController');
+
+			$this->route('/@call:*', function($call)
+			{
+				print_r($call);
+			});
+
 			$this->start();
+		}
+
+		/**
+		*  Store a page user function call for dynamic pages
+		*  @method addController
+		*  @param {String|RegExp|Array} pageUri The page ID of the dynamic page (array for multiple items) or can be an regular expression
+		*  @param {String} controllerClassName The user class to call
+		*/
+		public function addController($pageUri, $controllerClassName)
+		{
+			if (!class_exists($controllerClassName))
+			{
+				$this->error(new CanteenError(CanteenError::INVALID_CLASS, [$controllerClassName]));
+			}
+			if (is_array($pageUri))
+			{
+				foreach($pageUri as $p)
+				{
+					$this->addController($p, $controllerClassName);
+				}
+			}
+			else
+			{
+				// If we're using the catch-all star
+				if (!StringUtils::isRegex($pageUri) && preg_match('/\*/', $pageUri))
+				{
+					$pageUri = preg_replace('/\//', '\/', $pageUri);
+					$pageUri = preg_replace('/\*/', '[a-zA-Z0-9\-_\/]+', $pageUri);
+					$pageUri = '/^'.$pageUri.'$/';
+				}
+				$this->_controllers[] = [
+					'uri' => $pageUri,
+					'controller' => $controllerClassName
+				];
+			}
+		}
+
+		/**
+		*  Get a page controller by uri
+		*  @method getController
+		*  @param {String} pageUri The uri of the page
+		*  @return {Controller} The controller matching the URI
+		*/
+		public function getController($pageUri)
+		{
+			foreach($this->_controllers as $c)
+			{
+				$uri = $c['uri'];
+				
+				// Check for regular expression and compare that to the page
+				if (StringUtils::isRegex($uri) && preg_match($uri, $pageUri))
+				{
+					return $c['controller'];
+				}
+				else if ($uri == $pageUri)
+				{
+					return $c['controller'];
+				} 
+			}
+			return null;
+		}
+
+		/**
+		*  Set the configuration setting
+		*  @method addSetting
+		*  @param {String} name The name of the item to set
+		*  @param {String} value The value to set
+		*  @param {Boolean} [access=0] The variable access
+		*  @return {SettingsManager} The manager for chaining
+		*/
+		public function addSetting($name, $value, $access=0)
+		{
+			return $this->settings->addSetting($name, $value, $access);
+		}
+
+		/**
+		*  Set the configuration setting
+		*  @method addSettings
+		*  @param {Dictionary} settings The collection of settings
+		*  @param {Boolean} [access=0] The variable access
+		*  @return {SettingsManager} The manager for chaining
+		*/
+		public function addSettings(array $settings, $access=0)
+		{
+			return $this->settings->addSettings($settings, $access);
 		}
 
 		/**
@@ -546,6 +516,11 @@ namespace Canteen
 		*/
 		public function __get($name)
 		{
+			if (!$this->has('_'.$name))
+			{
+				return;
+			}
+
 			switch($name)
 			{
 				/**
@@ -624,7 +599,7 @@ namespace Canteen
 		{
 			if (version_compare(self::VERSION, $required) < 0)
 			{
-				$this->fatalError(new CanteenError(
+				$this->error(new CanteenError(
 					CanteenError::INSUFFICIENT_VERSION, 
 					[self::VERSION, $required]
 				));

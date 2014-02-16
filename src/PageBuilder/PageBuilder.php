@@ -67,7 +67,7 @@ namespace Canteen\PageBuilder
 		*/
 		public function __construct()
 		{			
-			if ($this->profiler) $this->profiler->start('Build Page');
+			$this->profiler->start('Build Page');
 			
 			// Check to see if this is a gateway request
 			$this->_isGateway = strpos($this->settings->uriRequest, $this->site->gateway->uri) === 0;
@@ -114,7 +114,6 @@ namespace Canteen\PageBuilder
 		*/
 		public function handle()
 		{
-			$profiler = $this->profiler;
 			$uriRequest = $this->settings->uriRequest;
 
 			// Grab the default index page
@@ -129,12 +128,12 @@ namespace Canteen\PageBuilder
 			// If we're processing a form
 			if (isset($_POST['form'])) 
 			{
-				if ($profiler) $profiler->start('Form Process');
+				$this->profiler->start('Form Process');
 				
 				// We save the result incase this is an ajax request
 				$result = $this->site->formFactory->process($_POST['form'], ASYNC_REQUEST);
 				
-				if ($profiler) $profiler->end('Form Process');
+				$this->profiler->end('Form Process');
 				
 				// To be save clear both render and data contexts after
 				// a form is processed
@@ -142,7 +141,7 @@ namespace Canteen\PageBuilder
 				
 				if (ASYNC_REQUEST)
 				{
-					if ($profiler) $profiler->end('Build Page');
+					$this->profiler->end('Build Page');
 					return $result;
 				}
 				else
@@ -177,14 +176,14 @@ namespace Canteen\PageBuilder
 					$this->parser
 				);
 				$result = $browser->handle();
-				if ($profiler) $profiler->end('Build Page');
+				$this->profiler->end('Build Page');
 				return $result;
 			}
 			// Setup the gateway
 			else if ($this->_isGateway)
 			{				
 				$result = $this->site->gateway->handle($uriRequest);
-				if ($profiler) $profiler->end('Build Page');
+				$this->profiler->end('Build Page');
 				return $result;
 			}
 			// Handle the current page request based on the current URI
@@ -275,16 +274,14 @@ namespace Canteen\PageBuilder
 		*  @return {Page} The updated page object
 		*/
 		private function addPageContent(&$page)	
-		{
-			$profiler = $this->profiler;
-			
-			if ($profiler) $profiler->start('Add Page Content');
+		{			
+			$this->profiler->start('Add Page Content');
 			$page->content = @file_get_contents($page->contentUrl);
 			
 			// If we have a controller for this page			
 			if ($controllerName = $this->site->getController($page->uri))
 			{
-				if ($profiler) $profiler->start('Page Controller');
+				$this->profiler->start('Page Controller');
 				$controller = new $controllerName();
 				$controller->setPage($page);
 				$controller->process();
@@ -294,20 +291,17 @@ namespace Canteen\PageBuilder
 				// Page controllers cannot override the base rendering substitutions, like
 				// loggedIn, debug, local, etc
 				$substitutions = array_merge($controller->getData(), $this->settings->getRender());
-				if ($profiler) $profiler->end('Page Controller');
+				$this->profiler->end('Page Controller');
 			}
 			else
 			{
 				$this->setPageTitle($page);				
 				$substitutions = $this->settings->getRender();
 			}
-			
-			if ($profiler) $profiler->start('Page Parse');
+			$this->profiler->start('Page Parse');
 			$this->parse($page->content, $substitutions);
-			if ($profiler) $profiler->end('Page Parse');
-			
-			if ($profiler) $profiler->end('Add Page Content');	
-			
+			$this->profiler->end('Page Parse');
+			$this->profiler->end('Add Page Content');
 			return $page;
 		}
 		
@@ -401,9 +395,9 @@ namespace Canteen\PageBuilder
 				$this->removeEmpties($page->content);
 				
 				// Fix the links
-				if ($profiler) $profiler->start('Parse Fix Path');
+				$this->profiler->start('Parse Fix Path');
 				$this->parser->fixPath($page->content, $this->settings->basePath);
-				if ($profiler) $profiler->end('Parse Fix Path');
+				$this->profiler->end('Parse Fix Path');
 				
 				$data = json_encode($page);
 			}
@@ -425,20 +419,20 @@ namespace Canteen\PageBuilder
 				
 				$profiler = $this->profiler;
 				
-				if ($profiler) $profiler->start('Template Render');
+				$this->profiler->start('Template Render');
 				
 				// Get the main template from the path
 				$data = $this->template(Site::MAIN_TEMPLATE, $this->settings->getRender());
 				
 				// Fix the links to use the base path
-				if ($profiler) $profiler->start('Parse Fix Path');
+				$this->profiler->start('Parse Fix Path');
 				$this->parser->fixPath($data, $this->settings->basePath);
-				if ($profiler) $profiler->end('Parse Fix Path');
+				$this->profiler->end('Parse Fix Path');
 				
 				// Clean up any lingering tags
 				$this->removeEmpties($data);
 				
-				if ($profiler) $profiler->end('Template Render');
+				$this->profiler->end('Template Render');
 			}
 			
 			// Cache, if available
@@ -447,7 +441,7 @@ namespace Canteen\PageBuilder
 				$this->cache->save($key, $data, $context);
 			}
 			
-			if ($profiler) $profiler->end('Build Page');
+			$this->profiler->end('Build Page');
 			
 			if (!$isAsync)
 			{
@@ -468,10 +462,8 @@ namespace Canteen\PageBuilder
 			$result = '';
 			
 			// The profiler
-			if ($this->profiler)
-			{
-				$result .= $this->profiler->render();
-			}
+			$result .= $this->profiler->render();
+
 			if ($this->settings->debug && class_exists('Canteen\Logger\Logger'))
 			{
 				$result .= Logger::instance()->render();
