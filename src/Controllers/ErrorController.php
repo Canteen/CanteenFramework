@@ -28,8 +28,11 @@ namespace Canteen\Controllers
 				$error->getResult():
 				CanteenError::convertToResult($error);
 
-			$debug = ifconstor('DEBUG', true);
-			$async = ifconstor('ASYNC_REQUEST', false);
+			$debug = $this->settings->exists('debug') ? 
+				$this->settings->debug : true;
+			
+			$async = $this->settings->exists('asyncRequest') ? 
+				$this->settings->asyncRequest : false;
 			
 			$data = [
 				'type' => 'fatalError',

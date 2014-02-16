@@ -40,13 +40,6 @@ namespace Canteen\PageBuilder
 		private $_pages;
 		
 		/** 
-		*  See if the current view is the gate way
-		*  @property {Boolean} _isGateway 
-		*  @private
-		*/
-		private $_isGateway;
-		
-		/** 
 		*  The cache context for page renders
 		*  @property {String} RENDER_CONTEXT
 		*  @static
@@ -62,20 +55,21 @@ namespace Canteen\PageBuilder
 		*/
 		const DATA_CONTEXT = 'Canteen_PageData';
 		
+		/** 
+		*  The dynamic page controllers with keys 'uri' and 'controller'
+		*  @property {Array} _controllers
+		*  @private
+		*/
+		private $_controllers;
+
 		/**
 		*  Build a page builder
 		*/
 		public function __construct()
 		{			
-			$this->profiler->start('Build Page');
-			
-			// Check to see if this is a gateway request
-			$this->_isGateway = strpos($this->settings->uriRequest, $this->site->gateway->uri) === 0;
-			
-			// Check to see if this is an ajax request
-			define('ASYNC_REQUEST', ifsetor($_POST['async']) == 'true' || $this->_isGateway);
-						
-			// Add some render only properties
+			$this->_controllers = [];
+
+			// Setup some basic settings for all pages
 			$this->settings->addSettings(
 				[
 					'year' => date('Y'),
@@ -85,8 +79,56 @@ namespace Canteen\PageBuilder
 				SETTING_RENDER
 			)
 			->addSetting('version', Site::VERSION, SETTING_CLIENT)
-			->addSetting('gatewayPath', $this->settings->basePath . $this->site->gateway->uri, SETTING_CLIENT);
+			->addSetting('gatewayPath', $this->settings->basePath . $this->site->gateway->uri, SETTING_CLIENT)
+			->addSetting('asyncRequest', ifsetor($_POST['async']) == 'true');
 			
+			// Get the collection of all the pages
+			$this->_pages = $this->service('page')->getPages();
+			$this->_indexPage = $this->getPageByUri($this->settings->siteIndex);
+
+			if (!$this->_indexPage)
+			{
+				throw new CanteenError(CanteenError::INVALID_INDEX, $this->settings->siteIndex);
+			}
+
+			// Handle the form requests
+			$this->site->route('POST /*', [$this, 'formHandler']);
+
+			// Handle the gateway
+			$gateway = $this->site->gateway;
+			$this->site->route('/'.$gateway->uri.'/@call:*', [$gateway, 'handle']);
+
+			// Handle the user logging out
+			$this->site->route('/logout', [$this, 'logout']);
+
+			// Setup the service browser for debug mode if we're running locally
+			// or we are an administrator privilege
+			if (($this->settings->local || $this->settings->userPrivilege == Privilege::ADMINISTRATOR) 
+				&& class_exists('Canteen\ServiceBrowser\ServiceBrowser')
+				&& $this->settings->debug)
+			{
+				$this->site->route(
+					'/browser(/@service:[a-zA-Z0-9\-]+(/@call:[a-zA-Z0-9\-]+))/',
+					[$this, 'browser']
+				);
+			}
+
+			// Create a router for each page
+			foreach($this->_pages as $page)
+			{
+				$uri = str_replace('/', '[\/]', $page->uri);
+				$route = $page->isDynamic ? $uri . '(/@dynamicUri:*)' : $uri;
+				if ($page == $this->_indexPage) $route = '';
+				$this->site->route('/'.$route, [$this, 'handle']);
+			}
+
+			$this->addController('admin', 'Canteen\Controllers\AdminController');
+			$this->addController('admin/users', 'Canteen\Controllers\AdminUserController');
+			$this->addController('admin/pages', 'Canteen\Controllers\AdminPageController');
+			$this->addController('admin/password', 'Canteen\Controllers\AdminPasswordController');
+			$this->addController('admin/config', 'Canteen\Controllers\AdminConfigController');
+			$this->addController('forgot-password', 'Canteen\Controllers\ForgotPasswordController');
+
 			// Check for the compression setting
 			if ($this->settings->compress && extension_loaded('zlib')) 
 			{
@@ -102,111 +144,309 @@ namespace Canteen\PageBuilder
 			{
 				ob_start(array('Canteen\Utilities\StringUtils', 'minify'));
 			}
-			
-			// Get the collection of all the pages
-			$this->_pages = $this->service('page')->getPages();
 		}
-		
-		/**
-		*  Handle the current page request
-		*  @method handle
-		*  @return {String} Output stream
-		*/
-		public function handle()
-		{
-			$uriRequest = $this->settings->uriRequest;
 
-			// Grab the default index page
-			$this->_indexPage = $this->getPageByUri($this->settings->siteIndex);
-			
-			// There's no index page
-			if (!$this->_indexPage)
-			{
-				throw new CanteenError(CanteenError::INVALID_INDEX, $this->settings->siteIndex);
-			}
-			
+		/**
+		*  Handler for the form submission
+		*  @method formHandler
+		*/
+		public function formHandler()
+		{
 			// If we're processing a form
 			if (isset($_POST['form'])) 
 			{
 				$this->profiler->start('Form Process');
-				
-				// We save the result incase this is an ajax request
-				$result = $this->site->formFactory->process($_POST['form'], ASYNC_REQUEST);
-				
+				$async = $this->settings->asyncRequest;
+				$result = $this->site->formFactory->process($_POST['form'], $async);
 				$this->profiler->end('Form Process');
 				
 				// To be save clear both render and data contexts after
 				// a form is processed
 				$this->flush();
 				
-				if (ASYNC_REQUEST)
+				// If the request isn't an ajax one, then store the form feedback
+				if (!$async)
 				{
-					$this->profiler->end('Build Page');
-					return $result;
+					$this->settings->addSetting(
+						'formFeedback', 
+						$this->site->formFactory->getFeedback(), 
+						SETTING_RENDER
+					);
 				}
 				else
 				{
-					$this->settings->addSetting('formFeedback', $this->site->formFactory->getFeedback(), SETTING_RENDER);
+					echo $result;
+					exit;
 				}
 			}
-			
-			// Log out the current user if request
-			// redirects home
-			if ($uriRequest === $this->site->logoutUri)
-			{
-				$this->flush();
-				$this->user->logout();
-				return redirect();
-			}	
-							
-			// Check to see if we should display the browser
-			// Setup the server and point to services directory
-			// Only local deployments or administrators can use the 
-			// service browser
-			if (($this->settings->local || USER_PRIVILEGE == Privilege::ADMINISTRATOR) 
-				&& class_exists('Canteen\ServiceBrowser\ServiceBrowser')
-				&& $this->settings->debug 
-				&& strpos($this->settings->uriRequest, $this->site->browserUri) === 0)
-			{
-				$browser = new ServiceBrowser(
-					Service::getAll(),
-					$this->settings->basePath,
-					$this->site->browserUri,
-					$this->settings->uriRequest,
-					$this->parser
-				);
-				$result = $browser->handle();
-				$this->profiler->end('Build Page');
-				return $result;
-			}
-			// Setup the gateway
-			else if ($this->_isGateway)
-			{				
-				$result = $this->site->gateway->handle($uriRequest);
-				$this->profiler->end('Build Page');
-				return $result;
-			}
-			// Handle the current page request based on the current URI
-			else
-			{
-				return $this->handlePage($uriRequest, ASYNC_REQUEST);
-			}
+			return true;
 		}
 		
+		/**
+		*  Route handler when a user decided to logout
+		*  @method logout
+		*  @return {String} The redirect output
+		*/
+		public function logout()
+		{
+			$this->flush();
+			$this->user->logout();
+			return redirect();
+		}
+
+		/**
+		*  Create the service browser
+		*  @method browser
+		*  @param {String} [service] The alias of the service to show
+		*  @param {Strign} [call] The method call to make
+		*/
+		public function browser($serviceAlias='', $callAlias='')
+		{
+			$this->profiler->start('Build Page');
+			$browser = new ServiceBrowser(
+				Service::getAll(),
+				$this->settings->basePath,
+				'browser',
+				$serviceAlias,
+				$callAlias,
+				$this->parser
+			);
+			$result = $browser->handle();
+			$this->profiler->end('Build Page');
+			echo $result;
+		}
+
+		/**
+		*  Handle both page and post requests
+		*  @method handle
+		*  @param {String} [dynamicUri] The URI stub for dynamic pages
+		*  @return {Boolean} If we should proceed with other routes
+		*/
+		public function handle($dynamicUri=null)
+		{
+			$uri = $dynamicUri ? 
+				str_replace('/'.$dynamicUri, '', $this->settings->uriRequest):
+				$this->settings->uriRequest;
+
+			// Use index page if the uri is null
+			$page = $this->getPageByUri($uri ? $uri : $this->_indexPage->uri);
+			$page->dynamicUri = $dynamicUri;
+
+			$async = $this->settings->asyncRequest;
+			
+			// No page available
+			if (!$page)
+			{
+				$page = $this->getPageByUri('404');
+			}
+			// Check for valid permission
+			else if ($page->privilege > $this->settings->userPrivilege)
+			{
+				// Don't change the header for asyncronous requests
+				if (!$async) header('HTTP/1.1 401 Unauthorized');
+				$page = $this->getPageByUri('401');
+			}
+			else if ($page->redirectId)
+			{
+				$page = $this->getPage($page->redirectId);
+				redirect($page->uri, $async);
+				return false;
+			}
+
+			// If this is a 404, add the header
+			if ($page->uri == '404' && !$async)
+			{
+				header("HTTP/1.0 404 Not Found");
+			}
+			
+			// If we are on the default page, redirect to index
+			if ($uri == $this->_indexPage->uri) return redirect('', $async);
+			
+			// Check to see if the page is cache-able
+			if ($cache = $this->readCache($page))
+			{
+				echo $cache . $this->buildTime();
+				return false;
+			}
+			
+			// Get the page content
+			$this->addPageContent($page);
+
+			if ($async)
+			{
+				$this->handlePost($page);
+			}
+			else
+			{
+				$this->handleGet($page);
+			}
+		}
+
+		/**
+		*  Handle ajax post requests
+		*  @method handlePost
+		*/
+		private function handlePost(Page $page)
+		{
+			$this->removeEmpties($page->content);
+			$this->parser->fixPath($page->content, $this->settings->basePath);			
+			$data = json_encode($page);
+			$this->saveCache($data);
+			echo $data;
+		}
+
+		/**
+		*  Handle the current page request
+		*  @method handleGet
+		*  @param {String} [dyanmicUri] Optional for dynamic pages
+		*  @return {String} Output stream
+		*/
+		private function handleGet(Page $page)
+		{
+			$this->profiler->start('Build Page');
+
+			$this->settings->addSettings(
+				[
+					'content' => $page->content,
+					'description' => $page->description,
+					'keywords' => $page->keywords,
+					'pageUri' => $page->uri,
+					'pageId' => $page->pageId,
+					'settings' => $this->getClientSettings()
+				],
+				SETTING_RENDER
+			);
+			
+			// Get the main template from the path
+			$data = $this->template(Site::MAIN_TEMPLATE, $this->settings->getRender());
+			
+			// Fix the links to use the base path
+			$this->profiler->start('Parse Fix Path');
+			$this->parser->fixPath($data, $this->settings->basePath);
+			$this->profiler->end('Parse Fix Path');
+			
+			// Clean up any lingering tags
+			$this->removeEmpties($data);
+			$this->saveCache($data);
+			$this->profiler->end('Build Page');
+
+			echo $this->addLoggerProfiler($data) . $this->buildTime();
+		}
+		
+		/**
+		*  Store a page user function call for dynamic pages
+		*  @method addController
+		*  @param {String|RegExp|Array} pageUri The page ID of the dynamic page (array for multiple items) or can be an regular expression
+		*  @param {String} controllerClassName The user class to call
+		*/
+		public function addController($pageUri, $controllerClassName)
+		{
+			if (!class_exists($controllerClassName))
+			{
+				$this->error(new CanteenError(CanteenError::INVALID_CLASS, [$controllerClassName]));
+			}
+			if (is_array($pageUri))
+			{
+				foreach($pageUri as $p)
+				{
+					$this->addController($p, $controllerClassName);
+				}
+			}
+			else
+			{
+				// If we're using the catch-all star
+				if (!StringUtils::isRegex($pageUri) && preg_match('/\*/', $pageUri))
+				{
+					$pageUri = preg_replace('/\//', '\/', $pageUri);
+					$pageUri = preg_replace('/\*/', '[a-zA-Z0-9\-_\/]+', $pageUri);
+					$pageUri = '/^'.$pageUri.'$/';
+				}
+				$this->_controllers[] = [
+					'uri' => $pageUri,
+					'controller' => $controllerClassName
+				];
+			}
+		}
+
+		/**
+		*  Get a page controller by uri
+		*  @method getController
+		*  @param {String} pageUri The uri of the page
+		*  @return {Controller} The controller matching the URI
+		*/
+		private function getController($pageUri)
+		{
+			foreach($this->_controllers as $c)
+			{
+				$uri = $c['uri'];
+				
+				// Check for regular expression and compare that to the page
+				if (StringUtils::isRegex($uri) && preg_match($uri, $pageUri))
+				{
+					return $c['controller'];
+				}
+				else if ($uri == $pageUri)
+				{
+					return $c['controller'];
+				} 
+			}
+			return null;
+		}
+
 		/**
 		*  Get the current build time 
 		*  @method buildTime
 		*  @private
-		*  @param {Boolean} isAsync If the request is made asyncronously
 		*  @return {String} The build time HTML comment
 		*/
-		private function buildTime($isAsync)
+		private function buildTime()
 		{
 			// Parse the build time
-			if (!DEBUG || $isAsync) return;
+			if (!$this->settings->debug || $this->settings->asyncRequest) return;
 			
 			$seconds = round((microtime(true) - $this->site->startTime) * 1000, 4);
-			return html('comment', 'Page built in ' . $seconds . 'ms');
+			return (string)html('comment', 'Page built in ' . $seconds . 'ms');
+		}
+
+		/**
+		*  Save the current page cache
+		*  @method saveCache 
+		*  @param {String} data The current page data
+		*/
+		private function saveCache($data)
+		{
+			if ($this->_page && $this->_page->cache)
+			{
+				$context = $this->settings->asyncRequest ? 
+					self::DATA_CONTEXT : self::RENDER_CONTEXT;
+
+				$key = md5($context . '::' . $this->_page->uri.'/'.$this->_page->dynamicUri);
+				$this->cache->save($key, $data, $context);
+			}
+		}
+
+		/**
+		*  Save the current page cache
+		*  @method readCache 
+		*  @return {String} Data for the current page
+		*/
+		private function readCache()
+		{
+			// Check to see if the page is cache-able
+			if ($this->_page && $this->_page->cache)
+			{
+				$context = $this->settings->asyncRequest ? 
+					self::DATA_CONTEXT : self::RENDER_CONTEXT;
+
+				// Check for the cache to see if we have a page
+				$key = md5($context . '::' . $this->_page->uri.'/'.$this->_page->dynamicUri);
+				$cache = $this->cache->read($key);
+				if ($cache !== false) 
+				{
+					return $cache;
+				}
+			}
+			return false;
 		}
 		
 		/**
@@ -229,22 +469,10 @@ namespace Canteen\PageBuilder
 		*/		
 		private function getPageByUri($uri)
 		{
-			$page = null;
 			foreach($this->_pages as $p)
 			{
-				if ($p->uri == $uri)
-				{
-					$page = $p;
-					break;
-				}
-				else if ($p->isDynamic && strpos($uri, $p->uri) === 0)
-				{
-					$p->dynamicUri = str_replace($p->uri . '/', '', $uri);
-					$page = $p;
-					break;
-				}
+				if ($p->uri == $uri) return $p;
 			}
-			return $page;
 		}
 		
 		/**
@@ -279,7 +507,7 @@ namespace Canteen\PageBuilder
 			$page->content = @file_get_contents($page->contentUrl);
 			
 			// If we have a controller for this page			
-			if ($controllerName = $this->site->getController($page->uri))
+			if ($controllerName = $this->getController($page->uri))
 			{
 				$this->profiler->start('Page Controller');
 				$controller = new $controllerName();
@@ -330,127 +558,6 @@ namespace Canteen\PageBuilder
 		}
 		
 		/**
-		*  Render current page
-		*  @method handlePage
-		*  @private
-		*  @param {String} uri The current uri for the page request
-		*  @param {Boolean} isAsync If the request is to be made asyncronously
-		*  @return {String} Page rendering
-		*/
-		private function handlePage($uri, $isAsync)
-		{			
-			$profiler = $this->profiler;
-			
-			// Use index page if the uri is null
-			$page = $this->getPageByUri($uri ? $uri : $this->_indexPage->uri);
-			
-			// Check for the cache
-			$context = $isAsync ? self::DATA_CONTEXT : self::RENDER_CONTEXT;
-			
-			// No page available
-			if (!$page)
-			{
-				$page = $this->getPageByUri('404');
-			}
-			else if ($page->privilege > USER_PRIVILEGE)
-			{
-				// Don't change the header for asyncronous requests
-				if (!$isAsync) header('HTTP/1.1 401 Unauthorized');
-				$page = $this->getPageByUri('401');
-			}
-			else if ($page->redirectId)
-			{
-				$page = $this->getPage($page->redirectId);
-				redirect($page->uri);
-				return;
-			}
-			
-			// If this is a 404, add the header
-			if ($page->uri == '404' && !$isAsync)
-			{
-				header("HTTP/1.0 404 Not Found");
-			}
-			
-			// If we are on the default page, redirect to index
-			if ($uri == $this->_indexPage->uri) return redirect();
-			
-			// Check to see if the page is cache-able
-			if ($page->cache)
-			{
-				// Check for the cache to see if we have a page
-				$key = md5($context . '::' . $uri);
-				$cache = $this->cache->read($key);
-				if ($cache !== false) 
-				{
-					return $cache . $this->buildTime($isAsync);
-				}
-			}
-			
-			// Get the page content
-			$this->addPageContent($page);
-			
-			// Do a simplier for asyncronous requests
-			if ($isAsync)
-			{
-				$this->removeEmpties($page->content);
-				
-				// Fix the links
-				$this->profiler->start('Parse Fix Path');
-				$this->parser->fixPath($page->content, $this->settings->basePath);
-				$this->profiler->end('Parse Fix Path');
-				
-				$data = json_encode($page);
-			}
-			// Normal page render using the template
-			else
-			{
-				// Assemble all of the page contents
-				$this->settings->addSettings(
-					[
-						'content' => $page->content,
-						'description' => $page->description,
-						'keywords' => $page->keywords,
-						'pageUri' => $page->uri,
-						'pageId' => $page->pageId,
-						'settings' => $this->getSettings()
-					],
-					SETTING_RENDER
-				);
-				
-				$profiler = $this->profiler;
-				
-				$this->profiler->start('Template Render');
-				
-				// Get the main template from the path
-				$data = $this->template(Site::MAIN_TEMPLATE, $this->settings->getRender());
-				
-				// Fix the links to use the base path
-				$this->profiler->start('Parse Fix Path');
-				$this->parser->fixPath($data, $this->settings->basePath);
-				$this->profiler->end('Parse Fix Path');
-				
-				// Clean up any lingering tags
-				$this->removeEmpties($data);
-				
-				$this->profiler->end('Template Render');
-			}
-			
-			// Cache, if available
-			if ($page->cache)
-			{
-				$this->cache->save($key, $data, $context);
-			}
-			
-			$this->profiler->end('Build Page');
-			
-			if (!$isAsync)
-			{
-				$this->addLoggerProfiler($data);
-			}
-			return $data  . $this->buildTime($isAsync);
-		}
-		
-		/**
 		*  Add the logger and profiler to the output
 		*  @method addLoggerProfiler
 		*  @private
@@ -473,34 +580,21 @@ namespace Canteen\PageBuilder
 			{
 				$contents = str_replace('</body>', $result . '</body>', $contents);
 			}
-			return $contents;	
+			return $contents;
 		}
 		
 		/**
 		*  Generate a list of settings to use
-		*  @method getSettings
+		*  @method getClientSettings
 		*  @private
 		*  @return {String} HTML Script tag containing all the Canteen and custom settings
 		*/
-		private function getSettings()
+		private function getClientSettings()
 		{
-			// PHP >= 5.4 compatibility
-			if (defined('JSON_UNESCAPED_SLASHES'))
-			{
-				$settings = json_encode(
-					$this->settings->getClient(), 
-					JSON_UNESCAPED_SLASHES
-				);
-			}
-			else
-			{
-				// PHP < 5.4
-				$settings = str_replace('\\/', '/', 
-					json_encode(
-						$this->settings->getClient()
-					)
-				);
-			}			
+			$settings = json_encode(
+				$this->settings->getClient(), 
+				JSON_UNESCAPED_SLASHES
+			);
 			return $this->template('Settings', ['settings' => $settings]);
 		}
 	}

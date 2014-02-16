@@ -69,13 +69,6 @@ namespace Canteen
 		*  @property {int} startTime
 		*/
 		public $startTime;
-
-		/** 
-		*  The dynamic page controllers with keys 'uri' and 'controller'
-		*  @property {Array} _controllers
-		*  @private
-		*/
-		private $_controllers;
 		
 		/**
 		*  Get the singleton instance
@@ -194,6 +187,10 @@ namespace Canteen
 			// Register the user class
 			$this->register('user', 'Canteen\Authorization\Authorization');
 			$this->set('_user', 1);
+
+			// Register the page builder
+			$this->register('pageBuilder', 'Canteen\PageBuilder\PageBuilder');
+			$this->set('_pageBuilder', 1);
 
 			/**
 			*  Register a service to the site
@@ -408,21 +405,7 @@ namespace Canteen
 		*/
 		public function render()
 		{
-			// Handle the gateway
-			$this->route('/gateway/@call:*', [$this->gateway, 'handle']);
-
-			$this->addController('admin', 'Canteen\Controllers\AdminController');
-			$this->addController('admin/users', 'Canteen\Controllers\AdminUserController');
-			$this->addController('admin/pages', 'Canteen\Controllers\AdminPageController');
-			$this->addController('admin/password', 'Canteen\Controllers\AdminPasswordController');
-			$this->addController('admin/config', 'Canteen\Controllers\AdminConfigController');
-			$this->addController('forgot-password', 'Canteen\Controllers\ForgotPasswordController');
-
-			$this->route('/@call:*', function($call)
-			{
-				print_r($call);
-			});
-
+			$this->pageBuilder();
 			$this->start();
 		}
 
@@ -434,56 +417,7 @@ namespace Canteen
 		*/
 		public function addController($pageUri, $controllerClassName)
 		{
-			if (!class_exists($controllerClassName))
-			{
-				$this->error(new CanteenError(CanteenError::INVALID_CLASS, [$controllerClassName]));
-			}
-			if (is_array($pageUri))
-			{
-				foreach($pageUri as $p)
-				{
-					$this->addController($p, $controllerClassName);
-				}
-			}
-			else
-			{
-				// If we're using the catch-all star
-				if (!StringUtils::isRegex($pageUri) && preg_match('/\*/', $pageUri))
-				{
-					$pageUri = preg_replace('/\//', '\/', $pageUri);
-					$pageUri = preg_replace('/\*/', '[a-zA-Z0-9\-_\/]+', $pageUri);
-					$pageUri = '/^'.$pageUri.'$/';
-				}
-				$this->_controllers[] = [
-					'uri' => $pageUri,
-					'controller' => $controllerClassName
-				];
-			}
-		}
-
-		/**
-		*  Get a page controller by uri
-		*  @method getController
-		*  @param {String} pageUri The uri of the page
-		*  @return {Controller} The controller matching the URI
-		*/
-		public function getController($pageUri)
-		{
-			foreach($this->_controllers as $c)
-			{
-				$uri = $c['uri'];
-				
-				// Check for regular expression and compare that to the page
-				if (StringUtils::isRegex($uri) && preg_match($uri, $pageUri))
-				{
-					return $c['controller'];
-				}
-				else if ($uri == $pageUri)
-				{
-					return $c['controller'];
-				} 
-			}
-			return null;
+			$this->pageBuilder->addController($pageUri, $controllerClassName);
 		}
 
 		/**
@@ -578,6 +512,13 @@ namespace Canteen
 				*  @readOnly
 				*/
 				case 'gateway' :
+
+				/** 
+				*  The Page Builder is design for handling the rendering and routing of site pages
+				*  @property {PageBuilder} pageBuilder
+				*  @readOnly
+				*/
+				case 'pageBuilder' :
 
 				/** 
 				*  The Profiler is use for debugging performance issues, SQL speed

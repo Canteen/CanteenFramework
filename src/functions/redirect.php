@@ -13,13 +13,14 @@
 	*  @class redirect
 	*  @constructor
 	*  @param {String} [uri=''] The URI stub to redirect to
+	*  @param {Boolean} [async=false] If the redirect should be made asyncronously
 	*  @return {String} If the request is made asynchronously, returns the json redirect object as a string
 	*/
-	function redirect($uri='')
+	function redirect($uri='', $async=false)
 	{
 		$query = ifconstor('QUERY_STRING');
 		$uri = $uri . ($query ? '/' . $query : '');
-		if (ifconstor('ASYNC_REQUEST', false))
+		if ($async)
 		{
 			echo json_encode(array('redirect' => $uri));
 		}

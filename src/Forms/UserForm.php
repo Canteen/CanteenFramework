@@ -57,7 +57,7 @@ namespace Canteen\Forms
 		*/
 		public function onBeforeRemove(ObjectFormEvent $event)
 		{
-			if ($event->object->id == USER_ID)
+			if ($event->object->id == $this->settings->userId)
 			{
 				$this->error('You cannot delete yourself');
 			}
@@ -119,7 +119,7 @@ namespace Canteen\Forms
 		*/
 		public function onBeforeUpdate(ObjectFormEvent $event)
 		{
-			$isSelf = $event->object->id == USER_ID;
+			$isSelf = $event->object->id == $this->settings->userId;
 
 			if ($this->doPassword)
 			{

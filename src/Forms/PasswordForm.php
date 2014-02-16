@@ -26,7 +26,7 @@ namespace Canteen\Forms
 			$newPassword = ifsetor($_POST['newPassword']);
 			$repeatPassword = ifsetor($_POST['repeatPassword']);
 			
-			if (!PasswordUtils::validate($oldPassword, USER_HASH))
+			if (!PasswordUtils::validate($oldPassword, $this->settings->userHash))
 			{
 				$this->error('This is not your current password');
 			}

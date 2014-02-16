@@ -113,7 +113,7 @@ namespace Canteen\Services
 		*/
 		protected function privilege($required=Privilege::GUEST)
 		{
-			if (USER_PRIVILEGE < $required)
+			if ($this->settings->userPrivilege < $required)
 			{
 				throw new UserError(UserError::INSUFFICIENT_PRIVILEGE);
 			}
