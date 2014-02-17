@@ -7,15 +7,19 @@ namespace Canteen
 {
 	use \Exception;
 	use flight\Engine;
+	use Canteen\Utilities\Plugin;
 	use Canteen\Errors\CanteenError;
 	use Canteen\Server\DeploymentStatus;
-	use Canteen\Logger\Logger;
 	use Canteen\Services\TimeService;
 	use Canteen\Services\ConfigService;
 	use Canteen\Services\PageService;
 	use Canteen\Services\UserService;
 	use Canteen\Controllers\ErrorController;
 	use Canteen\Utilities\StringUtils;
+
+	// Optional Dev use only
+	use Canteen\Logger\Logger;
+	use Canteen\ServiceBrowser\ServiceBrowser;
 
 	// We need to initalize flight before we can extend Engine
 	// kind of hacky but it's the best solution
@@ -69,6 +73,13 @@ namespace Canteen
 		*  @property {int} startTime
 		*/
 		public $startTime;
+
+		/**
+		*  The collection of external plugins
+		*  @property {Array} _plugins
+		*  @private
+		*/
+		private $_plugins = [];
 		
 		/**
 		*  Get the singleton instance
@@ -271,6 +282,11 @@ namespace Canteen
 			$this->user();
 			$this->profiler->end('Authorization');
 
+			if (class_exists('Canteen\ServiceBrowser\ServiceBrowser'))
+			{
+				$this->registerPlugin(new ServiceBrowser);
+			}
+
 			if ($debug)
 			{
 				// URL clear for the cache
@@ -397,6 +413,26 @@ namespace Canteen
 				exit;
 			}
 		}
+
+		/**
+		*  Register plugin to the site
+		*  @method registerPlugin
+		*  @param {Plugin} plugin The plugin to add
+		*/
+		public function registerPlugin(Plugin $plugin)
+		{
+			$this->_plugins[] = $plugin;
+		}
+
+		/**
+		*  Get the collection of plugins
+		*  @method getPlugins
+		*  @return {Array} The collection of Plugin objects
+		*/
+		public function getPlugins()
+		{
+			return $this->_plugins;
+		}
 		
 		/**
 		*  Get the current page markup, echoes on the page
@@ -405,6 +441,13 @@ namespace Canteen
 		*/
 		public function render()
 		{
+			$this->profiler->start('Activate Plugins');
+			foreach($this->_plugins as $plugin)
+			{
+				$plugin->activate();
+			}
+			$this->profiler->end('Activate Plugins');
+
 			$this->pageBuilder();
 			$this->start();
 		}

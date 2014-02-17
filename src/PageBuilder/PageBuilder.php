@@ -101,18 +101,6 @@ namespace Canteen\PageBuilder
 			// Handle the user logging out
 			$this->site->route('/logout', [$this, 'logout']);
 
-			// Setup the service browser for debug mode if we're running locally
-			// or we are an administrator privilege
-			if (($this->settings->local || $this->settings->userPrivilege == Privilege::ADMINISTRATOR) 
-				&& class_exists('Canteen\ServiceBrowser\ServiceBrowser')
-				&& $this->settings->debug)
-			{
-				$this->site->route(
-					'/browser(/@service:[a-zA-Z0-9\-]+(/@call:[a-zA-Z0-9\-]+))/',
-					[$this, 'browser']
-				);
-			}
-
 			// Create a router for each page
 			foreach($this->_pages as $page)
 			{
@@ -192,28 +180,6 @@ namespace Canteen\PageBuilder
 			$this->flush();
 			$this->user->logout();
 			return redirect();
-		}
-
-		/**
-		*  Create the service browser
-		*  @method browser
-		*  @param {String} [service] The alias of the service to show
-		*  @param {Strign} [call] The method call to make
-		*/
-		public function browser($serviceAlias='', $callAlias='')
-		{
-			$this->profiler->start('Build Page');
-			$browser = new ServiceBrowser(
-				Service::getAll(),
-				$this->settings->basePath,
-				'browser',
-				$serviceAlias,
-				$callAlias,
-				$this->parser
-			);
-			$result = $browser->handle();
-			$this->profiler->end('Build Page');
-			echo $result;
 		}
 
 		/**
