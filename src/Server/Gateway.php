@@ -56,10 +56,8 @@ namespace Canteen\Server
 		*/
 		public function register($call, $handler, $privilege=Privilege::ANONYMOUS)
 		{
-			if (isset($this->_controls[$call]))
-			{
-				throw new GatewayError(GatewayError::REGISTERED_URI, $call);
-			}
+			if (isset($this->_controls[$call])) return;
+			
 			$this->_controls[$call] = new GatewayControl($call, $handler, $privilege);
 		}
 

@@ -91,6 +91,9 @@ namespace Canteen\PageBuilder
 				throw new CanteenError(CanteenError::INVALID_INDEX, $this->settings->siteIndex);
 			}
 
+			// Handle page not found error
+			$this->site->map('notFound', [$this, 'notFound']);
+
 			// Handle the form requests
 			$this->site->route('POST /*', [$this, 'formHandler']);
 
@@ -106,8 +109,11 @@ namespace Canteen\PageBuilder
 			{
 				$uri = str_replace('/', '[\/]', $page->uri);
 				$route = $page->isDynamic ? $uri . '(/@dynamicUri:*)' : $uri;
-				if ($page == $this->_indexPage) $route = '';
 				$this->site->route('/'.$route, [$this, 'handle']);
+				if ($page == $this->_indexPage) 
+				{
+					$this->site->route('/', [$this, 'handle']);
+				}
 			}
 
 			$this->addController('admin', 'Canteen\Controllers\AdminController');
@@ -183,6 +189,27 @@ namespace Canteen\PageBuilder
 		}
 
 		/**
+		*  Handle 404 requests from the router
+		*  @method notFound
+		*/
+		public function notFound()
+		{
+			$page = $this->getPageByUri('404');
+
+			$this->addPageContent($page);
+
+			if ($this->settings->asyncRequest)
+			{
+				$this->handlePost($page);
+			}
+			else
+			{
+				header("HTTP/1.0 404 Not Found");
+				$this->handleGet($page);
+			}
+		}
+
+		/**
 		*  Handle both page and post requests
 		*  @method handle
 		*  @param {String} [dynamicUri] The URI stub for dynamic pages
@@ -201,12 +228,7 @@ namespace Canteen\PageBuilder
 			$async = $this->settings->asyncRequest;
 			
 			// No page available
-			if (!$page)
-			{
-				$page = $this->getPageByUri('404');
-			}
-			// Check for valid permission
-			else if ($page->privilege > $this->settings->userPrivilege)
+			if ($page->privilege > $this->settings->userPrivilege)
 			{
 				// Don't change the header for asyncronous requests
 				if (!$async) header('HTTP/1.1 401 Unauthorized');
@@ -217,12 +239,6 @@ namespace Canteen\PageBuilder
 				$page = $this->getPage($page->redirectId);
 				redirect($page->uri, $async);
 				return false;
-			}
-
-			// If this is a 404, add the header
-			if ($page->uri == '404' && !$async)
-			{
-				header("HTTP/1.0 404 Not Found");
 			}
 			
 			// If we are on the default page, redirect to index
