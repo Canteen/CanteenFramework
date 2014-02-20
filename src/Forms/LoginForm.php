@@ -33,7 +33,7 @@ namespace Canteen\Forms
 			}
 			else
 			{
-				redirect($this->settings->uriRequest);
+				$this->redirect($this->settings->uriRequest);
 			}
 		}
 	}

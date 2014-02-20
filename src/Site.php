@@ -223,7 +223,12 @@ namespace Canteen
 				$callerPath = dirname($bt[0]['file']).'/';
 				unset($bt);
 			}
+
+			// Setup the path we were called from
 			$this->addSetting('callerPath', $callerPath);
+
+			// If this page request was made by ajax 
+			$this->addSetting('asyncRequest', ifsetor($_POST['async']) == 'true');
 
 			// Check that the settings exists
 			if (is_string($config) && !file_exists($config))
@@ -572,6 +577,32 @@ namespace Canteen
 
 					return $this->$name();
 			}
+		}
+
+		/**
+		*  Redirect to another page on the local site. 
+		*
+		*	$this->site->redirect('about');
+		*
+		*  @method redirect
+		*  @param {String} [uri=''] The URI stub to redirect to
+		*  @return {String} If the request is made asynchronously, returns the json redirect object as a string
+		*/
+		public function redirect($uri='')
+		{
+			$query = $this->settings->queryString;
+			$uri = $uri . ($query ? '/' . $query : '');
+			if ($this->settings->asyncRequest)
+			{
+				echo json_encode(array('redirect' => $uri));
+			}
+			else
+			{
+				$host = $this->settings->host;
+				$basePath = $this->settings->basePath;
+				header('Location: '.  $host . $basePath . $uri);
+			}
+			exit;
 		}
 		
 		/**

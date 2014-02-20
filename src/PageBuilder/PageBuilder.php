@@ -79,8 +79,7 @@ namespace Canteen\PageBuilder
 				SETTING_RENDER
 			)
 			->addSetting('version', Site::VERSION, SETTING_CLIENT)
-			->addSetting('gatewayPath', $this->settings->basePath . $this->site->gateway->uri, SETTING_CLIENT)
-			->addSetting('asyncRequest', ifsetor($_POST['async']) == 'true');
+			->addSetting('gatewayPath', $this->settings->basePath . $this->site->gateway->uri, SETTING_CLIENT);
 			
 			// Get the collection of all the pages
 			$this->_pages = $this->service('page')->getPages();
@@ -185,7 +184,7 @@ namespace Canteen\PageBuilder
 		{
 			$this->flush();
 			$this->user->logout();
-			return redirect();
+			$this->redirect();
 		}
 
 		/**
@@ -237,12 +236,11 @@ namespace Canteen\PageBuilder
 			else if ($page->redirectId)
 			{
 				$page = $this->getPage($page->redirectId);
-				redirect($page->uri, $async);
-				return false;
+				$this->redirect($page->uri);
 			}
 			
 			// If we are on the default page, redirect to index
-			if ($uri == $this->_indexPage->uri) return redirect('', $async);
+			if ($uri == $this->_indexPage->uri) $this->redirect();
 			
 			// Check to see if the page is cache-able
 			if ($cache = $this->readCache($page))
