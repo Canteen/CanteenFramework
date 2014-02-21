@@ -7,6 +7,7 @@ namespace Canteen\Server
 {
 	use Canteen\Authorization\Privilege;
 	use Canteen\Errors\GatewayError;
+	use Canteen\Utilities\Plugin;
 	use \Exception;
 	
 	/** 
@@ -14,8 +15,9 @@ namespace Canteen\Server
 	*  Located in the namespace __Canteen\Server__.
 	*  
 	*  @class Gateway
+	*  @extends Plugin
 	*/
-	class Gateway
+	class Gateway extends Plugin
 	{		
 		/** 
 		*  If the output produced an error 
@@ -48,30 +50,55 @@ namespace Canteen\Server
 		public $uri = 'gateway';
 
 		/**
+		*  Turn on the gateway
+		*  @method activate
+		*/
+		public function activate()
+		{
+			// Create a path to the gateway for the client
+			$this->site->addSetting(
+				'gatewayPath', 
+				$this->settings->basePath . $this->uri, 
+				SETTING_CLIENT
+			);
+		}
+
+		/**
 		*  Create a new gateway
 		*  @method register
-		*  @param {String} call The path to the call
+		*  @param {String} pattern The route pattern to check
 		*  @param {callable} handler The callback for the uri request
 		*  @param {int} [privilege=Privilege::ANONYMOUS] The minimum privilege needed to call
 		*/
-		public function register($call, $handler, $privilege=Privilege::ANONYMOUS)
+		public function register($pattern, $handler, $privilege=Privilege::ANONYMOUS)
 		{
-			$this->_controls[$call] = new GatewayControl($call, $handler, $privilege);
+			$pattern = '/'.$this->uri.'/'.$pattern;
+			$control = new GatewayControl($pattern, $handler, $privilege);
+			$this->_controls[$pattern] = $control;
+			$this->site->route($pattern, [$this, 'handle']);
 		}
 
 		/**
 		*  The main server handler
 		*  @method handle
-		*  @param {String} call The name of the method alias
 		*  @return {Object} The JSON object
 		*/
-		public function handle($call)
+		public function handle($args=null)
 		{
 			try
 			{
-				$result = $this->internalHandle($call);
+				// Get the captured argument
+				$args = func_get_args();
+
+				// Get the current route object to get the select pattern
+				$route = $this->site->router()->current();
+
+				// Do the internal call
+				$result = $this->internalHandle($route->pattern, $args);
 				$errorCode = null;
-				$type = self::SUCCESS;
+
+				// Null objects should be errors
+				$type = $result !== null ? self::SUCCESS : self::ERROR;
 			}
 			// The JSON Server specific errors
 			catch(GatewayError $e)
@@ -101,24 +128,22 @@ namespace Canteen\Server
 		*  The internal JSON handle request
 		*  @method internalHandle
 		*  @private
-		*  @param {String} call The name of the method alias
+		*  @param {String} pattern The router pattern
+		*  @param {Array} args The collectino of arguments
 		*  @return {mixed} The result of the service call  
 		*/	
-		private function internalHandle($call)
+		private function internalHandle($pattern, $args)
 		{
-			$control = ifsetor($this->_controls[$call]);
+			$control = ifsetor($this->_controls[$pattern]);
 
 			if (!$control)
 			{
-				throw new GatewayError(GatewayError::NO_CONTROL_FOUND, $call);
+				throw new GatewayError(GatewayError::NO_CONTROL_FOUND, $pattern);
 			}
 			else if ($control->privilege > USER_PRIVILEGE)
 			{
 				throw new GatewayError(GatewayError::INSUFFICIENT_PRIVILEGE, $control->uri);
 			}
-
-			// Get the arguments
-			$args = $control->getArguments($call);
 
 			// Check for valid number of parameters
 			$numArgs = count($args);

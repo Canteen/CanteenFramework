@@ -194,6 +194,7 @@ namespace Canteen
 			// Register the JSON gateway
 			$this->register('gateway', 'Canteen\Server\Gateway');
 			$this->set('_gateway', 1);
+			$this->registerPlugin($this->gateway);
 
 			// Register the user class
 			$this->register('user', 'Canteen\Authorization\Authorization');

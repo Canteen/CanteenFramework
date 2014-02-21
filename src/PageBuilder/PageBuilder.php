@@ -78,8 +78,7 @@ namespace Canteen\PageBuilder
 				], 
 				SETTING_RENDER
 			)
-			->addSetting('version', Site::VERSION, SETTING_CLIENT)
-			->addSetting('gatewayPath', $this->settings->basePath . $this->site->gateway->uri, SETTING_CLIENT);
+			->addSetting('version', Site::VERSION, SETTING_CLIENT);
 			
 			// Get the collection of all the pages
 			$this->_pages = $this->service('page')->getPages();
@@ -95,10 +94,6 @@ namespace Canteen\PageBuilder
 
 			// Handle the form requests
 			$this->site->route('POST /*', [$this, 'formHandler']);
-
-			// Handle the gateway
-			$gateway = $this->site->gateway;
-			$this->site->route('/'.$gateway->uri.'/@call:*', [$gateway, 'handle']);
 
 			// Handle the user logging out
 			$this->site->route('/logout', [$this, 'logout']);

@@ -16,10 +16,16 @@ namespace Canteen\Server
 		public $privilege;
 
 		/**
-		*  The method name to call
-		*  @property {String} call
+		*  The router pattern
+		*  @property {String} pattern
 		*/
-		public $call;
+		public $pattern;
+
+		/**
+		*  The route for the router
+		*  @property {String} route
+		*/
+		public $route;
 
 		/**
 		*  The callable method when gateway access this
@@ -45,32 +51,19 @@ namespace Canteen\Server
 		*  @class GatewayControl
 		*  @constructor
 		*  @param {String} service The service name
-		*  @param {String} call The call name
+		*  @param {String} pattern The pattern route call
 		*  @param {callable} handler The callback method
 		*  @param {int} privilege The name of the privilege
 		*/
-		public function __construct($call, $handler, $privilege)
+		public function __construct($pattern, $handler, $privilege)
 		{
-			$this->call = $call;
+			$this->pattern = $pattern;
 			$this->handler = $handler;
 			$this->privilege = $privilege;
 			$reflector = new ReflectionClass(get_class($handler[0]));
 			$method = $reflector->getMethod($handler[1]);
 			$this->required = $method->getNumberOfRequiredParameters();
 			$this->total = $method->getNumberOfParameters();
-		}
-
-		/**
-		*  Get the additional arguments from the URI
-		*  @method getArguments
-		*  @param {String} request The URI being requested from the gateway
-		*  @return {Array} The arguments from the request
-		*/
-		public function getArguments($request)
-		{
-			if ($request == $this->call) return [];
-			$args = explode('/', str_replace($this->call.'/', '', $request));
-			return $args;
 		}
 	}	
 }
