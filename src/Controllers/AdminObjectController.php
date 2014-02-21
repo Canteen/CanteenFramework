@@ -252,6 +252,11 @@ namespace Canteen\Controllers
 				else if (is_array($field->type))
 				{
 					$element->template = 'ObjectSelect';
+					$element->options = '';
+					foreach($field->type as $t)
+					{
+						$element->options .= html('option', $t);
+					}
 				}
 				else
 				{
