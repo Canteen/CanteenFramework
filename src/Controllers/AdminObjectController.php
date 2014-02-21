@@ -253,9 +253,18 @@ namespace Canteen\Controllers
 				{
 					$element->template = 'ObjectSelect';
 					$element->options = '';
+					if (in_array($name, $this->_optionalFields))
+					{
+						$element->options .= html('option', 'No '.$element->label);
+					}
 					foreach($field->type as $t)
 					{
-						$element->options .= html('option', $t);
+						$option = html('option value='.$t, $t);
+						if ($element->value == $t)
+						{
+							$option->selected = true;
+						}
+						$element->options .= (string)$option;
 					}
 				}
 				else
