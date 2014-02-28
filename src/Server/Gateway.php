@@ -9,6 +9,7 @@ namespace Canteen\Server
 	use Canteen\Errors\GatewayError;
 	use Canteen\Utilities\Plugin;
 	use \Exception;
+	use flight\net\Route;
 	
 	/** 
 	*  This server handles requests made through the gateway and returns JSON data.  
@@ -73,8 +74,14 @@ namespace Canteen\Server
 		public function register($pattern, $handler, $privilege=Privilege::ANONYMOUS)
 		{
 			$pattern = '/'.$this->uri.'/'.$pattern;
+			
+			// Convert the pattern
+			$route = new Route($pattern, null, null);
+			$route->matchUrl('');
+			$newPattern = $route->pattern;
+
 			$control = new GatewayControl($pattern, $handler, $privilege);
-			$this->_controls[$pattern] = $control;
+			$this->_controls[$newPattern] = $control;
 			$this->site->route($pattern, [$this, 'handle']);
 		}
 
