@@ -287,6 +287,7 @@ namespace Canteen\PageBuilder
 					'keywords' => $page->keywords,
 					'pageUri' => $page->uri,
 					'pageId' => $page->pageId,
+					'pageIdNum'=> $page->id,
 					'settings' => $this->getClientSettings()
 				],
 				SETTING_RENDER
