@@ -250,7 +250,7 @@ namespace Canteen\Utilities
 			{
 				if ($setting->access & self::WRITE)
 				{
-					return $setting->value;
+					$setting->value = $value;
 				}
 				else
 				{
