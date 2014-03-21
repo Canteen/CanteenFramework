@@ -47,6 +47,9 @@ namespace Canteen\Controllers
 				unset($data['file']);
 			}
 
+			// Report error to browser
+			http_response_code(500);
+
 			if ($async)
 			{
 				echo json_encode($data);

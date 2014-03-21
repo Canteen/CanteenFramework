@@ -192,15 +192,15 @@ namespace Canteen\PageBuilder
 
 			$this->addPageContent($page);
 
+			http_response_code(404);
+
 			if ($this->settings->asyncRequest)
 			{
 				$this->handlePost($page);
 			}
 			else
 			{
-				http_response_code(404);
 				$this->handleGet($page);
-				exit;
 			}
 		}
 
@@ -225,8 +225,7 @@ namespace Canteen\PageBuilder
 			// No page available
 			if ($page->privilege > $this->settings->userPrivilege)
 			{
-				// Don't change the header for asyncronous requests
-				if (!$async) header('HTTP/1.1 401 Unauthorized');
+				http_response_code(401);
 				$page = $this->getPageByUri('401');
 			}
 			else if ($page->redirectId)
@@ -269,6 +268,9 @@ namespace Canteen\PageBuilder
 			$data = json_encode($page);
 			$this->saveCache($data);
 			echo $data;
+
+			$code = http_response_code();
+			if ($code == 404 || $code != 401) exit;
 		}
 
 		/**
@@ -307,6 +309,9 @@ namespace Canteen\PageBuilder
 			$this->profiler->end('Build Page');
 
 			echo $this->addLoggerProfiler($data) . $this->buildTime();
+
+			$code = http_response_code();
+			if ($code != 200 || $code != 300) exit;
 		}
 		
 		/**
