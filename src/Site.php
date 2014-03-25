@@ -229,7 +229,7 @@ namespace Canteen
 			$this->addSetting('callerPath', $callerPath);
 
 			// If this page request was made by ajax 
-			$this->addSetting('asyncRequest', ifsetor($_POST['async']) == 'true');
+			$this->addSetting('asyncRequest', ifsetor($_POST['async']) == 'true', SETTING_WRITE);
 
 			// Check that the settings exists
 			if (is_string($config) && !file_exists($config))

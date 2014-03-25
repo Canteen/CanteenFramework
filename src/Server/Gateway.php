@@ -92,6 +92,8 @@ namespace Canteen\Server
 		*/
 		public function handle($args=null)
 		{
+			$this->settings->asyncRequest = true;
+
 			try
 			{
 				// Get the captured argument
