@@ -160,9 +160,10 @@ namespace Canteen
 		*  @param {Boolean} [config.minify=false] If the output page should be minified
 		*  @param {String} [config.cacheDirectory=null] The directory for storing file cache if Memcache isn't available
 		*  @param {String} [callerPath=null] The path to the root script of the site, useful if we
+		*  @param {String} [domain=null] The explicit domain to run the site on, default is auto-detect.
 		*     are inheriting this class.
 		*/
-		public function __construct($config='config.php', $callerPath=null)
+		public function __construct($config='config.php', $callerPath=null, $domain=null)
 		{
 			parent::__construct();
 			
@@ -244,7 +245,7 @@ namespace Canteen
 			}
 
 			// Check the domain for the current deployment level 
-			$status = new DeploymentStatus($config);
+			$status = new DeploymentStatus($config, $domain);
 			
 			// Get the debug status
 			$debug = $this->settings->debug;
