@@ -1,28 +1,28 @@
 {
-    "name": "canteen/framework",
+	"name": "canteen/framework",
 	"description" : "PHP site framework for building JSON-driven, stateless websites built on Flight PHP",
-	"version" : "1.2.0",
-    "type": "library",
+	"version" : "1.2.1",
+	"type": "library",
 	"keywords": ["framework", "html5", "json", "cms"],
-    "license": "MIT",
+	"license": "MIT",
 	"homepage" : "http://github.com/Canteen/CanteenFramework",
-	"time": "2013-10-12",
+	"time": "2014-04-28",
 	"authors": [
-        {
-            "name": "Matt Karl",
-            "email": "matt@mattkarl.com",
-            "homepage": "http://github.com/bigtimebuddy",
-            "role": "Developer"
-        }
+		{
+			"name": "Matt Karl",
+			"email": "matt@mattkarl.com",
+			"homepage": "http://github.com/bigtimebuddy",
+			"role": "Developer"
+		}
 	],
-    "autoload": {
-        "psr-4": {"Canteen\\": "src/"},
+	"autoload": {
+		"psr-4": {"Canteen\\": "src/"},
 		"files": [
 			"src/functions/fnmatch.php",
 			"src/functions/ifconstor.php",
 			"src/functions/ifsetor.php"
 		]
-    },
+	},
 	"require": {
 		"php": ">=5.4.0",
 		"canteen/database" : "*",

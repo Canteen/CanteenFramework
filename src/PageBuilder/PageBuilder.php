@@ -74,12 +74,17 @@ namespace Canteen\PageBuilder
 				[
 					'year' => date('Y'),
 					'formSession' => StringUtils::generateRandomString(16),
-					'logoutUri' => $this->site->logoutUri
+					'logoutUri' => 'logout'
 				], 
 				SETTING_RENDER
 			)
-			->addSetting('version', Site::VERSION, SETTING_CLIENT);
-			
+			->addSetting('version', Site::VERSION, SETTING_CLIENT)
+			->addSetting(
+				'cacheBust', 
+				'?'.($this->settings->local ? 'cb='.time() : 'v='.$this->site->version),
+				SETTING_RENDER | SETTING_CLIENT
+			);
+
 			// Get the collection of all the pages
 			$this->_pages = $this->service('page')->getPages();
 			$this->_indexPage = $this->getPageByUri($this->settings->siteIndex);

@@ -34,7 +34,7 @@ namespace Canteen
 		*  @static
 		*  @final
 		*/
-		const VERSION = '1.2.0';
+		const VERSION = '1.2.1';
 		
 		/** 
 		*  The current database version 
@@ -73,6 +73,14 @@ namespace Canteen
 		*  @property {int} startTime
 		*/
 		public $startTime;
+
+		/**
+		*  This version number is used to cache-bust files in the browser
+		*  for any render paths that use {{cacheBust}}
+		*  @property {int} version
+		*  @default 1
+		*/
+		public $version = 1;
 
 		/**
 		*  The collection of external plugins
