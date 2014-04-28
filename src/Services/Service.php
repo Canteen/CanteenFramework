@@ -93,15 +93,15 @@ namespace Canteen\Services
 		*  called from javascript. For an example see the
 		*  `TimeService` class.
 		*  @method gateway
-		*  @param {String} uri The URI path to call from the gateway
+		*  @param {String} call The URI path to call from the gateway
 		*  @param {String} method The name of the method
 		*  @param {int} [privilege=Privilege::ANONYMOUS] The minimum privilege needed
 		*     for the client to access this method.
 		*  @return {Service} Return the instance of this for chaining
 		*/
-		public function gateway($uri, $method, $privilege=Privilege::ANONYMOUS)
+		public function gateway($call, $method, $privilege=Privilege::ANONYMOUS)
 		{
-			$this->site->gateway->register($uri, [$this, $method], $privilege);
+			$this->site->gateway->register($call, [$this, $method], $privilege);
 			return $this;
 		}
 
@@ -113,7 +113,7 @@ namespace Canteen\Services
 		*/
 		protected function privilege($required=Privilege::GUEST)
 		{
-			if (USER_PRIVILEGE < $required)
+			if ($this->settings->userPrivilege < $required)
 			{
 				throw new UserError(UserError::INSUFFICIENT_PRIVILEGE);
 			}

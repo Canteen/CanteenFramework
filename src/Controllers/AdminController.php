@@ -77,7 +77,7 @@ namespace Canteen\Controllers
 			
 			foreach($pages as $child)
 			{
-				if (USER_PRIVILEGE >= $child->privilege)
+				if ($this->settings->userPrivilege >= $child->privilege)
 				{
 					$link = html('a', 
 						html('span.icon-'.$child->pageId).$child->title, 

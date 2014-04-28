@@ -26,7 +26,7 @@ namespace Canteen\Controllers
 			// Forgot password is only for users not loggedin
 			if (LOGGED_IN)
 			{
-				redirect('admin/password');
+				$this->redirect('admin/password');
 				return;
 			}
 			
@@ -39,7 +39,7 @@ namespace Canteen\Controllers
 				$uri = explode('/', $this->dynamicUri);
 				if (count($uri) != 2)
 				{
-					redirect('forgot-password');
+					$this->redirect('forgot-password');
 				}
 				list($username, $forgotString) = $uri;
 				

@@ -138,7 +138,7 @@ namespace Canteen\Forms
 			
 			if ($this->redirect !== null && $this->removeRedirect)
 			{
-				redirect($this->redirect);
+				$this->redirect($this->redirect);
 			}
 			else
 			{
@@ -243,7 +243,7 @@ namespace Canteen\Forms
 
 			if ($this->redirect !== null && $this->updateRedirect)
 			{
-				redirect($this->redirect);
+				$this->redirect($this->redirect);
 			}
 			else
 			{
@@ -299,7 +299,7 @@ namespace Canteen\Forms
 
 			if ($this->redirect !== null && $this->addRedirect)
 			{
-				redirect($this->redirect);
+				$this->redirect($this->redirect);
 			}
 			else
 			{

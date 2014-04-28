@@ -101,7 +101,7 @@ namespace Canteen\Forms
 					else
 					{
 						// Need to reload the site so we don't show the Setup form again
-						redirect();
+						$this->redirect();
 					}
 				}
 			}

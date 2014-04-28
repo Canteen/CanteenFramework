@@ -73,7 +73,7 @@ namespace Canteen\Forms
 			$_COOKIE['installed'] = true;
 
 			// redirect to the home page
-			redirect();
+			$this->redirect();
 		}
 	}
 }	

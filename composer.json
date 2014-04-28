@@ -1,7 +1,7 @@
 {
     "name": "canteen/framework",
-	"description" : "Small PHP framework for building JSON-driven, stateless websites.",
-	"version" : "1.1.1",
+	"description" : "PHP site framework for building JSON-driven, stateless websites built on Flight PHP",
+	"version" : "1.2.0",
     "type": "library",
 	"keywords": ["framework", "html5", "json", "cms"],
     "license": "MIT",
@@ -20,8 +20,7 @@
 		"files": [
 			"src/functions/fnmatch.php",
 			"src/functions/ifconstor.php",
-			"src/functions/ifsetor.php",
-			"src/functions/redirect.php"
+			"src/functions/ifsetor.php"
 		]
     },
 	"require": {
@@ -29,7 +28,8 @@
 		"canteen/database" : "*",
 		"canteen/html5" : "*",
 		"canteen/events" : "*",
-		"canteen/parser" : "*"
+		"canteen/parser" : "*",
+		"mikecao/flight" : "*"
 	},
 	"minimum-stability": "dev",
 	"repositories": [

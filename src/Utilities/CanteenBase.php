@@ -55,6 +55,17 @@ namespace Canteen\Utilities
 		{
 			return $this->parser->template($name, $substitutions);
 		}
+
+		/**
+		*  Do a page redirect
+		*  @method redirect
+		*  @protected
+		*  @param {String} [uri=''] Redirect the page
+		*/
+		protected function redirect($uri='')
+		{
+			return $this->site->redirect($uri);
+		}
 		
 		/**
 		*  Convenience method for parsing content

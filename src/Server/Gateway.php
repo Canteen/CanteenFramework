@@ -7,15 +7,18 @@ namespace Canteen\Server
 {
 	use Canteen\Authorization\Privilege;
 	use Canteen\Errors\GatewayError;
+	use Canteen\Utilities\Plugin;
 	use \Exception;
+	use flight\net\Route;
 	
 	/** 
 	*  This server handles requests made through the gateway and returns JSON data.  
 	*  Located in the namespace __Canteen\Server__.
 	*  
 	*  @class Gateway
+	*  @extends Plugin
 	*/
-	class Gateway
+	class Gateway extends Plugin
 	{		
 		/** 
 		*  If the output produced an error 
@@ -48,34 +51,63 @@ namespace Canteen\Server
 		public $uri = 'gateway';
 
 		/**
+		*  Turn on the gateway
+		*  @method activate
+		*/
+		public function activate()
+		{
+			// Create a path to the gateway for the client
+			$this->site->addSetting(
+				'gatewayPath', 
+				$this->settings->basePath . $this->uri, 
+				SETTING_CLIENT
+			);
+		}
+
+		/**
 		*  Create a new gateway
 		*  @method register
-		*  @param {String} uri The path to the call
-		*  @param {callable} call The callback for the uri request
+		*  @param {String} pattern The route pattern to check
+		*  @param {callable} handler The callback for the uri request
 		*  @param {int} [privilege=Privilege::ANONYMOUS] The minimum privilege needed to call
 		*/
-		public function register($uri, $call, $privilege=Privilege::ANONYMOUS)
+		public function register($pattern, $handler, $privilege=Privilege::ANONYMOUS)
 		{
-			if (isset($this->_controls[$uri]))
-			{
-				throw new GatewayError(GatewayError::REGISTERED_URI, $uri);
-			}
-			$this->_controls[$uri] = new GatewayControl($uri, $call, $privilege);
+			$pattern = '/'.$this->uri.'/'.$pattern;
+			
+			// Convert the pattern
+			$route = new Route($pattern, null, null);
+			$route->matchUrl('');
+			$newPattern = $route->pattern;
+
+			$control = new GatewayControl($pattern, $handler, $privilege);
+			$this->_controls[$newPattern] = $control;
+			$this->site->route($pattern, [$this, 'handle']);
 		}
 
 		/**
 		*  The main server handler
 		*  @method handle
-		*  @param {String} uriRequest The entire URI being requested
 		*  @return {Object} The JSON object
 		*/
-		public function handle($uriRequest)
+		public function handle($args=null)
 		{
+			$this->settings->asyncRequest = true;
+
 			try
 			{
-				$result = $this->internalHandle($uriRequest);
+				// Get the captured argument
+				$args = func_get_args();
+
+				// Get the current route object to get the select pattern
+				$route = $this->site->router()->current();
+
+				// Do the internal call
+				$result = $this->internalHandle($route->pattern, $args);
 				$errorCode = null;
-				$type = self::SUCCESS;
+
+				// Null objects should be errors
+				$type = $result !== null ? self::SUCCESS : self::ERROR;
 			}
 			// The JSON Server specific errors
 			catch(GatewayError $e)
@@ -98,47 +130,29 @@ namespace Canteen\Server
 			// See if there's an error code
 			if ($errorCode !== null) $output['errorCode'] = $errorCode;
 			
-			return json_encode($output);
+			echo json_encode($output);
 		}
 		
 		/**
 		*  The internal JSON handle request
 		*  @method internalHandle
 		*  @private
-		*  @param {String} uriRequest The URI request being made
+		*  @param {String} pattern The router pattern
+		*  @param {Array} args The collectino of arguments
 		*  @return {mixed} The result of the service call  
 		*/	
-		private function internalHandle($uriRequest)
+		private function internalHandle($pattern, $args)
 		{
-			if ($uriRequest == $this->uri.'/' || $uriRequest == $this->uri)
-			{
-				throw new GatewayError(GatewayError::NO_INPUT); 
-			}
-
-			if (strpos($uriRequest, $this->uri.'/') !== 0)
-			{
-				throw new GatewayError(GatewayError::BAD_URI_REQUEST, [$uriRequest, $this->uri]);
-			}
-
-			$request = str_replace($this->uri.'/', '', $uriRequest);
-
-			foreach($this->_controls as $control)
-			{
-				if ($control->match($request)) break;
-				$control = null;
-			}
+			$control = ifsetor($this->_controls[$pattern]);
 
 			if (!$control)
 			{
-				throw new GatewayError(GatewayError::NO_CONTROL_FOUND, $request);
+				throw new GatewayError(GatewayError::NO_CONTROL_FOUND, $pattern);
 			}
 			else if ($control->privilege > USER_PRIVILEGE)
 			{
 				throw new GatewayError(GatewayError::INSUFFICIENT_PRIVILEGE, $control->uri);
 			}
-
-			// Get the arguments
-			$args = $control->getArguments($request);
 
 			// Check for valid number of parameters
 			$numArgs = count($args);
@@ -149,8 +163,8 @@ namespace Canteen\Server
 					throw new GatewayError(GatewayError::INCORRECT_PARAMETERS);
 
 			return $args ? 
-				call_user_func_array($control->call, $args) : 
-				call_user_func($control->call);
+				call_user_func_array($control->handler, $args) : 
+				call_user_func($control->handler);
 		}
 	}
 }
