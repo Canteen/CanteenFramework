@@ -34,7 +34,7 @@ namespace Canteen
 		*  @static
 		*  @final
 		*/
-		const VERSION = '1.2.1';
+		const VERSION = '1.2.2';
 		
 		/** 
 		*  The current database version 
