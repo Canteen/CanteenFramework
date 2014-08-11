@@ -1,7 +1,7 @@
 {
 	"name": "canteen/framework",
 	"description" : "PHP site framework for building JSON-driven, stateless websites built on Flight PHP",
-	"version" : "1.2.1",
+	"version" : "1.2.2",
 	"type": "library",
 	"keywords": ["framework", "html5", "json", "cms"],
 	"license": "MIT",
