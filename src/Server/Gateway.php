@@ -76,7 +76,7 @@ namespace Canteen\Server
 			$pattern = '/'.$this->uri.'/'.$pattern;
 			
 			// Convert the pattern
-			$route = new Route($pattern, null, null);
+			$route = new Route($pattern, null, null, false);
 			$route->matchUrl('');
 			$newPattern = $route->pattern;
 
