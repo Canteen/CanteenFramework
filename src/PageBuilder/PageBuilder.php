@@ -269,7 +269,6 @@ namespace Canteen\PageBuilder
 		private function handlePost(Page $page)
 		{
 			$this->removeEmpties($page->content);
-			$this->parser->fixPath($page->content, $this->settings->basePath);			
 			$data = json_encode($page);
 			$this->saveCache($data);
 			echo $data;
@@ -302,11 +301,6 @@ namespace Canteen\PageBuilder
 			
 			// Get the main template from the path
 			$data = $this->template(Site::MAIN_TEMPLATE, $this->settings->getRender());
-			
-			// Fix the links to use the base path
-			$this->profiler->start('Parse Fix Path');
-			$this->parser->fixPath($data, $this->settings->basePath);
-			$this->profiler->end('Parse Fix Path');
 			
 			// Clean up any lingering tags
 			$this->removeEmpties($data);
