@@ -187,7 +187,7 @@ namespace Canteen\Controllers
 				'objectLabel' => $this->item->itemName,
 				'cancelUri' => $this->page->uri,
 				'removeEnabled' => $this->removeEnabled,
-				'cancelRefresh' => !$this->dynamicUri ? 'data-refresh="soft"' : '',
+				'cancelRefresh' => '',
 				'objects' => $objects,
 				'object' => $this->object,
 				'pageId' => $this->page->pageId

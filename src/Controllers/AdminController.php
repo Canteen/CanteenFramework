@@ -82,9 +82,12 @@ namespace Canteen\Controllers
 					$link = html('a', 
 						html('span.icon-'.$child->pageId).$child->title, 
 						'href='.$this->settings->basePath.$child->uri);
+
+					$link->class = 'internal';
+
 					if ($child->uri == $this->page->uri)
 					{
-						$link->class = 'selected';
+						$link->class .= ' selected';
 					}
 					
 					if (in_array($child->uri, $protected))
