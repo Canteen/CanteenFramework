@@ -18,6 +18,8 @@
 	"Forms/Setup.html",
 	"Forms/SetupManual.html",
 	"Forms/Installer.html",
+	"Forms/FormError.html",
+	"Forms/FormSuccess.html",
 	"Forms/ForgotPassword.html",
 	"Layouts/FatalError.html",
 	"Layouts/PasswordRecovery.html",

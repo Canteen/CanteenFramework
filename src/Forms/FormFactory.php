@@ -9,7 +9,6 @@ namespace Canteen\Forms
 	use Canteen\Utilities\StringUtils;
 	use Canteen\Errors\CanteenError;
 	use Canteen\Errors\UserError;
-	use Canteen\HTML5\SimpleList;
 	use \Exception;
 	
 	/**
@@ -19,21 +18,7 @@ namespace Canteen\Forms
 	*  @extends CanteenBase
 	*/
 	class FormFactory extends CanteenBase
-	{
-		/** 
-		*  class of ul for form errors 
-		*  @property {String} ERROR
-		*  @final
-		*/
-		const ERROR = 'formError';
-	
-		/** 
-		*  class of ul for form successes 
-		*  @property {String} SUCCESS
-		*  @final
-		*/
-		const SUCCESS = 'formSuccess';
-	
+	{	
 		/** 
 		*  Contain the success message 
 		*  @property {Array} _successMessages
@@ -163,9 +148,7 @@ namespace Canteen\Forms
 					'type' => 'formFeedback',
 					'data' => ifsetor($this->_formData),
 					'ifError' => $this->ifError,
-					'messages' => $this->ifError ? 
-						ifsetor($this->_errorMessages):
-						ifsetor($this->_successMessages)
+					'messages' => $this->getFeedback()
 				]
 			);
 		}
@@ -177,7 +160,7 @@ namespace Canteen\Forms
 		*/
 		public function error($message)
 		{
-			$this->_errorMessages[] = $message;
+			$this->_errorMessages[] = ['content' => $message];
 		}
 	
 		/**
@@ -187,7 +170,7 @@ namespace Canteen\Forms
 		*/
 		public function success($message)
 		{
-			$this->_successMessages[] = $message;
+			$this->_successMessages[] = ['content' => $message];
 		}
 	
 		/**
@@ -215,16 +198,23 @@ namespace Canteen\Forms
 		*/
 		public function getFeedback()
 		{					
-			$list = '';
+			$template = '';
+			$messages = null;
 			if (count($this->_errorMessages))
 			{
-				$list = new SimpleList($this->_errorMessages, 'class='.self::ERROR);
+				$template = 'FormError';
+				$messages = $this->_errorMessages;
 			}
 			else if (count($this->_successMessages))
 			{
-				$list = new SimpleList($this->_successMessages, 'class='.self::SUCCESS);
+				$template = 'FormSuccess';
+				$messages = $this->_successMessages;
 			}
-			return (string)$list;
+			if ($template)
+			{
+				return $this->template($template, ['messages' => $messages]);
+			}
+			return '';
 		}
 	
 		/** 
