@@ -71,7 +71,9 @@ namespace Canteen\Controllers
 			
 			$pages = $this->service('page')->getPagesByParentId($this->page->parentId);
 			$custom = [];
+			$customLinks = [];
 			$builtIn = [];
+			$builtInLinks = [];
 			
 			$protected = $this->service('page')->getProtectedUris();
 			
@@ -79,6 +81,7 @@ namespace Canteen\Controllers
 			{
 				if ($this->settings->userPrivilege >= $child->privilege)
 				{
+					
 					$link = html('a', 
 						html('span.icon-'.$child->pageId).$child->title, 
 						'href='.$this->settings->basePath.$child->uri);
@@ -89,16 +92,26 @@ namespace Canteen\Controllers
 					{
 						$link->class .= ' selected';
 					}
+
+					$obj = [
+						'href' => $this->settings->basePath.$child->uri,
+						'icon' => $child->pageId,
+						'title' => $child->title
+					];
 					
 					if (in_array($child->uri, $protected))
 					{
 						$link->class .= ' builtIn';
+						$obj['class'] = $link->class;
 						$builtIn[] = $link;
+						$builtInLinks[] = $obj;
 					}
 					else
 					{
 						$link->class .= ' custom';
+						$obj['class'] = $link->class;
 						$custom[] = $link;
+						$customLinks[] = $obj;
 					}
 				}
 			}
@@ -109,7 +122,9 @@ namespace Canteen\Controllers
 				'Admin', 
 				[
 					'adminNavCustom' => $adminNavCustom,
+					'customLinks' => $customLinks,
 					'adminNav' => new SimpleList($builtIn, 'class=builtIn'),
+					'builtInLinks' => $builtInLinks,
 					'adminContent' => $this->parse($this->page->content, $this->data)
 				]
 			); 
