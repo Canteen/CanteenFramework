@@ -16,6 +16,7 @@ namespace Canteen
 	use Canteen\Services\UserService;
 	use Canteen\Controllers\ErrorController;
 	use Canteen\Utilities\StringUtils;
+	use Canteen\Events\EventDispatcher;
 
 	// Optional Dev use only
 	use Canteen\Logger\Logger;
@@ -221,6 +222,14 @@ namespace Canteen
 			*/
 			$this->map('registerService', ['Canteen\Services\Service','register']);
 
+			/**
+			*  Get a service by alias
+			*  @method service
+			*  @param {String} name The name of the service
+			*  @return {Service} The service instance
+			*/
+			$this->map('service', ['Canteen\Services\Service', 'get']);
+
 			// Check for the version of PHP required to do the autoloading/namespacing
 			if (version_compare(self::MIN_PHP_VERSION, PHP_VERSION) >= 0) 
 			{
@@ -316,6 +325,17 @@ namespace Canteen
 			}
 			$this->profiler->end('Canteen Setup');
 		}
+
+		/**
+		*  Install the site, called from the InstallerForm
+		*  @method install
+		*/
+		public function install()
+		{
+			// We're already installed, no need to keep checking
+			// for the rest of this session
+			$_COOKIE['installed'] = true;
+		}
 		
 		/**
 		*  Bootstrap the database connection
@@ -369,6 +389,7 @@ namespace Canteen
 				}
 				
 				$service = $this->registerService('config', new ConfigService);
+				$service->registerSettings();
 
 				// Add the main site template
 				$this->parser->addTemplate(

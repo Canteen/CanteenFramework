@@ -35,8 +35,6 @@ namespace Canteen\Services
 					$this->field('access', Validate::NUMERIC)
 				]
 			);
-
-			$this->registerSettings();
 		}
 		
 		/**

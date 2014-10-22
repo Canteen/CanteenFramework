@@ -10,7 +10,6 @@ namespace Canteen\Forms
 	use Canteen\Services\PageService;
 	use Canteen\Services\UserService;
 	use Canteen\Services\Service;
-	use Canteen\Events\CanteenEvent;
 	use \Exception;
 	
 	/**
@@ -55,25 +54,21 @@ namespace Canteen\Forms
 			if (!$siteTitle)
 				$this->error('Site Title is required');
 			
-			if ($this->ifError) return;
-			
-			$config = Service::register('config', new ConfigService);
-			$page = Service::register('page', new PageService);
-			$user = Service::register('user', new UserService);
-			
-			$config->setup($siteTitle, $contentPath, $templatePath);
-			$user->setup($username, $email, $password, $firstName, $lastName);
-			$page->setup();
+			if (!$this->ifError)
+			{
+				$config = $this->site->registerService('config', new ConfigService);
+				$page = $this->site->registerService('page', new PageService);
+				$user = $this->site->registerService('user', new UserService);
+				
+				$config->setup($siteTitle, $contentPath, $templatePath);
+				$user->setup($username, $email, $password, $firstName, $lastName);
+				$page->setup();
+				
+				$this->site->install();
 
-			// Trigger the site event for being installed
-			$this->site->trigger(CanteenEvent::INSTALLED);
-
-			// We're already installed, no need to keep checking
-			// for the rest of this session
-			$_COOKIE['installed'] = true;
-
-			// redirect to the home page
-			$this->redirect();
+				// redirect to the home page
+				$this->redirect();
+			}		
 		}
 	}
 }	
