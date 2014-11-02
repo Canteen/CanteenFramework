@@ -16,6 +16,7 @@ namespace Canteen\PageBuilder
 	use Canteen\Utilities\StringUtils;
 	use Canteen\Server\JSONServer;
 	use Canteen\Services\Service;
+	use Canteen\HTML5\HTML5;
 	
 	/**
 	*  Responsible for building the pages and handling page requests.
@@ -66,7 +67,10 @@ namespace Canteen\PageBuilder
 		*  Build a page builder
 		*/
 		public function __construct()
-		{			
+		{
+			// allow the use of the global html() function
+			HTML5::useGlobal();
+
 			$this->_controllers = [];
 
 			// Setup some basic settings for all pages
